@@ -1,2 +1,2 @@
-# pahm
+# PaHM
 Parametric Hurricane Modeling System
