@@ -108,8 +108,8 @@ ParseArgs()
             fi
           fi
         ;;
-      -comp | --comp )
-          checkFuncOpt "--comp"
+      -compiler | --compiler )
+          checkFuncOpt "--compiler"
           if [ $? -eq 0 ]; then
             if [ "X${opt_arg}" != "X" ]; then
               __MY_COMPILER="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
@@ -263,7 +263,7 @@ UsageBuild()
   echo "    Default: none."
   echo
   #---
-  echo "  -comp|--comp [=|space] \"compiling_system\" (OPTIONAL)."
+  echo "  -compiler|--compiler [=|space] \"compiling_system\" (OPTIONAL)."
   echo "    The compiling system to use (${MY_COMPILING_SYTEMS})."
   echo "    Default: none."
   echo

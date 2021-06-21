@@ -8,32 +8,35 @@
 
 # Check if the intel module is loaded so we have access to the Intel compilers.
 if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
-  message(SEND_ERROR "The intel module is not loaded. Load the module before running this cmake")
+  message(FATAL_ERROR "The intel module is not loaded. Load the module before running this cmake")
 endif()
 
 ###========================================
 ### Check the environment and set required variables
 ###========================================
-if(NOT "$ENV{TACC_HDF5_DIR}" STREQUAL "")
-  set(HDF5HOME "${TACC_HDF5_DIR}")
-  set(HDF5_PATH "${TACC_HDF5_DIR}")
-  set(HDF5_ROOT "${TACC_HDF5_DIR}")
-elseif(NOT "$ENV{HDF5}" STREQUAL "")
-  set(HDF5HOME  "$ENV{HDF5}")
-  set(HDF5_PATH "$ENV{HDF5}")
-  set(HDF5_ROOT "$ENV{HDF5}")
-else()
-  # Do nothing
-endif()
+include(PlatformFuncs)
 
-if(NOT "$ENV{TACC_NETCDF_DIR}" STREQUAL "")
-  set(NETCDFHOME  "$ENV{TACC_NETCDF_DIR}")
-  set(NETCDF_PATH "$ENV{TACC_NETCDF_DIR}")
-  set(NETCDF_ROOT "$ENV{TACC_NETCDF_DIR}")
-elseif(NOT "$ENV{NETCDF}" STREQUAL "")
-  set(NETCDFHOME  "$ENV{NETCDF}")
-  set(NETCDF_PATH "$ENV{NETCDF}")
-  set(NETCDF_ROOT "$ENV{NETCDF}")
-else()
-  message(SEND_ERROR "Load the appropriate NetCDF environment module before running cmake.")
+
+########## BEG:: CHECK FOR HDF5 ##########
+get_env_hdf5(TACC_HDF5_DIR)
+
+if(NOT _DEFINED_HDF5)
+  #Do nothing
 endif()
+########## END:: CHECK FOR HDF5 ##########
+
+
+########## BEG:: CHECK FOR NETCDF ##########
+get_env_netcdf(TACC_NETCDF_DIR)
+
+if(NOT _DEFINED_NETCDF)
+  #message(FATAL_ERROR "Couldn't find any of the NETCDF* environment variables.\n"
+  #            "Load the appropriate NetCDF environment module before running cmake.")
+endif()
+########## END:: CHECK FOR NETCDF ##########
+
+
+########## BEG:: PLATFORM CUSTOMIZED SETTINGS ##########
+#set(_DEFINED_HDF5 TRUE)
+#set(_DEFINED_NETCDF TRUE)
+########## END:: PLATFORM CUSTOMIZED SETTINGS ##########

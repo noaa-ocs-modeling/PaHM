@@ -9,26 +9,29 @@
 ###========================================
 ### Check the environment and set required variables
 ###========================================
-if(NOT "$ENV{HDF5_ROOT}" STREQUAL "")
-  set(HDF5HOME "${HDF5_ROOT}")
-  set(HDF5_PATH "${HDF5_ROOT}")
-  set(HDF5_ROOT "${HDF5_ROOT}")
-elseif(NOT "$ENV{HDF5}" STREQUAL "")
-  set(HDF5HOME  "$ENV{HDF5}")
-  set(HDF5_PATH "$ENV{HDF5}")
-  set(HDF5_ROOT "$ENV{HDF5}")
-else()
-  # Do nothing
-endif()
+include(PlatformFuncs)
 
-if(NOT "$ENV{NETCDF_ROOT}" STREQUAL "")
-  set(NETCDFHOME  "$ENV{NETCDF_ROOT}")
-  set(NETCDF_PATH "$ENV{NETCDF_ROOT}")
-  set(NETCDF_ROOT "$ENV{NETCDF_ROOT}")
-elseif(NOT "$ENV{NETCDF}" STREQUAL "")
-  set(NETCDFHOME  "$ENV{NETCDF}")
-  set(NETCDF_PATH "$ENV{NETCDF}")
-  set(NETCDF_ROOT "$ENV{NETCDF}")
-else()
-  message(SEND_ERROR "Load the appropriate NetCDF environment module before running cmake.")
+
+########## BEG:: CHECK FOR HDF5 ##########
+get_env_hdf5()
+
+if(NOT _DEFINED_HDF5)
+  #Do nothing
 endif()
+########## END:: CHECK FOR HDF5 ##########
+
+
+########## BEG:: CHECK FOR NETCDF ##########
+get_env_netcdf()
+
+if(NOT _DEFINED_NETCDF)
+  #message(FATAL_ERROR "Couldn't find any of the NETCDF* environment variables.\n"
+  #            "Load the appropriate NetCDF environment module before running cmake.")
+endif()
+########## END:: CHECK FOR NETCDF ##########
+
+
+########## BEG:: PLATFORM CUSTOMIZED SETTINGS ##########
+#set(_DEFINED_HDF5 TRUE)
+#set(_DEFINED_NETCDF TRUE)
+########## END:: PLATFORM CUSTOMIZED SETTINGS ##########
