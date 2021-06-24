@@ -14,7 +14,7 @@ set(PAHM_ADDITIONAL_FLAGS "" CACHE STRING "Additional flags to compile PaHM with
 ### Executables
 option(PAHM_BUILD_EXECUTABLE "Build the PaHM executable" ON)
 option(PAHM_BUILD_SHARED_LIB "Build the shared library version of PaHM" OFF)
-option(PAHM_BUILD_STATIC_LIB "Build the static library version of PaHM" OFF)
+option(PAHM_BUILD_STATIC_LIB "Build the static library version of PaHM" ON)
 # This should be default - Future updates, no option
 option(ENABLE_GRIB2          "Enable grib2api static libraries." OFF)
 # This should be default - Future updates, no option
