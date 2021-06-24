@@ -147,11 +147,11 @@ foreach( _comp IN LISTS _search_components )
     set(_conf "cxx4")
   endif()
   find_program( NetCDF_${_comp}_CONFIG_EXECUTABLE
-      NAMES n${_conf}-config nc-config
+    NAMES n${_conf}-config nc-config
     HINTS ${NetCDF_INCLUDE_DIRS} ${_include_search_hints} ${_search_hints}
     PATH_SUFFIXES bin Bin ../bin ../../bin
-      DOC "NetCDF n${_conf}-config helper" )
-    message(DEBUG "NetCDF_${_comp}_CONFIG_EXECUTABLE: ${NetCDF_${_comp}_CONFIG_EXECUTABLE}")
+    DOC "NetCDF n${_conf}-config helper" )
+  message(DEBUG "NetCDF_${_comp}_CONFIG_EXECUTABLE: ${NetCDF_${_comp}_CONFIG_EXECUTABLE}")
 endforeach()
 
 set(_C_libs_flag --libs)
