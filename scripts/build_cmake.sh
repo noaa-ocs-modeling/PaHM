@@ -220,7 +220,7 @@ fi
 
 ##########
 # Generate some flags to pass to CMake
-CMAKE_FLAGS=" -DCMAKE_BUILD_TYPE=${OPT_TYPE}"
+CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${OPT_TYPE}"
 [ -n "${PLATFORM:+1}" ]        && CMAKE_FLAGS+=" -DCMAKE_Platform=${PLATFORM}"
 [ -n "${VERBOSE:+1}" ]         && CMAKE_FLAGS+=" -DCMAKE_VERBOSE_MAKEFILE=TRUE"
 
@@ -237,7 +237,7 @@ echo "    PROJECT_SOURCE_DIR = ${projDIR}"
 echo "    PROJECT_BINARY_DIR = ${buildDIR}"
 echo "    CMAKE_SOURCE_DIR   = ${projDIR}"
 echo "    CMAKE_BINARY_DIR   = ${buildDIR}"
-echo "    INSTALL_DIR        = ${INSTALL_DIR}"
+echo "    INSTALL_DIR        = ${INSTALL_DIR:-${projDIR}}"
 echo "    CMAKE_BUILD_TYPE   = ${OPT_TYPE}"
 echo "    CMAKE_FLAGS        = ${CMAKE_FLAGS}"
 echo "    PLATFORM           = ${PLATFORM}"
@@ -246,7 +246,7 @@ echo "    CC                 = ${CC:-Will use the OS default compiler}"
 echo "    CXX                = ${CXX:-Will use the OS default compiler}"
 echo "    FC                 = ${FC:-Will use the OS default compiler}"
 echo "    F90                = ${F90:-Will use the OS default compiler}"
-echo "    VERBOSE            = ${VERBOSE}"
+echo "    VERBOSE            = ${VERBOSE:-0}"
 echo
 
 echo_response=

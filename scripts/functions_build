@@ -9,6 +9,7 @@
 set +u
 
 MY_COMPILING_SYTEMS="gnu, intel, pgi"
+MY_COMPILING_PLATFORMS="custom, linux, cheyenne, gaea, hera, jet, orion, stampede, wcoss"
 
 ##################################################
 ### MODELLING SYSTEM BUILD FUNCTIONS
@@ -45,7 +46,7 @@ ParseArgs()
   __MY_COMPILER=
   __MY_PARALLEL=0
   __MY_PARMAKE=1
-  __MY_PLATFORM=
+  __MY_PLATFORM=linux
   __MY_INSTALL_DIR=
   __MY_PROJECT_DIR=
   __MY_TYPE=R
@@ -282,8 +283,8 @@ UsageBuild()
   echo "    The name of the compute HPC platform to consider."
   echo "    Selecting a platform additional macros are defined for the"
   echo "    compilation stage that are specific to that platform."
-  echo "    Supported platforms: cheyenne gaea hera jet orion stampede wcoss."
-  echo "    Default: none."
+  echo "    Supported platforms: ${MY_COMPILING_PLATFORMS}."
+  echo "    Default: linux."
   echo
   #---
   echo "  -prefix|--prefix [=|space] \"install_dir\" (OPTIONAL)."
