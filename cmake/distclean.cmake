@@ -44,7 +44,7 @@ endmacro()
 file(GLOB_RECURSE CMAKECACHE FOLLOW_SYMLINKS "${TOPDIR}/*CMakeCache.txt")
 file(GLOB_RECURSE CMAKEINSTALL FOLLOW_SYMLINKS "${TOPDIR}/*cmake_install.cmake"
                                "${TOPDIR}/*install_manifest.txt")
-file(GLOB_RECURSE MAKEFILE FOLLOW_SYMLINKS "${TOPDIR}/*Makefile")
+file(GLOB_RECURSE MAKEFILE FOLLOW_SYMLINKS "${TOPDIR}/build/*Makefile")
 file(GLOB_RECURSE CMAKETESTFILES FOLLOW_SYMLINKS "${TOPDIR}/*CTestTestfile.cmake")
 
 ###====================
