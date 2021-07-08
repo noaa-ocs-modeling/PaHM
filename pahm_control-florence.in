@@ -60,8 +60,9 @@ meshFileType             = ADCIRC
 
 !### The mesh file to be read to create the gridded wind data
 !meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
-meshFileName             = inputs/adcirc_mesh-estofs.dat
+!meshFileName             = inputs/adcirc_mesh-estofs.dat
 !meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+meshFileName             = inputs/adcirc_mesh-shinnecock-orion.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
@@ -71,14 +72,15 @@ meshFileForm             = ASCII
 !----------
 !### Output filename (no extension). If there is an extension (e.g., .ext)
 !### it will be removed. The final extension to this filename will be either .nc or .nc4
-outFileName              = windout-florence
+!outFileName              = pahm_windout-florence
+outFileName              = pahm_windout-florence
 
 !### For NetCDF-4: turn on the shuffle filter (ncShuffle > 0),
 !###               turn on the deflate filter (ncDeflate > 0),
 !###               deflate level (ncDLevel = [0-9])
 ncShuffle                = 0
-ncDeflate                = 1
-ncDLevel                 = 2
+ncDeflate                = 0
+ncDLevel                 = 0
 
 !ncVarNam_Pres            = P                                ! Name of the pressure variable in the output NetCDF file
 !ncVarNam_WndX            = uwnd                             ! Name of the wind-x component variable in the output NetCDF file
@@ -107,8 +109,13 @@ unitTime                 = S                                ! Time units to be u
                                                             ! D=days, W=weeks)
 outDT                    = 3600                             ! Frequency of output data (units = unitTime)
 
-begDateTime              = 2018-09-09 06:00:00              ! Start date and time of the simulation (format: refDateTime)
-endDateTime              = 2018-09-17 06:00:00              ! Stop date and time of the simulation (format: refDateTime)
+! Extra days before and after
+begDateTime              = 2018-09-07 00:00:00 
+endDateTime              = 2018-09-19 00:00:00
+
+! True start and end times
+!begDateTime              = 2018-09-09 06:00:00              ! Start date and time of the simulation (format: refDateTime)
+!endDateTime              = 2018-09-17 06:00:00              ! Stop date and time of the simulation (format: refDateTime)
 
 !begSimTime              = 905320800.0d0                    ! Relative to refDate (units = unitTime)
                                                             ! Either begDateTime or begSimTime can be specified

@@ -51,7 +51,8 @@ NBTRFILES                = 1
 !bestTrackFileName        = inputs/sandy2012-hurdat2.dat
 !bestTrackFileName        = inputs/sandy2012-ibtracs.dat
 !bestTrackFileName        = inputs/sandy2012-tcvitals.dat
-bestTrackFileName        = inputs/sandy2012-fort.22.best_track.dat
+!bestTrackFileName        = inputs/sandy2012-fort.22.best_track.dat
+bestTrackFileName        = inputs/florence2018-bdeck.dat
 
 !----------
 ! Mesh file name and format
@@ -61,8 +62,8 @@ meshFileType             = ADCIRC
 
 !### The mesh file to be read to create the gridded wind data
 !meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
-meshFileName             = inputs/adcirc_mesh-estofs.dat
-!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+!meshFileName             = inputs/adcirc_mesh-estofs.dat
+meshFileName             = inputs/adcirc_mesh-shinnecock-orion.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
@@ -72,7 +73,7 @@ meshFileForm             = ASCII
 !----------
 !### Output filename (no extension). If there is an extension (e.g., .ext)
 !### it will be removed. The final extension to this filename will be either .nc or .nc4
-outFileName              = windout
+outFileName              = pahm_windout-florence
 
 !### For NetCDF-4: turn on the shuffle filter (ncShuffle > 0),
 !###               turn on the deflate filter (ncDeflate > 0),
@@ -108,15 +109,22 @@ unitTime                 = d                                ! Time units to be u
                                                             ! D=days, W=weeks)
 outDT                    = 0.041666667                      ! Frequency of output data (units = unitTime)
 
-begDateTime              = 2012-10-21 18:00:00              ! Start date and time of the simulation (format: refDateTime)
+!!!!! SANDY
+!begDateTime              = 2012-10-21 18:00:00              ! Start date and time of the simulation (format: refDateTime)
 !endDateTime              = 2012-10-31 12:00:00              ! Stop date and time of the simulation (format: refDateTime)
-endDateTime              = 2012-10-23 00:00:00
 
 !begSimTime              = 719690400.0d0                    ! Relative to refDate (units = unitTime)
                                                             ! Either begDateTime or begSimTime can be specified
 !endSimTime              = 720532800.0d0                    ! Relative to refDate (units = unitTime)
                                                             ! Either begDateTime or begSimTime can be specified
+!!!!!! FLORENCE
+begDateTime              = 2018-09-09 06:00:00              ! Start date and time of the simulation (format: refDateTime)
+endDateTime              = 2018-09-17 06:00:00              ! Stop date and time of the simulation (format: refDateTime)
 
+!begSimTime              = 905320800.0d0                    ! Relative to refDate (units = unitTime)
+                                                            ! Either begDateTime or begSimTime can be specified
+!endSimTime              = 906012000.0d0                    ! Relative to refDate (units = unitTime)
+                                                            ! Either begDateTime or begSimTime can be specified
 !----------
 ! Model parameters
 !----------

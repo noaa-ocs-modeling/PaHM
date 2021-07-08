@@ -27,10 +27,10 @@
 !=== General parameters               ===
 !========================================
 !### Application title.
-Title                    = PaHM Winds for TC Sandy
+Title                    = PaHM Winds for TC Florence
 
 !### The log file name where all messages are written.
-logFileName              = pahm_sandy.log
+logFileName              = pahm_florence.log
 
 !### Print all model parameters on the screen for the current model run (writeParams > 0).
 writeParams              = 0
@@ -47,11 +47,8 @@ writeParams              = 0
 NBTRFILES                = 1
 
 !### The best track filename(s) (max NBTRFILES)
-bestTrackFileName        = inputs/sandy2012-bdeck.dat
-!bestTrackFileName        = inputs/sandy2012-hurdat2.dat
-!bestTrackFileName        = inputs/sandy2012-ibtracs.dat
-!bestTrackFileName        = inputs/sandy2012-tcvitals.dat
-!bestTrackFileName        = inputs/sandy2012-fort.22.best_track.dat
+bestTrackFileName        = inputs/ike2008-bdeck.dat
+!bestTrackFileName        = inputs/ike2008-adeck.dat
 
 !----------
 ! Mesh file name and format
@@ -62,7 +59,6 @@ meshFileType             = ADCIRC
 !### The mesh file to be read to create the gridded wind data
 !meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
 !meshFileName             = inputs/adcirc_mesh-estofs.dat
-!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
 meshFileName             = inputs/adcirc_mesh-shinnecock-orion.dat
 
 !### The mesh file format (ASCII, NETCDF)
@@ -73,8 +69,8 @@ meshFileForm             = ASCII
 !----------
 !### Output filename (no extension). If there is an extension (e.g., .ext)
 !### it will be removed. The final extension to this filename will be either .nc or .nc4
-!outFileName              = pahm_windout-sandy
-outFileName              = pahm_windout-sandy
+!outFileName              = pahm_windout-ike
+outFileName              = pahm_windout-ike
 
 !### For NetCDF-4: turn on the shuffle filter (ncShuffle > 0),
 !###               turn on the deflate filter (ncDeflate > 0),
@@ -111,17 +107,12 @@ unitTime                 = S                                ! Time units to be u
 outDT                    = 3600                             ! Frequency of output data (units = unitTime)
 
 ! Extra days before and after
-begDateTime              = 2012-10-19 00:00:00 
-endDateTime              = 2012-11-03 00:00:00
+begDateTime              = 2008-08-30 00:00:00 
+endDateTime              = 2008-09-18 00:00:00 
 
 ! True start and end times
-!begDateTime              = 2012-10-21 18:00:00              ! Start date and time of the simulation (format: refDateTime)
-!endDateTime              = 2012-10-31 12:00:00              ! Stop date and time of the simulation (format: refDateTime)
-
-!begSimTime              = 719690400.0d0                    ! Relative to refDate (units = unitTime)
-                                                            ! Either begDateTime or begSimTime can be specified
-!endSimTime              = 720532800.0d0                    ! Relative to refDate (units = unitTime)
-                                                            ! Either begDateTime or begSimTime can be specified
+!begDateTime              = 2008-09-01 06:00:00              ! Start date and time of the simulation (format: refDateTime)
+!endDateTime              = 2008-09-15 12:00:00              ! Stop date and time of the simulation (format: refDateTime)
 
 !----------
 ! Model parameters
