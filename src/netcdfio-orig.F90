@@ -164,11 +164,11 @@ MODULE NetCDFIO
       ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, nodeDimID)
         CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'element'
+    tmpVarName = 'nele'
       ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), ne, elemDimID)
         CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'noel'
+    tmpVarName = 'nvertex'
       ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), 3,  vertDimID)
         CALL NetCDFCheckErr(ierr)
 
@@ -202,8 +202,8 @@ MODULE NetCDFIO
     !----- Longitude variable
     tmpVarName = 'longitude'
       crdLons%varname = TRIM(tmpVarName)
-      crdLons%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLons%varDims)
+      crdLons%varDimIDs = crdLons%dimID
+      ierr = NF90_INQUIRE_DIMENSION(ncID, crdLons%dimID, LEN = crdLons%varDims)
         CALL NetCDFCheckErr(ierr)
       crdLons%start(1) = 1
       crdLons%count(1) = crdLons%varDims
@@ -227,8 +227,8 @@ MODULE NetCDFIO
     !----- Latitude variable
     tmpVarName = 'latitude'
       crdLats%varname = TRIM(tmpVarName)
-      crdLats%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLats%varDims)
+      crdLats%varDimIDs = crdLats%dimID
+      ierr = NF90_INQUIRE_DIMENSION(ncID, crdLats%dimID, LEN = crdLats%varDims)
         CALL NetCDFCheckErr(ierr)
       crdLats%start(1) = 1
       crdLats%count(1) = crdLats%varDims
@@ -250,7 +250,7 @@ MODULE NetCDFIO
       crdLats%var = sfea
 
     !----- Element variable
-    tmpVarName = 'tri'
+    tmpVarName = 'element'
       datElements%varname = TRIM(tmpVarName)
       datElements%varDimIDs(1) = vertDimID
       datElements%varDimIDs(2) = elemDimID
