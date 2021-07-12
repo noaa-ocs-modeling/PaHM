@@ -79,8 +79,8 @@ outFileName              = pahm_windout-florence
 !###               turn on the deflate filter (ncDeflate > 0),
 !###               deflate level (ncDLevel = [0-9])
 ncShuffle                = 0
-ncDeflate                = 0
-ncDLevel                 = 0
+ncDeflate                = 1
+ncDLevel                 = 2
 
 !ncVarNam_Pres            = P                                ! Name of the pressure variable in the output NetCDF file
 !ncVarNam_WndX            = uwnd                             ! Name of the wind-x component variable in the output NetCDF file
@@ -105,9 +105,11 @@ blAdjustFac              = 0.9d0                            ! Boundary layer red
 !----------
 refDateTime              = 1990-01-01 00:00:00              ! Any sequence that includes numeric values such that
                                                             ! it results to a string YYYYMMDD[hhmmss] after processing
-unitTime                 = S                                ! Time units to be used (S=seconds, M=minutes, H=hours,
+!unitTime                 = S                                ! Time units to be used (S=seconds, M=minutes, H=hours,
                                                             ! D=days, W=weeks)
-outDT                    = 3600                             ! Frequency of output data (units = unitTime)
+!outDT                    = 3600                             ! Frequency of output data (units = unitTime)
+unitTime                 = D
+outDT                    = 0.041666667
 
 ! Extra days before and after
 begDateTime              = 2018-09-07 00:00:00 
