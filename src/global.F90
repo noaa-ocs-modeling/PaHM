@@ -6,10 +6,10 @@
 !>
 !----------------------------------------------------------------
 
-MODULE Global
+MODULE PAHM_Global
 
   USE Version
-  USE Sizes
+  USE PAHM_Sizes
 
   IMPLICIT NONE
 
@@ -295,4 +295,4 @@ MODULE Global
 
 !================================================================================
 
-END MODULE Global
+END MODULE PAHM_Global

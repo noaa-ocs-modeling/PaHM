@@ -16,10 +16,10 @@
 !> module.
 !----------------------------------------------------------------
 
-MODULE Mesh
+MODULE PAHM_Mesh
 
-  USE Sizes
-  USE Messages
+  USE PAHM_Sizes
+  USE PAHM_Messages
 
   IMPLICIT NONE
 
@@ -57,7 +57,7 @@ MODULE Mesh
   !----------------------------------------------------------------
   SUBROUTINE ReadMesh()
 
-    USE Global, ONLY : meshFileNameSpecified, meshFileName, meshFileType, meshFileForm
+    USE PAHM_Global, ONLY : meshFileNameSpecified, meshFileName, meshFileType, meshFileForm
     USE Utilities, ONLY : ToUpperCase
 
     IMPLICIT NONE
@@ -150,7 +150,7 @@ MODULE Mesh
   !----------------------------------------------------------------
   SUBROUTINE ReadMeshASCIIFort14()
 
-    USE Global,  ONLY : LUN_INP, meshFileName
+    USE PAHM_Global,  ONLY : LUN_INP, meshFileName
     USE Utilities   !PV specify what are we using here from utilities
 
     IMPLICIT NONE
@@ -301,5 +301,5 @@ MODULE Mesh
 !================================================================================
 
 
-END MODULE Mesh
+END MODULE PAHM_Mesh
 

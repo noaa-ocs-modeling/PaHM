@@ -7,14 +7,14 @@
 
 PROGRAM ParametricWinds
 
-!  USE Sizes
-!  USE Global
-  USE Messages
+!  USE PAHM_Sizes
+!  USE PAHM_Global
+  USE PAHM_Messages
   USE Utilities
   USE TimeDateUtils
-  USE Mesh
+  USE PAHM_Mesh
   USE ParWind
-  USE NetCDFIO
+  USE PAHM_NetCDFIO
 !  USE NetCDF
 
   IMPLICIT NONE
@@ -55,8 +55,8 @@ CONTAINS
   !-----------------------------------------------------------------------
   SUBROUTINE GetProgramCmdlArgs()
 
-    USE Messages
-    USE Global, ONLY : controlFileName
+    USE PAHM_Messages
+    USE PAHM_Global, ONLY : controlFileName
     USE Utilities, ONLY : ReadControlFile
 
     IMPLICIT NONE

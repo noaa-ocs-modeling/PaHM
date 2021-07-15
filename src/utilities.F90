@@ -7,8 +7,8 @@
 
 MODULE Utilities
 
-  USE Sizes
-  USE Messages
+  USE PAHM_Sizes
+  USE PAHM_Messages
 
   IMPLICIT NONE
 
@@ -48,7 +48,7 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   SUBROUTINE OpenFileForRead(lun, fileName, errorIO)
 
-    USE Global
+    USE PAHM_Global
 
     IMPLICIT NONE
 
@@ -121,8 +121,8 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   SUBROUTINE ReadControlFile(inpFile)
 
-    USE Global
-    USE Messages
+    USE PAHM_Global
+    USE PAHM_Messages
     USE TimeDateUtils, ONLY : TimeConv, SplitDateTimeString, JoinDate,  GregToJulDay, JulDayToGreg, &
                               GetTimeConvSec, DateTime2String
     
@@ -601,7 +601,7 @@ MODULE Utilities
 
   SUBROUTINE PrintModelParams()
 
-    USE Global
+    USE PAHM_Global
 
     IMPLICIT NONE
 
@@ -1064,7 +1064,7 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   INTEGER FUNCTION CheckControlFileInputs() RESULT(errStatus)
 
-    USE Global
+    USE PAHM_Global
     USE TimeDateUtils, ONLY : FIRSTGREGDATE, FIRSTGREGTIME, &
                               GregToJulDay, JoinDate, GetTimeConvSec
     
@@ -1672,7 +1672,7 @@ MODULE Utilities
   !----------------------------------------------------------------
   SUBROUTINE GeoToCPP_Scalar(lat, lon, lat0, lon0, x, y)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1710,7 +1710,7 @@ MODULE Utilities
   !----------------------------------------------------------------
   SUBROUTINE GeoToCPP_1D(lat, lon, lat0, lon0, x, y)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1748,7 +1748,7 @@ MODULE Utilities
   !----------------------------------------------------------------
   SUBROUTINE CPPToGeo_Scalar(x, y, lat0, lon0, lat, lon)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1786,7 +1786,7 @@ MODULE Utilities
   !----------------------------------------------------------------
   SUBROUTINE CPPToGeo_1D(x, y, lat0, lon0, lat, lon)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1826,7 +1826,7 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   REAL(SZ) FUNCTION SphericalDistance_Scalar(lat1, lon1, lat2, lon2) RESULT(myValOut)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1861,7 +1861,7 @@ MODULE Utilities
 
   FUNCTION SphericalDistance_1D(lats, lons, lat0, lon0) RESULT(myValOut)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -1927,7 +1927,7 @@ MODULE Utilities
 
   FUNCTION SphericalDistance_2D(lats, lons, lat0, lon0) RESULT(myValOut)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -2015,7 +2015,7 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   REAL(SZ) FUNCTION SphericalDistanceHarv(lat1, lon1, lat2, lon2) RESULT(myValOut)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -2056,7 +2056,7 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   REAL(SZ) FUNCTION SphericalDistanceADCIRC(dx, dy, y1, y2) RESULT(myValOut)
 
-    USE Global, ONLY : REARTH, DEG2RAD
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD
 
     IMPLICIT NONE
 
@@ -2110,7 +2110,7 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   SUBROUTINE SphericalFracPoint(lat1, lon1, lat2, lon2, fraction, latf, lonf, distf, dist12)
 
-    USE Global, ONLY : REARTH, DEG2RAD, RAD2DEG
+    USE PAHM_Global, ONLY : REARTH, DEG2RAD, RAD2DEG
 
     IMPLICIT NONE
 

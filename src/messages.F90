@@ -5,10 +5,10 @@
 !>
 !----------------------------------------------------------------
 
-MODULE Messages
+MODULE PAHM_Messages
 
-  USE Sizes, ONLY : FNAMELEN
-  USE Global, ONLY : LUN_SCREEN, LUN_LOG, logFileName
+  USE PAHM_Sizes, ONLY : FNAMELEN
+  USE PAHM_Global, ONLY : LUN_SCREEN, LUN_LOG, logFileName
 
 #ifdef __INTEL_COMPILER
   USE IFPort
@@ -418,4 +418,4 @@ MODULE Messages
 
 !================================================================================
 
-END MODULE Messages
+END MODULE PAHM_Messages

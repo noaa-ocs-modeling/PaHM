@@ -4,7 +4,7 @@
 
     module csv_parameters
 
-    use Sizes, ONLY : WP, IP
+    USE PAHM_Sizes, ONLY : WP, IP
 
     private
 

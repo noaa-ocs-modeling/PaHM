@@ -5,7 +5,7 @@
 !>
 !----------------------------------------------------------------
 
-MODULE Sizes
+MODULE PAHM_Sizes
 
   IMPLICIT NONE
 
@@ -293,4 +293,4 @@ MODULE Sizes
 
 !================================================================================
 
-END MODULE Sizes
+END MODULE PAHM_Sizes

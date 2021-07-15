@@ -7,8 +7,8 @@
 
 MODULE SortUtils
 
-  USE Sizes
-  USE Messages
+  USE PAHM_Sizes
+  USE PAHM_Messages
 
   !-----------------------------------------------------------------------
   ! I N T E R F A C E S

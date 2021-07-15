@@ -7,8 +7,8 @@
 
 MODULE ParWind
 
-  USE Sizes
-  USE Messages
+  USE PAHM_Sizes
+  USE PAHM_Messages
 
   ! switch to turn on or off geostrophic balance in GAHM
   ! on (default): Coriolis term included, phiFactors will be calculated before being used 
@@ -164,7 +164,7 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ReadBestTrackFile()
 
-    USE Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName
+    USE PAHM_Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName
     USE Utilities, ONLY : GetLineRecord, OpenFileForRead, ToUpperCase, CharUnique
     USE SortUtils, ONLY : Arth, Indexx, ArrayEqual
 
@@ -408,7 +408,7 @@ MODULE ParWind
 
   SUBROUTINE ReadCsvBestTrackFile()
 
-    USE Global, ONLY : nBTrFiles, bestTrackFileName
+    USE PAHM_Global, ONLY : nBTrFiles, bestTrackFileName
     USE Utilities, ONLY : GetLineRecord, OpenFileForRead, ToUpperCase, CharUnique, &
                           IntValStr
     USE SortUtils, ONLY : Arth, Indexx, ArrayEqual
@@ -677,10 +677,10 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ProcessHollandData(idTrFile, strOut, status)
 
-    USE Global, ONLY : NM2M, KT2MS, nBTrFiles
+    USE PAHM_Global, ONLY : NM2M, KT2MS, nBTrFiles
     USE Utilities, ONLY : ToUpperCase, CharUnique
     USE TimeDateUtils, ONLY : TimeConv
-    USE Vortex, ONLY : CalcIntensityChange, UVTrans
+    USE PAHM_Vortex, ONLY : CalcIntensityChange, UVTrans
 
     IMPLICIT NONE
 
@@ -896,8 +896,8 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE GetHollandFields()
 
-    USE Mesh, ONLY : slam, sfea, xcSlam, ycSfea, np, isMeshOK
-    USE Global, ONLY : gravity, rhoWater, rhoAir,                     &
+    USE PAHM_Mesh, ONLY : slam, sfea, xcSlam, ycSfea, np, isMeshOK
+    USE PAHM_Global, ONLY : gravity, rhoWater, rhoAir,                     &
                        backgroundAtmPress, blAdjustFac, ONE2TEN,      &
                        DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA, &
                        nBTrFiles, bestTrackFileName,                  &
@@ -905,7 +905,7 @@ MODULE ParWind
                        wVelX, wVelY, wPress, Times
     USE Utilities, ONLY : SphericalDistance, SphericalFracPoint, GetLocAndRatio
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay
-    USE NetCDFIO
+    USE PAHM_NetCDFIO
 
     IMPLICIT NONE
 
@@ -1240,7 +1240,7 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE WriteBestTrackData(inpFile, btrStruc, suffix)
 
-    USE Global, ONLY : LUN_BTRK, LUN_BTRK1
+    USE PAHM_Global, ONLY : LUN_BTRK, LUN_BTRK1
 
     IMPLICIT NONE
 

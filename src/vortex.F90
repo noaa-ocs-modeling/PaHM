@@ -6,10 +6,10 @@
 !>
 !----------------------------------------------------------------
 
-MODULE Vortex
+MODULE PAHM_Vortex
 
-  USE Sizes
-  USE Messages
+  USE PAHM_Sizes
+  USE PAHM_Messages
 
   IMPLICIT NONE
   SAVE
@@ -73,7 +73,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE CalcIntensityChange(var, times, calcInt, status, order)
 
-    USE Global, ONLY : DEG2RAD
+    USE PAHM_Global, ONLY : DEG2RAD
     USE Utilities, ONLY : SphericalDistance
 
     IMPLICIT NONE
@@ -237,7 +237,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE UVTrans(lat, lon, times, u, v, status, order)
 
-    USE Global, ONLY : DEG2RAD
+    USE PAHM_Global, ONLY : DEG2RAD
     USE Utilities, ONLY : SphericalDistance
 
     IMPLICIT NONE
@@ -455,7 +455,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE UVTransPoint(lat1, lon1, lat2, lon2, time1, time2, u, v)
 
-    USE Global, ONLY : DEG2RAD
+    USE PAHM_Global, ONLY : DEG2RAD
     USE Utilities, ONLY : SphericalDistance
 
     IMPLICIT NONE
@@ -503,7 +503,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE NewVortex(pinf, p0, lat, lon, vm)
 
-    USE Global, ONLY : rhoAir, DEG2RAD, OMEGA, MB2PA, KT2MS
+    USE PAHM_Global, ONLY : rhoAir, DEG2RAD, OMEGA, MB2PA, KT2MS
 
     IMPLICIT NONE
 
@@ -540,7 +540,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE NewVortexFull(pinf, p0, lat, lon, vm)
 
-    USE Global, ONLY : rhoAir, DEG2RAD, KT2MS, OMEGA, MB2PA
+    USE PAHM_Global, ONLY : rhoAir, DEG2RAD, KT2MS, OMEGA, MB2PA
 
     IMPLICIT NONE
 
@@ -589,7 +589,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE SetVortex(pinf, p0, lat, lon)
 
-    USE Global, ONLY : DEG2RAD, OMEGA
+    USE PAHM_Global, ONLY : DEG2RAD, OMEGA
 
     IMPLICIT NONE
 
@@ -741,7 +741,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE CalcRMaxesFull()
 
-    USE Global, ONLY : rhoAir, NM2M, KT2MS, MB2PA
+    USE PAHM_Global, ONLY : rhoAir, NM2M, KT2MS, MB2PA
 
     IMPLICIT NONE
 
@@ -1322,7 +1322,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE UVP(lat, lon, uTrans, vTrans, u, v, p)
 
-    USE Global, ONLY : windReduction, ONE2TEN, DEG2RAD, RAD2DEG, MB2PA, KT2MS, NM2M, M2NM, REARTH
+    USE PAHM_Global, ONLY : windReduction, ONE2TEN, DEG2RAD, RAD2DEG, MB2PA, KT2MS, NM2M, M2NM, REARTH
 
     IMPLICIT NONE
 
@@ -1481,7 +1481,7 @@ MODULE Vortex
   SUBROUTINE UVPR(iDist, iAngle, iRmx, iRmxTrue, iB, iVm, iPhi, &
                   uTrans, vTrans, geof, u, v, p)
 
-    USE Global, ONLY : windReduction, ONE2TEN, DEG2RAD, MB2PA, KT2MS, NM2M
+    USE PAHM_Global, ONLY : windReduction, ONE2TEN, DEG2RAD, MB2PA, KT2MS, NM2M
 
     IMPLICIT NONE
 
@@ -1646,7 +1646,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   SUBROUTINE Rotate(x, y, angle, whichWay, xr, yr)
 
-    USE Global, ONLY : DEG2RAD
+    USE PAHM_Global, ONLY : DEG2RAD
 
     IMPLICIT NONE
 
@@ -1716,7 +1716,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION VhWithCoriFull(testRMax) RESULT(myValOut)
 
-    USE Global, ONLY : NM2M, KT2MS, MS2KT
+    USE PAHM_Global, ONLY : NM2M, KT2MS, MS2KT
 
     IMPLICIT NONE
 
@@ -1766,7 +1766,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION VhWithCori(testRMax) RESULT(myValOut)
 
-    USE Global, ONLY : NM2M, KT2MS, MS2KT
+    USE PAHM_Global, ONLY : NM2M, KT2MS, MS2KT
 
     IMPLICIT NONE
 
@@ -1802,7 +1802,7 @@ MODULE Vortex
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION VhNoCori(testRMax) RESULT(myValOut)
 
-    USE Global, ONLY : KT2MS, MS2KT
+    USE PAHM_Global, ONLY : KT2MS, MS2KT
 
     IMPLICIT NONE
 
@@ -1894,4 +1894,4 @@ MODULE Vortex
 
 !================================================================================
 
-END MODULE Vortex
+END MODULE PAHM_Vortex

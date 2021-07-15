@@ -5,12 +5,12 @@
 !>
 !----------------------------------------------------------------
 
-MODULE NetCDFIO
+MODULE PAHM_NetCDFIO
 
-  USE Sizes
-  USE Messages
-  USE Global
-  USE Mesh, ONLY : aGrid, np, ne, nfn, nm, slam, sfea, xcSlam, ycSfea, slam0, sfea0
+  USE PAHM_Sizes
+  USE PAHM_Messages
+  USE PAHM_Global
+  USE PAHM_Mesh, ONLY : aGrid, np, ne, nfn, nm, slam, sfea, xcSlam, ycSfea, slam0, sfea0
   USE NetCDF
 
 #ifdef __INTEL_COMPILER
@@ -912,4 +912,4 @@ MODULE NetCDFIO
 
 !================================================================================
 
-END MODULE NetCDFIO
+END MODULE PAHM_NetCDFIO
