@@ -46,7 +46,7 @@ ParseArgs()
   __MY_COMPILER=
   __MY_PARALLEL=0
   __MY_PARMAKE=1
-  __MY_PLATFORM=linux
+  __MY_PLATFORM=
   __MY_INSTALL_DIR=
   __MY_PROJECT_DIR=
   __MY_TYPE=R
@@ -55,7 +55,7 @@ ParseArgs()
 
   # -----
   # Process the function options
-  opt_all=( c clean cmake_flags comp j par parallel plat prefix proj t type v verbose
+  opt_all=( c clean cmake_flags comp j par parallel plat platform prefix proj t type v verbose
             h help )
   opt_all=":$( echo "${opt_all[@]/#/-} ${opt_all[@]/#/--}" | sed 's/ /:/g' ):"
 
@@ -143,8 +143,8 @@ ParseArgs()
             fi
           fi
         ;;
-      -plat | --plat )
-          checkFuncOpt "--plat"
+      -plat | --plat | -platform | --platform)
+          checkFuncOpt "--platform"
           if [ $? -eq 0 ]; then
             if [ "X${opt_arg}" != "X" ]; then
               __MY_PLATFORM="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
@@ -216,6 +216,13 @@ ParseArgs()
        ;;
   esac
 
+  if [ -z "${__MY_PLATFORM}" ]; then
+    case "$(uname -s)" in
+      Darwin ) __MY_PLATFORM="macosx" ;;
+      Linux  ) __MY_PLATFORM="linux" ;;
+            *) __MY_PLATFORM="linux";; # DEFAULT
+    esac
+  fi
 
   # Export the values of all __* variables.
   for ival in ${all_evars}
@@ -279,12 +286,12 @@ UsageBuild()
   echo "    Default: 0|no."
   echo
   #---
-  echo "  -plat|--plat [=|space] \"platform\" (OPTIONAL)."
+  echo "  -plat|--plat|-platform|--platform [=|space] \"platform\" (OPTIONAL)."
   echo "    The name of the compute HPC platform to consider."
   echo "    Selecting a platform additional macros are defined for the"
   echo "    compilation stage that are specific to that platform."
   echo "    Supported platforms: ${MY_COMPILING_PLATFORMS}."
-  echo "    Default: linux."
+  echo "    Default: OS."
   echo
   #---
   echo "  -prefix|--prefix [=|space] \"install_dir\" (OPTIONAL)."
