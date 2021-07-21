@@ -59,7 +59,7 @@ meshFileType             = ADCIRC
 !### The mesh file to be read to create the gridded wind data
 !meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
 !meshFileName             = inputs/adcirc_mesh-estofs.dat
-meshFileName             = inputs/adcirc_mesh-shinnecock-orion.dat
+meshFileName             = inputs/adcirc_mesh-shinnecock.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII

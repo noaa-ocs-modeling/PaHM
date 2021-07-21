@@ -51,7 +51,6 @@ bestTrackFileName        = inputs/sandy2012-bdeck.dat
 !bestTrackFileName        = inputs/sandy2012-hurdat2.dat
 !bestTrackFileName        = inputs/sandy2012-ibtracs.dat
 !bestTrackFileName        = inputs/sandy2012-tcvitals.dat
-!bestTrackFileName        = inputs/sandy2012-fort.22.best_track.dat
 
 !----------
 ! Mesh file name and format
@@ -62,8 +61,7 @@ meshFileType             = ADCIRC
 !### The mesh file to be read to create the gridded wind data
 !meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
 !meshFileName             = inputs/adcirc_mesh-estofs.dat
-!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
-meshFileName             = inputs/adcirc_mesh-shinnecock-orion.dat
+meshFileName             = inputs/adcirc_mesh-shinnecock.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
