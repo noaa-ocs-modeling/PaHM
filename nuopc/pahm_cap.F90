@@ -22,9 +22,8 @@ module pahm_cap
 
   use pahm_mod, only: meshdata
   use pahm_mod, only: create_parallel_esmf_mesh_from_meshdata
-  !use pahm_mod, only: atm_int,atm_num,atm_den
   use pahm_mod, only: UWND, VWND, PRES
-  use pahm_mod, only: read_config
+  use pahm_mod, only: pahm_from_file, ReadConfig
 
   !read from netcdf file
   use pahm_mod, only: init_pahm_nc, read_pahm_nc 
@@ -74,9 +73,9 @@ module pahm_cap
 
     rc = ESMF_SUCCESS
     
-    ! readd config file
-    call read_config()
-    
+    ! read config file
+    CALL ReadConfig()
+stop
     ! the NUOPC model component will register the generic methods
     call NUOPC_CompDerive(model, model_routine_SS, rc=rc)
     if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
@@ -97,27 +96,13 @@ module pahm_cap
       line=__LINE__, &
       file=__FILE__)) &
       return  ! bail out
-    
-    ! attach specializing method(s)
-    !call NUOPC_CompSpecialize(model, specLabel=model_label_SetClock, &
-    !  specRoutine=SetClock, rc=rc)
-    !if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-    !  line=__LINE__, &
-    !  file=__FILE__)) &
-    !  return  ! bail out
+
     call NUOPC_CompSpecialize(model, specLabel=model_label_Advance, &
       specRoutine=ModelAdvance, rc=rc)
     if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
       line=__LINE__, &
       file=__FILE__)) &
       return  ! bail out
-
-    !call NUOPC_CompSpecialize(model, specLabel=model_label_CheckImport, &
-    !  specPhaseLabel="RunPhase1", specRoutine=CheckImport, rc=rc)
-    !if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-    !  line=__LINE__, &
-    !  file=__FILE__)) &
-    !  return  ! bail out
 
     call NUOPC_CompSpecialize(model, specLabel=model_label_Finalize, &
       specRoutine=PAHM_model_finalize, rc=rc)
@@ -126,14 +111,16 @@ module pahm_cap
       file=__FILE__)) &
       return  ! bail out
 
+    if (pahm_from_file) then
+      call init_pahm_nc()
+      write(info,*) subname,' --- Read pahm info from file --- '
+      call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)
+      print *, 'We are using NetCDF'
+    else
+      print *, 'We will be using PaHM to generate winds'
+    end if
 
-    call init_pahm_nc()
-    write(info,*) subname,' --- Read pahm info from file --- '
-    !print *,      info
-    call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)
-
-    write(info,*) subname,' --- adc SetServices completed --- '
-    !print *,      subname,' --- adc SetServices completed --- '
+    write(info,*) subname,' --- pahm SetServices completed --- '
     call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)
   end subroutine
   

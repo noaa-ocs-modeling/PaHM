@@ -2,7 +2,6 @@
 ## GNU Makefile for the Parametric Hurricane Model (PaHM) NUOPC Cap
 ##
 ##!! @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-##!! @author Saeed Moghimi <saeed.moghimi@noaa.gov>
 ##!!
 ##!! @date 06/24/2021
 ###########################################################################
@@ -74,7 +73,7 @@ nuopc: $(LIBRARY)
 $(LIBRARY): $(MODULES)
 	$(AR) $(ARFLAGS) $@ $?
 
-nuopcinstall: $(LIBRARY)
+install: $(LIBRARY)
 	@echo ""
 	mkdir -p $(strip $(INSTALLDIR))
 	@echo "# ESMF self-describing build dependency makefile fragment" > $(strip $(INSTALLDIR))/$(MAKEFILE)
@@ -90,20 +89,13 @@ nuopcinstall: $(LIBRARY)
 pahm_cap.o:   pahm_mod.o 
 
 # -----------------------------------------------------------------------------
-.PHONY: dust nuopcclean nuopcdistclean 
+.PHONY: clean distclean 
 
-nuopcclean:
+clean:
 	@echo ""
 	@echo "Cleaning Model build..."
 	@echo ""
 	rm -f  $(MODULES) *.mod $(LIBRARY)
 
-nuopcdistclean: nuopcclean
+distclean: clean
 	rm -f $(MAKEFILE)
-
-dust:
-	@echo ""
-	@echo "Dusting ..."
-	@echo
-	rm -f PET*.ESMF_LogFile *.nc
-	@echo ""
