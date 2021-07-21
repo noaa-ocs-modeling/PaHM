@@ -1,3 +1,2 @@
-inputs/adcirc_mesh-estofs.dat.gz filter=lfs diff=lfs merge=lfs -text
 doc/models/*.pdf filter=lfs diff=lfs merge=lfs -text
 doc/formats/*.pdf filter=lfs diff=lfs merge=lfs -text
