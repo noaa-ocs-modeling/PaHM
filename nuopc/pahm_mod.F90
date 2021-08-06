@@ -450,28 +450,28 @@ MODULE Pahm_Mod
 
     ! Do not use defaults for PaHM, need to force the PaHM generation of wind fields
     ! if the user desires so.
-    CALL ESMF_ConfigGetAttribute(cf, pahm_from_file, label="pahm_from_file:", default=.FALSE., rc=rc)
+!    CALL ESMF_ConfigGetAttribute(cf, pahm_from_file, label="pahm_from_file:", default=.FALSE., rc=rc)
 
-    IF (pahm_from_file) THEN
+!    IF (pahm_from_file) THEN
       CALL ESMF_ConfigGetAttribute(cf, atm_dir, label="atm_dir:",default='./', rc=rc)
       CALL ESMF_ConfigGetAttribute(cf, atm_nam, label="atm_nam:", &
                                    default='pahm_YYYYMMDD_wind.nc', rc=rc)
       ! PV: rc will always be 0 as long as defaults are set in the previous two calls
       IF (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) &
        CALL ESMF_Finalize(endflag=ESMF_END_ABORT) ! bail out
-    ELSE
-      ! user supplied pahm variables are: pahm_from_file, pahm_dir, pahm_nam
-      CALL ESMF_ConfigGetAttribute(cf, pahm_dir, label="pahm_dir:", default='./', rc=rc)
-      CALL ESMF_ConfigGetAttribute(cf, pahm_nam, label="pahm_nam:", rc=rc)
-      ! PV: The filename (pahm_nam) of the control input file for pahm is and should be mandatory.
-      !     The file should exist in the current directory (default) or in the user supplied pahm_dir
-      IF (rc /= ESMF_SUCCESS) THEN
-        WRITE(info, *) 'pahm_nam is not defined in the config.rc file'
-        CALL ESMF_LogWrite(info, ESMF_LOGMSG_INFO)
-        IF (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) &
-          CALL ESMF_Finalize(endflag=ESMF_END_ABORT) ! bail out
-      END IF
-    END IF
+!    ELSE
+!      ! user supplied pahm variables are: pahm_from_file, pahm_dir, pahm_nam
+!      CALL ESMF_ConfigGetAttribute(cf, pahm_dir, label="pahm_dir:", default='./', rc=rc)
+!      CALL ESMF_ConfigGetAttribute(cf, pahm_nam, label="pahm_nam:", rc=rc)
+!      ! PV: The filename (pahm_nam) of the control input file for pahm is and should be mandatory.
+!      !     The file should exist in the current directory (default) or in the user supplied pahm_dir
+!      IF (rc /= ESMF_SUCCESS) THEN
+!        WRITE(info, *) 'pahm_nam is not defined in the config.rc file'
+!        CALL ESMF_LogWrite(info, ESMF_LOGMSG_INFO)
+!        IF (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) &
+!          CALL ESMF_Finalize(endflag=ESMF_END_ABORT) ! bail out
+!      END IF
+!    END IF
 
     CALL ESMF_ConfigDestroy(cf, rc=rc) ! Destroy the Config
 
