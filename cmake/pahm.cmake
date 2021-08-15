@@ -23,6 +23,7 @@ if(PAHM_BUILD_EXECUTABLE OR PAHM_BUILD_STATIC_LIB OR PAHM_BUILD_SHARED_LIB)
       ${CMAKE_SOURCE_DIR}/src/vortex.F90
       ${CMAKE_SOURCE_DIR}/src/parwind.F90
       ${CMAKE_SOURCE_DIR}/src/netcdfio.F90
+      ${CMAKE_SOURCE_DIR}/src/driver_mod.F90
       ${CMAKE_SOURCE_DIR}/src/pahm.F90
      )
 
@@ -41,6 +42,7 @@ if(PAHM_BUILD_EXECUTABLE OR PAHM_BUILD_STATIC_LIB OR PAHM_BUILD_SHARED_LIB)
       ${CMAKE_SOURCE_DIR}/src/vortex.F90
       ${CMAKE_SOURCE_DIR}/src/parwind.F90
       ${CMAKE_SOURCE_DIR}/src/netcdfio.F90
+      ${CMAKE_SOURCE_DIR}/src/driver_mod.F90
      )
 
   PROGInstallDirs(${CMAKE_INSTALL_PREFIX})
