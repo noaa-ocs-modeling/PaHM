@@ -8,24 +8,34 @@
 
 
 ###########################################################################
-ifneq ($(origin ESMFMKFILE), environment)
-  $(warning Environment variable ESMFMKFILE was not set.)
-
-  $(info Setting to $(ESMFMKFILE))
+# Mandatory environment variables NETCDFHOME, ESMFMKFILE and possibly PAHM_BINDIR
+ifneq ($(origin NETCDFHOME), environment)
+  $(error Environment variable NETCDFHOME was not set)
 endif
+#-----
+ifneq ($(origin ESMFMKFILE), environment)
+  $(error Environment variable ESMFMKFILE was not set)
+endif
+#-----
 
 include $(ESMFMKFILE)
 
+INCDIRS += -I${NETCDFHOME}/include
+LIBDIRS += -L${NETCDFHOME}/lib
 
-INCDIRS := -I. 
-LIBDIRS := -L. 
-LIBSS   :=  -lnetcdf  -lnetcdff -lhdf5 -lhdf5_fortran
+ifneq ($(origin HDF5HOME), environment)
+  INCDIRS += -I${HDF5HOME}/include   
+  LIBDIRS += -L${HDF5HOME}/lib
+endif
 
-INCDIRS += -I${NETCDFHOME}/include/   
-LIBDIRS += -L${NETCDFHOME}/lib/
-
-INCDIRS += -I${HDF5HOME}/include/   
-LIBDIRS += -L${HDF5HOME}/lib/
+ifeq ($(origin PAHM_BINDIR), undefined)
+  $(warning Environment variable PAHM_BINDIR was not set)
+  INCDIRS += -I.
+  LIBDIRS += -L.
+else
+  INCDIRS += -I. -I$(PAHM_BINDIR) -I$(PAHM_BINDIR)/include
+  LIBDIRS += -L. -L$(PAHM_BINDIR) -L$(PAHM_BINDIR)/lib
+endif
 
 # unremark this line to define petlists
 LIBDIRS += -DWITHPETLISTS_on 
@@ -59,10 +69,12 @@ vars:
 	@echo "ESMF_F90ESMFLINKLIBS $(ESMF_F90ESMFLINKLIBS)"	
 
 # -----------------------------------------------------------------------------
-PWDDIR := $(shell pwd)
+PWDDIR     := $(shell pwd)
 INSTALLDIR := $(INSTDIR)    # coming from NEMS/src/incmake/component_PAHM.mk
 
 MAKEFILE = pahm.mk
+
+MDL_LIB  = libpahm.a
 
 LIBRARY  = libpahm_cap.a
 
@@ -81,8 +93,8 @@ install: $(LIBRARY)
 	@echo "ESMF_DEP_FRONT     = pahm_cap    "                        >> $(strip $(INSTALLDIR))/$(MAKEFILE)
 	@echo "ESMF_DEP_INCPATH   = $(PWDDIR) $(strip $(INSTALLDIR)) "   >> $(strip $(INSTALLDIR))/$(MAKEFILE)
 	@echo "ESMF_DEP_CMPL_OBJS = "                                    >> $(strip $(INSTALLDIR))/$(MAKEFILE)
-	@echo "ESMF_DEP_LINK_OBJS =  -L$(strip $(INSTALLDIR)) $(strip $(INSTALLDIR))/$(LIBRARY)  " >> $(strip $(INSTALLDIR))/$(MAKEFILE)
-	cp -f *.a *.mod $(strip $(INSTALLDIR)) 
+	@echo "ESMF_DEP_LINK_OBJS =  $(strip $(INSTALLDIR))/$(LIBRARY) $(strip $(INSTALLDIR))/$(MDL_LIB)" >> $(strip $(INSTALLDIR))/$(MAKEFILE)
+	cp -f *.a *.mod $(strip $(INSTALLDIR))/
 	@echo ""
 
 # module dependencies:
