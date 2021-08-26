@@ -2,7 +2,7 @@ MODULE Version
 
   IMPLICIT NONE
 
-  CHARACTER(80), PARAMETER :: PROG_FULLNAME  = 'Parametric Hurricane Modeling System (PaHM)'
+  CHARACTER(80), PARAMETER :: PROG_FULLNAME  = 'Parametric Hurricane Model (PaHM)'
   CHARACTER(80), PARAMETER :: PROG_NAME      = 'PaHM'
   CHARACTER(80), PARAMETER :: PROG_NAME_LOW  = 'pahm'
 
