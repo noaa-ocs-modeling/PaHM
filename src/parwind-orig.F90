@@ -894,7 +894,7 @@ MODULE ParWind
   !>
   !> Assumes geographical coordinates.
   !----------------------------------------------------------------
-  SUBROUTINE GetHollandFields(timeIDX)
+  SUBROUTINE GetHollandFields()
 
     USE PaHM_Mesh, ONLY : slam, sfea, xcSlam, ycSfea, np, isMeshOK
     USE PaHM_Global, ONLY : gravity, rhoWater, rhoAir,                     &
@@ -905,11 +905,9 @@ MODULE ParWind
                        wVelX, wVelY, wPress, Times
     USE Utilities, ONLY : SphericalDistance, SphericalFracPoint, GetLocAndRatio
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay
-    !USE PaHM_NetCDFIO
+    USE PaHM_NetCDFIO
 
     IMPLICIT NONE
-
-    INTEGER, INTENT(IN)                  :: timeIDX
 
     TYPE(HollandData_T), ALLOCATABLE     :: holStru(:)          ! array of Holland data structures
     INTEGER                              :: stormNumber         ! storm identification number
@@ -941,70 +939,46 @@ MODULE ParWind
 
     CHARACTER(LEN=64)                    :: tmpTimeStr, tmpStr1, tmpStr2
 
-    LOGICAL, SAVE                        :: firstCall = .TRUE.
 
     CALL SetMessageSource("GetHollandFields")
 
-    ! Check if timeIDX is within bounds (1 <= timeIDX <= nOutDT). If it is not then exit the program.
-    IF ((timeIDX < 1) .OR. (timeIDX > nOutDT)) THEN
-        WRITE(tmpStr1, '(a, i0)') 'timeIDX = ', timeIDX
+    ! Check if the mash variables are set and that nOutDT is greater than zero.
+    IF (.NOT. isMeshOK) THEN
+      WRITE(scratchMessage, '(a)') 'The mesh variables are not established properly. ' // &
+                                   'Call subroutine ReadMesh to read/create the mesh topology first.'
+      CALL AllMessage(ERROR, scratchMessage)
+
+      CALL UnsetMessageSource()
+
+      CALL Terminate()
+    ELSE
+      IF ((np <= 0) .OR. (nOutDT <= 0)) THEN
+        WRITE(tmpStr1, '(a, i0)') 'np = ', np
         WRITE(tmpStr2, '(a, i0)') 'nOutDT = ', nOutDT
-        WRITE(scratchMessage, '(a)') 'timeIDX should be: 1 <= timeIDX <= nOutDT :' // &
+        WRITE(scratchMessage, '(a)') 'Variables "np" or "nOutDT" are not defined properly: ' // &
                                      TRIM(ADJUSTL(tmpStr1)) // ', ' // TRIM(ADJUSTL(tmpStr2))
         CALL AllMessage(ERROR, scratchMessage)
 
         CALL UnsetMessageSource()
 
         CALL Terminate()
-    END IF
-
-    ! This part of the code should only be executed just once
-    IF (firstCall) THEN
-      firstCall = .FALSE.
-       
-      ! Check if the mash variables are set and that nOutDT is greater than zero.
-      IF (.NOT. isMeshOK) THEN
-        WRITE(scratchMessage, '(a)') 'The mesh variables are not established properly. ' // &
-                                     'Call subroutine ReadMesh to read/create the mesh topology first.'
-        CALL AllMessage(ERROR, scratchMessage)
-
-        CALL UnsetMessageSource()
-
-        CALL Terminate()
-      ELSE
-        IF ((np <= 0) .OR. (nOutDT <= 0)) THEN
-          WRITE(tmpStr1, '(a, i0)') 'np = ', np
-          WRITE(tmpStr2, '(a, i0)') 'nOutDT = ', nOutDT
-          WRITE(scratchMessage, '(a)') 'Variables "np" or "nOutDT" are not defined properly: ' // &
-                                       TRIM(ADJUSTL(tmpStr1)) // ', ' // TRIM(ADJUSTL(tmpStr2))
-          CALL AllMessage(ERROR, scratchMessage)
-
-          CALL UnsetMessageSource()
-
-          CALL Terminate()
-        END IF
       END IF
-
-      ! Allocate storage for the Times array that contains the output times.
-      ALLOCATE(Times(nOutDT))
-      DO iCnt = 1, nOutDT
-        Times(iCnt) = mdBegSimTime + (iCnt - 1) * mdOutDT
-      END DO
     END IF
-
 
     !------------------------------
-    ! Allocate storage for required arrays.
-    IF (.NOT. ALLOCATED(wVelX))  ALLOCATE(wVelX(np))
-    IF (.NOT. ALLOCATED(wVelY))  ALLOCATE(wVelY(np))
-    IF (.NOT. ALLOCATED(wPress)) ALLOCATE(wPress(np))
+    ! Allocate storage for required arrays and set the Times array
+    ! that contains the output times.
+    ALLOCATE(Times(nOutDT))
+    ALLOCATE(wVelX(np, nOutDT), wVelY(np, nOutDT), wPress(np, nOutDT))
 
-    ! Initialize the arrays. Here we are resetting the fields to their defaults.
-    ! This subroutine is called repeatdly and its time the following fields
-    ! are recalculated.
+    !wVelX = RMISSV
+    !wVelY = wVelX; wPress = wVelX
     wVelX  = 0.0_SZ
     wVelY  = wVelX
     wPress = backgroundAtmPress * MB2PA
+    DO iCnt = 1, nOutDT
+      Times(iCnt) = mdBegSimTime + (iCnt - 1) * mdOutDT
+    END DO
     !------------------------------
 
     !------------------------------
@@ -1055,12 +1029,11 @@ MODULE ParWind
     !------------------------------
 
     !------------------------------
-    ! THIS IS THE MAIN TIME LOOP   timeIDX
+    ! THIS IS THE MAIN TIME LOOP
     !------------------------------
-!    WRITE(scratchMessage, '(a)') 'Start of the main time loop'
-!    CALL AllMessage(INFO, scratchMessage)
-!    DO iCnt = 1, nOutDT
-        iCnt = timeIDX
+    WRITE(scratchMessage, '(a)') 'Start of the main time loop'
+    CALL AllMessage(INFO, scratchMessage)
+    DO iCnt = 1, nOutDT
         WRITE(tmpStr1, '(i5)') iCnt
         WRITE(tmpStr2, '(i5)') nOutDT
       tmpStr1 = '(' // TRIM(tmpStr1) // '/' // TRIM(ADJUSTL(tmpStr2)) // ')'
@@ -1135,9 +1108,9 @@ MODULE ParWind
         ! If this is a "CALM" period, set winds to zero velocity and pressure equal to the
         ! background pressure and return. PV: check if this is actually needed
         IF (cPress < 0.0_SZ) THEN
-          wVelX  = 0.0_SZ
-          wVelY  = wVelX
-          wPress = backgroundAtmPress * MB2PA
+          wPress(:, iCnt) = backgroundAtmPress * MB2PA
+          wVelX(:, iCnt)  = 0.0_SZ
+          wVelY(:, iCnt)  = 0.0_SZ
 
           WRITE(scratchMessage, '(a)') 'Calm period found, generating zero atmospheric fields for this time'
           CALL LogMessage(INFO, scratchMessage)
@@ -1215,21 +1188,21 @@ MODULE ParWind
           sfVelX = sfVelX + trSpdX
           sfVelY = sfVelY + trSpdY
 
-          !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
+          !print *, sfVelX, sfVelY, wVelX(i, iCnt), wVelY(i, iCnt)
           !PV Need to interpolate between storms if this nodal point
           !   is affected by more than on storm
-          wPress(i) = sfPress
-          wVelX(i)  = sfVelX
-          wVelY(i)  = sfVelY
+          wPress(i, iCnt) = sfPress
+          wVelX(i, iCnt)  = sfVelX
+          wVelY(i, iCnt)  = sfVelY
 
-          !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
+          !print *, sfVelX, sfVelY, wVelX(i, iCnt), wVelY(i, iCnt)
           !print *, '--------------------------------------'
         END DO ! npCnt = 1, maxRadIDX
 
       END DO ! stCnt = 1, nBTrFiles
-!    END DO ! iCnt = 1, nOutDT
-!    WRITE(scratchMessage, '(a)') 'End of the main time loop'
-!    CALL AllMessage(INFO, scratchMessage)
+    END DO ! iCnt = 1, nOutDT
+    WRITE(scratchMessage, '(a)') 'End of the main time loop'
+    CALL AllMessage(INFO, scratchMessage)
 
     !---------- Deallocate the arrays
     IF (ALLOCATED(rad)) DEALLOCATE(rad)

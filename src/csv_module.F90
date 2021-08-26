@@ -6,9 +6,9 @@
 
     module csv_module
 
-    USE PAHM_Sizes, ONLY : WP, IP
-    USE PAHM_Global, ONLY : LUN_BTRK, LUN_BTRK1
-    USE PAHM_Messages
+    USE PaHM_Sizes, ONLY : WP, IP
+    USE PaHM_Global, ONLY : LUN_BTRK, LUN_BTRK1
+    USE PaHM_Messages
     USE Utilities, ONLY : OpenFileForRead, ToLowerCase
     use csv_utilities
     use csv_parameters

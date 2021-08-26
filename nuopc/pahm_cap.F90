@@ -1,652 +1,379 @@
-!>
-!! @mainpage PAHM NUOPC Cap to exchange atm data with ocean models
+!------------------------------------------------------
+!! @mainpage PaHM NUOPC Cap to exchange atm data with ocean/wave models
 !! @author Panagiotis Velissariou (panagiotis.velissariou@noaa.gov)
-!! @author Saeed Moghimi (saeed.moghimi@noaa.gov)
 !! @date 06/24/2021
 !------------------------------------------------------
 
-module pahm_cap
+MODULE Pahm_Cap
 
-  !-----------------------------------------------------------------------------
-  ! PAHM Component.
-  !-----------------------------------------------------------------------------
-  use mpi
-  use ESMF
-  use NUOPC
-  use NUOPC_Model, &
-    model_routine_SS      => SetServices,    &
-    model_label_SetClock  => label_SetClock, &
-    model_label_Advance   => label_Advance,  &
+  USE mpi
+  USE ESMF
+  USE NUOPC
+  USE NUOPC_Model, &
+    model_routine_SS        => SetServices,       &
+    model_label_Advance     => label_Advance,     &
     model_label_CheckImport => label_CheckImport, &    
-    model_label_Finalize  => label_Finalize
+    model_label_Finalize    => label_Finalize
 
-  use pahm_mod, only: meshdata
-  use pahm_mod, only: create_parallel_esmf_mesh_from_meshdata
-  use pahm_mod, only: UWND, VWND, PRES
-  use pahm_mod, only: pahm_from_file, ReadConfig
+  USE PaHM_Global, ONLY: outDT, mdOutDT, nOutDT, wVelX, wVelY, wPress
+  USE PaHM_DriverMod, ONLY: PaHM_Init, PaHM_Run, PaHM_Finalize
+
+  USE PaHM_Mod, ONLY: MeshData
+  USE PaHM_Mod, ONLY: CreateESMFMeshFromMeshData
+  USE PaHM_Mod, ONLY: uWnd, vWnd, pres
+  USE PaHM_Mod, ONLY: pahm_from_file, ReadConfig
 
   !read from netcdf file
-  use pahm_mod, only: init_pahm_nc, read_pahm_nc 
-  use pahm_mod, only: construct_meshdata_from_netcdf
+  USE PaHM_Mod, only: PaHM_NCDFInit, PaHM_NCDFRead 
+  USE PaHM_Mod, only: PaHM_NCDFExtractMeshData, PaHM_ExtractMeshData
   
-  implicit none
-  private
+  IMPLICIT NONE
+
+  LOGICAL :: pahm_write_esmf_mesh = .FALSE.
+
+  PRIVATE
   
-  public SetServices
+  PUBLIC SetServices
   
-  type fld_list_type
-      character(len=64) :: stdname
-      character(len=64) :: shortname
-      character(len=64) :: unit
-      logical           :: assoc    ! is the farrayPtr associated with internal data
-      real(ESMF_KIND_R8), dimension(:), pointer :: farrayPtr
-  end type fld_list_type
+  TYPE FldListType
+    CHARACTER(LEN = 64) :: stdName
+    CHARACTER(LEN = 64) :: shortName
+    CHARACTER(LEN = 64) :: unit
+    LOGICAL             :: assoc    ! is the farrayPtr associated with internal data
+    LOGICAL             :: connected
+    REAL(ESMF_KIND_R8), DIMENSION(:), POINTER :: farrayPtr
+  END TYPE FldListType
 
-  integer,parameter :: fldsMax = 100
-  integer :: fldsToWav_num = 0
-  type (fld_list_type) :: fldsToWav(fldsMax)
-  integer :: fldsFrATM_num = 0
-  type (fld_list_type) :: fldsFrATM(fldsMax)
+  INTEGER, PARAMETER    :: fieldsMax = 20
+  TYPE(FldListType)     :: fieldsToPaHM(fieldsMax), fieldsFromPaHM(fieldsMax)
+  INTEGER               :: fieldsToPaHMCount = 0, fieldsFromPaHMCount = 0
 
-  type(meshdata),save  :: mdataInw, mdataOutw
-  integer,save         :: iwind_test = 0 
-  character(len=2048):: info
-  integer :: dbrc     ! temporary debug rc value
+  TYPE(MeshData), save  :: mdataIn, mdataOut
+  CHARACTER(LEN = 2048) :: infoMsg
+  INTEGER               :: dbrc     ! temporary debug rc value
 
 
-  !-----------------------------------------------------------------------------
-  contains
-  !-----------------------------------------------------------------------------
+  CONTAINS
+
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   S E T  S E R V I C E S
+  !----------------------------------------------------------------
+  !  author 
+  !>
   !> NUOPC SetService method is the only public entry point.
   !! SetServices registers all of the user-provided subroutines
   !! in the module with the NUOPC layer.
   !!
   !! @param model an ESMF_GridComp object
   !! @param rc return code
-  subroutine SetServices(model, rc)
-    type(ESMF_GridComp)  :: model
-    integer, intent(out) :: rc
+  !----------------------------------------------------------------
+  SUBROUTINE SetServices(model, rc)
+
+    IMPLICIT NONE
+
+    TYPE(ESMF_GridComp)  :: model
+    INTEGER, INTENT(out) :: rc
 
     ! Local Variables
-    type(ESMF_VM)                :: vm
-    character(len=*),parameter   :: subname='(PAHM:SetServices)'
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:SetServices)'
 
     rc = ESMF_SUCCESS
     
     ! read config file
     CALL ReadConfig()
-stop
+
     ! the NUOPC model component will register the generic methods
-    call NUOPC_CompDerive(model, model_routine_SS, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL NUOPC_CompDerive(model, model_routine_SS, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
     
     ! set entry point for methods that require specific implementation
-    call NUOPC_CompSetEntryPoint(model, ESMF_METHOD_INITIALIZE, &
-      phaseLabelList=(/"IPDv00p1"/), userRoutine=InitializeP1, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
-    call NUOPC_CompSetEntryPoint(model, ESMF_METHOD_INITIALIZE, &
-      phaseLabelList=(/"IPDv00p2"/), userRoutine=InitializeP2, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL NUOPC_CompSetEntryPoint(model, ESMF_METHOD_INITIALIZE, &
+      phaseLabelList = (/"IPDv00p1"/), userRoutine = InitializeP1, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
+    CALL NUOPC_CompSetEntryPoint(model, ESMF_METHOD_INITIALIZE, &
+      phaseLabelList = (/"IPDv00p2"/), userRoutine = InitializeP2, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
 
-    call NUOPC_CompSpecialize(model, specLabel=model_label_Advance, &
-      specRoutine=ModelAdvance, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    ! attach specializing method(s)
+    CALL NUOPC_CompSpecialize(model, specLabel = model_label_Advance, &
+      specRoutine = ModelAdvance, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
 
-    call NUOPC_CompSpecialize(model, specLabel=model_label_Finalize, &
-      specRoutine=PAHM_model_finalize, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL NUOPC_CompSpecialize(model, specLabel = model_label_Finalize, &
+      specRoutine = PaHM_model_finalize, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
 
-    if (pahm_from_file) then
-      call init_pahm_nc()
-      write(info,*) subname,' --- Read pahm info from file --- '
-      call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)
-      print *, 'We are using NetCDF'
-    else
-      print *, 'We will be using PaHM to generate winds'
-    end if
+    WRITE(infoMsg,*) subName,' --- pahm SetServices completed --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
 
-    write(info,*) subname,' --- pahm SetServices completed --- '
-    call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)
-  end subroutine
-  
-  !-----------------------------------------------------------------------------
-    !> First initialize subroutine called by NUOPC.  The purpose
-    !! is to set which version of the Initialize Phase Definition (IPD)
-    !! to use.
-    !!
-    !! For this PAHM cap, we are using IPDv01.
-    !!
-    !! @param model an ESMF_GridComp object
-    !! @param importState an ESMF_State object for import fields
-    !! @param exportState an ESMF_State object for export fields
-    !! @param clock an ESMF_Clock object
-    !! @param rc return code
+  END SUBROUTINE SetServices
 
-   subroutine InitializeP1(model, importState, exportState, clock, rc)
-    type(ESMF_GridComp)  :: model
-    type(ESMF_State)     :: importState, exportState
-    type(ESMF_Clock)     :: clock
-    integer, intent(out) :: rc
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   I N I T I A L I Z E  P 1
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> First initialize subroutine called by NUOPC.  The purpose
+  !! is to set which version of the Initialize Phase Definition (IPD)
+  !! to use.
+  !!
+  !! For this PaHM cap, we are using IPDv01.
+  !!
+  !! @param model an ESMF_GridComp object
+  !! @param importState an ESMF_State object for import fields
+  !! @param exportState an ESMF_State object for export fields
+  !! @param clock an ESMF_Clock object
+  !! @param rc return code
+  !----------------------------------------------------------------
+   SUBROUTINE InitializeP1(model, importState, exportState, clock, rc)
+
+    IMPLICIT NONE
+
+    TYPE(ESMF_GridComp)  :: model
+    TYPE(ESMF_State)     :: importState, exportState
+    TYPE(ESMF_Clock)     :: clock
+    INTEGER, INTENT(out) :: rc
 
     ! Local Variables
-    integer              :: num,i
-    character(len=*),parameter  :: subname='(PAHM:AdvertiseFields)'
+    INTEGER                       :: num
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:AdvertiseFields)'
 
     rc = ESMF_SUCCESS
 
+    IF (pahm_from_file) THEN
+      CALL PaHM_NCDFInit()
+      WRITE(infoMsg,*) subName,' --- Read PaHM data from pre-generated NetCDF file --- '
+      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
+      print *, 'Will be reading the wind fields from pre-generated NetCDF file'
+    ELSE
+      CALL PaHM_Init()
+      WRITE(infoMsg,*) subName,' --- Using PaHM to generate wind fields --- '
+      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
+      print *, 'Using PaHM to generate wind fields'
+    END IF
 
-    call PAHM_FieldsSetup()
-!
+    CALL PaHM_FieldsSetup()
 
-      do num = 1,fldsToWav_num
-          !print *,  "fldsToWav_num  ", fldsToWav_num
-          !print *,  "fldsToWav(num)%shortname  ", fldsToWav(num)%shortname
-          !print *,  "fldsToWav(num)%stdname  ", fldsToWav(num)%stdname
+    !------------------------------------------------------------
+    ! Imported fields to PaHM
+    DO num = 1, fieldsToPaHMCount
+      WRITE(infoMsg,*) subName, "fieldsToPaHM(num)%shortName  ", fieldsToPaHM(num)%shortName
+      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = dbrc)
+    END DO
 
-          write(info,*) subname,  "fldsToWav(num)%shortname  ", fldsToWav(num)%shortname
-          call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=dbrc)
-     end do
+    CALL PaHM_AdvertiseFields(importState, fieldsToPaHMCount, fieldsToPaHM, rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
+    !------------------------------------------------------------
 
-      call PAHM_AdvertiseFields(importState, fldsToWav_num, fldsToWav, rc)
-      if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-        line=__LINE__, &
-        file=__FILE__)) &
-        return  ! bail out
+    !------------------------------------------------------------
+    ! Exported fields from PaHM
+    DO num = 1, fieldsFromPaHMCount
+      WRITE(infoMsg,*) subName,"fieldsFromPaHM(num)%stdName  ", fieldsFromPaHM(num)%stdName
+      !WRITE(infoMsg,*) subName,"fieldsFromPaHM(num)%shortName  ", fieldsFromPaHM(num)%shortName
+      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = dbrc)
+    END DO
 
-!----------------------------------------------------------------
-    do num = 1,fldsFrATM_num
-        !print *,  "fldsFrATM_num  ", fldsFrATM_num
-        !print *,  "fldsFrATM(num)%shortname  ", fldsFrATM(num)%shortname
-        !print *,  "fldsFrATM(num)%stdname  ", fldsFrATM(num)%stdname
-        write(info,*) subname,"fldsFrATM(num)%stdname  ", fldsFrATM(num)%stdname
-        call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=dbrc)
+    CALL PaHM_AdvertiseFields(exportState, fieldsFromPaHMCount, fieldsFromPaHM, rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
+    !------------------------------------------------------------
 
-    end do
-!
-    call PAHM_AdvertiseFields(exportState, fldsFrATM_num, fldsFrATM, rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    WRITE(infoMsg,*) subName,' --- initialization phase 1 completed --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = dbrc)
 
-        write(info,*) subname,' --- initialization phase 1 completed --- '
-        !print *,      subname,' --- initialization phase 1 completed --- '
-        call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=dbrc)
-!
-  end subroutine
+  END SUBROUTINE InitializeP1
 
+!================================================================================
 
-    !> Advertises a set of fields in an ESMF_State object by calling
-    !! NUOPC_Advertise in a loop.
-    !!
-    !! @param state the ESMF_State object in which to advertise the fields
-    !! @param nfields number of fields
-    !! @param field_defs an array of fld_list_type listing the fields to advertise
-    !! @param rc return code
-    subroutine PAHM_AdvertiseFields(state, nfields, field_defs, rc)
-        type(ESMF_State), intent(inout)             :: state
-        integer,intent(in)                          :: nfields
-        type(fld_list_type), intent(inout)          :: field_defs(:)
-        integer, intent(inout)                      :: rc
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   I N I T I A L I Z E  P 2
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Called by NUOPC to realize import and export fields.
+  !! The fields to import and export are stored in the fieldsToPaHM and fieldsFromPaHM
+  !! arrays, respectively.  Each field entry includes the standard name,
+  !! information about whether the field's grid will be provided by the cap,
+  !! and optionally a pointer to the field's data array.  Currently, all fields
+  !! are defined on the same mesh defined by the cap.
+  !! The fields are created by calling PaHM::pahm_XXXXXXXXXXXXXXXXXXX.
+  !!
+  !! @param model an ESMF_GridComp object
+  !! @param importState an ESMF_State object for import fields
+  !! @param exportState an ESMF_State object for export fields
+  !! @param clock an ESMF_Clock object
+  !! @param rc return code
+  !----------------------------------------------------------------
+  SUBROUTINE InitializeP2(model, importState, exportState, clock, rc)
 
-        integer                                     :: i
-        character(len=*),parameter  :: subname='(PAHM:PAHM_AdvertiseFields)'
+    USE PaHM_Mod, ONLY : PaHM_NCDFExtractMeshData, PaHM_ExtractMeshData
 
-        rc = ESMF_SUCCESS
+    IMPLICIT NONE
 
-        do i = 1, nfields
-          !print *, 'Advertise: '//trim(field_defs(i)%stdname)//'---'//trim(field_defs(i)%shortname)
-          call ESMF_LogWrite('Advertise: '//trim(field_defs(i)%stdname), ESMF_LOGMSG_INFO, rc=rc)
-          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-            line=__LINE__, &
-            file=__FILE__)) &
-            return  ! bail out
-
-          call NUOPC_Advertise(state, &
-            standardName=field_defs(i)%stdname, &
-            name=field_defs(i)%shortname, &
-            rc=rc)
-          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-            line=__LINE__, &
-            file=__FILE__)) &
-            return  ! bail out
-        enddo
-        !print *,      subname,' --- IN   --- '
-
-    end subroutine PAHM_AdvertiseFields
-
-
-
-
-   subroutine PAHM_FieldsSetup
-    integer                     :: rc
-    character(len=*),parameter  :: subname='(PAHM:PAHM_FieldsSetup)'
-
-
-    !--------- import fields to PAHM  -------------
+    TYPE(ESMF_GridComp)  :: model
+    TYPE(ESMF_State)     :: importState, exportState
+    TYPE(ESMF_Clock)     :: clock, driverClock
+    INTEGER, INTENT(out) :: rc
     
-    !--------- export fields from PAHM -------------
-    call fld_list_add(num=fldsFrATM_num, fldlist=fldsFrATM, stdname="air_pressure_at_sea_level" , shortname= "pmsl" )
-    call fld_list_add(num=fldsFrATM_num, fldlist=fldsFrATM, stdname="inst_zonal_wind_height10m" , shortname= "izwh10m" )
-    call fld_list_add(num=fldsFrATM_num, fldlist=fldsFrATM, stdname="inst_merid_wind_height10m" , shortname= "imwh10m" )
-    !
-    write(info,*) subname,' --- Passed--- '
-    !print *,      subname,' --- Passed --- '
-    call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=rc)     
-    end subroutine PAHM_FieldsSetup
-
-
-    !---------------------------------------------------------------------------------
-
-    subroutine fld_list_add(num, fldlist, stdname, data, shortname, unit)
-        ! ----------------------------------------------
-        ! Set up a list of field information
-        ! ----------------------------------------------
-        integer,             intent(inout)  :: num
-        type(fld_list_type), intent(inout)  :: fldlist(:)
-        character(len=*),    intent(in)     :: stdname
-        real(ESMF_KIND_R8), dimension(:), optional, target :: data
-        character(len=*),    intent(in),optional :: shortname
-        character(len=*),    intent(in),optional :: unit
-
-        ! local variables
-        integer :: rc
-        character(len=*), parameter :: subname='(PAHM:fld_list_add)'
-
-        ! fill in the new entry
-
-        num = num + 1
-        if (num > fldsMax) then
-          call ESMF_LogWrite(trim(subname)//": ERROR num gt fldsMax "//trim(stdname), &
-            ESMF_LOGMSG_ERROR, line=__LINE__, file=__FILE__, rc=rc)
-          return
-        endif
-
-        fldlist(num)%stdname        = trim(stdname)
-        if (present(shortname)) then
-           fldlist(num)%shortname   = trim(shortname)
-        else
-           fldlist(num)%shortname   = trim(stdname)
-        endif
-
-        if (present(data)) then
-          fldlist(num)%assoc        = .true.
-          fldlist(num)%farrayPtr    => data
-        else
-          fldlist(num)%assoc        = .false.
-        endif
-
-        if (present(unit)) then
-           fldlist(num)%unit        = unit
-        endif
-
-
-        write(info,*) subname,' --- Passed--- '
-        !print *,      subname,' --- Passed --- '
-    end subroutine fld_list_add
-
-
-
-  
-  !-----------------------------------------------------------------------------
-    !> Called by NUOPC to realize import and export fields.
-
-    !! The fields to import and export are stored in the fldsToWav and fldsFrATM
-    !! arrays, respectively.  Each field entry includes the standard name,
-    !! information about whether the field's grid will be provided by the cap,
-    !! and optionally a pointer to the field's data array.  Currently, all fields
-    !! are defined on the same mesh defined by the cap.
-    !! The fields are created by calling PAHM::pahm_XXXXXXXXXXXXXXXXXXX.
-    !!
-    !! @param model an ESMF_GridComp object
-    !! @param importState an ESMF_State object for import fields
-    !! @param exportState an ESMF_State object for export fields
-    !! @param clock an ESMF_Clock object
-    !! @param rc return code
-!
-  subroutine InitializeP2(model, importState, exportState, clock, rc)
-    type(ESMF_GridComp)  :: model
-    type(ESMF_State)     :: importState, exportState
-    type(ESMF_Clock)     :: clock, driverClock
-    integer, intent(out) :: rc
-    
-    ! local variables    
-    type(ESMF_TimeInterval) :: PAHMTimeStep
-    type(ESMF_Field)        :: field
-    !Saeed added
-    type(meshdata)               :: mdataw
-    type(ESMF_Mesh)              :: ModelMesh,meshIn,meshOut
-    type(ESMF_VM)                :: vm
-    type(ESMF_Time)              :: startTime
-    integer                      :: localPet, petCount
-    character(len=*),parameter   :: subname='(PAHM:RealizeFieldsProvidingGrid)'
+    ! Local variables    
+    TYPE(MeshData)              :: mdata
+    TYPE(ESMF_Mesh)             :: modelMesh, meshIn, meshOut
+    TYPE(ESMF_VM)               :: vm
+    INTEGER                     :: localPet, petCount
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:RealizeFieldsProvidingGrid)'
 
     rc = ESMF_SUCCESS
 
-    !print *,"PAHM ..1.............................................. >> "
-    !> \details Get current ESMF VM.
-    call ESMF_VMGetCurrent(vm, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    ! Get current ESMF VM.
+    CALL ESMF_VMGetCurrent(vm, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+      line = __LINE__, &
+      file = __FILE__)) &
+      RETURN  ! bail out
 
-    !print *,"PAHM ..2.............................................. >> "
-    ! Get query local pet information for handeling global node information
-    call ESMF_VMGet(vm, localPet=localPet, petCount=petCount, rc=rc)
-    ! call ESMF_VMPrint(vm, rc=rc)
+    ! Get query local pet information for handling global node information
+    CALL ESMF_VMGet(vm, localPet = localPet, petCount = petCount, rc = rc)
+    !PV out CALL ESMF_VMPrint(vm, rc = rc)
 
-    !print *,localPet,"< LOCAL pet, PAHM ..3.............................................. >> "
-    !! Assign VM to mesh data type.
-    mdataw%vm = vm
+    ! Assign VM to mesh data type.
+    mdata%vm = vm
 
-    call construct_meshdata_from_netcdf(mdataw)
-    
-    call create_parallel_esmf_mesh_from_meshdata(mdataw,ModelMesh )
-    !
+    IF (pahm_from_file) THEN
+      CALL PaHM_NCDFExtractMeshData(mdata) !PV This subroutine needs to be adjusted
+    ELSE
+      CALL PaHM_ExtractMeshData(mdata)
+    END IF
 
-    call ESMF_MeshWrite(ModelMesh, filename="pahm_mesh.nc", rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL CreateESMFMeshFromMeshData(mdata, modelMesh)
 
+    IF (pahm_write_esmf_mesh) THEN
+      CALL ESMF_MeshWrite(modelMesh, filename = "pahm_mesh.nc", rc = rc)
+      IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__, &
+        file = __FILE__)) &
+        RETURN  ! bail out
+    END IF
 
-    meshIn  = ModelMesh ! for now out same as in
+    meshIn  = modelMesh ! for now out same as in
     meshOut = meshIn
 
-    mdataInw  = mdataw
-    mdataOutw = mdataw
-
-    !print *,"..................................................... >> "
-    !print *,"NumNd", mdataw%NumNd
-    !print *,"NumOwnedNd", mdataw%NumOwnedNd
-    !print *,"NumEl", mdataw%NumEl
-    !print *,"NumND_per_El", mdataw%NumND_per_El
-    !print *,"NumOwnedNd mdataOutw", mdataOutw%NumOwnedNd
+    mdataIn  = mdata
+    mdataOut = mdata
 
 
-
-    call PAHM_RealizeFields(importState, meshIn , mdataw, fldsToWav_num, fldsToWav, "PAHM import", rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-        line=__LINE__, &
-        file=__FILE__)) &
-        return  ! bail out
-!
-    call PAHM_RealizeFields(exportState, meshOut, mdataw, fldsFrATM_num, fldsFrATM, "PAHM export", rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-        line=__LINE__, &
-        file=__FILE__)) &
-        return  ! bail out
-
-      !Init PAHM
-!    ! query Component for the driverClock
-!    call NUOPC_ModelGet(model, driverClock=driverClock, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-    
-    ! get the start time and current time out of the clock
-!    call ESMF_ClockGet(driverClock, startTime=startTime, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-
-!    call read_pahm_nc(startTime)
-
-    write(info,*) subname,' --- initialization phase 2 completed --- '
-    !print *,      subname,' --- initialization phase 2 completed --- '
-    call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, line=__LINE__, file=__FILE__, rc=dbrc)
-  end subroutine
+    !------------------------------------------------------------
+    ! Imported fields to PaHM (none)
+    CALL PaHM_RealizeFields(importState, meshIn , mdata, fieldsToPaHMCount, fieldsToPaHM, "PaHM import", rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__, &
+        file = __FILE__)) &
+        RETURN  ! bail out
 
 
- !> Adds a set of fields to an ESMF_State object.  Each field is wrapped
-  !! in an ESMF_Field object.  Memory is either allocated by ESMF or
-  !! an existing PAHM pointer is referenced.
+    !------------------------------------------------------------
+    ! Exported fields from PaHM
+    CALL PaHM_RealizeFields(exportState, meshOut, mdata, fieldsFromPaHMCount, fieldsFromPaHM, "PaHM export", rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__, &
+        file = __FILE__)) &
+        RETURN  ! bail out
+
+
+    WRITE(infoMsg,*) subName,' --- initialization phase 2 completed --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, &
+         line = __LINE__, &
+         file = __FILE__, &
+         rc = dbrc)
+
+  END SUBROUTINE InitializeP2
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   M O D E L  A D V A N C E
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Called by NUOPC to advance the PaHM model a single timestep >>>>>
+  !! <<<<<<<<<  TODO: check! this is not what we want!!!.
   !!
-  !! @param state the ESMF_State object to add fields to
-  !! @param grid the ESMF_Grid object on which to define the fields
-  !! @param nfields number of fields
-  !! @param field_defs array of fld_list_type indicating the fields to add
-  !! @param tag used to output to the log
+  !! This subroutine copies field data out of the cap import state and into the
+  !! model internal arrays.  Then it calls PaHM_Run to make a NN timesteps.
+  !! Finally, it copies the updated arrays into the cap export state.
+  !!
+  !! @param model an ESMF_GridComp object
   !! @param rc return code
-  subroutine PAHM_RealizeFields(state, mesh, mdata, nfields, field_defs, tag, rc)
+  !----------------------------------------------------------------
+  SUBROUTINE ModelAdvance(model, rc)
 
-    type(ESMF_State), intent(inout)             :: state
-    type(ESMF_Mesh), intent(in)                 :: mesh
-    type(meshdata)                              :: mdata
-    integer, intent(in)                         :: nfields
-    type(fld_list_type), intent(inout)          :: field_defs(:)
-    character(len=*), intent(in)                :: tag
-    integer, intent(inout)                      :: rc
+    IMPLICIT NONE
 
+    TYPE(ESMF_GridComp)  :: model
+    INTEGER, INTENT(out) :: rc
 
-    type(ESMF_Field)                            :: field
-    integer                                     :: i
-    character(len=*),parameter  :: subname='(PAHM:PAHM_RealizeFields)'
+    ! Local variables
+    TYPE(ESMF_Clock)            :: clock
+    TYPE(ESMF_State)            :: importState, exportState
+    TYPE(ESMF_Time)             :: currTime
+    TYPE(ESMF_TimeInterval)     :: timeStep
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:ModelAdvance)'
 
-    rc = ESMF_SUCCESS
-
-    do i = 1, nfields
-        field = ESMF_FieldCreate(name=field_defs(i)%shortname, mesh=mesh, &
-          typekind=ESMF_TYPEKIND_R8, rc=rc)
-        if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-          line=__LINE__, &
-          file=__FILE__)) &
-          return  ! bail out
-
-        if (NUOPC_IsConnected(state, fieldName=field_defs(i)%shortname)) then
-
-            call NUOPC_Realize(state, field=field, rc=rc)
-            if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-              line=__LINE__, &
-              file=__FILE__)) &
-              return  ! bail out
-
-            call ESMF_LogWrite(subname // tag // " Field "// field_defs(i)%stdname // " is connected.", &
-              ESMF_LOGMSG_INFO, &
-              line=__LINE__, &
-              file=__FILE__, &
-              rc=dbrc)
-
-            !print *,      subname,' --- Connected --- '
-
-        else
-            call ESMF_LogWrite(subname // tag // " Field "// field_defs(i)%stdname // " is not connected.", &
-              ESMF_LOGMSG_INFO, &
-              line=__LINE__, &
-              file=__FILE__, &
-              rc=dbrc)
-            ! TODO: Initialize the value in the pointer to 0 after proper restart is setup
-            !if(associated(field_defs(i)%farrayPtr) ) field_defs(i)%farrayPtr = 0.0
-            ! remove a not connected Field from State
-            call ESMF_StateRemove(state, (/field_defs(i)%shortname/), rc=rc)
-            if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-              line=__LINE__, &
-              file=__FILE__)) &
-              return  ! bail out
-            !print *,      subname,' --- Not-Connected --- '
-            !print *,      subname," Field ", field_defs(i)%stdname ,' --- Not-Connected --- '
-        endif
-    enddo
-
-        write(info,*) subname,' --- OUT--- '
-        !print *,      subname,' --- OUT --- '
-        call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, line=__LINE__, file=__FILE__, rc=rc)
-  end subroutine PAHM_RealizeFields
-  !-----------------------------------------------------------------------------
-
-
-!  subroutine SetClock_mine(model, rc)
-!    type(ESMF_GridComp)  :: model
-!    integer, intent(out) :: rc
-!
-!    ! local variables
-!    type(ESMF_Clock)              :: clock
-!    type(ESMF_TimeInterval)       :: PAHMTimeStep
-!
-!    rc = ESMF_SUCCESS
-!
-!    ! query the Component for its clock, importState and exportState
-!    call NUOPC_ModelGet(model, modelClock=clock, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-!
-!
-!    ! initialize internal clock
-!    ! - on entry, the component clock is a copy of the parent clock
-!    ! - the parent clock is on the slow timescale hwrf timesteps
-!    ! - reset the component clock to have a timeStep that is for adc-pahm of the parent
-!    !   -> timesteps
-!    
-!    !call ESMF_TimeIntervalSet(PAHMTimeStep, s=atm_int, sN=atm_num, sD=atm_den, rc=rc) ! 5 minute steps
-!    !TODO: use nint !!?
-!
-!    call ESMF_TimeIntervalSet(PAHMTimeStep, s=atm_int, rc=rc) ! 5 minute steps
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!       line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-!    call NUOPC_CompSetClock(model, clock, PAHMTimeStep, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-!
-!    print *, "PAHM Timeinterval1 = "
-!    call ESMF_TimeIntervalPrint(PAHMTimeStep, options="string", rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!       line=__LINE__, &
-!        file=__FILE__)) &
-!        return  ! bail out    
-!
-!
-!    ! initialize internal clock
-!    ! - on entry, the component clock is a copy of the parent clock
-!    ! - the parent clock is on the slow timescale hwrf timesteps
-!    ! - reset the component clock to have a timeStep that is for adc-pahm of the parent
-!    !   -> timesteps
-!    
-!    !call ESMF_TimeIntervalSet(PAHMTimeStep, s=     adc_cpl_int, sN=adc_cpl_num, sD=adc_cpl_den, rc=rc) ! 5 minute steps
-!    !TODO: use nint !!?
-!
-!  end subroutine
-
-  !-----------------------------------------------------------------------------
-  ! From CICE model uses same clock as parent gridComp
-!  subroutine SetClock(model, rc)
-!    type(ESMF_GridComp)  :: model
-!    integer, intent(out) :: rc
-    
-    ! local variables
-!    type(ESMF_Clock)              :: clock
-!    type(ESMF_TimeInterval)       :: PAHMTimeStep, timestep
-!    character(len=*),parameter  :: subname='(pahm_cap:SetClock)'
-
-!    rc = ESMF_SUCCESS
-    
-    ! query the Component for its clock, importState and exportState
-!    call ESMF_GridCompGet(model, clock=clock, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-    !call ESMF_TimeIntervalSet(PAHMTimeStep, s=atm_int, sN=atm_num, sD=atm_den, rc=rc) ! 5 minute steps
-    ! tcraig: dt is the cice thermodynamic timestep in seconds
-!    call ESMF_TimeIntervalSet(timestep, s=atm_int, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-
-!    call ESMF_ClockSet(clock, timestep=timestep, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-      
-    ! initialize internal clock
-    ! here: parent Clock and stability timeStep determine actual model timeStep
-!    call ESMF_TimeIntervalSet(PAHMTimeStep, s=atm_int, rc=rc) 
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-!    call NUOPC_CompSetClock(model, clock, PAHMTimeStep, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-    
-!  end subroutine
-    !-----------------------------------------------------------------------------
-
-      !> Called by NUOPC to advance the PAHM model a single timestep >>>>>
-      !! <<<<<<<<<  TODO: check! this is not what we want!!!.
-      !!
-      !! This subroutine copies field data out of the cap import state and into the
-      !! model internal arrays.  Then it calls PAHM_Run to make a NN timesteps.
-      !! Finally, it copies the updated arrays into the cap export state.
-      !!
-      !! @param model an ESMF_GridComp object
-      !! @param rc return code
-      !-----------------------------------------------------------------------------
-  subroutine ModelAdvance(model, rc)
-    type(ESMF_GridComp)  :: model
-    integer, intent(out) :: rc
-
-    ! local variables
-    type(ESMF_Clock)              :: clock
-    type(ESMF_State)              :: importState, exportState
-    type(ESMF_Time)               :: currTime
-    type(ESMF_TimeInterval)       :: timeStep
-    character(len=*),parameter    :: subname='(PAHM:ModelAdvance)'
     !tmp vector
-    real(ESMF_KIND_R8), pointer   :: tmp(:)
+    REAL(ESMF_KIND_R8), POINTER :: tmp(:)
 
     !imports
 
 
     ! exports
-    real(ESMF_KIND_R8), pointer   :: dataPtr_uwnd(:)
-    real(ESMF_KIND_R8), pointer   :: dataPtr_vwnd(:)
-    real(ESMF_KIND_R8), pointer   :: dataPtr_pres(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_uWnd(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_vWnd(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_pres(:)
 
-    type(ESMF_StateItem_Flag)     :: itemType
-    type(ESMF_Mesh)               :: mesh
-    type(ESMF_Field)              :: lfield
-    character(len=128)            :: fldname,timeStr
-    integer                       :: i1
-    ! local variables for Get methods
-    integer :: YY, MM, DD, H, M, S
+    TYPE(ESMF_StateItem_Flag)   :: itemType
+    TYPE(ESMF_Mesh)             :: mesh
+    TYPE(ESMF_Field)            :: lfield
+    CHARACTER(LEN = 128)          :: fldName,timeStr
+    INTEGER                     :: iCnt
+
+    INTEGER                     :: cntCplStep
+    REAL(ESMF_KIND_R8)          :: timeStepAbs
+
+    ! Local variables
+    INTEGER :: YY, MM, DD, H, M, S
+    INTEGER :: ss, ssN, ssD
 
     rc = ESMF_SUCCESS
+
     ! query the Component for its clock, importState and exportState
-    call NUOPC_ModelGet(model, modelClock=clock, importState=importState, &
-      exportState=exportState, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL NUOPC_ModelGet(model, modelClock = clock, importState = importState, &
+      exportState = exportState, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
     ! HERE THE MODEL ADVANCES: currTime -> currTime + timeStep
 
@@ -657,263 +384,533 @@ stop
     ! will come in by one internal timeStep advanced. This goes until the
     ! stopTime of the internal Clock has been reached.
 
-    call ESMF_ClockPrint(clock, options="currTime", &
-      preString="------>Advancing PAHM from: ", rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL ESMF_ClockPrint(clock, options = "currTime", &
+      preString = "------>Advancing PaHM from: ", rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    call ESMF_ClockGet(clock, currTime=currTime, timeStep=timeStep, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL ESMF_ClockGet(clock, currTime = currTime, timeStep = timeStep, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    call ESMF_TimePrint(currTime + timeStep, &
-      preString="------------------PAHM-------------> to: ", rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL ESMF_TimePrint(currTime + timeStep, &
+      preString = "------------------PaHM-------------> to: ", rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    call ESMF_TimeGet(currTime, yy=YY, mm=MM, dd=DD, h=H, m=M, s=S, rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-        line=__LINE__, &
-        file=__FILE__)) &
-        return  ! bail out
+    CALL ESMF_TimeGet(currTime, yy = YY, mm = MM, dd = DD, h = H, m = M, s = S, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    !print *      , "PAHM currTime = ", YY, "/", MM, "/", DD," ", H, ":", M, ":", S
-    write(info, *) "PAHM currTime = ", YY, "/", MM, "/", DD," ", H, ":", M, ":", S
-    call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, line=__LINE__, file=__FILE__, rc=rc)
+    WRITE(infoMsg, *) "PaHM currTime = ", YY, "/", MM, "/", DD," ", H, ":", M, ":", S
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, line = __LINE__, file = __FILE__, rc = rc)
     
-    call ESMF_TimeGet(currTime, timeStringISOFrac=timeStr , rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-        line=__LINE__, &
-        file=__FILE__)) &
-        return  ! bail out
+    CALL ESMF_TimeGet(currTime, timeStringISOFrac = timeStr , rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    !-----------------------------------------
-    !   IMPORT
-    !-----------------------------------------
+    CALL ESMF_TimeIntervalGet(timeStep, s = ss,sN = ssN,sD = ssD,rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
+
+    ! Get the data arrays
+    IF (pahm_from_file) THEN
+      !update uWnd, vWnd, pres from nearset time in the pahm netcdf file
+      CALL PaHM_NCDFRead(currTime)
+    ELSE
+      ! In PaHM outDT is the user time step and it can be one of Sec, Min, Hours, Days
+      ! and mdOutDT is always in Sec (converted outDT)
+      timeStepAbs = REAL(ss) + REAL(ssN / ssD)
+      IF (MOD(timeStepAbs, mdOutDT) == 0) THEN
+        cntCplStep = NINT(timeStepAbs / mdOutDT)
+      ELSE
+        cntCplStep = NINT(timeStepAbs / mdOutDT) + 1
+      END IF
+
+      CALL PaHM_Run(cntCplStep)
+    END IF
 
 
-    !-----------------------------------------
-    !   EXPORT
-    !-----------------------------------------
-    !update uwnd, vwnd, pres from nearset time in pahm netcdf file
-    !TODO: update file name!!!!
-    call read_pahm_nc(currTime)
+    !------------------------------------------------------------
+    ! Imported fields to PaHM: nothing to be imported
+    !------------------------------------------------------------
 
-    !pack and send exported fields
-    allocate (tmp(mdataOutw%NumOwnedNd))
 
-    ! >>>>> PACK and send UWND
-    !call State_getFldPtr(ST=exportState,fldname='izwh10m',fldptr=dataPtr_uwnd,rc=rc)
-    call State_getFldPtr_(ST=exportState,fldname='izwh10m',fldptr=dataPtr_uwnd, &
-      rc=rc,dump=.false.,timeStr=timeStr)
+    !------------------------------------------------------------
+    ! Exported fields from PaHM: pack and send exported fields
+    !------------------------------------------------------------
+    !--- (FIELD 1): PACK and send uWnd
+    ALLOCATE(dataPtr_uWnd(mdataOut%NumOwnedNd))
 
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL State_GetFldPtr_(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_uWnd, &
+                          rc = rc, dump = .TRUE., timeStr = timeStr)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-      !print *, 'mdataOutw%NumOwnedNd > ',mdataOutw%NumOwnedNd, 'UWND > ', UWND(1:10,1)
+    ! Fill only owned nodes for tmp vector
+    DO iCnt = 1, mdataOut%NumOwnedNd, 1
+      IF (pahm_from_file) THEN
+        dataPtr_uWnd(iCnt) = uWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
+      ELSE
+        dataPtr_uWnd(iCnt) = wVelX(mdataOut%owned_to_present_nodes(iCnt))
+      END IF
+    END DO
 
-    iwind_test = iwind_test + 1
-    !fill only owned nodes for tmp vector
-    do i1 = 1, mdataOutw%NumOwnedNd, 1
-        tmp(i1) = UWND(mdataOutw%owned_to_present_nodes(i1),1)
-        !tmp(i1) = iwind_test  * i1 / 100000.0
-        !tmp(i1) = -3.0
-    end do
-    !assign to field
-    dataPtr_uwnd = tmp
-    !----------------------------------------
-    ! >>>>> PACK and send VWND
-    call State_getFldPtr_(ST=exportState,fldname='imwh10m',fldptr=dataPtr_vwnd, &
-      rc=rc,dump=.false.,timeStr=timeStr)
-    !call State_getFldPtr (ST=exportState,fldname='imwh10m',fldptr=dataPtr_vwnd,rc=rc)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    !--- (FIELD 2): PACK and send vWnd
+    ALLOCATE(dataPtr_vWnd(mdataOut%NumOwnedNd))
 
-    !fill only owned nodes for tmp vector
-    do i1 = 1, mdataOutw%NumOwnedNd, 1
-        tmp(i1) = VWND(mdataOutw%owned_to_present_nodes(i1),1)
-        !tmp(i1) = 15.0
-    end do
-    !assign to field
-    dataPtr_vwnd = tmp
-    !----------------------------------------
-    ! >>>>> PACK and send PRES
-    call State_getFldPtr_(ST=exportState,fldname='pmsl',fldptr=dataPtr_pres,&
-      rc=rc,dump=.false.,timeStr=timeStr)
-    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-      line=__LINE__, &
-      file=__FILE__)) &
-      return  ! bail out
+    CALL State_GetFldPtr_(ST = exportState,fldName = 'imwh10m', fldPtr = dataPtr_vWnd, &
+                          rc = rc, dump = .FALSE., timeStr = timeStr)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
 
-    !fill only owned nodes for tmp vector
-    do i1 = 1, mdataOutw%NumOwnedNd, 1
-        tmp(i1) = PRES(mdataOutw%owned_to_present_nodes(i1),1) 
+    ! Fill only owned nodes for tmp vector
+    DO iCnt = 1, mdataOut%NumOwnedNd, 1
+      IF (pahm_from_file) THEN
+        dataPtr_vWnd(iCnt) = vWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
+      ELSE
+        dataPtr_vWnd(iCnt) = wVelY(mdataOut%owned_to_present_nodes(iCnt))
+      END IF
+    END DO
+
+    !--- (FIELD 3): PACK and send pres
+    ALLOCATE(dataPtr_pres(mdataOut%NumOwnedNd))
+
+    CALL State_GetFldPtr_(ST = exportState, fldName = 'pmsl', fldPtr = dataPtr_pres, &
+                          rc = rc,dump = .FALSE., timeStr = timeStr)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
+
+    ! Fill only owned nodes for tmp vector
+    DO iCnt = 1, mdataOut%NumOwnedNd, 1
+      IF (pahm_from_file) THEN
+        dataPtr_pres(iCnt) = pres(mdataOut%owned_to_present_nodes(iCnt), 1)
+      ELSE
+        dataPtr_pres(iCnt) = wPress(mdataOut%owned_to_present_nodes(iCnt))
+      END IF
+
+      IF (ABS(dataPtr_pres(iCnt)) > 1e11) THEN
+        STOP '  dataPtr_pmsl > mask1 > in PaHM ! '     
+      END IF
+    END DO
+
+  END SUBROUTINE ModelAdvance
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   P A H M _ M O D E L _ F I N A L I Z E
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Called by NUOPC at the end of the run to clean up.  The cap does
+  !! this simply by calling PaHM_Final.
+  !!
+  !! @param model the ESMF_GridComp object
+  !! @param rc return code
+  !----------------------------------------------------------------
+  SUBROUTINE PaHM_model_finalize(model, rc)
+
+    IMPLICIT NONE
+
+    ! input arguments
+    TYPE(ESMF_GridComp)  :: model
+    INTEGER, INTENT(OUT) :: rc
+
+    ! Local variables
+    TYPE(ESMF_Clock)               :: clock
+    TYPE(ESMF_Time)                :: currTime
+    CHARACTER(LEN = *), PARAMETER  :: subName = '(PaHM_Cap:pahm_model_finalize)'
+
+    rc = ESMF_SUCCESS
+
+    WRITE(infoMsg,*) subName,' --- finalize called --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = dbrc)
+
+    CALL NUOPC_ModelGet(model, modelClock = clock, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
+
+    CALL ESMF_ClockGet(clock, currTime = currTime, rc = rc)
+    IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+        line = __LINE__,  &
+        file = __FILE__)) &
+      RETURN  ! bail out
+
+    CALL PaHM_Finalize()
         
-        if ( abs(tmp(i1) ).gt. 1e11)  then
-          STOP '  dataPtr_pmsl > mask1 > in PAHM ! '     
-        end if
-        !tmp(i1) = 1e4
-    end do
-    !assign to field
-    dataPtr_pres = tmp
-    !----------------------------------------
+    WRITE(infoMsg,*) subName,' --- finalize completed --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = dbrc)
 
+  END SUBROUTINE PaHM_model_finalize
 
-    !! TODO:  not a right thing to do. we need to fix the grid object mask <<<<<<
-    !where(dataPtr_uwnd.gt.3e4) dataPtr_uwnd = 0.0
-    !where(dataPtr_vwnd.gt.3e4) dataPtr_vwnd = 0.0
+!================================================================================
 
-!
-  end subroutine
-!
-  !-----------------------------------------------------------------------
-!-----------------------------------------------------------
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   P A H M _ A D V E R T I S E F I E L D S
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Advertises a set of fields in an ESMF_State object by calling
+  !! NUOPC_Advertise in a loop.
+  !!
+  !! @param state the ESMF_State object in which to advertise the fields
+  !! @param nfields number of fields
+  !! @param field_defs an array of FldListType listing the fields to advertise
+  !! @param rc return code
+  !----------------------------------------------------------------
+  SUBROUTINE PaHM_AdvertiseFields(state, nfields, field_defs, rc)
+
+    IMPLICIT NONE
+
+    TYPE(ESMF_State), INTENT(INOUT)  :: state
+    INTEGER, INTENT(IN)              :: nfields
+    TYPE(FldListType), INTENT(INOUT) :: field_defs(:)
+    INTEGER, INTENT(INOUT)           :: rc
+
+    INTEGER                          :: i
+    CHARACTER(LEN = *), PARAMETER    :: subName = '(PaHM_Cap:PaHM_AdvertiseFields)'
+
+    rc = ESMF_SUCCESS
+
+    DO i = 1, nfields
+      CALL ESMF_LogWrite('Advertise: '//trim(field_defs(i)%stdName), ESMF_LOGMSG_INFO, rc = rc)
+      IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+          line = __LINE__,  &
+          file = __FILE__)) &
+        RETURN  ! bail out
+
+      CALL NUOPC_Advertise(state, &
+        standardName = field_defs(i)%stdName, &
+        name = field_defs(i)%shortName, &
+        rc = rc)
+      IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+          line = __LINE__,  &
+          file = __FILE__)) &
+        RETURN  ! bail out
+      !print *, 'Advertise: '//trim(field_defs(i)%stdName)//'---'//trim(field_defs(i)%shortName)
+    END DO
+    !print *,      subName,' --- IN   --- '
+
+  END SUBROUTINE PaHM_AdvertiseFields
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   P A H M _ F I E L D S S E T U P
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Subroutine to set up the required import/export fields.
+  !----------------------------------------------------------------
+  SUBROUTINE PaHM_FieldsSetup()
+
+    IMPLICIT NONE
+
+    INTEGER                       :: rc
+    CHARACTER(LEN = *),PARAMETER  :: subName='(PaHM_Cap:PaHM_FieldsSetup)'
+
+    !------------------------------------------------------------
+    ! Import fields to PaHM
+    ! Nothing to import. PaHM is one-way coupled
+    !------------------------------------------------------------
+
+    !------------------------------------------------------------
+    ! Export fields from PaHM
+    CALL fld_list_add(num = fieldsFromPaHMCount, fldlist = fieldsFromPaHM, &
+                      stdName = "air_pressure_at_sea_level", shortName = "pmsl")
+    CALL fld_list_add(num = fieldsFromPaHMCount, fldlist = fieldsFromPaHM, &
+                      stdName = "inst_zonal_wind_height10m", shortName = "izwh10m")
+    CALL fld_list_add(num = fieldsFromPaHMCount, fldlist = fieldsFromPaHM, &
+                      stdName = "inst_merid_wind_height10m", shortName = "imwh10m")
+    !------------------------------------------------------------
+
+    WRITE(infoMsg,*) subName,' --- Passed--- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)     
+
+  END SUBROUTINE PaHM_FieldsSetup
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   F L D _ L I S T _ A D D
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Subroutine to set up a list of field information.
+  !----------------------------------------------------------------
+  SUBROUTINE fld_list_add(num, fldlist, stdName, data, shortName, unit)
+
+    IMPLICIT NONE
+
+    INTEGER, INTENT(INOUT)                             :: num
+    TYPE(FldListType), INTENT(INOUT)                   :: fldlist(:)
+    CHARACTER(LEN = *), INTENT(IN)                     :: stdName
+    REAL(ESMF_KIND_R8), DIMENSION(:), OPTIONAL, TARGET :: data
+    CHARACTER(LEN = *), INTENT(IN),   OPTIONAL         :: shortName
+    CHARACTER(LEN = *), INTENT(IN),   OPTIONAL         :: unit
+
+    ! Local variables
+    INTEGER :: rc
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:fld_list_add)'
+
+    ! fill in the new entry
+    num = num + 1
+    IF (num > fieldsMax) THEN
+      CALL ESMF_LogWrite(trim(subName)//": ERROR num gt fieldsMax "//trim(stdName), &
+        ESMF_LOGMSG_ERROR, line = __LINE__, file = __FILE__, rc = rc)
+      RETURN
+    END IF
+
+    fldlist(num)%stdName = trim(stdName)
+    IF (PRESENT(shortName)) THEN
+       fldlist(num)%shortName = trim(shortName)
+    ELSE
+       fldlist(num)%shortName = trim(stdName)
+    END IF
+
+    IF (PRESENT(data)) THEN
+      fldlist(num)%assoc = .TRUE.
+      fldlist(num)%farrayPtr => data
+    ELSE
+      fldlist(num)%assoc = .FALSE.
+    END IF
+
+    IF (PRESENT(unit)) THEN
+       fldlist(num)%unit = unit
+    END IF
+
+    WRITE(infoMsg,*) subName,' --- Passed--- '
+
+  END SUBROUTINE fld_list_add
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   P A H M _ R E A L I Z E F I E L D S
+  !----------------------------------------------------------------
+  !  author 
+  !>
+  !> Adds a set of fields to an ESMF_State object.  Each field is wrapped
+  !! in an ESMF_Field object.  Memory is either allocated by ESMF or
+  !! an existing PaHM pointer is referenced.
+  !!
+  !! @param state the ESMF_State object to add fields to
+  !! @param grid the ESMF_Grid object on which to define the fields
+  !! @param nfields number of fields
+  !! @param field_defs array of FldListType indicating the fields to add
+  !! @param tag used to output to the log
+  !! @param rc return code
+  !----------------------------------------------------------------
+  SUBROUTINE PaHM_RealizeFields(state, mesh, mdata, nfields, field_defs, tag, rc)
+
+    IMPLICIT NONE
+
+    TYPE(ESMF_State), INTENT(INOUT)  :: state
+    TYPE(ESMF_Mesh), INTENT(IN)      :: mesh
+    TYPE(MeshData)                   :: mdata
+    INTEGER, INTENT(IN)              :: nfields
+    TYPE(FldListType), INTENT(INOUT) :: field_defs(:)
+    CHARACTER(LEN = *), INTENT(IN)   :: tag
+    INTEGER, INTENT(INOUT)           :: rc
+
+    TYPE(ESMF_Field)                 :: field
+    INTEGER                          :: i
+    CHARACTER(LEN = *), PARAMETER    :: subName = '(PaHM_Cap:PaHM_RealizeFields)'
+
+    rc = ESMF_SUCCESS
+
+    DO i = 1, nfields
+      field = ESMF_FieldCreate(name = field_defs(i)%shortName, mesh = mesh, &
+        typekind = ESMF_TYPEKIND_R8, rc = rc)
+      IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+          line = __LINE__,  &
+          file = __FILE__)) &
+        RETURN  ! bail out
+
+      IF (NUOPC_IsConnected(state, fieldName = field_defs(i)%shortName)) THEN
+        CALL NUOPC_Realize(state, field = field, rc = rc)
+        IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+            line = __LINE__,  &
+            file = __FILE__)) &
+          RETURN  ! bail out
+
+        CALL ESMF_LogWrite(subName // tag // " Field "// field_defs(i)%stdName // " is connected.", &
+                           ESMF_LOGMSG_INFO, &
+                           line = __LINE__,  &
+                           file = __FILE__,  &
+                           rc = dbrc)
+
+        field_defs(i)%connected = .TRUE.
+      ELSE
+        CALL ESMF_LogWrite(subName // tag // " Field "// field_defs(i)%stdName // " is not connected.", &
+                           ESMF_LOGMSG_INFO, &
+                           line = __LINE__,  &
+                           file = __FILE__,  &
+                           rc = dbrc)
+
+        ! TODO: Initialize the value in the pointer to 0 after proper restart is setup
+        !if(associated(field_defs(i)%farrayPtr) ) field_defs(i)%farrayPtr = 0.0
+        ! remove a not connected Field from State
+        CALL ESMF_StateRemove(state, (/field_defs(i)%shortName/), rc = rc)
+        IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+            line = __LINE__,  &
+            file = __FILE__)) &
+          RETURN  ! bail out
+
+        field_defs(i)%connected = .FALSE.
+      END IF
+    END DO
+
+    WRITE(infoMsg,*) subName,' --- OUT--- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, line = __LINE__, file = __FILE__, rc = rc)
+
+  END SUBROUTINE PaHM_RealizeFields
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   S T A T E _ G E T F L D P T R _
+  !----------------------------------------------------------------
+  !  author 
+  !>
   !> Retrieve a pointer to a field's data array from inside an ESMF_State object.
   !!
   !! @param ST the ESMF_State object
-  !! @param fldname name of the fields
-  !! @param fldptr pointer to 1D array
+  !! @param fldName name of the fields
+  !! @param fldPtr pointer to 1D array
   !! @param rc return code
-  subroutine State_GetFldPtr_(ST, fldname, fldptr, rc, dump,timeStr)
-    type(ESMF_State), intent(in) :: ST
-    character(len=*), intent(in) :: fldname
-    real(ESMF_KIND_R8), pointer, intent(in) :: fldptr(:)
-    integer, intent(out), optional :: rc
-    logical, intent(in), optional  :: dump
-    character(len=128),intent(inout), optional :: timeStr
-    ! local variables
-    type(ESMF_Field) :: lfield
-    integer :: lrc
-    character(len=*),parameter :: subname='(pahm_cap:State_GetFldPtr)'
+  !----------------------------------------------------------------
+  SUBROUTINE State_GetFldPtr_(ST, fldName, fldPtr, rc, dump,timeStr)
 
-    call ESMF_StateGet(ST, itemName=trim(fldname), field=lfield, rc=lrc)
-    if (ESMF_LogFoundError(rcToCheck=lrc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
-    call ESMF_FieldGet(lfield, farrayPtr=fldptr, rc=lrc)
-    if (ESMF_LogFoundError(rcToCheck=lrc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
-    if (present(rc)) rc = lrc
+    IMPLICIT NONE
 
-    if (dump) then
-       if (.not. present(timeStr)) timeStr="_"
-        call ESMF_FieldWrite(lfield, &
-        fileName='field_pahm_'//trim(fldname)//trim(timeStr)//'.nc', &
-        rc=rc,overwrite=.true.)
-        if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-          line=__LINE__, &
-          file=__FILE__)) &
-          return  ! bail out
-    endif
-  end subroutine State_GetFldPtr_
+    TYPE(ESMF_State), INTENT(IN)   :: ST
+    CHARACTER(LEN = *), INTENT(IN) :: fldName
+    REAL(ESMF_KIND_R8), POINTER, INTENT(IN) :: fldPtr(:)
+    INTEGER, INTENT(OUT), OPTIONAL :: rc
+    LOGICAL, INTENT(IN), OPTIONAL  :: dump
+    CHARACTER(LEN = 128),INTENT(INOUT), OPTIONAL :: timeStr
 
+    ! Local variables
+    TYPE(ESMF_Field) :: lfield
+    INTEGER :: lrc
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:State_GetFldPtr)'
 
+    CALL ESMF_StateGet(ST, itemName = trim(fldName), field = lfield, rc = lrc)
+    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
+
+    CALL ESMF_FieldGet(lfield, farrayPtr = fldPtr, rc = lrc)
+    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
+    IF (PRESENT(rc)) rc = lrc
+
+    IF (dump) THEN
+      IF (.NOT. PRESENT(timeStr)) timeStr = "_"
+      CALL ESMF_FieldWrite(lfield, &
+      fileName = 'field_pahm_'//trim(fldName)//trim(timeStr)//'.nc', &
+      rc = rc,overwrite = .TRUE.)
+      IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+          line = __LINE__,  &
+          file = __FILE__)) &
+        RETURN  ! bail out
+    END IF
+
+  END SUBROUTINE State_GetFldPtr_
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   S T A T E _ G E T F L D P T R
+  !----------------------------------------------------------------
+  !  author 
+  !>
   !> Retrieve a pointer to a field's data array from inside an ESMF_State object.
   !!
   !! @param ST the ESMF_State object
-  !! @param fldname name of the fields
-  !! @param fldptr pointer to 1D array
+  !! @param fldName name of the fields
+  !! @param fldPtr pointer to 1D array
   !! @param rc return code
-  subroutine State_GetFldPtr(ST, fldname, fldptr, rc)
-    type(ESMF_State), intent(in) :: ST
-    character(len=*), intent(in) :: fldname
-    real(ESMF_KIND_R8), pointer, intent(in) :: fldptr(:)
-    integer, intent(out), optional :: rc
+  !----------------------------------------------------------------
+  SUBROUTINE State_GetFldPtr(ST, fldName, fldPtr, rc)
 
-    ! local variables
-    type(ESMF_Field) :: lfield
-    integer :: lrc
-    character(len=*),parameter :: subname='(PAHM:State_GetFldPtr)'
+    IMPLICIT NONE
 
-    call ESMF_StateGet(ST, itemName=trim(fldname), field=lfield, rc=lrc)
-    if (ESMF_LogFoundError(rcToCheck=lrc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
-    call ESMF_FieldGet(lfield, farrayPtr=fldptr, rc=lrc)
-    if (ESMF_LogFoundError(rcToCheck=lrc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
-    if (present(rc)) rc = lrc
-  end subroutine State_GetFldPtr
+    TYPE(ESMF_State), INTENT(IN)            :: ST
+    CHARACTER(LEN = *), INTENT(IN)          :: fldName
+    REAL(ESMF_KIND_R8), POINTER, INTENT(IN) :: fldPtr(:)
+    INTEGER, INTENT(OUT), OPTIONAL          :: rc
 
+    ! Local variables
+    TYPE(ESMF_Field) :: lfield
+    INTEGER :: lrc
+    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:State_GetFldPtr)'
 
+    CALL ESMF_StateGet(ST, itemName = trim(fldName), field = lfield, rc = lrc)
+    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
+    CALL ESMF_FieldGet(lfield, farrayPtr = fldPtr, rc  =  lrc)
+    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
+    IF (PRESENT(rc)) rc = lrc
 
-  subroutine CheckImport(model, rc)
-    type(ESMF_GridComp)   :: model
-    integer, intent(out)  :: rc
+  END SUBROUTINE State_GetFldPtr
+
+!================================================================================
+
+  SUBROUTINE CheckImport(model, rc)
+
+    IMPLICIT NONE
+
+    TYPE(ESMF_GridComp)   :: model
+    INTEGER, INTENT(OUT)  :: rc
     
-    ! This is the routine that enforces correct time stamps on import Fields
+    ! This is the routine that enforces correct time stamps on imported fields
     
-    ! local variables
-    type(ESMF_Clock)        :: driverClock
-    type(ESMF_Time)         :: startTime, currTime
-    type(ESMF_State)        :: importState
-    type(ESMF_Field)        :: field
+    ! Local variables
+    TYPE(ESMF_Clock)        :: driverClock
+    TYPE(ESMF_Time)         :: startTime, currTime
+    TYPE(ESMF_State)        :: importState
+    TYPE(ESMF_Field)        :: field
     logical                 :: atCorrectTime
 
     rc = ESMF_SUCCESS
-    return
-
+    RETURN
     
-!    ! query Component for the driverClock
-!    call NUOPC_ModelGet(model, driverClock=driverClock, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-!    
-!    ! get the start time and current time out of the clock
-!    call ESMF_ClockGet(driverClock, startTime=startTime, &
-!      currTime=currTime, rc=rc)
-!    if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-!      line=__LINE__, &
-!      file=__FILE__)) &
-!      return  ! bail out
-    
-   
-  end subroutine
+!   ! Query Component for the driverClock
+!   CALL NUOPC_ModelGet(model, driverClock = driverClock, rc = rc)
+!   IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+!       line = __LINE__, &
+!       file = __FILE__)) &
+!     RETURN  ! bail out
+!   
+!   ! Get the start time and current time out of the clock
+!   CALL ESMF_ClockGet(driverClock, startTime = startTime, &
+!     currTime = currTime, rc = rc)
+!   IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
+!       line = __LINE__, &
+!       file = __FILE__)) &
+!     RETURN  ! bail out
 
+  END SUBROUTINE CheckImport
 
-  !-----------------------------------------------------------------------
-  !> Called by NUOPC at the end of the run to clean up.  The cap does
-  !! this simply by calling PAHM_Final.
-  !!
-  !! @param gcomp the ESMF_GridComp object
-  !! @param rc return code
-    subroutine PAHM_model_finalize(gcomp, rc)
+!================================================================================
 
-        ! input arguments
-        type(ESMF_GridComp)  :: gcomp
-        integer, intent(out) :: rc
-
-        ! local variables
-        type(ESMF_Clock)     :: clock
-        type(ESMF_Time)                        :: currTime
-        character(len=*),parameter  :: subname='(PAHM:pahm_model_finalize)'
-
-        rc = ESMF_SUCCESS
-
-        write(info,*) subname,' --- finalize called --- '
-        call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=dbrc)
-
-        call NUOPC_ModelGet(gcomp, modelClock=clock, rc=rc)
-        if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-            line=__LINE__, &
-            file=__FILE__)) &
-            return  ! bail out
-
-        call ESMF_ClockGet(clock, currTime=currTime, rc=rc)
-        if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
-            line=__LINE__, &
-            file=__FILE__)) &
-            return  ! bail out
-
-        write(info,*) subname,' --- finalize completed --- '
-        call ESMF_LogWrite(info, ESMF_LOGMSG_INFO, rc=dbrc)
-
-    end subroutine PAHM_model_finalize
-
-end module
+END MODULE Pahm_Cap

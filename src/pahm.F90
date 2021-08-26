@@ -7,6 +7,7 @@
 
 PROGRAM ParametricWinds
 
+<<<<<<< HEAD
 !  USE PAHM_Sizes
 !  USE PAHM_Global
   USE PAHM_Messages
@@ -24,12 +25,31 @@ PROGRAM ParametricWinds
   !------------------------------------------------------------
   ! Get possible command line arguments
   CALL GetProgramCmdlArgs
+=======
+  USE PaHM_DriverMod, ONLY : PaHM_Init, PaHM_Run, PaHM_Finalize
+
+  IMPLICIT NONE
+
+  ! Initialize PaHM by establishing the logging facilities and calling the subroutine
+  ! "GetProgramCmdlArgs" to get possible command line arguments and set the defaults.
+  ! During the initialization stage, PaHM reads the mandatory input control file
+  ! (defaults to pahm_control.in) to read in the definitions of different variables
+  ! used in PaHM.
+  ! At this stage we read the mesh/grid of the domain or the generic mesh/grid input file
+  ! and the list of best track files supplied by the user.
+  CALL PaHM_Init()
+>>>>>>> 5394dd3abeef31eae2b285a2262d24c8af6b609e
 
   ! Initialize the logging system, needs to be called first
   CALL InitLogging()
 
+<<<<<<< HEAD
   ! Read the mesh/grid of the domain or the generic mesh/grid input file
   CALL ReadMesh()
+=======
+  ! Start the PaHM run (timestepping)
+  CALL PaHM_Run()
+>>>>>>> 5394dd3abeef31eae2b285a2262d24c8af6b609e
 
   ! Read all track files and save the data into the array of the best track structures
   ! for subsequent access by the P-W models in the program
@@ -38,7 +58,12 @@ PROGRAM ParametricWinds
  
   CALL GetHollandFields()
 
+<<<<<<< HEAD
   CALL InitAdcircNetCDFOutFile(outFileName)
+=======
+  ! Finalize the PaHM run and exit the program
+  CALL PaHM_Finalize()
+>>>>>>> 5394dd3abeef31eae2b285a2262d24c8af6b609e
 
   CALL closeLogFile()
 

@@ -16,10 +16,10 @@
 !> module.
 !----------------------------------------------------------------
 
-MODULE PAHM_Mesh
+MODULE PaHM_Mesh
 
-  USE PAHM_Sizes
-  USE PAHM_Messages
+  USE PaHM_Sizes
+  USE PaHM_Messages
 
   IMPLICIT NONE
 
@@ -57,7 +57,7 @@ MODULE PAHM_Mesh
   !----------------------------------------------------------------
   SUBROUTINE ReadMesh()
 
-    USE PAHM_Global, ONLY : meshFileNameSpecified, meshFileName, meshFileType, meshFileForm
+    USE PaHM_Global, ONLY : meshFileNameSpecified, meshFileName, meshFileType, meshFileForm
     USE Utilities, ONLY : ToUpperCase
 
     IMPLICIT NONE
@@ -65,7 +65,7 @@ MODULE PAHM_Mesh
 
     CALL SetMessageSource("ReadMesh")
 
-    IF (meshFileNameSpecified .EQV. .FALSE. ) THEN
+    IF (meshFileNameSpecified .EQV. .FALSE.) THEN
       WRITE(scratchMessage, '(a)') 'ReadMesh: First specify a valid grid filename to proceed: ' // &
                                    '[' // TRIM(meshFileName) // ']'
       CALL AllMessage(ERROR, scratchMessage)
@@ -150,7 +150,7 @@ MODULE PAHM_Mesh
   !----------------------------------------------------------------
   SUBROUTINE ReadMeshASCIIFort14()
 
-    USE PAHM_Global,  ONLY : LUN_INP, meshFileName
+    USE PaHM_Global,  ONLY : LUN_INP, meshFileName
     USE Utilities   !PV specify what are we using here from utilities
 
     IMPLICIT NONE
@@ -301,5 +301,5 @@ MODULE PAHM_Mesh
 !================================================================================
 
 
-END MODULE PAHM_Mesh
+END MODULE PaHM_Mesh
 

@@ -6,10 +6,10 @@
 !>
 !----------------------------------------------------------------
 
-MODULE PAHM_Global
+MODULE PaHM_Global
 
   USE Version
-  USE PAHM_Sizes
+  USE PaHM_Sizes
 
   IMPLICIT NONE
 
@@ -190,11 +190,12 @@ MODULE PAHM_Global
                                   ncVarNam_WndY = DEF_NCNAM_WNDY
 
   INTEGER                 :: modelType = IMISSV    ! The parametric model to use
-                                                   ! 1: Holland B
-                                                   ! 2: Assymetric vortex model (Mattocks)
-                                                   ! 3: Generalized assymetric vortex Holland model
-                                                   ! 4: Willoughby model - NOT IMPLEMENTED YET
-                                                   ! 5:
+                                                   !  0: Rankin Vortex
+                                                   !  1: Holland B (1998)
+                                                   !  2: Holland B (2010)
+                                                   !  3: Willoughby model - NOT IMPLEMENTED YET
+                                                   !  9: Assymetric vortex model (Mattocks)
+                                                   ! 10: Generalized assymetric vortex Holland model
   LOGICAL                 :: writeParams = .FALSE.
 !################################################################
 !###   END :: VARIABLES RELATED TO THE CONTROL FILE
@@ -205,8 +206,9 @@ MODULE PAHM_Global
 !###   BEG :: GLOBAL DATA ARRAYS
 !################################################################
   ! Arrays to hold the P-W fields
-  REAL(SZ), DIMENSION(:, :), ALLOCATABLE :: wVelX, wVelY, wPress
-  REAL(SZ), DIMENSION(:),    ALLOCATABLE :: Times
+  !REAL(SZ), DIMENSION(:, :), ALLOCATABLE :: wVelX, wVelY, wPress
+  REAL(SZ), DIMENSION(:), ALLOCATABLE :: wVelX, wVelY, wPress
+  REAL(SZ), DIMENSION(:), ALLOCATABLE :: Times
 !################################################################
 !###   END :: GLOBAL DATA ARRAYS
 !################################################################
@@ -295,4 +297,4 @@ MODULE PAHM_Global
 
 !================================================================================
 
-END MODULE PAHM_Global
+END MODULE PaHM_Global
