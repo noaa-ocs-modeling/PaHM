@@ -5,12 +5,12 @@
 !>
 !----------------------------------------------------------------
 
-MODULE PAHM_NetCDFIO
+MODULE PaHM_NetCDFIO
 
-  USE PAHM_Sizes
-  USE PAHM_Messages
-  USE PAHM_Global
-  USE PAHM_Mesh, ONLY : aGrid, np, ne, nfn, nm, slam, sfea, xcSlam, ycSfea, slam0, sfea0
+  USE PaHM_Sizes
+  USE PaHM_Messages
+  USE PaHM_Global
+  USE PaHM_Mesh, ONLY : aGrid, np, ne, nfn, nm, slam, sfea, xcSlam, ycSfea, slam0, sfea0
   USE NetCDF
 
 #ifdef __INTEL_COMPILER
@@ -278,6 +278,7 @@ MODULE PAHM_NetCDFIO
       ierr = NF90_PUT_ATT(ncID, datElements%varID, '_FillValue',    IMISSV)
         CALL NetCDFCheckErr(ierr)
 
+! PV NEED to correct this elements(nf, icnt) and NOT elements(icnt, nf)
       ALLOCATE(datElements%var(datElements%varDims(1), datElements%varDims(2)))
       datElements%var = nm
 
@@ -912,4 +913,4 @@ MODULE PAHM_NetCDFIO
 
 !================================================================================
 
-END MODULE PAHM_NetCDFIO
+END MODULE PaHM_NetCDFIO

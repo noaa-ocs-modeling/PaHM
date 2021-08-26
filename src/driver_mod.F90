@@ -5,16 +5,15 @@
 !>
 !----------------------------------------------------------------
 
-MODULE PAHM_DriverMod
+MODULE PaHM_DriverMod
 
-  USE PAHM_Messages
+  USE PaHM_Messages
   USE Utilities
-  USE TimeDateUtils
-  USE PAHM_Mesh
-  USE ParWind
-  USE PAHM_NetCDFIO
+  !USE TimeDateUtils
 
   IMPLICIT NONE
+
+  INTEGER, SAVE :: cntTimeBegin, cntTimeEnd
 
 
 CONTAINS
@@ -25,13 +24,11 @@ CONTAINS
   !-----------------------------------------------------------------------
   !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Prints on the screen the help system of the PAHM program.
+  !> Prints on the screen the help system of the PaHM program.
   !-----------------------------------------------------------------------
   SUBROUTINE GetProgramCmdlArgs()
 
-    USE PAHM_Messages
-    USE PAHM_Global, ONLY : controlFileName
-    USE Utilities, ONLY : ReadControlFile
+    USE PaHM_Global, ONLY : controlFileName
 
     IMPLICIT NONE
 
@@ -80,12 +77,16 @@ CONTAINS
   !> Subroutine to initialize a PaHM run.
   !>   - comments here
   !----------------------------------------------------------------
-  SUBROUTINE PaHM_ModelInit()
+  SUBROUTINE PaHM_Init()
+
+    USE PaHM_Global, ONLY : nOutDT
+    USE PaHM_Mesh, ONLY : ReadMesh
+    USE ParWind, ONLY : ReadCsvBestTrackFile
 
     ! Initialize the logging system, needs to be called first
     CALL InitLogging()
 
-    CALL SetMessageSource("PaHM_ModelInit")
+    CALL SetMessageSource("PaHM_Init")
 
     ! Get possible command line arguments
     CALL GetProgramCmdlArgs()
@@ -98,9 +99,12 @@ CONTAINS
     !CALL ReadBestTrackFile()
     CALL ReadCsvBestTrackFile()
 
+    cntTimeBegin = 1
+    cntTimeEnd   = nOutDT
+
     CALL UnsetMessageSource()
 
-  END SUBROUTINE PaHM_ModelInit
+  END SUBROUTINE PaHM_Init
 
 !================================================================================
 
@@ -112,17 +116,44 @@ CONTAINS
   !> Subroutine to run PaHM (timestepping).
   !>   - comments here
   !----------------------------------------------------------------
-  SUBROUTINE PaHM_ModelRun()
+  SUBROUTINE PaHM_Run(nTimeSTP)
+
+    USE PaHM_Global, ONLY : modelType, wVelX, wVelY, wPress, Times
+    USE ParWind, ONLY : GetHollandFields
+    !USE PaHM_NetCDFIO
   
-    CALL SetMessageSource("PaHM_ModelRun")
+    IMPLICIT NONE
 
-    CALL GetHollandFields()
+    INTEGER, INTENT(IN), OPTIONAL :: nTimeSTP
 
-    CALL InitAdcircNetCDFOutFile(outFileName)
+    INTEGER :: iCnt
 
+    CALL SetMessageSource("PaHM_Run")
+
+    IF (PRESENT(nTimeSTP)) THEN
+      cntTimeEnd = cntTimeBegin + nTimeSTP - 1
+    ENDIF
+    
+    SELECT CASE (modelType)
+      CASE (1)
+        DO iCnt = cntTimeBegin, cntTimeEnd
+          CALL GetHollandFields(iCnt)
+        END DO
+        !CALL InitAdcircNetCDFOutFile(outFileName)
+
+      CASE DEFAULT
+        WRITE(scratchMessage, '(a, i0)') &
+                              'This model type is not supported: modelType = ', modelType
+        CALL LogMessage(ERROR, scratchMessage)
+    END SELECT
+
+    IF (PRESENT(nTimeSTP)) THEN
+      cntTimeBegin = cntTimeEnd + 1
+    ENDIF
+    
     CALL UnsetMessageSource()
 
-  END SUBROUTINE PaHM_ModelRun
+  END SUBROUTINE PaHM_Run
 
 !================================================================================
 
@@ -134,17 +165,17 @@ CONTAINS
   !> Subroutine to finalize a PaHM run.
   !>   - comments here
   !----------------------------------------------------------------
-  SUBROUTINE PaHM_ModelFinalize()
+  SUBROUTINE PaHM_Finalize()
   
-    CALL SetMessageSource("PaHM_ModelFinalize")
+    CALL SetMessageSource("PaHM_Finalize")
 
     CALL UnsetMessageSource()
 
     ! Close the logging facilities
     CALL closeLogFile()
   
-  END SUBROUTINE PaHM_ModelFinalize
+  END SUBROUTINE PaHM_Finalize
 
 !================================================================================
 
-END MODULE PAHM_DriverMod
+END MODULE PaHM_DriverMod

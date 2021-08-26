@@ -7,8 +7,8 @@
 
 MODULE TimeDateUtils
 
-  USE PAHM_Sizes
-  USE PAHM_Messages
+  USE PaHM_Sizes
+  USE PaHM_Messages
 
   PRIVATE :: upp
   
@@ -93,7 +93,7 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   SUBROUTINE TimeConvISEC(iYear, iMonth, iDay, iHour, iMin, iSec, timeSec)
 
-    USE PAHM_Global, ONLY : refYear, refMonth, refDay, refHour, refMin, refSec
+    USE PaHM_Global, ONLY : refYear, refMonth, refDay, refHour, refMin, refSec
 
     IMPLICIT NONE
 
@@ -145,7 +145,7 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   SUBROUTINE TimeConvRSEC(iYear, iMonth, iDay, iHour, iMin, rSec, timeSec)
 
-    USE PAHM_Global, ONLY : refYear, refMonth, refDay, refHour, refMin, refSec
+    USE PaHM_Global, ONLY : refYear, refMonth, refDay, refHour, refMin, refSec
 
     IMPLICIT NONE
 

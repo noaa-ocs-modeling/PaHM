@@ -7,7 +7,7 @@
 
 PROGRAM PaHM
 
-  USE PAHM_DriverMod, ONLY : PaHM_ModelInit, PaHM_ModelRun, PaHM_ModelFinalize
+  USE PaHM_DriverMod, ONLY : PaHM_Init, PaHM_Run, PaHM_Finalize
 
   IMPLICIT NONE
 
@@ -18,14 +18,14 @@ PROGRAM PaHM
   ! used in PaHM.
   ! At this stage we read the mesh/grid of the domain or the generic mesh/grid input file
   ! and the list of best track files supplied by the user.
-  CALL PaHM_ModelInit()
+  CALL PaHM_Init()
 
 
   ! Start the PaHM run (timestepping)
-  CALL PaHM_ModelRun()
+  CALL PaHM_Run()
 
 
   ! Finalize the PaHM run and exit the program
-  CALL PaHM_ModelFinalize()
+  CALL PaHM_Finalize()
 
 END PROGRAM PaHM
