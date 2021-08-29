@@ -341,9 +341,6 @@ MODULE Pahm_Cap
     TYPE(ESMF_TimeInterval)     :: timeStep
     CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:ModelAdvance)'
 
-    !tmp vector
-    REAL(ESMF_KIND_R8), POINTER :: tmp(:)
-
     !imports
 
 
@@ -461,7 +458,7 @@ MODULE Pahm_Cap
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for tmp vector
+    ! Fill only owned nodes for dataPtr_uWnd vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
       IF (pahm_from_file) THEN
         dataPtr_uWnd(iCnt) = uWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
@@ -480,7 +477,7 @@ MODULE Pahm_Cap
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for tmp vector
+    ! Fill only owned nodes for dataPtr_vWnd vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
       IF (pahm_from_file) THEN
         dataPtr_vWnd(iCnt) = vWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
@@ -499,7 +496,7 @@ MODULE Pahm_Cap
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for tmp vector
+    ! Fill only owned nodes for dataPtr_pres vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
       IF (pahm_from_file) THEN
         dataPtr_pres(iCnt) = pres(mdataOut%owned_to_present_nodes(iCnt), 1)
