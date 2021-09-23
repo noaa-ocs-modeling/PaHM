@@ -126,463 +126,477 @@ MODULE PaHM_NetCDFIO
                            conventions, contact, references
     INTEGER             :: tvals(8)
     INTEGER             :: ierr ! success or failure of a netcdf call
+    INTEGER             :: iCnt, jCnt
+
+    LOGICAL, SAVE                        :: firstCall = .TRUE.
 
 
-    CALL SetMessageSource("InitAdcircNetCDFOutFile")
+    IF (firstCall) THEN
+      firstCall = .FALSE.
 
-    refDateTimeStr = DateTime2String(refYear, refMonth, refDay, refHour, refMin, refSec, UNITS = unitTime)
-
-    institution = 'NOAA/OCS/CSDL Coastal Marine Modeling Branch (https://coastaloceanmodels.noaa.gov/)'
-    source      = ''
-    history     = ''
-    comments    = ''
-    host        = ''
-    conventions = 'UGRID-0.9.0'
-    contact     = 'Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>'
-    references  = ''
+      CALL SetMessageSource("InitAdcircNetCDFOutFile")
 
 
-    ! Create the NetCDF output file.
-    CALL NewAdcircNetCDFOutFile(ncID, adcircOutFile)
+      refDateTimeStr = DateTime2String(refYear, refMonth, refDay, refHour, refMin, refSec, UNITS = unitTime)
 
-    !====================
-    !===== (1) Define all the dimensions
-    !====================
-    tmpVarName = 'time'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), NF90_UNLIMITED, crdTime%dimID)
-        CALL NetCDFCheckErr(ierr)
+      institution = 'NOAA/OCS/CSDL Coastal Marine Modeling Branch (https://coastaloceanmodels.noaa.gov/)'
+      source      = ''
+      history     = ''
+      comments    = ''
+      host        = ''
+      conventions = 'UGRID-0.9.0'
+      contact     = 'Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>'
+      references  = ''
 
-    tmpVarName = 'longitude'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, crdLons%dimID)
-        CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'latitude'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, crdLats%dimID)
-        CALL NetCDFCheckErr(ierr)
+      ! Create the NetCDF output file.
+      CALL NewAdcircNetCDFOutFile(ncID, adcircOutFile)
 
-    tmpVarName = 'node'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, nodeDimID)
-        CALL NetCDFCheckErr(ierr)
+      !====================
+      !===== (1) Define all the dimensions
+      !====================
+      tmpVarName = 'time'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), NF90_UNLIMITED, crdTime%dimID)
+          CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'element'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), ne, elemDimID)
-        CALL NetCDFCheckErr(ierr)
+      tmpVarName = 'longitude'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, crdLons%dimID)
+          CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'noel'
-      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), 3,  vertDimID)
-        CALL NetCDFCheckErr(ierr)
+      tmpVarName = 'latitude'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, crdLats%dimID)
+          CALL NetCDFCheckErr(ierr)
 
-    tmpVarName = 'mesh'
-    ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), 1,    meshDimID)
-      CALL NetCDFCheckErr(ierr)
+      tmpVarName = 'node'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), np, nodeDimID)
+          CALL NetCDFCheckErr(ierr)
 
-    !====================
-    !===== (2) Define all the variables
-    !====================
-    !----- Time variable
-    tmpVarName = 'time'
-      crdTime%varname   = TRIM(tmpVarName)
-      crdTime%varDimIDs = crdTime%dimID
-      crdTime%varDims   = SIZE(Times, 1)
-      crdTime%start(1)  = 1
-      crdTime%count(1)  = crdTime%varDims
+      tmpVarName = 'element'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), ne, elemDimID)
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, 'time', NF90_DOUBLE, crdTime%varDimIDs, crdTime%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'long_name',     'model ' // TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'standard_name', TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'units',         TRIM(refDateTimeStr))
+      tmpVarName = 'noel'
+        ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), 3,  vertDimID)
+          CALL NetCDFCheckErr(ierr)
+
+      tmpVarName = 'mesh'
+      ierr = NF90_DEF_DIM(ncID, TRIM(tmpVarName), 1,    meshDimID)
         CALL NetCDFCheckErr(ierr)
 
-      ALLOCATE(crdTime%var(crdTime%varDims))
-      crdTime%var = Times * GetTimeConvSec(unitTime, 1)
+      !====================
+      !===== (2) Define all the variables
+      !====================
+      !----- Time variable
+      tmpVarName = 'time'
+        crdTime%varname   = TRIM(tmpVarName)
+        crdTime%varDimIDs = crdTime%dimID
+        crdTime%varDims   = SIZE(Times, 1)
+        crdTime%start(1)  = 1
+        crdTime%count(1)  = crdTime%varDims
 
-    !----- Longitude variable
-    tmpVarName = 'longitude'
-      crdLons%varname = TRIM(tmpVarName)
-      crdLons%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLons%varDims)
-        CALL NetCDFCheckErr(ierr)
-      crdLons%start(1) = 1
-      crdLons%count(1) = crdLons%varDims
+        ierr = NF90_DEF_VAR(ncID, 'time', NF90_DOUBLE, crdTime%varDimIDs, crdTime%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'long_name',     'model ' // TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'standard_name', TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'units',         TRIM(refDateTimeStr))
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(crdLons%varname), NF90_DOUBLE, crdLons%varDimIDs, crdLons%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'long_name',     TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'standard_name', TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'units',         'degrees_east')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLons%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'positive',      'east')
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(crdTime%var(crdTime%varDims))
+        crdTime%var = Times * GetTimeConvSec(unitTime, 1)
 
-      ALLOCATE(crdLons%var(crdLons%varDims))
-      crdLons%var = slam
+      !----- Longitude variable
+      tmpVarName = 'longitude'
+        crdLons%varname = TRIM(tmpVarName)
+        crdLons%varDimIDs = nodeDimID
+        ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLons%varDims)
+          CALL NetCDFCheckErr(ierr)
+        crdLons%start(1) = 1
+        crdLons%count(1) = crdLons%varDims
 
-    !----- Latitude variable
-    tmpVarName = 'latitude'
-      crdLats%varname = TRIM(tmpVarName)
-      crdLats%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLats%varDims)
-        CALL NetCDFCheckErr(ierr)
-      crdLats%start(1) = 1
-      crdLats%count(1) = crdLats%varDims
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdLons%varname), NF90_DOUBLE, crdLons%varDimIDs, crdLons%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'long_name',     TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'standard_name', TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'units',         'degrees_east')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLons%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLons%varID, 'positive',      'east')
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(crdLats%varname), NF90_DOUBLE, crdLats%varDimIDs, crdLats%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'long_name',     TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'standard_name', TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'units',         'degrees_north')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLats%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'positive',      'north')
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(crdLons%var(crdLons%varDims))
+        crdLons%var = slam
 
-      ALLOCATE(crdLats%var(crdLats%varDims))
-      crdLats%var = sfea
+      !----- Latitude variable
+      tmpVarName = 'latitude'
+        crdLats%varname = TRIM(tmpVarName)
+        crdLats%varDimIDs = nodeDimID
+        ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = crdLats%varDims)
+          CALL NetCDFCheckErr(ierr)
+        crdLats%start(1) = 1
+        crdLats%count(1) = crdLats%varDims
 
-    !----- Element variable
-    tmpVarName = 'tri'
-      datElements%varname = TRIM(tmpVarName)
-      datElements%varDimIDs(1) = vertDimID
-      datElements%varDimIDs(2) = elemDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, vertDimID, LEN = datElements%varDims(1))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_INQUIRE_DIMENSION(ncID, elemDimID, LEN = datElements%varDims(2))
-        CALL NetCDFCheckErr(ierr)
-      datElements%start(1) = 1
-      datElements%count(1) = datElements%varDims(1)
-      datElements%start(2) = 1
-      datElements%count(2) = datElements%varDims(2)
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdLats%varname), NF90_DOUBLE, crdLats%varDimIDs, crdLats%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'long_name',     TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'standard_name', TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'units',         'degrees_north')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLats%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdLats%varID, 'positive',      'north')
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, datElements%varname, NF90_INT, datElements%varDimIDs, datElements%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID,'long_name',     TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID,'standard_name', TRIM(tmpVarName))
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID, 'cf_role',      'face_node_connectivity')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID, 'start_index',  1)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID, 'units',        'nondimensional')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datElements%varID, '_FillValue',    IMISSV)
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(crdLats%var(crdLats%varDims))
+        crdLats%var = sfea
 
-! PV NEED to correct this elements(nf, icnt) and NOT elements(icnt, nf)
-      ALLOCATE(datElements%var(datElements%varDims(1), datElements%varDims(2)))
-      datElements%var = nm
+      !----- Element variable
+      !----- We need to switch the order in array for NetCDF
+      !----- It should be: elements(nf, icnt) and NOT elements(icnt, nf)
+      tmpVarName = 'tri'
+        datElements%varname = TRIM(tmpVarName)
+        datElements%varDimIDs(1) = vertDimID
+        datElements%varDimIDs(2) = elemDimID
+        ierr = NF90_INQUIRE_DIMENSION(ncID, datElements%varDimIDs(1), LEN = datElements%varDims(1))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_INQUIRE_DIMENSION(ncID, datElements%varDimIDs(2), LEN = datElements%varDims(2))
+          CALL NetCDFCheckErr(ierr)
+        datElements%start(1) = 1
+        datElements%count(1) = datElements%varDims(1)
+        datElements%start(2) = 1
+        datElements%count(2) = datElements%varDims(2)
 
-    !----- Mesh variable
-    tmpVarName = 'adcirc_mesh'
-      ierr = NF90_DEF_VAR(ncid, TRIM(tmpVarName), NF90_INT, meshDimID, meshVarID)
-        CALL NetCDFCheckErr(ierr)     
+        ierr = NF90_DEF_VAR(ncID, datElements%varname, NF90_INT, datElements%varDimIDs, datElements%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID,'long_name',     TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID,'standard_name', TRIM(tmpVarName))
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID, 'cf_role',      'face_node_connectivity')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID, 'start_index',  1)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID, 'units',        'nondimensional')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datElements%varID, '_FillValue',    IMISSV)
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_PUT_ATT(ncID, meshVarID,'long_name',               'mesh_topology')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, meshVarID,'standard_name',           'mesh_topology')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, meshVarID, 'cf_role',                'mesh_topology')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, meshVarID, 'node_coordinates',       'lon lat')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, meshVarID, 'face_node_connectivity', 'element')
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(datElements%var(datElements%varDims(1), datElements%varDims(2)))
+        DO iCnt = 1, datElements%varDims(2)
+          DO jCnt = 1, datElements%varDims(1)
+            datElements%var(jCnt, iCnt) = nm(iCnt, jCnt)
+          END DO
+        END DO
 
-    !----- CPP (equirectangular projection or equidistant cylindrical projection) variable
-    tmpVarName = 'projection'
-      ierr = NF90_DEF_VAR(ncid, TRIM(tmpVarName), NF90_INT, meshDimID, projVarID)
-        CALL NetCDFCheckErr(ierr)     
+      !----- Mesh variable
+      tmpVarName = 'adcirc_mesh'
+        ierr = NF90_DEF_VAR(ncid, TRIM(tmpVarName), NF90_INT, meshDimID, meshVarID)
+          CALL NetCDFCheckErr(ierr)     
 
-      ierr = NF90_PUT_ATT(ncID, projVarID,'long_name',         'equidistant cylindrical projection')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, projVarID,'standard_name',     'CPP')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, projVarID, 'node_coordinates', 'x y')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, projVarID, 'lon0',             slam0)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, projVarID, 'lat0',             sfea0)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, projVarID, 'earth_radius',     REARTH)
-        CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID,'long_name',               'mesh_topology')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID,'standard_name',           'mesh_topology')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'cf_role',                'mesh_topology')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'node_coordinates',       'lon lat')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'face_node_connectivity', 'element')
+          CALL NetCDFCheckErr(ierr)
 
-    !----- CPP CPP x-coordinates
-    tmpVarName = 'x'
-      crdXCs%varname = TRIM(tmpVarName)
-      crdXCs%dimID = nodeDimID
-      crdXCs%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, crdXCs%dimID, LEN = crdXCs%varDims)
-        CALL NetCDFCheckErr(ierr)
-      crdXCs%start(1) = 1
-      crdXCs%count(1) = crdXCs%varDims
+      !----- CPP (equirectangular projection or equidistant cylindrical projection) variable
+      tmpVarName = 'projection'
+        ierr = NF90_DEF_VAR(ncid, TRIM(tmpVarName), NF90_INT, meshDimID, projVarID)
+          CALL NetCDFCheckErr(ierr)     
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(crdXCs%varname), NF90_DOUBLE, crdXCs%varDimIDs, crdXCs%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'long_name',     'CPP x coordinate')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'standard_name', 'cpp_x')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'units',         'm')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdXCs%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID,'long_name',         'equidistant cylindrical projection')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID,'standard_name',     'CPP')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID, 'node_coordinates', 'x y')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID, 'lon0',             slam0)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID, 'lat0',             sfea0)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, projVarID, 'earth_radius',     REARTH)
+          CALL NetCDFCheckErr(ierr)
 
-      ALLOCATE(crdXCs%var(crdXCs%varDims))
-      crdXCs%var = xcSlam
+      !----- CPP CPP x-coordinates
+      tmpVarName = 'x'
+        crdXCs%varname = TRIM(tmpVarName)
+        crdXCs%dimID = nodeDimID
+        crdXCs%varDimIDs = nodeDimID
+        ierr = NF90_INQUIRE_DIMENSION(ncID, crdXCs%dimID, LEN = crdXCs%varDims)
+          CALL NetCDFCheckErr(ierr)
+        crdXCs%start(1) = 1
+        crdXCs%count(1) = crdXCs%varDims
 
-    !----- CPP y-coordinates
-    tmpVarName = 'y'
-      crdYCs%varname = TRIM(tmpVarName)
-      crdYCs%dimID = nodeDimID
-      crdYCs%varDimIDs = nodeDimID
-      ierr = NF90_INQUIRE_DIMENSION(ncID, crdYCs%dimID, LEN = crdYCs%varDims)
-        CALL NetCDFCheckErr(ierr)
-      crdYCs%start(1) = 1
-      crdYCs%count(1) = crdYCs%varDims
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdXCs%varname), NF90_DOUBLE, crdXCs%varDimIDs, crdXCs%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'long_name',     'CPP x coordinate')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'standard_name', 'cpp_x')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'units',         'm')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(crdYCs%varname), NF90_DOUBLE, crdYCs%varDimIDs, crdYCs%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'long_name',     'CPP y coordinate')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'standard_name', 'cpp_y')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'units',         'm')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, crdYCs%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(crdXCs%var(crdXCs%varDims))
+        crdXCs%var = xcSlam
 
-      ALLOCATE(crdYCs%var(crdYCs%varDims))
-      crdYCs%var = ycSfea
+      !----- CPP y-coordinates
+      tmpVarName = 'y'
+        crdYCs%varname = TRIM(tmpVarName)
+        crdYCs%dimID = nodeDimID
+        crdYCs%varDimIDs = nodeDimID
+        ierr = NF90_INQUIRE_DIMENSION(ncID, crdYCs%dimID, LEN = crdYCs%varDims)
+          CALL NetCDFCheckErr(ierr)
+        crdYCs%start(1) = 1
+        crdYCs%count(1) = crdYCs%varDims
 
-    !----- Atmospheric Pressure variable
-    tmpVarName = TRIM(ncVarNam_Pres)
-      datAtmPres%varname      = TRIM(tmpVarName)
-      datAtmPres%varDimIDs(1) = nodeDimID
-      datAtmPres%varDimIDs(2) = crdTime%dimID
-      datAtmPres%varDims(1)   = SIZE(wPress, 1)
-      datAtmPres%varDims(2)   = SIZE(wPress, 2)
-      datAtmPres%start(1)     = 1
-      datAtmPres%count(1)     = datAtmPres%varDims(1)
-      datAtmPres%start(2)     = 1
-      datAtmPres%count(2)     = datAtmPres%varDims(2)
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdYCs%varname), NF90_DOUBLE, crdYCs%varDimIDs, crdYCs%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'long_name',     'CPP y coordinate')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'standard_name', 'cpp_y')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'units',         'm')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(datAtmPres%varname), NF90_DOUBLE, &
-                          datAtmPres%varDimIDs, datAtmPres%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'long_name',     'air pressure at sea level')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'standard_name', 'air_pressure_at_sea_level')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'units',         'Pa')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'coordinates',   'time lat lon')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'location',      'node')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'mesh',          'adcirc_mesh')
-        CALL NetCDFCheckErr(ierr)
+        ALLOCATE(crdYCs%var(crdYCs%varDims))
+        crdYCs%var = ycSfea
 
-      ALLOCATE(datAtmPres%var(datAtmPres%varDims(1), datAtmPres%varDims(2)))
-      datAtmPres%var = wPress
-    
-    !----- Wind velocity variables
-    ! Eastward
-    tmpVarName = TRIM(ncVarNam_WndX)
-      datWindX%varname      = TRIM(tmpVarName)
-      datWindX%varDimIDs(1) = nodeDimID
-      datWindX%varDimIDs(2) = crdTime%dimID
-      datWindX%varDims(1)   = SIZE(wVelX, 1)
-      datWindX%varDims(2)   = SIZE(wVelX, 2)
-      datWindX%start(1)     = 1
-      datWindX%count(1)     = datWindX%varDims(1)
-      datWindX%start(2)     = 1
-      datWindX%count(2)     = datWindX%varDims(2)
+      !----- Atmospheric Pressure variable
+      tmpVarName = TRIM(ncVarNam_Pres)
+        datAtmPres%varname      = TRIM(tmpVarName)
+        datAtmPres%varDimIDs(1) = nodeDimID
+        datAtmPres%varDimIDs(2) = crdTime%dimID
+        datAtmPres%varDims(1)   = SIZE(wPress, 1)
+        datAtmPres%varDims(2)   = crdTime%varDims
+        datAtmPres%start(1)     = 1
+        datAtmPres%count(1)     = datAtmPres%varDims(1)
+        datAtmPres%start(2)     = 1
+        datAtmPres%count(2)     = datAtmPres%varDims(2)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(datWindX%varname), NF90_DOUBLE, &
-                          datWindX%varDimIDs, datWindX%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'long_name',     '10-m eastward wind component')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'standard_name', 'eastward_wind')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'units',         'm s-1')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'coordinates',   'time lat lon')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'location',      'node')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'mesh',          'adcirc_mesh')
-        CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR(ncID, TRIM(datAtmPres%varname), NF90_DOUBLE, &
+                            datAtmPres%varDimIDs, datAtmPres%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'long_name',     'air pressure at sea level')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'standard_name', 'air_pressure_at_sea_level')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'units',         'Pa')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'coordinates',   'time lat lon')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'location',      'node')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'mesh',          'adcirc_mesh')
+          CALL NetCDFCheckErr(ierr)
 
-      ALLOCATE(datWindX%var(datWindX%varDims(1), datWindX%varDims(2)))
-      datWindX%var = wVelX
+  !PV    ALLOCATE(datAtmPres%var(datAtmPres%varDims(1), datAtmPres%varDims(2)))
+  !PV    datAtmPres%var = wPress
 
-    ! Northward
-    tmpVarName = TRIM(ncVarNam_WndY)
-      datWindY%varname      = TRIM(tmpVarName)
-      datWindY%varDimIDs(1) = nodeDimID
-      datWindY%varDimIDs(2) = crdTime%dimID
-      datWindY%varDims(1)   = SIZE(wVelY, 1)
-      datWindY%varDims(2)   = SIZE(wVelY, 2)
-      datWindY%start(1)     = 1
-      datWindY%count(1)     = datWindY%varDims(1)
-      datWindY%start(2)     = 1
-      datWindY%count(2)     = datWindY%varDims(2)
+      !----- Wind velocity variables
+      ! Eastward
+      tmpVarName = TRIM(ncVarNam_WndX)
+        datWindX%varname      = TRIM(tmpVarName)
+        datWindX%varDimIDs(1) = nodeDimID
+        datWindX%varDimIDs(2) = crdTime%dimID
+        datWindX%varDims(1)   = SIZE(wVelX, 1)
+        datWindX%varDims(2)   = crdTime%varDims
+        datWindX%start(1)     = 1
+        datWindX%count(1)     = datWindX%varDims(1)
+        datWindX%start(2)     = 1
+        datWindX%count(2)     = datWindX%varDims(2)
 
-      ierr = NF90_DEF_VAR(ncID, TRIM(datWindY%varname), NF90_DOUBLE, &
-                          datWindY%varDimIDs, datWindY%varID)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'long_name',     '10-m northward wind component')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'standard_name', 'northward_wind')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'units',         'm s-1')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, '_FillValue',    RMISSV)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'coordinates',   'time lat lon')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'location',      'node')
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'mesh',          'adcirc_mesh')
-        CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR(ncID, TRIM(datWindX%varname), NF90_DOUBLE, &
+                            datWindX%varDimIDs, datWindX%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'long_name',     '10-m eastward wind component')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'standard_name', 'eastward_wind')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'units',         'm s-1')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'coordinates',   'time lat lon')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'location',      'node')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'mesh',          'adcirc_mesh')
+          CALL NetCDFCheckErr(ierr)
 
-      ALLOCATE(datWindY%var(datWindY%varDims(1), datWindY%varDims(2)))
-      datWindY%var = wVelY
+  !PV    ALLOCATE(datWindX%var(datWindX%varDims(1), datWindX%varDims(2)))
+  !PV    datWindX%var = wVelX
 
-    !====================
-    !===== (3) Set Deflate parameters if requested by the user
-    !====================
+      ! Northward
+      tmpVarName = TRIM(ncVarNam_WndY)
+        datWindY%varname      = TRIM(tmpVarName)
+        datWindY%varDimIDs(1) = nodeDimID
+        datWindY%varDimIDs(2) = crdTime%dimID
+        datWindY%varDims(1)   = SIZE(wVelY, 1)
+        datWindY%varDims(2)   = crdTime%varDims
+        datWindY%start(1)     = 1
+        datWindY%count(1)     = datWindY%varDims(1)
+        datWindY%start(2)     = 1
+        datWindY%count(2)     = datWindY%varDims(2)
+
+        ierr = NF90_DEF_VAR(ncID, TRIM(datWindY%varname), NF90_DOUBLE, &
+                            datWindY%varDimIDs, datWindY%varID)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'long_name',     '10-m northward wind component')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'standard_name', 'northward_wind')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'units',         'm s-1')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, '_FillValue',    RMISSV)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'coordinates',   'time lat lon')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'location',      'node')
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'mesh',          'adcirc_mesh')
+          CALL NetCDFCheckErr(ierr)
+
+  !PV    ALLOCATE(datWindY%var(datWindY%varDims(1), datWindY%varDims(2)))
+  !PV    datWindY%var = wVelY
+
+      !====================
+      !===== (3) Set Deflate parameters if requested by the user
+      !====================
 #ifdef NETCDF_CAN_DEFLATE
-    IF (ncFormat == nc4Form) THEN
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, crdLons%varID,     ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, crdLats%varID,     ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, crdXCs%varID,     ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, crdYCs%varID,     ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, datElements%varID, ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, datAtmPres%varID,  ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, datWindX%varID, ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-      ierr = NF90_DEF_VAR_DEFLATE(ncID, datWindY%varID, ncShuffle, ncDeflate, ncDLevel)
-        CALL NetCDFCheckErr(ierr)
-    END IF
+      IF (ncFormat == nc4Form) THEN
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, crdLons%varID,     ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, crdLats%varID,     ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, crdXCs%varID,     ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, crdYCs%varID,     ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, datElements%varID, ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, datAtmPres%varID,  ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, datWindX%varID, ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_DEF_VAR_DEFLATE(ncID, datWindY%varID, ncShuffle, ncDeflate, ncDLevel)
+          CALL NetCDFCheckErr(ierr)
+      END IF
 #endif
 
-    !====================
-    !===== (4) Global metadata definitions and variables
-    !====================
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'model', TRIM(PROG_FULLNAME))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'version', TRIM(PROG_VERSION) // ' (' // TRIM(PROG_DATE) // ')')
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'title', TRIM(ADJUSTL(title)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'grid_type', 'Triangular')
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'agrid', TRIM(ADJUSTL(aGrid)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'institution', TRIM(ADJUSTL(institution)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'source', TRIM(ADJUSTL(source)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'history', TRIM(ADJUSTL(history)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'references', TRIM(ADJUSTL(references)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'comments', TRIM(ADJUSTL(comments)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'host', TRIM(ADJUSTL(host)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'conventions', TRIM(ADJUSTL(conventions)))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'contact', TRIM(ADJUSTL(contact)))
-      CALL NetCDFCheckErr(ierr)
+      !====================
+      !===== (4) Global metadata definitions and variables
+      !====================
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'model', TRIM(PROG_FULLNAME))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'version', TRIM(PROG_VERSION) // ' (' // TRIM(PROG_DATE) // ')')
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'title', TRIM(ADJUSTL(title)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'grid_type', 'Triangular')
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'agrid', TRIM(ADJUSTL(aGrid)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'institution', TRIM(ADJUSTL(institution)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'source', TRIM(ADJUSTL(source)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'history', TRIM(ADJUSTL(history)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'references', TRIM(ADJUSTL(references)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'comments', TRIM(ADJUSTL(comments)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'host', TRIM(ADJUSTL(host)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'conventions', TRIM(ADJUSTL(conventions)))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL, 'contact', TRIM(ADJUSTL(contact)))
+        CALL NetCDFCheckErr(ierr)
 
-    CALL DATE_AND_TIME(VALUES = tvals)
-    WRITE(modDateTimeStr, '(i3.2, ":00")') tvals(4) / 60 ! this is the timezone
-    modDateTimeStr = DateTime2String(tvals(1), tvals(2), tvals(3), tvals(5), tvals(6), tvals(7), ZONE = modDateTimeStr)
+      CALL DATE_AND_TIME(VALUES = tvals)
+      WRITE(modDateTimeStr, '(i3.2, ":00")') tvals(4) / 60 ! this is the timezone
+      modDateTimeStr = DateTime2String(tvals(1), tvals(2), tvals(3), tvals(5), tvals(6), tvals(7), ZONE = modDateTimeStr)
 
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL,'creation_date', TRIM(modDateTimeStr))
-      CALL NetCDFCheckErr(ierr)
-    ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL,'modification_date', TRIM(modDateTimeStr))
-      CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL,'creation_date', TRIM(modDateTimeStr))
+        CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_ATT(ncid, NF90_GLOBAL,'modification_date', TRIM(modDateTimeStr))
+        CALL NetCDFCheckErr(ierr)
 
-    !----- Finalize the definitions in the NetCDF file
-    ierr = NF90_ENDDEF(ncID)
-      CALL NetCDFCheckErr(ierr)
+      !----- Finalize the definitions in the NetCDF file
+      ierr = NF90_ENDDEF(ncID)
+        CALL NetCDFCheckErr(ierr)
 
-    !====================
-    !===== (5) Put the static data into the NetCDF file and then close it
-    !====================
-    ierr = NF90_PUT_VAR(ncID, crdTime%varID, crdTime%var, crdTime%start, crdTime%count)
-      CALL NetCDFCheckErr(ierr)
-    
-    ierr = NF90_PUT_VAR(ncID, crdLons%varID, crdLons%var, crdLons%start, crdLons%count)
-      CALL NetCDFCheckErr(ierr)
+      !====================
+      !===== (5) Put the static data into the NetCDF file and then close it
+      !====================
+      ierr = NF90_PUT_VAR(ncID, crdTime%varID, crdTime%var, crdTime%start, crdTime%count)
+        CALL NetCDFCheckErr(ierr)
+      
+      ierr = NF90_PUT_VAR(ncID, crdLons%varID, crdLons%var, crdLons%start, crdLons%count)
+        CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, crdLats%varID, crdLats%var, crdLats%start, crdLats%count)
-      CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_VAR(ncID, crdLats%varID, crdLats%var, crdLats%start, crdLats%count)
+        CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, crdXCs%varID, crdXCs%var, crdXCs%start, crdXCs%count)
-      CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_VAR(ncID, crdXCs%varID, crdXCs%var, crdXCs%start, crdXCs%count)
+        CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, crdYCs%varID, crdYCs%var, crdYCs%start, crdYCs%count)
-      CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_VAR(ncID, crdYCs%varID, crdYCs%var, crdYCs%start, crdYCs%count)
+        CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
-      CALL NetCDFCheckErr(ierr)
+      ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
+        CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
-      CALL NetCDFCheckErr(ierr)
- 
-     ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, datAtmPres%var, datAtmPres%start, datAtmPres%count)
-      CALL NetCDFCheckErr(ierr)
+  !PV    ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
+  !PV      CALL NetCDFCheckErr(ierr)
+   
+  !PV     ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, datAtmPres%var, datAtmPres%start, datAtmPres%count)
+  !PV      CALL NetCDFCheckErr(ierr)
 
-     ierr = NF90_PUT_VAR(ncID, datWindX%varID, datWindX%var, datWindX%start, datWindX%count)
-      CALL NetCDFCheckErr(ierr)
+  !PV     ierr = NF90_PUT_VAR(ncID, datWindX%varID, datWindX%var, datWindX%start, datWindX%count)
+  !PV      CALL NetCDFCheckErr(ierr)
 
-     ierr = NF90_PUT_VAR(ncID, datWindY%varID, datWindY%var, datWindY%start, datWindY%count)
-      CALL NetCDFCheckErr(ierr)
+  !PV     ierr = NF90_PUT_VAR(ncID, datWindY%varID, datWindY%var, datWindY%start, datWindY%count)
+  !PV      CALL NetCDFCheckErr(ierr)
 
 
-    !---------- (16) Set all the "initialized" flags to .TRUE.
-    crdLons%initialized      = .TRUE.
-    crdLats%initialized      = .TRUE.
-    crdXCs%initialized       = .TRUE.
-    crdYCs%initialized       = .TRUE.
-    datElements%initialized  = .TRUE.
-    datAtmPres%initialized   = .TRUE.
-    datWindX%initialized     = .TRUE.
-    datWindY%initialized     = .TRUE.
+      !---------- (16) Set all the "initialized" flags to .TRUE.
+      crdLons%initialized      = .TRUE.
+      crdLats%initialized      = .TRUE.
+      crdXCs%initialized       = .TRUE.
+      crdYCs%initialized       = .TRUE.
+      datElements%initialized  = .TRUE.
+      datAtmPres%initialized   = .TRUE.
+      datWindX%initialized     = .TRUE.
+      datWindY%initialized     = .TRUE.
 
-    myFile%fileName    = adcircOutFile
-    myFile%initialized = .TRUE.
+      myFile%fileName    = adcircOutFile
+      myFile%initialized = .TRUE.
 
-    !----- Close the NetCDF file
-    ierr = NF90_CLOSE(ncID)
-      CALL NetCDFCheckErr(ierr)
+      !----- Close the NetCDF file
+      ierr = NF90_CLOSE(ncID)
+        CALL NetCDFCheckErr(ierr)
 
-    CALL UnsetMessageSource()
+      CALL UnsetMessageSource()
+
+    END IF !firstCall
 
   END SUBROUTINE InitAdcircNetCDFOutFile
 
@@ -763,6 +777,8 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   SUBROUTINE WriteNetCDFRecord(adcircOutFile, timeLoc)
 
+    USE TimeDateUtils, ONLY : GetTimeConvSec
+
     IMPLICIT NONE
 
     CHARACTER(LEN=*), INTENT(IN) :: adcircOutFile
@@ -770,6 +786,7 @@ MODULE PaHM_NetCDFIO
     INTEGER :: timeLoc
     INTEGER :: ncID, ierr, nodes
     INTEGER :: start(2), kount(2)
+
 
     CALL SetMessageSource("WriteNetCDFRecord")
 
@@ -779,24 +796,22 @@ MODULE PaHM_NetCDFIO
     ! Set up the 2D netcdf data extents
     ierr = NF90_INQUIRE_DIMENSION(ncID, nodeDimID, LEN = nodes)
     start(1) = 1
-    start(2) = myFile%fileRecCounter
+    start(2) = timeLoc
     kount(1) = nodes
-    kount(2) = myTime%timeLen
+    kount(2) = 1
 
-    ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, wPress(:, timeLoc), start, kount)
+    ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, wPress, start, kount)
       CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, datWindX%varID, wVelX(:, timeLoc), start, kount)
+    ierr = NF90_PUT_VAR(ncID, datWindX%varID, wVelX, start, kount)
       CALL NetCDFCheckErr(ierr)
 
-    ierr = NF90_PUT_VAR(ncID, datWindY%varID, wVelY(:, timeLoc), start, kount)
+    ierr = NF90_PUT_VAR(ncID, datWindY%varID, wVelY, start, kount)
      CALL NetCDFCheckErr(ierr)
 
     ! Close netCDF file
     ierr = NF90_CLOSE(ncID)
       CALL NetCDFCheckErr(ierr)
-
-    DEALLOCATE(myTime%time)
 
     CALL UnsetMessageSource()
 

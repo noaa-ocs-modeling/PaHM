@@ -120,7 +120,7 @@ CONTAINS
 
     USE PaHM_Global, ONLY : modelType, wVelX, wVelY, wPress, Times
     USE ParWind, ONLY : GetHollandFields
-    !USE PaHM_NetCDFIO
+    USE PaHM_NetCDFIO
   
     IMPLICIT NONE
 
@@ -133,13 +133,19 @@ CONTAINS
     IF (PRESENT(nTimeSTP)) THEN
       cntTimeEnd = cntTimeBegin + nTimeSTP - 1
     ENDIF
-    
+
     SELECT CASE (modelType)
       CASE (1)
         DO iCnt = cntTimeBegin, cntTimeEnd
           CALL GetHollandFields(iCnt)
+          IF (outFileNameSpecified) THEN
+            ! Create the output NetCDF file and fill it with the static data only
+            ! Initialize all variables. This subroutine is called just once
+            CALL InitAdcircNetCDFOutFile(outFileName)
+
+            CALL WriteNetCDFRecord(outFileName, iCnt)
+          END IF
         END DO
-        !CALL InitAdcircNetCDFOutFile(outFileName)
 
       CASE DEFAULT
         WRITE(scratchMessage, '(a, i0)') &
