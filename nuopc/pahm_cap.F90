@@ -15,18 +15,11 @@ MODULE Pahm_Cap
     model_label_CheckImport => label_CheckImport, &    
     model_label_Finalize    => label_Finalize
 
-  USE PaHM_Global, ONLY: outDT, mdOutDT, nOutDT, wVelX, wVelY, wPress
-  USE PaHM_DriverMod, ONLY: PaHM_Init, PaHM_Run, PaHM_Finalize
+  USE PaHM_Global, ONLY: mdOutDT, wVelX, wVelY, wPress
 
   USE PaHM_Mod, ONLY: MeshData
-  USE PaHM_Mod, ONLY: CreateESMFMeshFromMeshData
-  USE PaHM_Mod, ONLY: uWnd, vWnd, pres
-  USE PaHM_Mod, ONLY: pahm_from_file, ReadConfig
+  USE PaHM_Mod, only: PaHM_ExtractMeshData
 
-  !read from netcdf file
-  USE PaHM_Mod, only: PaHM_NCDFInit, PaHM_NCDFRead 
-  USE PaHM_Mod, only: PaHM_NCDFExtractMeshData, PaHM_ExtractMeshData
-  
   IMPLICIT NONE
 
   LOGICAL :: pahm_write_esmf_mesh = .FALSE.
@@ -79,9 +72,6 @@ MODULE Pahm_Cap
     CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:SetServices)'
 
     rc = ESMF_SUCCESS
-    
-    ! read config file
-    CALL ReadConfig()
 
     ! the NUOPC model component will register the generic methods
     CALL NUOPC_CompDerive(model, model_routine_SS, rc = rc)
@@ -145,6 +135,8 @@ MODULE Pahm_Cap
   !----------------------------------------------------------------
    SUBROUTINE InitializeP1(model, importState, exportState, clock, rc)
 
+    USE PaHM_DriverMod, ONLY: PaHM_Init
+
     IMPLICIT NONE
 
     TYPE(ESMF_GridComp)  :: model
@@ -158,17 +150,10 @@ MODULE Pahm_Cap
 
     rc = ESMF_SUCCESS
 
-    IF (pahm_from_file) THEN
-      CALL PaHM_NCDFInit()
-      WRITE(infoMsg,*) subName,' --- Read PaHM data from pre-generated NetCDF file --- '
-      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
-      print *, 'Will be reading the wind fields from pre-generated NetCDF file'
-    ELSE
-      CALL PaHM_Init()
-      WRITE(infoMsg,*) subName,' --- Using PaHM to generate wind fields --- '
-      CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
-      print *, 'Using PaHM to generate wind fields'
-    END IF
+    CALL PaHM_Init()
+    WRITE(infoMsg,*) subName,' --- Using PaHM to generate wind fields --- '
+    CALL ESMF_LogWrite(infoMsg, ESMF_LOGMSG_INFO, rc = rc)
+    print *, 'Using PaHM to generate wind fields'
 
     CALL PaHM_FieldsSetup()
 
@@ -229,7 +214,7 @@ MODULE Pahm_Cap
   !----------------------------------------------------------------
   SUBROUTINE InitializeP2(model, importState, exportState, clock, rc)
 
-    USE PaHM_Mod, ONLY : PaHM_NCDFExtractMeshData, PaHM_ExtractMeshData
+    USE PaHM_Mod, ONLY : CreateESMFMeshFromMeshData, PaHM_ExtractMeshData
 
     IMPLICIT NONE
 
@@ -261,11 +246,7 @@ MODULE Pahm_Cap
     ! Assign VM to mesh data type.
     mdata%vm = vm
 
-    IF (pahm_from_file) THEN
-      CALL PaHM_NCDFExtractMeshData(mdata) !PV This subroutine needs to be adjusted
-    ELSE
-      CALL PaHM_ExtractMeshData(mdata)
-    END IF
+    CALL PaHM_ExtractMeshData(mdata)
 
     CALL CreateESMFMeshFromMeshData(mdata, modelMesh)
 
@@ -329,6 +310,8 @@ MODULE Pahm_Cap
   !----------------------------------------------------------------
   SUBROUTINE ModelAdvance(model, rc)
 
+    USE PaHM_DriverMod, ONLY: PaHM_Run
+
     IMPLICIT NONE
 
     TYPE(ESMF_GridComp)  :: model
@@ -352,7 +335,7 @@ MODULE Pahm_Cap
     TYPE(ESMF_StateItem_Flag)   :: itemType
     TYPE(ESMF_Mesh)             :: mesh
     TYPE(ESMF_Field)            :: lfield
-    CHARACTER(LEN = 128)          :: fldName,timeStr
+    CHARACTER(LEN = 128)        :: fldName,timeStr
     INTEGER                     :: iCnt
 
     INTEGER                     :: cntCplStep
@@ -423,21 +406,16 @@ MODULE Pahm_Cap
       RETURN  ! bail out
 
     ! Get the data arrays
-    IF (pahm_from_file) THEN
-      !update uWnd, vWnd, pres from nearset time in the pahm netcdf file
-      CALL PaHM_NCDFRead(currTime)
+    ! In PaHM outDT is the user time step and it can be one of Sec, Min, Hours, Days
+    ! and mdOutDT is always in Sec (converted outDT)
+    timeStepAbs = REAL(ss) + REAL(ssN / ssD)
+    IF (MOD(timeStepAbs, mdOutDT) == 0) THEN
+      cntCplStep = NINT(timeStepAbs / mdOutDT)
     ELSE
-      ! In PaHM outDT is the user time step and it can be one of Sec, Min, Hours, Days
-      ! and mdOutDT is always in Sec (converted outDT)
-      timeStepAbs = REAL(ss) + REAL(ssN / ssD)
-      IF (MOD(timeStepAbs, mdOutDT) == 0) THEN
-        cntCplStep = NINT(timeStepAbs / mdOutDT)
-      ELSE
-        cntCplStep = NINT(timeStepAbs / mdOutDT) + 1
-      END IF
-
-      CALL PaHM_Run(cntCplStep)
+      cntCplStep = NINT(timeStepAbs / mdOutDT) + 1
     END IF
+
+    CALL PaHM_Run(cntCplStep)
 
 
     !------------------------------------------------------------
@@ -451,8 +429,8 @@ MODULE Pahm_Cap
     !--- (FIELD 1): PACK and send uWnd
     ALLOCATE(dataPtr_uWnd(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr_(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_uWnd, &
-                          rc = rc, dump = .TRUE., timeStr = timeStr)
+    CALL State_GetFldPtr(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_uWnd, &
+                         rc = rc, dump = .TRUE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
@@ -460,18 +438,14 @@ MODULE Pahm_Cap
 
     ! Fill only owned nodes for dataPtr_uWnd vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      IF (pahm_from_file) THEN
-        dataPtr_uWnd(iCnt) = uWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
-      ELSE
-        dataPtr_uWnd(iCnt) = wVelX(mdataOut%owned_to_present_nodes(iCnt))
-      END IF
+      dataPtr_uWnd(iCnt) = wVelX(mdataOut%owned_to_present_nodes(iCnt))
     END DO
 
     !--- (FIELD 2): PACK and send vWnd
     ALLOCATE(dataPtr_vWnd(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr_(ST = exportState,fldName = 'imwh10m', fldPtr = dataPtr_vWnd, &
-                          rc = rc, dump = .FALSE., timeStr = timeStr)
+    CALL State_GetFldPtr(ST = exportState,fldName = 'imwh10m', fldPtr = dataPtr_vWnd, &
+                         rc = rc, dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
@@ -479,18 +453,14 @@ MODULE Pahm_Cap
 
     ! Fill only owned nodes for dataPtr_vWnd vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      IF (pahm_from_file) THEN
-        dataPtr_vWnd(iCnt) = vWnd(mdataOut%owned_to_present_nodes(iCnt), 1)
-      ELSE
-        dataPtr_vWnd(iCnt) = wVelY(mdataOut%owned_to_present_nodes(iCnt))
-      END IF
+      dataPtr_vWnd(iCnt) = wVelY(mdataOut%owned_to_present_nodes(iCnt))
     END DO
 
     !--- (FIELD 3): PACK and send pres
     ALLOCATE(dataPtr_pres(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr_(ST = exportState, fldName = 'pmsl', fldPtr = dataPtr_pres, &
-                          rc = rc,dump = .FALSE., timeStr = timeStr)
+    CALL State_GetFldPtr(ST = exportState, fldName = 'pmsl', fldPtr = dataPtr_pres, &
+                         rc = rc,dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
@@ -498,11 +468,7 @@ MODULE Pahm_Cap
 
     ! Fill only owned nodes for dataPtr_pres vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      IF (pahm_from_file) THEN
-        dataPtr_pres(iCnt) = pres(mdataOut%owned_to_present_nodes(iCnt), 1)
-      ELSE
-        dataPtr_pres(iCnt) = wPress(mdataOut%owned_to_present_nodes(iCnt))
-      END IF
+      dataPtr_pres(iCnt) = wPress(mdataOut%owned_to_present_nodes(iCnt))
 
       IF (ABS(dataPtr_pres(iCnt)) > 1e11) THEN
         STOP '  dataPtr_pmsl > mask1 > in PaHM ! '     
@@ -525,6 +491,8 @@ MODULE Pahm_Cap
   !! @param rc return code
   !----------------------------------------------------------------
   SUBROUTINE PaHM_model_finalize(model, rc)
+
+    USE PaHM_DriverMod, ONLY: PaHM_Finalize
 
     IMPLICIT NONE
 
@@ -787,7 +755,7 @@ MODULE Pahm_Cap
 !================================================================================
 
   !----------------------------------------------------------------
-  !  S U B R O U T I N E   S T A T E _ G E T F L D P T R _
+  !  S U B R O U T I N E   S T A T E _ G E T F L D P T R
   !----------------------------------------------------------------
   !  author 
   !>
@@ -798,20 +766,20 @@ MODULE Pahm_Cap
   !! @param fldPtr pointer to 1D array
   !! @param rc return code
   !----------------------------------------------------------------
-  SUBROUTINE State_GetFldPtr_(ST, fldName, fldPtr, rc, dump,timeStr)
+  SUBROUTINE State_GetFldPtr(ST, fldName, fldPtr, rc, dump, timeStr)
 
     IMPLICIT NONE
 
-    TYPE(ESMF_State), INTENT(IN)   :: ST
-    CHARACTER(LEN = *), INTENT(IN) :: fldName
+    TYPE(ESMF_State), INTENT(IN)            :: ST
+    CHARACTER(LEN = *), INTENT(IN)          :: fldName
     REAL(ESMF_KIND_R8), POINTER, INTENT(IN) :: fldPtr(:)
-    INTEGER, INTENT(OUT), OPTIONAL :: rc
-    LOGICAL, INTENT(IN), OPTIONAL  :: dump
+    INTEGER, INTENT(OUT), OPTIONAL          :: rc
+    LOGICAL, INTENT(IN), OPTIONAL           :: dump
     CHARACTER(LEN = 128),INTENT(INOUT), OPTIONAL :: timeStr
 
     ! Local variables
     TYPE(ESMF_Field) :: lfield
-    INTEGER :: lrc
+    INTEGER          :: lrc
     CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:State_GetFldPtr)'
 
     CALL ESMF_StateGet(ST, itemName = trim(fldName), field = lfield, rc = lrc)
@@ -831,42 +799,6 @@ MODULE Pahm_Cap
           file = __FILE__)) &
         RETURN  ! bail out
     END IF
-
-  END SUBROUTINE State_GetFldPtr_
-
-!================================================================================
-
-  !----------------------------------------------------------------
-  !  S U B R O U T I N E   S T A T E _ G E T F L D P T R
-  !----------------------------------------------------------------
-  !  author 
-  !>
-  !> Retrieve a pointer to a field's data array from inside an ESMF_State object.
-  !!
-  !! @param ST the ESMF_State object
-  !! @param fldName name of the fields
-  !! @param fldPtr pointer to 1D array
-  !! @param rc return code
-  !----------------------------------------------------------------
-  SUBROUTINE State_GetFldPtr(ST, fldName, fldPtr, rc)
-
-    IMPLICIT NONE
-
-    TYPE(ESMF_State), INTENT(IN)            :: ST
-    CHARACTER(LEN = *), INTENT(IN)          :: fldName
-    REAL(ESMF_KIND_R8), POINTER, INTENT(IN) :: fldPtr(:)
-    INTEGER, INTENT(OUT), OPTIONAL          :: rc
-
-    ! Local variables
-    TYPE(ESMF_Field) :: lfield
-    INTEGER :: lrc
-    CHARACTER(LEN = *), PARAMETER :: subName = '(PaHM_Cap:State_GetFldPtr)'
-
-    CALL ESMF_StateGet(ST, itemName = trim(fldName), field = lfield, rc = lrc)
-    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
-    CALL ESMF_FieldGet(lfield, farrayPtr = fldPtr, rc  =  lrc)
-    IF (ESMF_LogFoundError(rcToCheck = lrc, msg = ESMF_LOGERR_PASSTHRU, line = __LINE__, file = __FILE__)) RETURN
-    IF (PRESENT(rc)) rc = lrc
 
   END SUBROUTINE State_GetFldPtr
 
