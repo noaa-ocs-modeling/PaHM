@@ -47,9 +47,9 @@ points are detailed below.
 
 - [Get PaHM](@ref install_getpahm) on GitHub repository
 
-- [Build Notus](@ref install_build)
+- [Build PaHM](@ref install_build)
 
-- [Run Notus] (@ref run_pahm) (different ways to execute Notus).
+- [Run PaHM] (@ref run_pahm) (different ways to execute PaHM).
 
 
 ## User guide

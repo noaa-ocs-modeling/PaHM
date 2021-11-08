@@ -23,9 +23,9 @@
  @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var menudata={children:[
-{text:"Main Page",url:"index.html"},
-{text:"Related Pages",url:"pages.html"},
-{text:"Modules",url:"namespaces.html",children:[
+{text:"PaHM",url:"index.html"},
+{text:"PaHM code",url:"pahm_dev_doc.html",children:[
+{text:"Modules List",url:"namespaces.html",children:[
 {text:"Modules List",url:"namespaces.html"},
 {text:"Module Members",url:"namespacemembers.html",children:[
 {text:"All",url:"namespacemembers.html",children:[
@@ -102,7 +102,7 @@ var menudata={children:[
 {text:"w",url:"namespacemembers_vars_w.html#index_w"},
 {text:"x",url:"namespacemembers_vars_x.html#index_x"},
 {text:"y",url:"namespacemembers_vars_y.html#index_y"}]}]}]},
-{text:"Data Types List",url:"annotated.html",children:[
+{text:"Class List",url:"annotated.html",children:[
 {text:"Data Types List",url:"annotated.html"},
 {text:"Data Types",url:"classes.html"},
 {text:"Data Fields",url:"functions.html",children:[
@@ -159,9 +159,9 @@ var menudata={children:[
 {text:"t",url:"functions_vars.html#index_t"},
 {text:"w",url:"functions_vars.html#index_w"},
 {text:"y",url:"functions_vars.html#index_y"}]}]}]},
-{text:"Files",url:"files.html",children:[
+{text:"File List",url:"files.html",children:[
 {text:"File List",url:"files.html"},
 {text:"File Members",url:"globals.html",children:[
 {text:"All",url:"globals.html"},
 {text:"Functions/Subroutines",url:"globals_func.html"},
-{text:"Macros",url:"globals_defs.html"}]}]}]}
+{text:"Macros",url:"globals_defs.html"}]}]}]}]}
