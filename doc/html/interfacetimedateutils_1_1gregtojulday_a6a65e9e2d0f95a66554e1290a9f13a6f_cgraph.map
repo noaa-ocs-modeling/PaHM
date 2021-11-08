@@ -1,0 +1,5 @@
+<map id="timedateutils::gregtojulday::gregtojulday2" name="timedateutils::gregtojulday::gregtojulday2">
+<area shape="rect" id="node1" title="Determines the Julian date from a Gregorian date." alt="" coords="5,23,212,70"/>
+<area shape="rect" id="node2" href="$namespacetimedateutils.html#ac0661d72fdf8161ad7d0b30d0dc57bd6" title="Checks for a leap year." alt="" coords="260,5,443,35"/>
+<area shape="rect" id="node3" href="$namespacetimedateutils.html#a6954898ee8b7d8be2df0b30c0c167c87" title="Pre&#45;processes an arbitrary date string." alt="" coords="261,59,441,88"/>
+</map>
