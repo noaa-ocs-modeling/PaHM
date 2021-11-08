@@ -1,19 +1,25 @@
 !----------------------------------------------------------------
 !               M O D U L E   M E S H
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
-!  Adopted from the ADCIRC source code.
+!> @file mesh.F90
 !>
-!> Created this mesh module in order to modularize
-!> mesh related data. Modularity gives us greater flexibility in
-!> reading meshes in different file formats (such as NetCDF or XDMF)
-!> or even to read meshes that were originally developed and formatted
-!> for other unstructured mesh models (such as DG ADCIRC, RiCOM, FVCOM,
-!> SUNTANS, or unstructured SWAN).
+!> @brief
+!>   Contains all the mesh related utilities.
 !>
-!> The variables and subroutines in this module were refactored
-!> out of the other parts of the code, particularly from the global
-!> module.
+!> @details
+!>   Created this mesh module in order to modularize
+!>   mesh related data. Modularity gives us greater flexibility in
+!>   reading meshes in different file formats (such as NetCDF or XDMF)
+!>   or even to read meshes that were originally developed and formatted
+!>   for other unstructured mesh models (such as DG ADCIRC, RiCOM, FVCOM,
+!>   SUNTANS, or unstructured SWAN).
+!>
+!>   The variables and subroutines in this module were refactored
+!>   out of the other parts of the code, particularly from the global
+!>   module.
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+!> @note Adopted from the ADCIRC source code.
 !----------------------------------------------------------------
 
 MODULE PaHM_Mesh
@@ -51,9 +57,14 @@ MODULE PaHM_Mesh
   !----------------------------------------------------------------
   !  S U B R O U T I N E   R E A D  M E S H
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !> Read the mesh file for the specified model type (meshFileType) and
-  !> in ASCII or NetCDF format (if applicable).
+  !>
+  !> @brief
+  !>   Reads an input mesh file for the specified supported model type.
+  !>
+  !> @details
+  !>   Read the mesh file for the specified model type (meshFileType) and
+  !>   in ASCII or NetCDF format (if applicable).
+  !>
   !----------------------------------------------------------------
   SUBROUTINE ReadMesh()
 
@@ -146,7 +157,15 @@ MODULE PaHM_Mesh
 !================================================================================
 
   !----------------------------------------------------------------
-  !  S U B R O U T I N E   R E A D  M E S H  A S C I I  F O R T  1 4
+  !  S U B R O U T I N E    R E A D  M E S H  A S C I I  F O R T  1 4
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Reads the ADCIRC fort.14 mesh file.
+  !>
+  !> @details
+  !>   Reads the ADCIRC fort.14 mesh file and sets all mesh variables and arrays.
+  !>
   !----------------------------------------------------------------
   SUBROUTINE ReadMeshASCIIFort14()
 
@@ -270,10 +289,14 @@ MODULE PaHM_Mesh
   !----------------------------------------------------------------
   !  S U B R O U T I N E   A L L O C A T E   N O D A L   A N D   E L E M E N T A L   A R R A Y S
   !----------------------------------------------------------------
-  !  jgf51.21.09
-  !> Mesh related memory allocation for any array that is
-  !> dimensioned by the number of nodes in the mesh or the number of
-  !> elements in the mesh.
+  !>
+  !> @brief
+  !>   Allocates memory to mesh arrays.
+  !>
+  !> @details
+  !>   Mesh related memory allocation for any array that is dimensioned
+  !>   by the number of nodes in the mesh or the number of elements in the mesh.
+  !>
   !----------------------------------------------------------------
   SUBROUTINE AllocateNodalAndElementalArrays()
  

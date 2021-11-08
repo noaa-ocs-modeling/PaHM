@@ -1,8 +1,17 @@
-!*****************************************************************************************
-!> author: Jacob Williams
-!  license: BSD
-!
-!  For reading and writing CSV files.
+!----------------------------------------------------------------
+!               M O D U L E   C S V _ M O D U L E
+!----------------------------------------------------------------
+!> @file csv_module.F90
+!>
+!> @brief
+!>   For reading and writing CSV files.
+!>
+!> @details
+!>   
+!>
+!> @author Jacob Williams
+!> @copyright License BSD
+!----------------------------------------------------------------
 
     module csv_module
 
@@ -18,56 +27,56 @@
     private
 
     ! the different types of variables that can be in a CSV file.
-    integer,parameter,public :: csv_type_string  = 1  !! a character string cell
-    integer,parameter,public :: csv_type_double  = 2  !! a `real(wp)` cell
-    integer,parameter,public :: csv_type_integer = 3  !! an `integer(ip)` cell
-    integer,parameter,public :: csv_type_logical = 4  !! a logical cell
+    integer,parameter,public :: csv_type_string  = 1  !> a character string cell
+    integer,parameter,public :: csv_type_double  = 2  !> a `real(wp)` cell
+    integer,parameter,public :: csv_type_integer = 3  !> an `integer(ip)` cell
+    integer,parameter,public :: csv_type_logical = 4  !> a logical cell
 
     real(wp),parameter :: zero = 0.0_wp
 
     type,public :: csv_string
-        !! a cell from a CSV file.
-        !!
-        !! This is used to store the data internally
-        !! in the [[csv_file]] class.
+        !> a cell from a CSV file.
+        !>
+        !> This is used to store the data internally
+        !> in the [[csv_file]] class.
         character(len=:),allocatable :: str
     end type csv_string
 
     type,public :: csv_file
 
-        !! the main class for reading and writing CSV files.
-        !!
-        !!@note A CSV file is assumed to contain the same number
-        !!      of columns in each row. It may optionally contain
-        !!      a header row.
+        !> the main class for reading and writing CSV files.
+        !>
+        !> @note A CSV file is assumed to contain the same number
+        !>      of columns in each row. It may optionally contain
+        !>      a header row.
 
         private
 
-        character(len=1) :: quote     = '"'  !! quotation character
-        character(len=1) :: delimiter = ','  !! delimiter character
+        character(len=1) :: quote     = '"'  !> quotation character
+        character(len=1) :: delimiter = ','  !> delimiter character
 
         ! for reading a csv file:
-        integer,public :: n_rows = 0  !! number of rows in the file
-        integer,public :: n_cols = 0  !! number of columns in the file
-        integer :: chunk_size = 100 !! for expanding vectors
-        type(csv_string),dimension(:),allocatable :: header      !! the header
-        type(csv_string),dimension(:,:),allocatable :: csv_data  !! the data in the file
+        integer,public :: n_rows = 0  ! number of rows in the file
+        integer,public :: n_cols = 0  ! number of columns in the file
+        integer :: chunk_size = 100   ! for expanding vectors
+        type(csv_string),dimension(:),allocatable :: header      ! the header
+        type(csv_string),dimension(:,:),allocatable :: csv_data  ! the data in the file
 
         ! for writing a csv file:
-        integer :: icol = 0          !! last column written in current row
-        integer :: iunit = LUN_BTRK  !! file unit for writing
-        logical :: enclose_strings_in_quotes = .true.  !! if true, all string cells
-                                                       !! will be enclosed in quotes.
-        logical :: enclose_all_in_quotes = .false.     !! if true, *all* cells will
-                                                       !! be enclosed in quotes.
-        character(len=1) :: logical_true_string = 'T'  !! when writing a logical `true`
-                                                       !! value to a CSV file, this
-                                                       !! is the string to use
-                                                       !! (default is `T`)
-        character(len=1) :: logical_false_string = 'F' !! when writing a logical `false`
-                                                       !! value to a CSV file, this
-                                                       !! is the string to use
-                                                       !! (default is `F`)
+        integer :: icol = 0          ! last column written in current row
+        integer :: iunit = LUN_BTRK  ! file unit for writing
+        logical :: enclose_strings_in_quotes = .true.  ! if true, all string cells
+                                                       ! will be enclosed in quotes.
+        logical :: enclose_all_in_quotes = .false.     ! if true, *all* cells will
+                                                       ! be enclosed in quotes.
+        character(len=1) :: logical_true_string = 'T'  ! when writing a logical `true`
+                                                       ! value to a CSV file, this
+                                                       ! is the string to use
+                                                       ! (default is `T`)
+        character(len=1) :: logical_false_string = 'F' ! when writing a logical `false`
+                                                       ! value to a CSV file, this
+                                                       ! is the string to use
+                                                       ! (default is `F`)
 
     contains
 
@@ -123,10 +132,37 @@
     contains
 !*****************************************************************************************
 
-!*****************************************************************************************
-!>
-!  Initialize a [[csv_file(type)]].
-
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   E X P A N D _ V E C T O R
+  !----------------------------------------------------------------
+  !> @brief
+  !>   Initialize a [[csv_file(type)]].
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   me                         The ouput csv_file structure
+  !> @param
+  !>   quote                      Can only be one character (optional, default is `"`)
+  !> @param
+  !>   delimiter                  Can only be one character (optional, default is `,`)
+  !> @param
+  !>   enclose_strings_in_quotes  Logical flag; if true, all string cells will be \n
+  !>                              enclosed in quotes (optional, default is `T`)
+  !> @param
+  !>   enclose_all_in_quotes      Logical flag; if true, *all* cells will be \n
+  !>                              enclosed in quotes (optional, default is `F`)
+  !> @param
+  !>   logical_true_string        Logical flag; when writing a logical `true` value to \n
+  !>                              a CSV file, this is the string to use (optional, default is `T`)
+  !> @param
+  !>   logical_false_string       Logical flag; when writing a logical `false` value to \n
+  !>                              a CSV file, this is the string to use (optional, default is `T`)
+  !> @param
+  !>   chunk_size                 Factor for expanding vectors (default is 100)
+  !>
+  !----------------------------------------------------------------
     subroutine initialize_csv_file(me,quote,delimiter,&
                                     enclose_strings_in_quotes,&
                                     enclose_all_in_quotes,&
@@ -137,26 +173,26 @@
     implicit none
 
     class(csv_file),intent(out) :: me
-    character(len=1),intent(in),optional :: quote             !! note: can only be one character
-                                                              !! (Default is `"`)
-    character(len=1),intent(in),optional :: delimiter         !! note: can only be one character
-                                                              !! (Default is `,`)
-    logical,intent(in),optional :: enclose_strings_in_quotes  !! if true, all string cells
-                                                              !! will be enclosed in quotes.
-                                                              !! (Default is True)
-    logical,intent(in),optional :: enclose_all_in_quotes      !! if true, *all* cells will
-                                                              !! be enclosed in quotes.
-                                                              !! (Default is False)
-    character(len=1),intent(in),optional :: logical_true_string !! when writing a logical `true`
-                                                                !! value to a CSV file, this
-                                                                !! is the string to use
-                                                                !! (default is `T`)
-    character(len=1),intent(in),optional :: logical_false_string !! when writing a logical `false`
-                                                                 !! value to a CSV file, this
-                                                                 !! is the string to use
-                                                                 !! (default is `F`)
-    integer,intent(in),optional :: chunk_size  !! factor for expanding vectors
-                                               !! (default is 100)
+    character(len=1),intent(in),optional :: quote             ! note: can only be one character
+                                                              ! (Default is `"`)
+    character(len=1),intent(in),optional :: delimiter         ! note: can only be one character
+                                                              ! (Default is `,`)
+    logical,intent(in),optional :: enclose_strings_in_quotes  ! if true, all string cells
+                                                              ! will be enclosed in quotes.
+                                                              ! (Default is True)
+    logical,intent(in),optional :: enclose_all_in_quotes      ! if true, *all* cells will
+                                                              ! be enclosed in quotes.
+                                                              ! (Default is False)
+    character(len=1),intent(in),optional :: logical_true_string ! when writing a logical `true`
+                                                                ! value to a CSV file, this
+                                                                ! is the string to use
+                                                                ! (default is `T`)
+    character(len=1),intent(in),optional :: logical_false_string ! when writing a logical `false`
+                                                                 ! value to a CSV file, this
+                                                                 ! is the string to use
+                                                                 ! (default is `F`)
+    integer,intent(in),optional :: chunk_size  ! factor for expanding vectors
+                                               ! (default is 100)
 
     if (present(quote)) me%quote = quote
     if (present(delimiter)) me%delimiter = delimiter
@@ -177,8 +213,8 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Destroy the data in a CSV file.
+!
+!> Destroy the data in a CSV file.
 
     subroutine destroy_csv_file(me)
 
@@ -190,37 +226,37 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Read a CSV file.
+!
+!> Read a CSV file.
 
     subroutine read_csv_file(me,filename,header_row,skip_rows,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    character(len=*),intent(in) :: filename  !! the CSV file to open
-    logical,intent(out) :: status_ok  !! status flag
-    integer,intent(in),optional :: header_row  !! the header row
-    integer,dimension(:),intent(in),optional :: skip_rows  !! rows to skip
+    character(len=*),intent(in) :: filename  !> the CSV file to open
+    logical,intent(out) :: status_ok  !> status flag
+    integer,intent(in),optional :: header_row  !> the header row
+    integer,dimension(:),intent(in),optional :: skip_rows  !> rows to skip
 
-    type(csv_string),dimension(:),allocatable :: row_data  !! a tokenized row
+    type(csv_string),dimension(:),allocatable :: row_data  !> a tokenized row
     type(csv_string) :: empty_data
-    integer,dimension(:),allocatable :: rows_to_skip  !! the actual rows to skip
-    character(len=:),allocatable :: line  !! a line from the file
-    integer :: i                !! counter
-    integer :: j                !! counter
-    integer :: irow             !! row counter
-    integer :: n_rows_in_file   !! number of lines in the file
-    integer :: n_rows           !! number of rows in the output data matrix
-    integer :: n_cols           !! number of columns in the file (and output data matrix)
-    integer :: istat            !! open status flag
-    integer :: line_n_cols      !! number of columns in the line (not necessarily equal to n_cols)
-    integer :: iunit            !! open file unit
-    logical :: arrays_allocated !! if the arrays in the
-                                !! class have been allocated
-    integer :: iheader          !! row number of header row
-                                !! (0 if no header specified)
-    character(len=1) :: tmp     !! for skipping a row
+    integer,dimension(:),allocatable :: rows_to_skip  !> the actual rows to skip
+    character(len=:),allocatable :: line  !> a line from the file
+    integer :: i                !> counter
+    integer :: j                !> counter
+    integer :: irow             !> row counter
+    integer :: n_rows_in_file   !> number of lines in the file
+    integer :: n_rows           !> number of rows in the output data matrix
+    integer :: n_cols           !> number of columns in the file (and output data matrix)
+    integer :: istat            !> open status flag
+    integer :: line_n_cols      !> number of columns in the line (not necessarily equal to n_cols)
+    integer :: iunit            !> open file unit
+    logical :: arrays_allocated !> if the arrays in the
+                                !> class have been allocated
+    integer :: iheader          !> row number of header row
+                                !> (0 if no header specified)
+    character(len=1) :: tmp     !> for skipping a row
 
     empty_data%str = ' '
     iunit = LUN_BTRK
@@ -274,7 +310,7 @@
         ! for the allocation of the arrays
         !--- PV
         n_cols = 0
-        do i=1,n_rows_in_file  !! rows in the file
+        do i=1,n_rows_in_file  !> rows in the file
           call me%read_line_from_file(iunit,line,status_ok)
           call me%tokenize(line,row_data)
           n_cols = max(n_cols,size(row_data))
@@ -289,7 +325,7 @@
 
         !read each line in the file, parse it, and populate data
         irow = 0
-        do i=1,n_rows_in_file  !! rows in the file
+        do i=1,n_rows_in_file  !> rows in the file
 
             ! skip row if necessary
             if (allocated(rows_to_skip)) then
@@ -322,7 +358,7 @@
                     me%header(j)%str = row_data(j)%str
                 end do
             else
-                irow = irow + 1  !! row counter in data array
+                irow = irow + 1  !> row counter in data array
                 do j=1,n_cols
                     if(j <= line_n_cols) then
                       me%csv_data(irow,j) = row_data(j) !%str
@@ -351,24 +387,24 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Open a CSV file for writing.
 !
-!  Use `initialize` to set options for the CSV file.
+!> Open a CSV file for writing.
+!>
+!> Use `initialize` to set options for the CSV file.
 
     subroutine open_csv_file(me,filename,n_cols,status_ok,append)
 
     implicit none
 
     class(csv_file),intent(inout)   :: me
-    character(len=*),intent(in)     :: filename     !! the CSV file to open
-    integer,intent(in)              :: n_cols       !! number of columns in the file
-    logical,intent(out)             :: status_ok    !! status flag
-    logical,intent(in),optional     :: append       !! append if file exists
+    character(len=*),intent(in)     :: filename     !> the CSV file to open
+    integer,intent(in)              :: n_cols       !> number of columns in the file
+    logical,intent(out)             :: status_ok    !> status flag
+    logical,intent(in),optional     :: append       !> append if file exists
 
-    integer :: istat       !! open `iostat` flag
-    logical :: append_flag !! local copy of `append` argument
-    logical :: file_exists !! if the file exists
+    integer :: istat       !> open `iostat` flag
+    logical :: append_flag !> local copy of `append` argument
+    logical :: file_exists !> if the file exists
 
     CALL SetMessageSource("open_csv_file")
 
@@ -404,17 +440,17 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Close a CSV file after writing
+!
+!> Close a CSV file after writing
 
     subroutine close_csv_file(me,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    logical,intent(out) :: status_ok  !! status flag
+    logical,intent(out) :: status_ok  !> status flag
 
-    integer :: istat  !! close `iostat` flag
+    integer :: istat  !> close `iostat` flag
 
     close(me%iunit,iostat=istat)
     status_ok = istat==0
@@ -423,29 +459,29 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Add a cell to a CSV file.
 !
-!@todo Need to check the `istat` values for errors.
+!> Add a cell to a CSV file.
+!>
+!> @todo Need to check the `istat` values for errors.
 
     subroutine add_cell(me,val,int_fmt,real_fmt,trim_str)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    class(*),intent(in) :: val  !! the value to add
-    character(len=*),intent(in),optional :: int_fmt  !! if `val` is an integer, use
-                                                     !! this format string.
-    character(len=*),intent(in),optional :: real_fmt !! if `val` is a real, use
-                                                     !! this format string.
-    logical,intent(in),optional :: trim_str !! if `val` is a string, then trim it.
+    class(*),intent(in) :: val  !> the value to add
+    character(len=*),intent(in),optional :: int_fmt  !> if `val` is an integer, use
+                                                     !> this format string.
+    character(len=*),intent(in),optional :: real_fmt !> if `val` is a real, use
+                                                     !> this format string.
+    logical,intent(in),optional :: trim_str !> if `val` is a string, then trim it.
 
-    integer :: istat !! write `iostat` flag
-    character(len=:),allocatable :: ifmt !! actual format string to use for integers
-    character(len=:),allocatable :: rfmt !! actual format string to use for reals
-    logical :: trimstr !! if the strings are to be trimmed
-    character(len=max_real_str_len) :: real_val  !! for writing a real value
-    character(len=max_integer_str_len) :: int_val !! for writing an integer value
+    integer :: istat !> write `iostat` flag
+    character(len=:),allocatable :: ifmt !> actual format string to use for integers
+    character(len=:),allocatable :: rfmt !> actual format string to use for reals
+    logical :: trimstr !> if the strings are to be trimmed
+    character(len=max_real_str_len) :: real_val  !> for writing a real value
+    character(len=max_integer_str_len) :: int_val !> for writing an integer value
 
     CALL SetMessageSource("add_cell")
 
@@ -532,22 +568,22 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Add a vector to a CSV file. Each element is added as a cell to the current line.
+!
+!> Add a vector to a CSV file. Each element is added as a cell to the current line.
 
     subroutine add_vector(me,val,int_fmt,real_fmt,trim_str)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    class(*),dimension(:),intent(in) :: val  !! the values to add
-    character(len=*),intent(in),optional :: int_fmt  !! if `val` is an integer, use
-                                                     !! this format string.
-    character(len=*),intent(in),optional :: real_fmt !! if `val` is a real, use
-                                                     !! this format string.
-    logical,intent(in),optional :: trim_str !! if `val` is a string, then trim it.
+    class(*),dimension(:),intent(in) :: val  !> the values to add
+    character(len=*),intent(in),optional :: int_fmt  !> if `val` is an integer, use
+                                                     !> this format string.
+    character(len=*),intent(in),optional :: real_fmt !> if `val` is a real, use
+                                                     !> this format string.
+    logical,intent(in),optional :: trim_str !> if `val` is a string, then trim it.
 
-    integer :: i !! counter
+    integer :: i !> counter
 
     do i=1,size(val)
 
@@ -569,24 +605,24 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Add a matrix to a CSV file. Each row is added as a new line.
-!  Line breaks are added at the end of each line (in this way it
-!  differs from the other `add` routines).
+!
+!> Add a matrix to a CSV file. Each row is added as a new line.
+!> Line breaks are added at the end of each line (in this way it
+!> differs from the other `add` routines).
 
     subroutine add_matrix(me,val,int_fmt,real_fmt,trim_str)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    class(*),dimension(:,:),intent(in) :: val  !! the values to add
-    character(len=*),intent(in),optional :: int_fmt  !! if `val` is an integer, use
-                                                     !! this format string.
-    character(len=*),intent(in),optional :: real_fmt !! if `val` is a real, use
-                                                     !! this format string.
-    logical,intent(in),optional :: trim_str !! if `val` is a string, then trim it.
+    class(*),dimension(:,:),intent(in) :: val  !> the values to add
+    character(len=*),intent(in),optional :: int_fmt  !> if `val` is an integer, use
+                                                     !> this format string.
+    character(len=*),intent(in),optional :: real_fmt !> if `val` is a real, use
+                                                     !> this format string.
+    logical,intent(in),optional :: trim_str !> if `val` is a string, then trim it.
 
-    integer :: i !! counter
+    integer :: i !> counter
 
     ! add each row:
     do i=1,size(val,1)
@@ -598,9 +634,9 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Advance to the next row in the CSV file
-!  (write any blank cells that are necessary to finish the row)
+!
+!> Advance to the next row in the CSV file
+!> (write any blank cells that are necessary to finish the row)
 
     subroutine next_row(me)
 
@@ -608,8 +644,8 @@
 
     class(csv_file),intent(inout) :: me
 
-    integer :: i  !! counter
-    integer :: n  !! number of blank cells to write
+    integer :: i  !> counter
+    integer :: n  !> number of blank cells to write
 
     if (me%icol>0) then
         n = me%n_cols - me%icol
@@ -635,9 +671,9 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Returns the header as a `type(csv_string)` array.
-!  (`read` must have already been called to read the file).
+!
+!> Returns the header as a `type(csv_string)` array.
+!> (`read` must have already been called to read the file).
 
     subroutine get_header_csv_str(me,header,status_ok)
 
@@ -647,7 +683,7 @@
     type(csv_string),dimension(:),allocatable,intent(out) :: header
     logical,intent(out) :: status_ok
 
-    integer :: i !! column counter
+    integer :: i !> column counter
 
     CALL SetMessageSource("get_header_csv_str")
 
@@ -671,9 +707,9 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Returns the header as a `character(len=*)` array.
-!  (`read` must have already been called to read the file).
+!
+!> Returns the header as a `character(len=*)` array.
+!> (`read` must have already been called to read the file).
 
     subroutine get_header_str(me,header,status_ok)
 
@@ -683,7 +719,7 @@
     character(len=*),dimension(:),allocatable,intent(out) :: header
     logical,intent(out) :: status_ok
 
-    integer :: i !! column counter
+    integer :: i !> column counter
 
     CALL SetMessageSource("get_header_str")
 
@@ -707,20 +743,20 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Returns a `character(len=*)` array containing the csv data
-!  (`read` must have already been called to read the file).
+!
+!> Returns a `character(len=*)` array containing the csv data
+!> (`read` must have already been called to read the file).
 
     subroutine get_csv_data_as_str(me,csv_data,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    character(len=*),dimension(:,:),allocatable,intent(out) :: csv_data  !! the data
-    logical,intent(out) :: status_ok  !! status flag
+    character(len=*),dimension(:,:),allocatable,intent(out) :: csv_data  !> the data
+    logical,intent(out) :: status_ok  !> status flag
 
-    integer :: i !! row counter
-    integer :: j !! column counter
+    integer :: i !> row counter
+    integer :: j !> column counter
 
     CALL SetMessageSource("get_csv_data_as_str")
  
@@ -746,8 +782,8 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Convert a string to a `real(wp)`
+!
+!> Convert a string to a `real(wp)`
 
     pure elemental subroutine to_real(str,val,status_ok)
 
@@ -757,7 +793,7 @@
     real(wp),intent(out) :: val
     logical,intent(out) :: status_ok
 
-    integer :: istat  !! read `iostat` error code
+    integer :: istat  !> read `iostat` error code
 
     read(str,fmt=*,iostat=istat) val
     if (istat==0) then
@@ -771,8 +807,8 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Convert a string to a `integer(ip)`
+!
+!> Convert a string to a `integer(ip)`
 
     pure elemental subroutine to_integer(str,val,status_ok)
 
@@ -782,7 +818,7 @@
     integer(ip),intent(out) :: val
     logical,intent(out) :: status_ok
 
-    integer :: istat  !! read `iostat` error code
+    integer :: istat  !> read `iostat` error code
 
     read(str,fmt=default_int_fmt,iostat=istat) val
     if (istat==0) then
@@ -796,13 +832,13 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
+!
+!> Convert a string to a `logical`
 !>
-!  Convert a string to a `logical`
-!
-!  * Evaluates to `.true.`  for strings ['1','t','true','.true.']
-!  * Evaluates to `.false.` for strings ['0','f','false','.false.']
-!
-!  The string match is not case sensitive.
+!> * Evaluates to `.true.`  for strings ['1','t','true','.true.']
+!> * Evaluates to `.false.` for strings ['0','f','false','.false.']
+!>
+!> The string match is not case sensitive.
 
     pure elemental subroutine to_logical(str,val,status_ok)
 
@@ -840,10 +876,10 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Returns an array indicating the variable type of each columns.
 !
-!@note The first element in the column is used to determine the type.
+!> Returns an array indicating the variable type of each columns.
+!>
+!> @note The first element in the column is used to determine the type.
 
     subroutine variable_types(me,itypes,status_ok)
 
@@ -853,7 +889,7 @@
     integer,dimension(:),allocatable,intent(out) :: itypes
     logical,intent(out) :: status_ok
 
-    integer :: i !! counter
+    integer :: i !> counter
 
     CALL SetMessageSource("variable_types")
 
@@ -874,13 +910,13 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Infers the variable type, assuming the following precedence:
 !
-!  * integer
-!  * double
-!  * logical
-!  * character
+!> Infers the variable type, assuming the following precedence:
+!>
+!> * integer
+!> * double
+!> * logical
+!> * character
 
     subroutine infer_variable_type(str,itype)
 
@@ -889,10 +925,10 @@
     character(len=*),intent(in) :: str
     integer,intent(out) :: itype
 
-    real(wp)    :: rval      !! a real value
-    integer(ip) :: ival      !! an iteger value
-    logical     :: lval      !! a logical value
-    logical     :: status_ok !! status flag
+    real(wp)    :: rval      !> a real value
+    integer(ip) :: ival      !> an iteger value
+    logical     :: lval      !> a logical value
+    logical     :: status_ok !> status flag
 
     call to_integer(str,ival,status_ok)
     if (status_ok) then
@@ -919,21 +955,21 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Get an individual value from the `csv_data` structure in the CSV class.
 !
-!  The output `val` can be an `integer(ip)`, `real(wp)`,
-!  `logical`, or `character(len=*)` variable.
+!> Get an individual value from the `csv_data` structure in the CSV class.
+!>
+!> The output `val` can be an `integer(ip)`, `real(wp)`,
+!> `logical`, or `character(len=*)` variable.
 
     subroutine csv_get_value(me,row,col,val,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in)   :: row !! row number
-    integer,intent(in)   :: col !! column number
-    class(*),intent(out) :: val !! the returned value
-    logical,intent(out)  :: status_ok !! status flag
+    integer,intent(in)   :: row !> row number
+    integer,intent(in)   :: col !> column number
+    class(*),intent(out) :: val !> the returned value
+    logical,intent(out)  :: status_ok !> status flag
 
     select type (val)
     type is (integer(ip))
@@ -960,28 +996,28 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Return a column from a CSV file vector.
 !
-!@note This routine requires that the `r` array already be allocated.
-!      This is because Fortran doesn't want to allow to you pass
-!      a non-polymorphic variable into a routine with a dummy variable
-!      with `class(*),dimension(:),allocatable,intent(out)` attributes.
+!> Return a column from a CSV file vector.
+!>
+!> @note This routine requires that the `r` array already be allocated.
+!>     This is because Fortran doesn't want to allow to you pass
+!>     a non-polymorphic variable into a routine with a dummy variable
+!>     with `class(*),dimension(:),allocatable,intent(out)` attributes.
 
     subroutine get_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
-    class(*),dimension(:),intent(out) :: r  !! assumed to have been allocated to
-                                            !! the correct size by the caller.
-                                            !! (`n_rows`)
-    logical,intent(out) :: status_ok  !! status flag
+    integer,intent(in) :: icol  !> column number
+    class(*),dimension(:),intent(out) :: r  !> assumed to have been allocated to
+                                            !> the correct size by the caller.
+                                            !> (`n_rows`)
+    logical,intent(out) :: status_ok  !> status flag
 
-    integer :: i !! counter
+    integer :: i !> counter
 #if defined __GFORTRAN__
-    character(len=:),allocatable :: tmp !! for gfortran workaround
+    character(len=:),allocatable :: tmp !> for gfortran workaround
 #endif
 
     CALL SetMessageSource("get_column")
@@ -1040,15 +1076,15 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Return a column from a CSV file as a `real(wp)` vector.
+!
+!> Return a column from a CSV file as a `real(wp)` vector.
 
     subroutine get_real_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
+    integer,intent(in) :: icol  !> column number
     real(wp),dimension(:),allocatable,intent(out) :: r
     logical,intent(out) :: status_ok
 
@@ -1069,15 +1105,15 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Return a column from a CSV file as a `integer(ip)` vector.
+!
+!> Return a column from a CSV file as a `integer(ip)` vector.
 
     subroutine get_integer_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
+    integer,intent(in) :: icol  !> column number
     integer(ip),dimension(:),allocatable,intent(out) :: r
     logical,intent(out) :: status_ok
 
@@ -1098,15 +1134,15 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Convert a column from a `csv_string` matrix to a `logical` vector.
+!
+!> Convert a column from a `csv_string` matrix to a `logical` vector.
 
     subroutine get_logical_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
+    integer,intent(in) :: icol  !> column number
     logical,dimension(:),allocatable,intent(out) :: r
     logical,intent(out) :: status_ok
 
@@ -1127,15 +1163,15 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Convert a column from a `csv_string` matrix to a `character(len=*)` vector.
+!
+!> Convert a column from a `csv_string` matrix to a `character(len=*)` vector.
 
     subroutine get_character_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
+    integer,intent(in) :: icol  !> column number
     character(len=*),dimension(:),allocatable,intent(out) :: r
     logical,intent(out) :: status_ok
 
@@ -1156,15 +1192,15 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Convert a column from a `csv_string` matrix to a `type(csv_string)` vector.
+!
+!> Convert a column from a `csv_string` matrix to a `type(csv_string)` vector.
 
     subroutine get_csv_string_column(me,icol,r,status_ok)
 
     implicit none
 
     class(csv_file),intent(inout) :: me
-    integer,intent(in) :: icol  !! column number
+    integer,intent(in) :: icol  !> column number
     type(csv_string),dimension(:),allocatable,intent(out) :: r
     logical,intent(out) :: status_ok
 
@@ -1185,14 +1221,14 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
+!
+!> Tokenize a line from a CSV file. The result is an array of `csv_string` types.
 !>
-!  Tokenize a line from a CSV file. The result is an array of `csv_string` types.
-!
-!### Notes
-!  * Quotes are removed if the entire cell is contained in quotes.
-!
-!@warning It does not account for delimiters in quotes
-!         (these are treated as a new cell). Need to fix!
+!> ### Notes
+!>   * Quotes are removed if the entire cell is contained in quotes.
+!>
+!> @warning It does not account for delimiters in quotes
+!>          (these are treated as a new cell). Need to fix!
 
     subroutine tokenize_csv_line(me,line,cells)
 
@@ -1202,9 +1238,9 @@
     character(len=*),intent(in) :: line
     type(csv_string),dimension(:),allocatable,intent(out) :: cells
 
-    integer :: i !! counter
-    character(len=:),allocatable :: tmp !! a temp string with whitespace removed
-    integer :: n !! length of compressed string
+    integer :: i !> counter
+    character(len=:),allocatable :: tmp !> a temp string with whitespace removed
+    integer :: n !> length of compressed string
 
     call split(line,me%delimiter,me%chunk_size,cells)
 
@@ -1234,18 +1270,18 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Returns the number of lines in a text file.
 !
-!@note It rewinds the file back to the beginning when finished.
+!> Returns the number of lines in a text file.
+!>
+!> @note It rewinds the file back to the beginning when finished.
 
     function number_of_lines_in_file(iunit) result(n_lines)
 
     implicit none
 
-    integer,intent(in)  :: iunit   !! the file unit number
-                                     !! (assumed to be open)
-    integer :: n_lines   !! the number of lines in the file
+    integer,intent(in)  :: iunit   !> the file unit number
+                                     !> (assumed to be open)
+    integer :: n_lines   !> the number of lines in the file
 
     character(len=1) :: tmp
     integer :: istat
@@ -1263,8 +1299,8 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Reads the next line from a file.
+!
+!> Reads the next line from a file.
 
     subroutine read_line_from_file(me,iunit,line,status_ok)
 
@@ -1273,11 +1309,11 @@
     class(csv_file),intent(in) :: me
     integer,intent(in) :: iunit
     character(len=:),allocatable,intent(out) :: line
-    logical,intent(out) :: status_ok !! true if no problems
+    logical,intent(out) :: status_ok !> true if no problems
 
-    integer :: nread  !! character count specifier for read statement
-    integer :: istat  !! file read io status flag
-    character(len=me%chunk_size) :: buffer !! the file read buffer
+    integer :: nread  !> character count specifier for read statement
+    integer :: istat  !> file read io status flag
+    character(len=me%chunk_size) :: buffer !> the file read buffer
 
     CALL SetMessageSource("read_line_from_file")
 
@@ -1309,19 +1345,19 @@
 !*****************************************************************************************
 
 !*****************************************************************************************
-!>
-!  Split a character string using a token.
-!  This routine is inspired by the Python split function.
 !
-!### Example
-!````Fortran
-!   character(len=:),allocatable :: s
-!   type(csv_string),dimension(:),allocatable :: vals
-!   s = '1,2,3,4,5'
-!   call split(s,',',vals)
-!````
-!
-!@warning Does not account for tokens contained within quotes string !!!
+!> Split a character string using a token.
+!> This routine is inspired by the Python split function.
+!> 
+!> ### Example
+!> ````Fortran
+!>    character(len=:),allocatable :: s
+!>    type(csv_string),dimension(:),allocatable :: vals
+!>    s = '1,2,3,4,5'
+!>    call split(s,',',vals)
+!> ````
+!> 
+!> @warning Does not account for tokens contained within quotes string !>!
 
     pure subroutine split(str,token,chunk_size,vals)
 
@@ -1329,18 +1365,18 @@
 
     character(len=*),intent(in)  :: str
     character(len=*),intent(in)  :: token
-    integer,intent(in)           :: chunk_size  !! for expanding vectors
+    integer,intent(in)           :: chunk_size  !> for expanding vectors
     type(csv_string),dimension(:),allocatable,intent(out) :: vals
 
-    integer :: i          !! counter
-    integer :: len_str    !! significant length of `str`
-    integer :: len_token  !! length of the token
-    integer :: n_tokens   !! number of tokens
-    integer :: i1         !! index
-    integer :: i2         !! index
-    integer :: j          !! counters
-    integer,dimension(:),allocatable :: itokens !! start indices of the
-                                                !! token locations in `str`
+    integer :: i          !> counter
+    integer :: len_str    !> significant length of `str`
+    integer :: len_token  !> length of the token
+    integer :: n_tokens   !> number of tokens
+    integer :: i1         !> index
+    integer :: i2         !> index
+    integer :: j          !> counters
+    integer,dimension(:),allocatable :: itokens !> start indices of the
+                                                !> token locations in `str`
 
     len_token = len(token)  ! length of the token
     n_tokens  = 0           ! initialize the token counter

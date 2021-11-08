@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   M E S S A G E S
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file messages.F90
 !>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+!> @note Adopted from the ADCIRC source code.
 !----------------------------------------------------------------
 
 MODULE PaHM_Messages
@@ -61,10 +69,14 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E    I N I T   L O G G I N G
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> Initialize the names for the logging levels and the counter
-  !> for the current subroutine.
+  !> @brief
+  !>   Initializes logging levels.
+  !>
+  !> @details
+  !>   Initialize the names for the logging levels and the counter
+  !>   for the current subroutine.
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE InitLogging()
 
@@ -90,9 +102,13 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E    O P E N   L O G   F I L E
   !--------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Opens the log file for writting.
+  !> @brief
+  !>   Opens the log file for writting.
+  !>
+  !> @details
+  !>   
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE openLogFile()
 
@@ -121,9 +137,13 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E    C L O S E   L O G   F I L E
   !--------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Closes an opened log file.
+  !> @brief
+  !>   Closes an opened log file.
+  !>
+  !> @details
+  !>   
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE closeLogFile()
 
@@ -138,17 +158,21 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E    S C R E E N  M E S S A G E
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> General purpose subroutine to write a message to
-  !> the screen with a certain "logging level", and subject to the
-  !> user's selection of where to write screen output.
+  !> @brief
+  !>   General purpose subroutine to write a message to the screen.
   !>
-  !> This subroutine assumes that the global variable "caller" has
-  !> been set to the name of the subroutine calling it. Therefore,
-  !> the SetMessageSource subroutine must be called at the beginning
-  !> of the subroutine that calls this one, and UnsetMessageSource
-  !> must be called at the end.
+  !> @details
+  !>   General purpose subroutine to write a message to
+  !>   the screen with a certain "logging level", and subject to the
+  !>   user's selection of where to write screen output.
+  !>
+  !>   This subroutine assumes that the global variable "caller" has
+  !>   been set to the name of the subroutine calling it. Therefore,
+  !>   the SetMessageSource subroutine must be called at the beginning
+  !>   of the subroutine that calls this one, and UnsetMessageSource
+  !>   must be called at the end.
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE ScreenMessage_1(message)
 
@@ -206,15 +230,17 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E    L O G   M E S S A G E
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> General purpose subroutine to write a message to the log file.
+  !> @brief
+  !>   General purpose subroutine to write a message to the log file.
   !>
-  !> This subroutine assumes that the global variable "caller" has
-  !> been set to the name of the subroutine calling it. Therefore,
-  !> the SetMessageSource subroutine must be called at the beginning
-  !> of the subroutine that calls this one, and UnsetMessageSource
-  !> must be called at the end.
+  !> @details
+  !>   This subroutine assumes that the global variable "caller" has
+  !>   been set to the name of the subroutine calling it. Therefore,
+  !>   the SetMessageSource subroutine must be called at the beginning
+  !>   of the subroutine that calls this one, and UnsetMessageSource
+  !>   must be called at the end.
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE LogMessage_1(message)
 
@@ -272,10 +298,13 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E   A L L    M E S S A G E
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> General purpose subroutine to write a message to
-  !> both the screen and to the log file.
+  !> @brief
+  !>   General purpose subroutine to write a message to both the screen and the log file.
+  !>
+  !> @details
+  !>   
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE AllMessage_1(message)
 
@@ -308,10 +337,14 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E   S E T   M E S S A G E   S O U R C E
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> Sets the name of the subroutine that is writing log and/or screen messages.
-  !> Must use at the start of any subroutine that calls ScreenMessage, LogMessage, or AllMessage.
+  !> @brief
+  !>   Sets the name of the subroutine that is writing log and/or screen messages.
+  !>
+  !> @details
+  !>   Sets the name of the subroutine that is writing log and/or screen messages.
+  !>   Must use at the start of any subroutine that calls ScreenMessage, LogMessage, or AllMessage.
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE SetMessageSource(source)
 
@@ -330,11 +363,15 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   !     S U B R O U T I N E   U N S E T   M E S S A G E   S O U R C E
   !--------------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> Removes the name of the subroutine that is no longer
-  !> writing log and/or screen messages. Must use at the end of
-  !> any subroutine that calls ScreenMessage, LogMessage, or AllMessage.
+  !> @brief
+  !>    Removes the name of the subroutine that is no longer active.
+  !>
+  !> @details
+  !>   Removes the name of the subroutine that is no longer
+  !>   writing log and/or screen messages. Must use at the end of
+  !>   any subroutine that calls ScreenMessage, LogMessage, or AllMessage.
+  !>
   !--------------------------------------------------------------------
   SUBROUTINE UnsetMessageSource()
 
@@ -349,9 +386,13 @@ MODULE PaHM_Messages
   !-----------------------------------------------------------------------
   !     S U B R O U T I N E   P R O G R A M  V E R S I O N
   !-----------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Prints on the screen the versioning information of the program.
+  !> @brief
+  !>    Prints on the screen the versioning information of the program.
+  !>
+  !> @details
+  !>   
+  !>
   !-----------------------------------------------------------------------
   SUBROUTINE ProgramVersion()
 
@@ -375,9 +416,13 @@ MODULE PaHM_Messages
   !-----------------------------------------------------------------------
   !     S U B R O U T I N E   P R O G R A M  H E L P
   !-----------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Prints on the screen the help system of the program.
+  !> @brief
+  !>    Prints on the screen the help system of the program.
+  !>
+  !> @details
+  !>   
+  !>
   !-----------------------------------------------------------------------
   SUBROUTINE ProgramHelp()
 
@@ -396,9 +441,13 @@ MODULE PaHM_Messages
   !----------------------------------------------------------------
   !  S U B R O U T I N E   T E R M I N A T E
   !----------------------------------------------------------------
-  !  Adopted from the ADCIRC source code.
   !>
-  !> Terminates the calling program when a fatal error is encountered.
+  !> @brief
+  !>    Terminates the calling program when a fatal error is encountered.
+  !>
+  !> @details
+  !>   
+  !>
   !----------------------------------------------------------------
   SUBROUTINE Terminate()
 

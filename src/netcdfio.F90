@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   N E T C D F  I O
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file netcdfio.F90
 !>
+!>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE PaHM_NetCDFIO
@@ -99,17 +107,21 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   !  S U B R O U T I N E   I N I T  A D C I R C  N E T C D F  O U T  F I L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Initializes a new NetCDF data file and puts it in define mode.
-  !> Sets up netCDF dimensions and variables.
+  !> @brief
+  !>   Initializes a new NetCDF data file and puts it in define mode.
   !>
-  !> On input:
+  !> @details
+  !>   Initializes a new NetCDF data file and puts it in define mode.
+  !>   Sets up netCDF dimensions and variables.
+  !>
+  !> @param
   !>   adcircOutFile   The name of the file to be initialized. The file is first
-  !>                   created by calling NewAdcircNetCDFOutFile
+  !>                   created by calling NewAdcircNetCDFOutFile.
   !>
-  !> On output:
-  !>   adcircOutFile   The renamed input file
+  !> @return
+  !>   adcircOutFile:  The renamed input file.
+  !>
   !----------------------------------------------------------------
   SUBROUTINE InitAdcircNetCDFOutFile(adcircOutFile)
 
@@ -605,19 +617,24 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   !  S U B R O U T I N E   N E W  A D C I R C  N E T C D F  O U T  F I L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Creates a new NetCDF data file and puts it in define mode.
+  !> @brief
+  !>   Creates a new NetCDF data file and puts it in define mode.
   !>
-  !> On input:
-  !>   adcircOutFile   The name of the file to be created; the file extension
-  !>                   is replaced by .nc or .nc4. If a file with the
-  !>                   same name exists, it is renamed to:
-  !>                      adcircOutFile.ext-YYYYMMDDhhmmss
+  !> @details
+  !>   Creates a new NetCDF data file and puts it in define mode.
+  !>   The file extension is replaced by .nc or .nc4. If a file with the
+  !>   same name exists, it is renamed to: adcircOutFile.ext-YYYYMMDDhhmmss
   !>
-  !> On output:
-  !>   adcircOutFile   The renamed input file
-  !>   ncID            The id of the newly created file
+  !> @param
+  !>   ncID            The NetCDF ID of the file to be created (output)
+  !> @param
+  !>   adcircOutFile   The name of the file to be created (input/output)
+  !>
+  !> @return
+  !>   adcircOutFile:  The renamed input file
+  !>   ncID:           The id of the newly created file
+  !>
   !----------------------------------------------------------------
   SUBROUTINE NewAdcircNetCDFOutFile(ncID, adcircOutFile)
 
@@ -700,14 +717,26 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   ! S U B R O U T I N E   N E T C D F  C H E C K  E R R
   !----------------------------------------------------------------
-  !  
   !>
-  !> Checks the return value from netCDF calls; if there was an error,
-  !> it writes the error message to the screen and to the log file.
+  !> @brief
+  !>   Checks the return value from netCDF calls.
   !>
-  !> On Input:
+  !> @details
+  !>   Checks the return value from netCDF calls; if there was an error,
+  !>   it writes the error message to the screen and to the log file and then
+  !>   terminates the program.
   !>
-  !>    ierr       The error from a NetCDF library call.
+  !> @param
+  !>   ierr           The error status from a NetCDF library call
+  !> @param
+  !>   file           The name of the file the error occured
+  !> @param
+  !>   line           The line number of the file the error occured
+  !>
+  !> @return
+  !>   adcircOutFile: The renamed input file
+  !>   ncID:          The id of the newly created file
+  !>
   !----------------------------------------------------------------
   SUBROUTINE BASE_NetCDFCheckErr(ierr, file, line)
 
@@ -737,7 +766,13 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   ! S U B R O U T I N E   N E T C D F   T E R M I N A T E
   !----------------------------------------------------------------
-  !  
+  !>
+  !> @brief
+  !>   Terminates the program on NetCDF error.
+  !>
+  !> @details
+  !>   
+  !>
   !----------------------------------------------------------------
   SUBROUTINE NetCDFTerminate()
 
@@ -761,19 +796,18 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   !  S U B R O U T I N E  W R I T E  N E T C D F  R E C O R D
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Writes data to the NetCDF file.
+  !> @brief
+  !>   Writes data to the NetCDF file.
   !>
-  !> On input:
-  !>   adcircOutFile   The name of the file to be created; the file extension
-  !>                   is replaced by .nc or .nc4. If a file with the
-  !>                   same name exists, it is renamed to:
-  !>                      adcircOutFile.ext-YYYYMMDDhhmmss
+  !> @details
+  !>   This subroutine is called repeatedly to write the 2D field records in the NetCDF file.
   !>
-  !> On output:
-  !>   adcircOutFile   The renamed input file
-  !>   ncID            The id of the newly created file
+  !> @param
+  !>   adcircOutFile   The name of the NetCDF file
+  !> @param
+  !>   timeLoc         The time record to write
+  !>
   !----------------------------------------------------------------
   SUBROUTINE WriteNetCDFRecord(adcircOutFile, timeLoc)
 
@@ -822,22 +856,28 @@ MODULE PaHM_NetCDFIO
   !----------------------------------------------------------------
   !  S U B R O U T I N E  S E T   R E C O R D  C O U N T E R  A N D  S T O R E   T I M E
   !----------------------------------------------------------------
-  !  author 
   !>
-  !>  Compares the current simulation time with the array of output times
-  !>  in the file, and if the simulation time is before the end of the file,
-  !>  it sets the record counter to the right place within the existing data.
-  !>  Data that occur after the inserted data will remain, due to the inability
-  !>  of netcdf to delete data from files.
+  !> @brief
+  !>   Sets the record counter.
   !>
-  !> On input:
+  !> @details
+  !>   Compares the current simulation time with the array of output times
+  !>   in the file, and if the simulation time is before the end of the file,
+  !>   it sets the record counter to the right place within the existing data.
+  !>   Data that occur after the inserted data will remain, due to the inability
+  !>   of netcdf to delete data from files.
+  !>
+  !> @param
   !>   ncID   The ID of the NetCDF file
-  !>      f   The file structure
-  !>      t   The time structure
+  !> @param
+  !>   f      The file structure
+  !> @param
+  !>   t      The time structure
   !>
-  !> On output:
-  !>      f   The updated file structure
-  !>      t   The updated time structure
+  !> @return
+  !>   f:     The updated file structure
+  !>   t:     The updated time structure
+  !>
   !----------------------------------------------------------------
   SUBROUTINE SetRecordCounterAndStoreTime(ncID, f, t)
 

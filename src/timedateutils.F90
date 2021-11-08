@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   T I M E  D A T E  U T I L S
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file timedateutils.F90
 !>
+!>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE TimeDateUtils
@@ -87,9 +95,32 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   T I M E  C O N V  I S E C
   !----------------------------------------------------------------
-  !
-  !> Convert time from year, month, day, hour, min, sec into seconds since
-  !> the reference date of the simulation.
+  !>
+  !> @brief
+  !>   Convert time from year, month, day, hour, min, sec into seconds
+  !>   since the reference date of the simulation.
+  !>
+  !> @details
+  !>   The reference date is defined by the global variables:
+  !>   refYear, refMonth, refDay, refHour, refMin and refSec.
+  !>   It uses GregToJulDay and ElapsedSecs functions to calculate the
+  !>   elapsed time from the reference date.
+  !>
+  !> @param
+  !>   iYear     The year (integer)
+  !> @param
+  !>   iMonth    The month of the year (1-12, integer)
+  !> @param
+  !>   iDay      The day of the month (1-31, integer)
+  !> @param
+  !>   iHour     The hour of the day (0-23, integer)
+  !> @param
+  !>   iMin      The minute of the hour (0-59, integer)
+  !> @param
+  !>   iSec      The second of the minute (0-59, integer)
+  !> @param
+  !>   timeSec   The elapsed time in seconds (real, output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE TimeConvISEC(iYear, iMonth, iDay, iHour, iMin, iSec, timeSec)
 
@@ -139,9 +170,34 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   T I M E  C O N V  R S E C
   !----------------------------------------------------------------
-  !
-  !> Convert time from year, month, day, hour, min, sec into seconds since
-  !> the reference date of the simulation.
+  !>
+  !> @brief
+  !>   Convert time from year, month, day, hour, min, sec into seconds
+  !>   since the reference date of the simulation.
+  !>
+  !> @details
+  !>   The reference date is defined by the global variables:
+  !>   refYear, refMonth, refDay, refHour, refMin and refSec.
+  !>   It uses GregToJulDay and ElapsedSecs functions to calculate the
+  !>   elapsed time from the reference date.
+  !>   Similar to TimeConvISEC but seconds are entered as real numbers
+  !>   to allow for fractions of a second.
+  !>
+  !> @param
+  !>   iYear     The year (integer)
+  !> @param
+  !>   iMonth    The month of the year (1-12, integer)
+  !> @param
+  !>   iDay      The day of the month (1-31, integer)
+  !> @param
+  !>   iHour     The hour of the day (0-23, integer)
+  !> @param
+  !>   iMin      The minute of the hour (0-59, integer)
+  !> @param
+  !>   rSec      The second of the minute (0-59, real)
+  !> @param
+  !>   timeSec   The elapsed time in seconds (real, output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE TimeConvRSEC(iYear, iMonth, iDay, iHour, iMin, rSec, timeSec)
 
@@ -189,79 +245,72 @@ MODULE TimeDateUtils
 
 !================================================================================
 
-  !----------------------------------------------------------------
-  ! S U B R O U T I N E   T I M E  C O N V  A D C I R C <- TO BE DELETED
-  !----------------------------------------------------------------
-  !  PV: TO BE DELETED
-  !> Convert time from year,month,day,hour,min,sec into seconds since
-  !> the beginning of the year.
-  !----------------------------------------------------------------
-  SUBROUTINE TimeConvADCIRC(year, month, day, hour, minute, sec, timeSec)
+!DEL  !----------------------------------------------------------------
+!DEL ! S U B R O U T I N E   T I M E  C O N V  A D C I R C <- TO BE DELETED
+!DEL !----------------------------------------------------------------
+!DEL !----------------------------------------------------------------
+!DEL SUBROUTINE TimeConvADCIRC(year, month, day, hour, minute, sec, timeSec)
 
-    IMPLICIT NONE
+!DEL   IMPLICIT NONE
 
-    INTEGER  :: year, month, day, hour, minute, leap
-    REAL(SZ) :: timeSec, sec, secPerDay, secPerHour, secPerMin
+!DEL   INTEGER  :: year, month, day, hour, minute, leap
+!DEL   REAL(SZ) :: timeSec, sec, secPerDay, secPerHour, secPerMin
 
-    !----- START CALCULATIONS -----
+!DEL   !----- START CALCULATIONS -----
 
-    secPerDay  = 86400_SZ
-    secPerHour =  3600.0_SZ
-    secPerMin  =    60.0_SZ
+!DEL   secPerDay  = 86400_SZ
+!DEL   secPerHour =  3600.0_SZ
+!DEL   secPerMin  =    60.0_SZ
 
-    CALL SetMessageSource("TimeConv")
-!PV#if defined(WIND_TRACE) || defined(ALL_TRACE)
-!PV    CALL AllMessage(DEBUG,"Enter.")
-!PV#endif
+!DEL   CALL SetMessageSource("TimeConv")
 
-    timeSec = (day - 1) * secPerDay + hour * secPerHour + minute * secPerMin + sec
-    IF (month >= 2) timeSec = timeSec + 31 * secPerDay
+!DEL   timeSec = (day - 1) * secPerDay + hour * secPerHour + minute * secPerMin + sec
+!DEL   IF (month >= 2) timeSec = timeSec + 31 * secPerDay
 
-    leap = (year / 4) * 4
-    IF ((leap == year) .AND. (month >= 3)) timeSec = timeSec + 29 * secPerDay
-    IF ((leap /= year) .AND. (month >= 3)) timeSec = timeSec + 28 * secPerDay
+!DEL   leap = (year / 4) * 4
+!DEL   IF ((leap == year) .AND. (month >= 3)) timeSec = timeSec + 29 * secPerDay
+!DEL   IF ((leap /= year) .AND. (month >= 3)) timeSec = timeSec + 28 * secPerDay
 
-    IF (month >= 4)  timeSec = timeSec + 31 * secPerDay
-    IF (month >= 5)  timeSec = timeSec + 30 * secPerDay
-    IF (month >= 6)  timeSec = timeSec + 31 * secPerDay
-    IF (month >= 7)  timeSec = timeSec + 30 * secPerDay
-    IF (month >= 8)  timeSec = timeSec + 31 * secPerDay
-    IF (month >= 9)  timeSec = timeSec + 31 * secPerDay
-    IF (month >= 10) timeSec = timeSec + 30 * secPerDay
-    IF (month >= 11) timeSec = timeSec + 31 * secPerDay
-    IF (month == 12) timeSec = timeSec + 30 * secPerDay
+!DEL   IF (month >= 4)  timeSec = timeSec + 31 * secPerDay
+!DEL   IF (month >= 5)  timeSec = timeSec + 30 * secPerDay
+!DEL   IF (month >= 6)  timeSec = timeSec + 31 * secPerDay
+!DEL   IF (month >= 7)  timeSec = timeSec + 30 * secPerDay
+!DEL   IF (month >= 8)  timeSec = timeSec + 31 * secPerDay
+!DEL   IF (month >= 9)  timeSec = timeSec + 31 * secPerDay
+!DEL   IF (month >= 10) timeSec = timeSec + 30 * secPerDay
+!DEL   IF (month >= 11) timeSec = timeSec + 31 * secPerDay
+!DEL   IF (month == 12) timeSec = timeSec + 30 * secPerDay
 
-    IF (month > 12) THEN
-      CALL AllMessage(ERROR, 'Fatal error in subroutine TimeConv: month > 12.')
-      CALL Terminate()
-    END IF
+!DEL   IF (month > 12) THEN
+!DEL     CALL AllMessage(ERROR, 'Fatal error in subroutine TimeConv: month > 12.')
+!DEL     CALL Terminate()
+!DEL   END IF
 
-!PV#if defined(WIND_TRACE) || defined(ALL_TRACE)
-!PV    CALL AllMessage(DEBUG, "Return.")
-!PV#endif
-    CALL UnsetMessageSource()
+!DEL   CALL UnsetMessageSource()
 
-    RETURN
+!DEL   RETURN
 
-  END SUBROUTINE TimeConvADCIRC
+!DEL END SUBROUTINE TimeConvADCIRC
 
-!================================================================================
+!DEL================================================================================
 
   !----------------------------------------------------------------
   ! F U N C T I O N   L E A P  Y E A R
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function tries to determine if a Gregorian year (>= 1582) 
-  !> is a leap year or not.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Checks for a leap year.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
+  !> @details
+  !>   This function tries to determine if a Gregorian year (>= 1582) 
+  !>   is a leap year or not.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
   !>
-  !>       myVal      .TRUE. (leap year) or .FALSE.
+  !> @return
+  !>   myVal: .TRUE. if it is a leap year or .FALSE. otherwise
+  !>
   !----------------------------------------------------------------
   LOGICAL FUNCTION LeapYear(iYear) RESULT(myVal)
 
@@ -299,18 +348,20 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   Y E A R  D A Y S
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function calculates the number of calendar days of a
-  !> Gregorian year (>= 1582).
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the days of the year.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
+  !> @details
+  !>   This function calculates the number of calendar days of a 
+  !>   Gregorian year (>= 1582).
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
   !>
-  !>      myVal       The year days (365 or 366)
+  !> @return
+  !>   myVal:  The days of the year (365 or 366)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION YearDays(iYear) RESULT(myVal)
 
@@ -331,20 +382,23 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   M O N T H  D A Y S
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function calculates the number of calendar days in a month
-  !> of a Gregorian year (>= 1582). In case of an error, the value
-  !> IMISSV (-999999) is returned.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the days in the month of the year.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <= 12)
+  !> @details
+  !>   This function calculates the number of calendar days in a month
+  !>   of a Gregorian year (>= 1582). In case of an error, the value
+  !>   IMISSV (-999999) is returned.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <= 12)
   !>
-  !>      myVal       The month days
+  !> @return
+  !>   myVal:  The days of the month
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION MonthDays(iYear, iMonth) RESULT(myVal)
 
@@ -382,22 +436,26 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   D A Y  O F  Y E A R
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function calculates "the day of year" number given the year,
-  !> month, day, for a Gregorian year (>= 1582). In case of an error,
-  !> the value  IMISSV (-999999) is returned.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the day of the year.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <= 12)
-  !>        iDay      The day of the month (DD, integer, 1 <= DD <= 31)
+  !> @details
+  !>   This function calculates "the day of year" number given the year,
+  !>   month, day, for a Gregorian year (>= 1582). In case of an error,
+  !>   the value  IMISSV (-999999) is returned.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <= 12)
+  !> @param
+  !>   iDay      The day of the month (DD, integer, 1 <= DD <= 31)
   !>
-  !>      myVal       The day of the year number (also erroneously known as Julian day).
-  !>                  This the number of days since the first day of the year (01/01).
+  !> @return
+  !>   myVal:  The day of the year number (also erroneously known as Julian day).
+  !>           This the number of days since the first day of the year (01/01).
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION DayOfYear(iYear, iMonth, iDay) RESULT(myVal)
 
@@ -430,40 +488,50 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   G R E G  T O  J U L  D A Y  I S E C
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
   !>
-  !> This function returns the so called Julian day number given a
-  !> Gregorian date (after 10/05/1582), or the value  RMISSV (-999999.0)
-  !> if an error occurred.
-  !
-  !> The Julian day number of a date is the number of days that has passed
-  !> since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
-  !> to compute differences between dates.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the Julian date from a Gregorian date.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <=12)
-  !>        iDay      The day of the month (DD, integer, 1 <= DD <=31)
-  !>       iHour      The hour of the day (hh, integer, 0 <= hh <= 23)
-  !>        iMin      The minute of the hour (mm, integer, 0 <= mm <= 59)
-  !>        iSec      The second of the minute (ss, integer, 0 <= ss <= 60)
-  !>         mJD      Flag to return a modified julian day number or not
-  !>                    for modified julian day number use: mJD >= 1
-  !>                    otherwise use:                      mJD  < 1
-  !>                    default: mJD = 0
-  !>                    The modified julian day number (MJD) was defined in
-  !>                    the mid 1950's in the interests of astronomy and space science
-  !>                    as MJD = JD - 2400000.5. The half day shift makes the day start
-  !>                    at midnight, which is the current time standard.
-  !>                    Subtracting the large number shifts the zero day to a more
-  !>                    recent time (November 17, 1858, midnight) allowing smaller numbers
-  !>                    to represent time.
+  !> @details
+  !>   This function returns the so called Julian day number given a
+  !>   Gregorian date (after 10/05/1582), or the value  RMISSV (-999999.0)
+  !>   if an error occurred. \n
+  !>   The Julian day number of a date is the number of days that has passed
+  !>   since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
+  !>   to compute differences between dates.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <=12)
+  !> @param
+  !>   iDay      The day of the month (DD, integer, 1 <= DD <=31)
+  !> @param
+  !>   iHour     The hour of the day (hh, integer, 0 <= hh <= 23)
+  !> @param
+  !>   iMin      The minute of the hour (mm, integer, 0 <= mm <= 59)
+  !> @param
+  !>   iSec      iSec      The second of the minute (ss, integer, 0 <= ss <= 59)
+  !> @param
+  !>    mJD      Flag to use a modified julian day number or not
+  !> @verbatim
+  !>   To use a modified julian day number use: mJD >= 1
+  !>   otherwise use:                      mJD  < 1
+  !>   default: mJD = 0
+  !>   The modified julian day number (MJD) was defined in
+  !>   the mid 1950's in the interests of astronomy and space science
+  !>   as MJD = JD - 2400000.5. The half day shift makes the day start
+  !>   at midnight, which is the current time standard.
+  !>   Subtracting the large number shifts the zero day to a more
+  !>   recent time (November 17, 1858, midnight) allowing smaller numbers
+  !>   to represent time.
+  !> @endverbatim
   !>
-  !>      myVal       The julian day number (days) since January 1, 4713 BC at 12h00
+  !> @return
+  !>   myVal: The julian day number (days) since January 1, 4713 BC at 12h00
+  !>
+  !> @note The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
+  !>
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION GregToJulDayISEC(iYear, iMonth, iDay, iHour, iMin, iSec, mJD) RESULT(myVal)
 
@@ -538,40 +606,51 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   G R E G  T O  J U L  D A Y  R S E C
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
   !>
-  !> This function returns the so called Julian day number given a
-  !> Gregorian date (after 10/05/1582), or the value  RMISSV (-999999.0)
-  !> if an error occurred.
-  !
-  !> The Julian day number of a date is the number of days that has passed
-  !> since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
-  !> to compute differences between dates.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the Julian date from a Gregorian date.
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <=12)
-  !>        iDay      The day of the month (DD, integer, 1 <= DD <=31)
-  !>       iHour      The hour of the day (hh, integer, 0 <= hh <= 23)
-  !>        iMin      The minute of the hour (mm, integer, 0 <= mm <= 59)
-  !>        rSec      The second of the minute (ss, real, 0 <= ss <= 60)
-  !>         mJD      Flag to return a modified julian day number or not
-  !>                    for modified julian day number use: mJD >= 1
-  !>                    otherwise use:                      mJD  < 1
-  !>                    default: mJD = 0
-  !>                    The modified julian day number (MJD) was defined in
-  !>                    the mid 1950's in the interests of astronomy and space science
-  !>                    as MJD = JD - 2400000.5. The half day shift makes the day start
-  !>                    at midnight, which is the current time standard.
-  !>                    Subtracting the large number shifts the zero day to a more
-  !>                    recent time (November 17, 1858, midnight) allowing smaller numbers
-  !>                    to represent time.
+  !> @details
+  !>   This function returns the so called Julian day number given a
+  !>   Gregorian date (after 10/05/1582), or the value  RMISSV (-999999.0)
+  !>   if an error occurred. \n
+  !>   The Julian day number of a date is the number of days that has passed
+  !>   since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
+  !>   to compute differences between dates. \n
+  !>   Similar to GregToJulDayISEC but the seconds number is real to allow for second fractions.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <=12)
+  !> @param
+  !>   iDay      The day of the month (DD, integer, 1 <= DD <=31)
+  !> @param
+  !>   iHour     The hour of the day (hh, integer, 0 <= hh <= 23)
+  !> @param
+  !>   iMin      The minute of the hour (mm, integer, 0 <= mm <= 59)
+  !> @param
+  !>   rSec      The second of the minute (ss, real, 0 <= ss <= 59)
+  !> @param
+  !>    mJD      Flag to use a modified julian day number or not
+  !> @verbatim
+  !>   To use a modified julian day number use: mJD >= 1
+  !>   otherwise use:                      mJD  < 1
+  !>   default: mJD = 0
+  !>   The modified julian day number (MJD) was defined in
+  !>   the mid 1950's in the interests of astronomy and space science
+  !>   as MJD = JD - 2400000.5. The half day shift makes the day start
+  !>   at midnight, which is the current time standard.
+  !>   Subtracting the large number shifts the zero day to a more
+  !>   recent time (November 17, 1858, midnight) allowing smaller numbers
+  !>   to represent time.
+  !> @endverbatim
   !>
-  !>      myVal       The julian day number (days) since January 1, 4713 BC at 12h00
+  !> @return
+  !>   myVal: The julian day number (days) since January 1, 4713 BC at 12h00
+  !>
+  !> @note The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
+  !>
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION GregToJulDayRSEC(iYear, iMonth, iDay, iHour, iMin, rSec, mJD) RESULT(myVal)
 
@@ -646,42 +725,53 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   G R E G  T O  J U L  D A Y  I S E C  2
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (time_module.f90)
   !>
-  !> This function returns the so called Julian day number given a
-  !> Gregorian date (after 10/05/1582), or the value RMISSV (-999999.0)
-  !> if an error occurred.
-  !
-  !> The Julian day number of a date is the number of days that has passed
-  !> since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
-  !> to compute differences between dates.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the Julian date from a Gregorian date.
   !>
-  !>       iDate      The date as YYYYMMDD (integer)
-  !>          YYYY      The year (YYYY, integer, 1582 <= YYYY)
-  !>            MM      The month of the year (MM, integer, 1 <= MM <=12)
-  !>            DD      The day of the month (DD, integer, 1 <= DD <=31)
-  !>       iTime      The time as hhmmss (integer)
-  !>            hh      The hour of the day (integer, 0 <= hh <= 23)
-  !>            mm      The minute of the hour (integer, 0 <= mm <= 59)
-  !>            ss      The second of the minute (integer, 0 <= ss <= 60)
-  !>         mJD      Flag to return a modified julian day number or not
-  !>                    for modified julian day number use: mJD >= 1
-  !>                    otherwise use:                      mJD  < 1
-  !>                    default: mJD = 0
-  !>                    The modified julian day number (MJD) was defined in
-  !>                    the mid 1950's in the interests of astronomy and space science
-  !>                    as MJD = JD - 2400000.5. The half day shift makes the day start
-  !>                    at midnight, which is the current time standard.
-  !>                    Subtracting the large number shifts the zero day to a more
-  !>                    recent time (November 17, 1858, midnight) allowing smaller numbers
-  !>                    to represent time.
+  !> @details
+  !>   This function returns the so called Julian day number given a
+  !>   Gregorian date (after 10/05/1582), or the value  RMISSV (-999999.0)
+  !>   if an error occurred. \n
+  !>   The Julian day number of a date is the number of days that has passed
+  !>   since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
+  !>   to compute differences between dates. \n
+  !>   Similar to GregToJulDayISEC but the seconds number is real to allow for second fractions.
   !>
-  !>  On Output:
+  !> @param
+  !>   iDate      The date as YYYYMMDD (integer)
+  !> @verbatim
+  !> YYYY      The year (YYYY, integer, 1582 <= YYYY)
+  !>   MM      The month of the year (MM, integer, 1 <= MM <=12)
+  !>   DD      The day of the month (DD, integer, 1 <= DD <=31)
+  !> @endverbatim
+  !> @param
+  !>   iTime      The time as hhmmss (integer)
+  !> @verbatim
+  !>   hh      The hour of the day (integer, 0 <= hh <= 23)
+  !>   mm      The minute of the hour (integer, 0 <= mm <= 59)
+  !>   ss      The second of the minute (integer, 0 <= ss <= 60)
+  !> @endverbatim
+  !> @param
+  !>    mJD      Flag to use a modified julian day number or not
+  !> @verbatim
+  !>   To use a modified julian day number use: mJD >= 1
+  !>   otherwise use:                      mJD  < 1
+  !>   default: mJD = 0
+  !>   The modified julian day number (MJD) was defined in
+  !>   the mid 1950's in the interests of astronomy and space science
+  !>   as MJD = JD - 2400000.5. The half day shift makes the day start
+  !>   at midnight, which is the current time standard.
+  !>   Subtracting the large number shifts the zero day to a more
+  !>   recent time (November 17, 1858, midnight) allowing smaller numbers
+  !>   to represent time.
+  !> @endverbatim
   !>
-  !>      myVal       The julian day number (days) since January 1, 4713 BC at 12h00
+  !> @return
+  !>   myVal: The julian day number (days) since January 1, 4713 BC at 12h00
+  !>
+  !> @note The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
+  !>
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION GregToJulDay2(iDate, iTime, mJD) RESULT(myVal)
 
@@ -761,41 +851,50 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   J U L  D A Y  T O  G R E G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (time_module.f90)
   !>
-  !> This subroutine computes the calendar year, month, day, hour, minute and second
-  !> corresponding to a given Julian date. The inverse of this procedure is the
-  !> function GregToJulDay. In case of error, year is set equal to IMISSV (-999999).
-  !> Considers Gregorian dates (after 10/05/1582) only.
-  !
-  !> The Julian day number of a date is the number of days that has passed
-  !> since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
-  !> to compute differences between dates.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the Julian date from a Gregorian date.
   !>
-  !>      julDay      The Julian day number (double).
-  !>         mJD      Flag to denote that a modified julian day number is supplied
-  !>                    for modified julian day number use: mJD >= 1
-  !>                    otherwise use:                      mJD  < 1
-  !>                    default: mJD = 0
-  !>                    The modified julian day number (MJD) was defined in
-  !>                    the mid 1950's in the interests of astronomy and space science
-  !>                    as MJD = JD - 2400000.5. The half day shift makes the day start
-  !>                    at midnight, which is the current time standard.
-  !>                    Subtracting the large number shifts the zero day to a more
-  !>                    recent time (November 17, 1858, midnight) allowing smaller numbers
-  !>                    to represent time.
+  !> @details
+  !>   This subroutine computes the calendar year, month, day, hour, minute and second
+  !>   corresponding to a given Julian date. The inverse of this procedure is the
+  !>   function GregToJulDay. In case of error, year is set equal to IMISSV (-999999).
+  !>   Considers Gregorian dates (after 10/05/1582) only. \n
+  !>   The Julian day number of a date is the number of days that has passed
+  !>   since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
+  !>   to compute differences between dates.
   !>
-  !>  On Output:
+  !> @param
+  !>   julDay      The Julian day number (double).
+  !> @param
+  !>    mJD      Flag to use a modified julian day number or not
+  !> @verbatim
+  !>   To use a modified julian day number use: mJD >= 1
+  !>   otherwise use:                      mJD  < 1
+  !>   default: mJD = 0
+  !>   The modified julian day number (MJD) was defined in
+  !>   the mid 1950's in the interests of astronomy and space science
+  !>   as MJD = JD - 2400000.5. The half day shift makes the day start
+  !>   at midnight, which is the current time standard.
+  !>   Subtracting the large number shifts the zero day to a more
+  !>   recent time (November 17, 1858, midnight) allowing smaller numbers
+  !>   to represent time.
+  !> @endverbatim
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY, output)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <=12, output)
+  !> @param
+  !>   iDay      The day of the month (DD, integer, 1 <= DD <=31, output)
+  !> @param
+  !>   iHour     The hour of the day (hh, integer, 0 <= hh <= 23, output)
+  !> @param
+  !>   iMin      The minute of the hour (mm, integer, 0 <= mm <= 59, output)
+  !> @param
+  !>   iSec      The second of the minute (ss, integer, 0 <= ss <= 59, output)
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <=12)
-  !>        iDay      The day of the month (DD, integer, 1 <= DD <=31)
-  !>       iHour      The hour of the day (hh, integer, 0 <= hh <= 23)
-  !>        iMin      The minute of the hour (mm, integer, 0 <= mm <= 59)
-  !>        iSec      The second of the minute (ss, integer, 0 <= ss <= 60)
+  !> @note The code was adopted from the D-Flow FM source (time_module.f90/JULIAN)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE JulDayToGreg(julDay, iYear, iMonth, iDay, iHour, iMin, iSec, mJD)
 
@@ -888,26 +987,26 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   D A Y  O F  Y E A R  T O  G R E G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This subroutine computes the calendar year, month and day from given
-  !> "year" and "day of the year". In case of error, year is set equal to IMISSV (-999999).
-  !> Gregorian date (after 10/05/1582), or the value RMISSV if an error occurred.
-  !
-  !> The Julian day number of a date is the number of days that has passed
-  !> since January 1, 4712 BC at 12h00 (Gregorian). It is usefull
-  !> to compute differences between dates.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Determines the Gregorian date (year, month, day) from a day of the year.
   !>
-  !>        inYR      The year (YYYY, integer, 1582 <= YYYY)
-  !>        inDY      The day of the year (DDD, integer, 1 <= DDD <= 366)
+  !> @details
+  !>   This subroutine computes the calendar year, month and day from given
+  !>   "year" and "day of the year". In case of error, year is set equal to IMISSV (-999999).
+  !>   Gregorian date (after 10/05/1582), or the value RMISSV if an error occurred.
   !>
-  !>  On Output:
+  !> @param
+  !>   inYR      The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>    inDY      The day of the year (DDD, integer, 1 <= DDD <= 366)
+  !> @param
+  !>   iYear     The year (YYYY, integer, 1582 <= YYYY, output)
+  !> @param
+  !>   iMonth    The month of the year (MM, integer, 1 <= MM <=12, output)
+  !> @param
+  !>   iDay      The day of the month (DD, integer, 1 <= DD <=31, output)
   !>
-  !>       iYear      The year (YYYY, integer, 1582 <= YYYY)
-  !>      iMonth      The month of the year (MM, integer, 1 <= MM <=12)
-  !>        iDay      The day of the month (DD, integer, 1 <= DD <=31)
   !----------------------------------------------------------------
   SUBROUTINE DayOfYearToGreg(inYR, inDY, iYear, iMonth, iDay)
 
@@ -947,23 +1046,29 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S P L I T  D A T E  T I M E  S T R I N G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This subroutine splits the string inDate (YYYYMMDDhhmmss) in six integers that is,
-  !> "iYear (YYYY)", "iMonth (MM)", "iDay (DD)", "iHour (hh)", "iMin (mm)" and "iSec (ss)".
-  !
-  !>  On Input:
+  !> @brief
+  !>   Splits a date string into components.
   !>
-  !>  inDateTime      The string datetime (YYYYMMDDhhmmss)
+  !> @details
+  !>   This subroutine splits the string inDate (YYYYMMDDhhmmss) in six integers that is,
+  !>   "iYear (YYYY)", "iMonth (MM)", "iDay (DD)", "iHour (hh)", "iMin (mm)" and "iSec (ss)".
   !>
-  !>  On Output:
+  !> @param
+  !>   inDateTime  The input date string: YYYYMMDDhhmmss
+  !> @param
+  !>   iYear       The year (YYYY, integer, 1582 <= YYYY, output)
+  !> @param
+  !>   iMonth      The month of the year (MM, integer, 1 <= MM <=12, output)
+  !> @param
+  !>   iDay        The day of the month (DD, integer, 1 <= DD <=31, output)
+  !> @param
+  !>   iHour       The hour of the day (hh, integer, 0 <= hh <= 23, output)
+  !> @param
+  !>   iMin        The minute of the hour (mm, integer, 0 <= mm <= 59, output)
+  !> @param
+  !>   iSec        The second of the minute (ss, integer, 0 <= ss <= 59, output)
   !>
-  !>       iYear      The year (YYYY)
-  !>      iMonth      The month of the year (MM; 1 <= MM <= 12)
-  !>        iDay      The day of the month (DD; 1 <= DD <= 31 - depends on month and leap year)
-  !>       iHour      The hour of the day (hh; 0 <= hh <= 23)
-  !>        iMin      The minute of the hour (mm; 0 <= mm <= 59)
-  !>        iSec      The second of the minute (ss; 0 <= ss <= 59)
   !----------------------------------------------------------------
   SUBROUTINE SplitDateTimeString(inDateTime, iYear, iMonth, iDay, iHour, iMin, iSec)
 
@@ -1017,19 +1122,21 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S P L I T  D A T E  T I M E  S T R I N G  2
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This subroutine splits the string inDate (YYYYMMDDhhmmss) in two integers that is,
-  !> "iDate (YYYYMMDD)" and "iTime (hhmmss)".
-  !
-  !>  On Input:
+  !> @brief
+  !>   Splits a date string into two components.
   !>
-  !>      inDate      The string datetime (YYYYMMDDhhmmss)
+  !> @details
+  !>   This subroutine splits the string inDate (YYYYMMDDhhmmss) in two integers that is,
+  !>   "iDate (YYYYMMDD)" and "iTime (hhmmss)".
   !>
-  !>  On Output:
+  !> @param
+  !>   inDateTime  The input date string: YYYYMMDDhhmmss
+  !> @param
+  !>   iDate      The integer date (YYYYMMDD, output)
+  !> @param
+  !>   iTime      The integer time (hhmmss, output)
   !>
-  !>       iDate      The integer date (YYYYMMDD)
-  !>       iTime      The integer time (hhmmss)
   !----------------------------------------------------------------
   SUBROUTINE SplitDateTimeString2(inDateTime, iDate, iTime)
 
@@ -1061,18 +1168,20 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   P R E  P R O C E S S  D A T E  T I M E  S T R I N G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function returns a date/time string in the format YYYYMMDDhhmmss by
-  !> removing all non-numeric characters from the string.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Pre-processes an arbitrary date string.
   !>
-  !>  inDateTime      The string datetime
+  !> @details
+  !>   This function returns a date/time string in the format YYYYMMDDhhmmss by
+  !>   removing all non-numeric characters from the string.
   !>
-  !>  On Output:
+  !> @param
+  !>   inDateTime  The input date string
   !>
-  !>   myValOut       The string datetime as an integer in the form: YYYYMMDDhhmmss
+  !> @return
+  !>   myValOut: The string datetime as an integer in the form: YYYYMMDDhhmmss
+  !>
   !----------------------------------------------------------------
   FUNCTION PreProcessDateTimeString(inDateTime) Result(myValOut)
 
@@ -1108,22 +1217,26 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   J O I N  D A T E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function joins the three integers iYear, iMonth
-  !> and iDay to calculate the integer inDate (YYYYMMDD).
-  !> There is no check on the validity of iYear, iMonth, iDay, therefore
-  !>  the user is responsible to supply valid input values.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Pre-processes an arbitrary date string.
   !>
-  !>       iYear      The year (YYYY)
-  !>      iMonth      The month of the year (MM)
-  !>        iDay      The day of the month (DD)
+  !> @details
+  !>   This function joins the three integers iYear, iMonth
+  !>   and iDay to calculate the integer inDate (YYYYMMDD).
+  !>   There is no check on the validity of iYear, iMonth, iDay, therefore
+  !>   the user is responsible to supply valid input values.
   !>
-  !>  On Output:
+  !> @param
+  !>   iYear       The year (YYYY, integer, 1582 <= YYYY)
+  !> @param
+  !>   iMonth      The month of the year (MM, integer, 1 <= MM <=12)
+  !> @param
+  !>   iDay        The day of the month (DD, integer, 1 <= DD <=31)
   !>
-  !>      inDate      The integer date (YYYYMMDD)
+  !> @return
+  !>   myValOut: The integer date (YYYYMMDD)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION JoinDate(iYear, iMonth, iDay) RESULT(myVal)
 
@@ -1143,23 +1256,27 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S P L I T  D A T E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (time_module.f90/splitDate)
   !>
-  !> This subroutine splits the integer inDate (YYYYMMDD) in three integers that is,
-  !> "iYear (YYYY)", "iMonth (MM)" and "iDay (DD)".
-  !> There is no check on the validity of inDate, the user is responsible to supply
-  !> a valid input date.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Pre-processes an arbitrary date string.
   !>
-  !>      inDate      The integer date (YYYYMMDD)
+  !> @details
+  !>   This subroutine splits the integer inDate (YYYYMMDD) in three integers that is,
+  !>   "iYear (YYYY)", "iMonth (MM)" and "iDay (DD)".
+  !>   There is no check on the validity of inDate, the user is responsible to supply
+  !>   a valid input date.
   !>
-  !>  On Output:
+  !> @param
+  !>   inDate   The integer date (YYYYMMDD)
+  !> @param
+  !>   iYear    The year (YYYY, integer, 1582 <= YYYY, output)
+  !> @param
+  !>   iMonth   The month of the year (MM, integer, 1 <= MM <=12, output)
+  !> @param
+  !>   iDay     The day of the month (DD, integer, 1 <= DD <=31, output)
   !>
-  !>       iYear      The year (YYYY)
-  !>      iMonth      The month of the year (MM)
-  !>        iDay      The day of the month (DD)
+  !> @note The code was adopted from the D-Flow FM source (time_module.f90/splitDate)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE SplitDate(inDate, iYear, iMonth, iDay)
 
@@ -1182,29 +1299,39 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   D A T E  T I M E 2  S T R I N G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !> @brief
+  !>   Constructs a NetCDF time string.
   !>
-  !> This function joins the three integers iYear, iMonth
-  !> and iDay to calculate the integer inDate (YYYYMMDD).
-  !> There is no check on the validity of iYear, iMonth, iDay, therefore
-  !>  the user is responsible to supply valid input values.
-  !
-  !>  On Input:
+  !> @details
+  !>   This function joins the values of the year, month, day, hour, min, sec to
+  !>   construct the date string used in NetCDF files.
   !>
-  !>        year      The year (YYYY)
-  !>       month      The month of the year (MM)
-  !>         day      The day of the month (DD)
-  !>        hour      The hour of the day (hh)      (optional - 0 is substituded if not supplied)
-  !>         min      The minute of the hour (mm)   (optional - 0 is substituded if not supplied)
-  !>         sec      The second of the minute (ss) (optional - 0 is substituded if not supplied)
-  !>         sep      The seperation character between the date part and the time part
-  !>                  (optional - for sep <= 0 use ' ', for sep > 0 use 'T')
-  !>       units      The units part to be prepented to the datetime string in the form '<units> since'
-  !>                  (optional - units = [S(seconds), M(minutes), H(hours), D(days), W(weeks)])
+  !> @param
+  !>   year      The year (YYYY)
+  !> @param
+  !>   month     The month of the year (MM)
+  !> @param
+  !>   day       The day of the month (DD)
+  !> @param
+  !>   hour      The hour of the day (hh)      (optional - 0 is substituded if not supplied)
+  !> @param
+  !>   min       The minute of the hour (mm)   (optional - 0 is substituded if not supplied)
+  !> @param
+  !>   sec       The second of the minute (ss) (optional - 0 is substituded if not supplied)
+  !> @param
+  !>   sep       The seperation character between the date part and the time part
+  !             (optional - for sep <= 0 use ' ', for sep > 0 use 'T')
+  !> @param
+  !>   units     The units part to be prepented to the datetime string in the form '<units> since'
+  !             (optional - units = [S(seconds), M(minutes), H(hours), D(days), W(weeks)])
+  !> @param
+  !>   zone      The timezone to use (default none/UTC, optional)
+  !> @param
+  !>   err       The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut: The datetime string ([<units> since ]YYYY-MM-DD hh:mm:ss)
   !>
-  !>   myValOut      The datetime string ([<units> since ]YYYY-MM-DD hh:mm:ss)
   !----------------------------------------------------------------
   FUNCTION DateTime2String(year, month, day, hour, min, sec, sep, units, zone, err) result(myValOut)
 
@@ -1283,21 +1410,23 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   G E T  T I M E  C O N V  S E C
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !> @brief
+  !>   Calculates the conversion factor between time units and seconds.
   !>
-  !> This function returns the converion factor between timeUnit and seconds.
-  !> If invert > 0 then the function returns the inverse conversion factor,
-  !> seconds to timeUnit.
-  !
-  !>  On Input:
+  !> @details
+  !>   This function returns the converion factor between timeUnit and seconds.
+  !>   If invert > 0 then the function returns the inverse conversion factor,
+  !>   seconds to timeUnit.
   !>
-  !>       units      The time unit used in the calculations (string: S, M, H, D, W)
-  !>      invert      To perform the inverted conversion, froms seconds to timeUnit (optional)
-  !>      where:      S=seconds, M=minutes, H=hours, D=days, W=weeks
+  !> @param
+  !>   units      The time unit used in the calculations (string: S, M, H, D, W)
+  !> @param
+  !>   invert     To perform the inverted conversion, froms seconds to timeUnit (optional) \n
+  !>              where: S=seconds, M=minutes, H=hours, D=days, W=weeks
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut: The conversion factor
   !>
-  !>   myValOut      The conversion factor
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION GetTimeConvSec(units, invert) result(myValOut)
 
@@ -1362,25 +1491,28 @@ MODULE TimeDateUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   E L A P S E D  S E C S
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !> @brief
+  !>   Calculates the elapsed time in seconds.
   !>
-  !> This function computes the the elapsed time in sec, between times1 and time2,
-  !> possibly given the units of the times.
-  !
-  !>  On Input:
+  !> @details
+  !>   This function computes the elapsed time in sec, between times1 and time2,
+  !>   given the units of the times.
   !>
-  !>     inTime1      The start time (real)
-  !>     inTime2      The end time (real)
-  !>     inUnits      The units (string, optional) of the time variables. Available options:
-  !>                    For converting days to seconds :   inUnits = ['DAYS', 'DAY', 'DA', 'D']
-  !>                    For converting hours to seconds:   inUnits = ['HOURS', 'HOUR', 'HOU', 'HO', 'H']
-  !>                    For converting seconds to seconds: inUnits = ['SEC', 'SE', 'SC', 'S']
-  !>                    Default:                           inUnits = ['SEC', 'SE', 'SC', 'S']
+  !> @param
+  !>   inTime1      The start time (real)
+  !> @param
+  !>   inTime2      The end time (real)
+  !> @param
+  !>   inUnits      The units (string, optional) of the time variables. Available options: \n
+  !>                For converting days to seconds :   inUnits = ['DAYS', 'DAY', 'DA', 'D'] \n
+  !>                For converting hours to seconds:   inUnits = ['HOURS', 'HOUR', 'HOU', 'HO', 'H'] \n
+  !>                For converting seconds to seconds: inUnits = ['SEC', 'SE', 'SC', 'S'] \n
+  !>                Default:                           inUnits = ['SEC', 'SE', 'SC', 'S'] \n
   !>
-  !>  On Output:
+  !> @return
+  !>   myVal: The elapsed time in seconds (real). If this value is very close,
+  !>          within a tolerance, to the nearest whole number, it is set equal to that number.
   !>
-  !>       myVal      The elapsed time in seconds (real). If this value is very close,
-  !>                  within a tolerance, to the nearest whole number, it is set equal to that number.
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION ElapsedSecs(inTime1, inTime2, inUnits) RESULT(myVal)
 
@@ -1418,11 +1550,18 @@ MODULE TimeDateUtils
 !================================================================================
 
   !----------------------------------------------------------------
-  ! F U N C T I O N   T O  U P P
+  ! F U N C T I O N   U P P
   !----------------------------------------------------------------
-  !> Convert a string to upper-case
-  !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !> @brief
+  !>   Convert a string to upper-case.
+  !>
+  !> @details
+  !>   
+  !> @param
+  !>   inpString   The input string
+  !>
+  !> @return
+  !>   outString: The input string converted to upper case string
   !>
   !----------------------------------------------------------------
   FUNCTION upp(inpString) RESULT(outString)

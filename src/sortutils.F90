@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   U T I L I T I E S
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file sortutils.F90
 !>
+!>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE SortUtils
@@ -56,20 +64,23 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   I N D E X X  I N T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
-  !> is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !> @brief
+  !>   Indexes a 1D integer array in ascending order.
   !>
-  !>  On Input:
+  !> @details
+  !>   Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
+  !>   is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
   !>
+  !> @param
   !>   arr1D    The array to be indexed (integer)
+  !> @param
+  !>   idx1D    The array of "indexed" indexes of arr1D (output)
+  !> @param
+  !>   status   The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>   idx1D    The array of "indexed" indexes of arr1D
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE IndexxInt(arr1D, idx1D, status)
 
@@ -225,20 +236,23 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   I N D E X X  I N T  8
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
-  !> is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !> @brief
+  !>   Indexes a 1D 32-bit integer array in ascending order.
   !>
-  !>  On Input:
+  !> @details
+  !>   Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
+  !>   is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
   !>
+  !> @param
   !>   arr1D    The array to be indexed (integer)
+  !> @param
+  !>   idx1D    The array of "indexed" indexes of arr1D (output)
+  !> @param
+  !>   status   The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>   idx1D    The array of "indexed" indexes of arr1D
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE IndexxInt8(arr1D, idx1D, status)
 
@@ -394,20 +408,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   I N D E X X  S T R I N G
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Modified version of IndexxInt to account for string comparisons
   !>
-  !> Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
-  !> is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !> @brief
+  !>   Indexes a 1D string array in ascending order.
   !>
-  !>  On Input:
+  !> @details
+  !>   Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
+  !>   is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !>   Modified version of IndexxInt to account for string comparisons
   !>
-  !>   arr1D    The array to be indexed (integer)
+  !> @param
+  !>   arr1D      The array to be indexed (string)
+  !> @param
+  !>   idx1D      The array of "indexed" indexes of arr1D (output)
+  !> @param
+  !>   status     The error status, no error: status = 0 (output)
+  !> @param
+  !>   caseSens   Logical flag to request case sensitive sort
   !>
-  !>  On Output:
-  !>
-  !>   idx1D    The array of "indexed" indexes of arr1D
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE IndexxString(arr1D, idx1D, status, caseSens)
 
@@ -568,20 +586,23 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   I N D E X X  S I N G L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
-  !> is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !> @brief
+  !>   Indexes a 1D single precision array in ascending order.
   !>
-  !>  On Input:
+  !> @details
+  !>   Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
+  !>   is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
   !>
-  !>   arr1D    The array to be indexed (single precision)
+  !> @param
+  !>   arr1D      The array to be indexed (single precision)
+  !> @param
+  !>   idx1D      The array of "indexed" indexes of arr1D (output)
+  !> @param
+  !>   status     The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>   idx1D    The array of "indexed" indexes of arr1D
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE IndexxSingle(arr1D, idx1D, status)
 
@@ -737,20 +758,23 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   I N D E X X  D O U B L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
-  !> is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
+  !> @brief
+  !>   Indexes a 1D double precision array in ascending order.
   !>
-  !>  On Input:
+  !> @details
+  !>   Indexes the 1D array arr1D, i.e., outputs the array index of length N such that arr1D(idx1D(j ))
+  !>   is in ascending order for j = 1, 2, . . . , N. The input quantity arr1D is not changed.
   !>
-  !>   arr1D    The array to be indexed (double precision)
+  !> @param
+  !>   arr1D      The array to be indexed (double precision)
+  !> @param
+  !>   idx1D      The array of "indexed" indexes of arr1D (output)
+  !> @param
+  !>   status     The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>   idx1D    The array of "indexed" indexes of arr1D
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE IndexxDouble(arr1D, idx1D, status)
 
@@ -906,22 +930,23 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   Q U I C K  S O R T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Sorts the array arr1D into ascending numerical order using Quicksort. The array arr1D
-  !> is replaced on output by its sorted rearrangement. The parameters NN and NSTACK are
-  !> defined as:  NN is the size of subarrays sorted by straight insertion, and
-  !>              NSTACK is the required auxiliary storage
+  !> @brief
+  !>   Sorts the array arr1D into ascending numerical order using Quicksort.
   !>
-  !>  On Input:
+  !> @details
+  !>   The array arr1D is replaced on output by its sorted rearrangement.
+  !>   The parameters NN and NSTACK are defined as:
+  !>   - NN is the size of subarrays sorted by straight insertion, and
+  !>   - NSTACK is the required auxiliary storage
   !>
-  !>   arr1D    The one-dimensional array to be sorted
+  !> @param
+  !>   arr1D      The one-dimensional array to be sorted
+  !> @param
+  !>   status     The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>   arr1D    The sorted array into ascending numerical order
-  !>  status    The error status (no error: status = 0)
   !----------------------------------------------------------------
   SUBROUTINE QuickSort(arr1D, status)
 
@@ -1048,22 +1073,27 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S O R T  2
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Sorts the array arr1D into ascending order using Quicksort, while making the corresponding
-  !> rearrangement of the same-size array slv1D. The sorting and rearrangement are performed
-  !> by means of the index array.
+  !> @brief
+  !>   Sorts two 1D arrays into ascending numerical order using Quicksort.
   !>
-  !>  On Input:
+  !> @details
+  !>   Sorts the array arr1D into ascending order using Quicksort, while making the corresponding
+  !>   rearrangement of the same-size array slv1D. The sorting and rearrangement are performed
+  !>   by means of the index array.
   !>
-  !>   arr1D    The first one-dimensional array to be sorted in ascending order
-  !>   slv1D    The second one-dimensional array to be sorted in ascending order
+  !> @param
+  !>   arr1D      The first one-dimensional array to be sorted in ascending order
+  !> @param
+  !>   slv1D      The second one-dimensional array to be sorted in ascending order
+  !> @param
+  !>   status     The error status, no error: status = 0 (output)
   !>
-  !>  On Output:
+  !> @return
+  !>   The two sorted arrays arr1D and slv1D
   !>
-  !>   arr1D    The sorted first array
-  !>   slv1D    The sorted second array
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !>
   !----------------------------------------------------------------
   SUBROUTINE Sort2(arr1D, slv1D, status)
 
@@ -1117,20 +1147,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  C O P Y  I N T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Copies the 1D source array "src" into the 1D destination array "dest".
+  !> @brief
+  !>   Copies the 1D source integer array "src" into the 1D destination array "dest".
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     src    The one-dimensional array to be copied (integer)
+  !> @param
+  !>   src    The one-dimensional array to be copied (integer)
+  !> @param
+  !>   dest   The copied array (output)
+  !> @param
+  !>   nCP    The number of elements of "src" array that copied (output)
+  !> @param
+  !>   nNCP   The number of elements of "src" array that failed to be copied (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>    dest    The copied array (integer)
-  !>     nCP    The number of elements of "src" array that copied (integer)
-  !>    nNCP    The number of elements of "src" array that failed to be copied (integer)
   !----------------------------------------------------------------
   SUBROUTINE ArrayCopyInt(src, dest, nCP, nNCP)
 
@@ -1152,20 +1186,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  C O P Y  S I N G L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Copies the 1D source array "src" into the 1D destination array "dest".
+  !> @brief
+  !>   Copies the 1D source single precision array "src" into the 1D destination array "dest".
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     src    The one-dimensional array to be copied (single precision)
+  !> @param
+  !>   src    The one-dimensional array to be copied (single precision)
+  !> @param
+  !>   dest   The copied array (output)
+  !> @param
+  !>   nCP    The number of elements of "src" array that copied (output)
+  !> @param
+  !>   nNCP   The number of elements of "src" array that failed to be copied (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>    dest    The copied array (single precision)
-  !>     nCP    The number of elements of "src" array that copied (integer)
-  !>    nNCP    The number of elements of "src" array that failed to be copied (integer)
   !----------------------------------------------------------------
   SUBROUTINE ArrayCopySingle(src, dest, nCP, nNCP)
 
@@ -1187,20 +1225,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  C O P Y  D O U B L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Copies the 1D source array "src" into the 1D destination array "dest".
+  !> @brief
+  !>   Copies the 1D source double precision array "src" into the 1D destination array "dest".
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     src    The one-dimensional array to be copied (double precision)
+  !> @param
+  !>   src    The one-dimensional array to be copied (double precision)
+  !> @param
+  !>   dest   The copied array (output)
+  !> @param
+  !>   nCP    The number of elements of "src" array that copied (output)
+  !> @param
+  !>   nNCP   The number of elements of "src" array that failed to be copied (output)
   !>
-  !>  On Output:
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !>
-  !>    dest    The copied array (double precision)
-  !>     nCP    The number of elements of "src" array that copied (integer)
-  !>    nNCP    The number of elements of "src" array that failed to be copied (integer)
   !----------------------------------------------------------------
   SUBROUTINE ArrayCopyDouble(src, dest, nCP, nNCP)
 
@@ -1222,19 +1264,22 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  E Q U A L  I N T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Compares two one-dimensional integer arrays for equality.
+  !> @brief
+  !>   Compares two one-dimensional integer arrays for equality.
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     arr1    The first array in the comparison (integer)
-  !>     arr2    The second array in the comparison (integer)
+  !> @param
+  !>   arr1    The first array in the comparison (integer)
+  !> @param
+  !>   arr2    The second array in the comparison (integer)
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut: The value of the comparison (logical). TRUE if all the elements
+  !>             of arr1 are equal to all elements of arr2, FALSE otherwise.
   !>
-  !> myValOut   The value of the comparison (logical). TRUE if all the elements
-  !>            of arr1 are equal to all elements of arr2, FALSE otherwise.
   !----------------------------------------------------------------
   LOGICAL FUNCTION ArrayEqualInt(arr1, arr2) RESULT(myValOut)
 
@@ -1262,22 +1307,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  E Q U A L  S I N G L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Compares two one-dimensional single precision arrays for equality.
-  !> The equality is determined using a tolerance of: 0.00000001, such that
-  !> the two arrays are considered to be essentially equal on single
-  !> precision calculations.
+  !> @brief
+  !>   Compares two one-dimensional single precision arrays for equality.
   !>
-  !>  On Input:
+  !> @details
+  !>   The equality is determined using a tolerance of: 0.00000001, such that
+  !>   the two arrays are considered to be essentially equal on single
+  !>   precision calculations.
   !>
-  !>     arr1    The first array in the comparison (single precision)
-  !>     arr2    The second array in the comparison (single precision)
+  !> @param
+  !>   arr1    The first array in the comparison (single precision)
+  !> @param
+  !>   arr2    The second array in the comparison (single precision)
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut: The value of the comparison (logical). TRUE if all the elements
+  !>             of arr1 are equal to all elements of arr2, FALSE otherwise.
   !>
-  !> myValOut   The value of the comparison (logical). TRUE if all the elements
-  !>            of arr1 are equal to all elements of arr2, FALSE otherwise.
   !----------------------------------------------------------------
   LOGICAL FUNCTION ArrayEqualSingle(arr1, arr2) RESULT(myValOut)
 
@@ -1315,22 +1362,24 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R R A Y  E Q U A L  S I N G L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Compares two one-dimensional double precision arrays for equality.
-  !> The equality is determined using a tolerance of: 0.0000000000001, such that
-  !> the two arrays are considered to be essentially equal on double
-  !> precision calculations.
+  !> @brief
+  !>   Compares two one-dimensional double precision arrays for equality.
   !>
-  !>  On Input:
+  !> @details
+  !>   The equality is determined using a tolerance of: 0.00000001, such that
+  !>   the two arrays are considered to be essentially equal on double
+  !>   precision calculations.
   !>
-  !>     arr1    The first array in the comparison (double precision)
-  !>     arr2    The second array in the comparison (double precision)
+  !> @param
+  !>   arr1    The first array in the comparison (double precision)
+  !> @param
+  !>   arr2    The second array in the comparison (double precision)
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut: The value of the comparison (logical). TRUE if all the elements
+  !>             of arr1 are equal to all elements of arr2, FALSE otherwise.
   !>
-  !> myValOut   The value of the comparison (logical). TRUE if all the elements
-  !>            of arr1 are equal to all elements of arr2, FALSE otherwise.
   !----------------------------------------------------------------
   LOGICAL FUNCTION ArrayEqualDouble(arr1, arr2) RESULT(myValOut)
 
@@ -1368,26 +1417,28 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! F U N C T I O N   S T R I N G  L E X  C O M P
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Performs a lexical comparison between two strings.
-  !> The equality is determined using a tolerance of: 0.0000000000001, such that
-  !> the two arrays are considered to be essentially equal on double
-  !> precision calculations.
+  !> @brief
+  !>   Performs a lexical comparison between two strings.
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>       str1    The first string in the comparison
-  !>       str2    The second string in the comparison
-  !> mSensitive    Flag to perform case sensitive comparison (.TRUE., default) or
-  !>               case insensitive comparison (.FALSE.)
+  !> @param
+  !>   str1          The first string in the comparison
+  !> @param
+  !>   str2          The second string in the comparison
+  !> @param
+  !>   mSensitive    Logical flag (.TRUE., .FALSE.) to perform case sensitive lexical comparison
   !>
-  !>  On Output:
+  !> @return
+  !>   myValOut:   The value of the lexical comparison of the two strings (integer)
+  !> @verbatim
+  !>   myValOut =  0; str1 == str2
+  !>   myValOut = -1; str1 < str2
+  !>   myValOut =  1; str1 > str2
+  !> @endverbatim
   !>
-  !>   myValOut   The value of the lexical comparison of the two strings (integer):
-  !>              myValOut =  0; str1 == str2
-  !>              myValOut = -1; str1 < str2
-  !>              myValOut =  1; str1 > str2
   !----------------------------------------------------------------
   INTEGER FUNCTION StringLexComp(str1, str2, mSensitive) RESULT(myValOut)
 
@@ -1431,27 +1482,29 @@ MODULE SortUtils
 
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S W A P  I N T
-  !                       S W A P  S I N G L E
-  !                       S W A P  D O U B L E
-  !                       S W A P  I N T  V E C
-  !                       S W A P  S I N G L E  V E C
-  !                       S W A P  D O U B L E  V E C
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Swaps the contents of a and b. Subroutines:
-  !>    SwapInt, SwapSingle, SwapDouble, SwapIntVec, SwapSingleVec, SwapDoubleVec
+  !> @brief
+  !>   Swaps the contents of a and b (integer).
+  !>   increment and a number of terms "n" (including "first").
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>       a    The first value, or 1D array to be swapped
-  !>       b    The second value, or 1D array to be swapped
+  !> @param
+  !>   a      The first value to be swapped (integer)
+  !> @param
+  !>   b      The second value to be swapped (integer)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
   !>
-  !>  On Output:
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped value
+  !>   b: The first swapped value
+  !> @endverbatim
   !>
-  !>       a    The second swapped value, or 1D array
-  !>       b    The first swapped value, or 1D array
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !----------------------------------------------------------------
   SUBROUTINE SwapInt(a, b, mask)
 
@@ -1477,6 +1530,34 @@ MODULE SortUtils
 
   END SUBROUTINE SwapInt
 
+  !================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   S W A P  S I N G L E
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Swaps the contents of a and b (single precision).
+  !>   increment and a number of terms "n" (including "first").
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   a      The first value to be swapped (single precision)
+  !> @param
+  !>   b      The second value to be swapped (single precision)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
+  !>
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped value
+  !>   b: The first swapped value
+  !> @endverbatim
+  !>
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !----------------------------------------------------------------
   SUBROUTINE SwapSingle(a, b, mask)
 
     IMPLICIT NONE
@@ -1501,6 +1582,34 @@ MODULE SortUtils
 
   END SUBROUTINE SwapSingle
 
+  !================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   S W A P  D O U B L E
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Swaps the contents of a and b (double precision).
+  !>   increment and a number of terms "n" (including "first").
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   a      The first value to be swapped (double precision)
+  !> @param
+  !>   b      The second value to be swapped (double precision)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
+  !>
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped value
+  !>   b: The first swapped value
+  !> @endverbatim
+  !>
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !----------------------------------------------------------------
   SUBROUTINE SwapDouble(a, b, mask)
 
     IMPLICIT NONE
@@ -1525,6 +1634,34 @@ MODULE SortUtils
 
   END SUBROUTINE SwapDouble
 
+  !================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   S W A P  I N T  V E C
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Swaps the contents of a and b (integer).
+  !>   increment and a number of terms "n" (including "first").
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   a      The first 1D array to be swapped (integer)
+  !> @param
+  !>   b      The second 1D array to be swapped (integer)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
+  !>
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped 1D array
+  !>   b: The first swapped 1D array
+  !> @endverbatim
+  !>
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !----------------------------------------------------------------
   SUBROUTINE SwapIntVec(a, b, mask)
 
     IMPLICIT NONE
@@ -1549,6 +1686,34 @@ MODULE SortUtils
 
   END SUBROUTINE SwapIntVec
 
+  !================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   S W A P  S I N G L E  V E C
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Swaps the contents of a and b (single precision).
+  !>   increment and a number of terms "n" (including "first").
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   a      The first 1D array to be swapped (single precision)
+  !> @param
+  !>   b      The second 1D array to be swapped (single precision)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
+  !>
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped 1D array
+  !>   b: The first swapped 1D array
+  !> @endverbatim
+  !>
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !----------------------------------------------------------------
   SUBROUTINE SwapSingleVec(a, b, mask)
 
     IMPLICIT NONE
@@ -1573,6 +1738,34 @@ MODULE SortUtils
 
   END SUBROUTINE SwapSingleVec
 
+  !================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   S W A P  D O U B L E  V E C
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Swaps the contents of a and b (double precision).
+  !>   increment and a number of terms "n" (including "first").
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   a      The first 1D array to be swapped (double precision)
+  !> @param
+  !>   b      The second 1D array to be swapped (double precision)
+  !> @param
+  !>   mask   Logical flag to perform the swap, default mask = 'TRUE. (optional)
+  !>
+  !> @return
+  !> @verbatim
+  !>   a: The second swapped 1D array
+  !>   b: The first swapped 1D array
+  !> @endverbatim
+  !>
+  !> @note Adopted from Numerical Recipes for Fortran 90
+  !----------------------------------------------------------------
   SUBROUTINE SwapDoubleVec(a, b, mask)
 
     IMPLICIT NONE
@@ -1602,21 +1795,25 @@ MODULE SortUtils
    !----------------------------------------------------------------
   ! S U B R O U T I N E   A R T H  I N T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Returns an arithmetic progression, given a first term "first", an
-  !> increment and a number of terms "n" (including "first").
+  !> @brief
+  !>   Returns an arithmetic progression, given a first term "first", an
+  !>   increment and a number of terms "n" (including "first").
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     first    The value of the first term (integer)
-  !> increment    The value of the increment (integer)
-  !>         n    The total number of terms in the return 1D array (integer)
+  !> @param
+  !>       first    The value of the first term (integer)
+  !> @param
+  !>   increment    The value of the increment (integer)
+  !> @param
+  !>           n    The total number of terms in the return 1D array (integer)
   !>
-  !>  On Output:
+  !> @return
+  !>   arthOut:     The 1D array that contains the arithmetic progression (integer)
   !>
-  !>   arthOut    The 1D array that contains the arithmetic progression (integer)
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !----------------------------------------------------------------
   pure FUNCTION ArthInt(first, increment, n) RESULT(arthOut)
 
@@ -1665,21 +1862,25 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R T H  S I N G L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Returns an arithmetic progression, given a first term "first", an
-  !> increment and a number of terms "n" (including "first").
+  !> @brief
+  !>   Returns an arithmetic progression, given a first term "first", an
+  !>   increment and a number of terms "n" (including "first").
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     first    The value of the first term (single precision)
-  !> increment    The value of the increment (single precision)
-  !>         n    The total number of terms in the return 1D array (integer)
+  !> @param
+  !>       first    The value of the first term (single precision)
+  !> @param
+  !>   increment    The value of the increment (single precision)
+  !> @param
+  !>           n    The total number of terms in the return 1D array (integer)
   !>
-  !>  On Output:
+  !> @return
+  !>   arthOut:     The 1D array that contains the arithmetic progression (single precision)
   !>
-  !>   arthOut    The 1D array that contains the arithmetic progression (single precision)
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !----------------------------------------------------------------
   pure FUNCTION ArthSingle(first, increment, n) RESULT(arthOut)
 
@@ -1728,21 +1929,25 @@ MODULE SortUtils
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A R T H  D O U B L E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  Adopted from Numerical Recipes for Fortran 90
   !>
-  !> Returns an arithmetic progression, given a first term "first", an
-  !> increment and a number of terms "n" (including "first").
+  !> @brief
+  !>   Returns an arithmetic progression, given a first term "first", an
+  !>   increment and a number of terms "n" (including "first").
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>     first    The value of the first term (double precision)
-  !> increment    The value of the increment (double precision)
-  !>         n    The total number of terms in the return 1D array (integer)
+  !> @param
+  !>       first    The value of the first term (double precision)
+  !> @param
+  !>   increment    The value of the increment (double precision)
+  !> @param
+  !>           n    The total number of terms in the return 1D array (integer)
   !>
-  !>  On Output:
+  !> @return
+  !>   arthOut:     The 1D array that contains the arithmetic progression (double precision)
   !>
-  !>   arthOut    The 1D array that contains the arithmetic progression (double precision)
+  !> @note Adopted from Numerical Recipes for Fortran 90
   !----------------------------------------------------------------
   pure FUNCTION ArthDouble(first, increment, n) RESULT(arthOut)
 

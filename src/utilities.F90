@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   U T I L I T I E S
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file utilities.F90
 !>
+!>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE Utilities
@@ -42,10 +50,21 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   !     S U B R O U T I N E   O P E N  F I L E  F O R  R E A D
   !-----------------------------------------------------------------------
-  !  jgf50.16
-  !> Added general subroutine for opening an existing input
-  !> file for reading. Includes error checking.
-  !-----------------------------------------------------------------------
+  !>
+  !> @brief
+  !>   This subroutine opens an existing file for reading.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   lun        The logical unit number (LUN) to use
+  !> @param
+  !>   fileName   The full pathname of the input file
+  !> @param
+  !>   errorIO    The error status, no error: status = 0 (output)
+  !>
+  !----------------------------------------------------------------
   SUBROUTINE OpenFileForRead(lun, fileName, errorIO)
 
     USE PaHM_Global
@@ -114,11 +133,23 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   !     S U B R O U T I N E   R E A D  C O N T R O L  F I L E
   !-----------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Added general subroutine for opening an existing input
-  !> file for reading. Includes error checking.
-  !-----------------------------------------------------------------------
+  !> @brief
+  !>   This subroutine reads the program's main control file.
+  !>
+  !> @details
+  !>   Reads the control file of the program and it is repeatedly calling GetLineRecord
+  !>   to process each line in the file. Upon successful processing of the line,
+  !>   it sets the relevant program parameters and variables. This subroutine is called
+  !>   first as it is required by the subsequent model run. \n
+  !>   The control file (default filename pahm_control.in) contains all required
+  !>   settings (user configured) required to run the program. Most of the settings
+  !>   have default values, in case the user hasn't supplied a value.
+  !>
+  !> @param
+  !>   inpFile   The full pathname of the input file
+  !>
+  !----------------------------------------------------------------
   SUBROUTINE ReadControlFile(inpFile)
 
     USE PaHM_Global
@@ -599,6 +630,17 @@ MODULE Utilities
 
 !================================================================================
 
+  !-----------------------------------------------------------------------
+  !     S U B R O U T I N E   P R I N T  M O D E L  P A R A M S
+  !-----------------------------------------------------------------------
+  !>
+  !> @brief
+  !>   This subroutine prints on the screen the values of the program's parameters.
+  !>
+  !> @details
+  !>   
+  !>
+  !----------------------------------------------------------------
   SUBROUTINE PrintModelParams()
 
     USE PaHM_Global
@@ -705,25 +747,28 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   G E T  L I N E  R E C O R D
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> This function gets a line record from a file.
-  !> Blank or commented lines are omitted.
-  !
-  !>  On Input:
+  !> @brief
+  !>   Gets a line from a file.
   !>
-  !>       inpLine    The input text line.
-  !>  lastCommFlag    Optional flag to check/remove commented portion at the
-  !>                  right of the text line.
-  !>                     lastCommFlag <= 0 do nothing.
-  !>                     lastCommFlag  > 0 check for "#!" symbols at the
-  !>                                       right of the text line and remove
-  !>                                       that portion of the line.
+  !> @details
+  !>   This function reads a line record, which is neither a commented or a blank line,
+  !>   from a file for further processing.
+  !>   Commented lines are those with a first character either "#" or "!".
   !>
-  !>  On Output:
+  !> @param
+  !>   inpLine    The input text line
+  !> @param
+  !>   lastCommFlag    Optional flag to check/remove commented portion at the right of the text line \n
+  !>                   lastCommFlag <= 0 do nothing \n
+  !>                   lastCommFlag  > 0 check for "#!" symbols at the right of the
+  !>                   text line and remove that portion of the line
+  !> @param
+  !>   outLine    The output line (the left adjusted input line)
   !>
-  !>       outLine    The output line (the left adjusted input line)
-  !>       myLen      The length of outLine (end blanks removed)
+  !> @return
+  !>   myLen: The length of outLine (end blanks removed)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION GetLineRecord(inpLine, outLine, lastCommFlag) RESULT(myLen)
 
@@ -793,10 +838,33 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   P A R S E  L I N E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !  Based on ROMS source: Utility/inp_par.F (decode_line)
-  !> This function parses lines of text from input script files.
+  !> @brief
+  !>   This function parses lines of text from input script/control files.
+  !>
+  !> @details
+  !>   It processes each uncommented or non-blank line in the file to extract
+  !>   the settings for the program's variables. It is called repeatedly from
+  !>   ReadControlFile that sets all required program variables.
+  !>
+  !> @param
+  !>   inpLine    The input text line
+  !> @param
+  !>   outLine    The output line, left adjusted input line (output)
+  !> @param
+  !>   keyWord    The keyword to extract settings for (input/output)
+  !> @param
+  !>   nVal       The number of values provided for the keyword (input/output)
+  !> @param
+  !>   cVal       String array (cVal(nVal)) that holds the string values provided for the keyword (input/output)
+  !> @param
+  !>   rVal       Real array (rVal(nVal)) that holds the values provided for the keyword (input/output)
+  !>
+  !> @return
+  !>   myStatus: The error status, no error: status = 0
+  !>
+  !> @note Adopted from the ROMS source (Utility/inp_par.F, decode_line)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION ParseLine(inpLine, outLine, keyWord, nVal, cVal, rVal) RESULT(myStatus)
 
@@ -1054,14 +1122,21 @@ MODULE Utilities
   !-----------------------------------------------------------------------
   !     S U B R O U T I N E   C H E C K  C O N T R O L  F I L E  I N P U T S
   !-----------------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> The purpose of this subroutine is to process the input parameters and check
-  !> if the user supplied values in the control file are valid entries.
-  !> If a value for an input parameter is not supplied, then a default value
-  !> is assigned to that parameter. If the parameter doesn't have a default value,
-  !> it is then a mandatory parameter that the user needs to supply a valid value.
-  !-----------------------------------------------------------------------
+  !> @brief
+  !>   Checks the user defined control file inputs.
+  !>
+  !> @details
+  !>   The purpose of this subroutine is to process the input parameters and check
+  !>   if the user supplied values in the control file are valid entries.
+  !>   If a value for an input parameter is not supplied, then a default value
+  !>   is assigned to that parameter. If the parameter doesn't have a default value,
+  !>   it is then a mandatory parameter that the user needs to supply a valid value.
+  !>
+  !> @return
+  !>   myStatus: The error status, no error: status = 0
+  !>
+  !----------------------------------------------------------------
   INTEGER FUNCTION CheckControlFileInputs() RESULT(errStatus)
 
     USE PaHM_Global
@@ -1378,22 +1453,27 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   L O A D  I N T  V A R
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !  Based on ROMS source: Utility/inp_par.F (load_i)
-  !> This function loads input values into a requested model integer
-  !> variable.
+  !> @brief
+  !>   This function loads input values into a requested model integer variable.
   !>
-  !> On Input:
+  !> @details
+  !>   
   !>
-  !>    nInp       Size of input variable.
-  !>    vInp       Input values
-  !>    nOut       Number of output values.
+  !> @param
+  !>   nInp       Number of input values
+  !> @param
+  !>   vInp       Array of input values
+  !> @param
+  !>   nOut       Number of output values
+  !> @param
+  !>   vOut       Array of output values (integer, output)
   !>
-  !> On Output:
+  !> @return
+  !>   nValsOut: Number of  processed output values
   !>
-  !>    vOut       Output INTEGER variable.
-  !>    nValsOut   Number of output values processed.
+  !> @note Adopted from the ROMS source (Utility/inp_par.F, load_i)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION LoadINTVar(nInp, vInp, nOut, vOut) RESULT(nValsOut)
 
@@ -1439,22 +1519,27 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   L O A D  L O G  V A R
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !  Based on ROMS source: Utility/inp_par.F (load_l)
-  !> This function loads input values into a requested model logical
-  !> variable.
+  !> @brief
+  !>   This function loads input values into a requested model logical variable.
   !>
-  !> On Input:
+  !> @details
+  !>   
   !>
-  !>    nInp       Size of input variable.
-  !>    vInp       Input values                                        
-  !>    nOut       Number of output values.
-  !>                                                                   
-  !> On Output:                                                        
+  !> @param
+  !>   nInp       Number of input values
+  !> @param
+  !>   vInp       Array of input values
+  !> @param
+  !>   nOut       Number of output values
+  !> @param
+  !>   vOut       Array of output values (logical, output)
   !>
-  !>    vOut       Output INTEGER variable.
-  !>    nValsOut   Number of output values processed.
+  !> @return
+  !>   nValsOut: Number of  processed output values
+  !>
+  !> @note Adopted from the ROMS source (Utility/inp_par.F, load_l)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION LoadLOGVar (nInp, vInp, nOut, vOut) RESULT(nValsOut)
 
@@ -1512,22 +1597,27 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   L O A D  R E A L  V A R
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !  Based on ROMS source: Utility/inp_par.F (load_r)
-  !> This function loads input values into a requested model real
-  !> variable.
+  !> @brief
+  !>   This function loads input values into a requested model real variable.
   !>
-  !> On Input:
+  !> @details
+  !>   
   !>
-  !>    nInp       Size of input variable.
-  !>    vInp       Input values
-  !>    nOut       Number of output values.
+  !> @param
+  !>   nInp       Number of input values
+  !> @param
+  !>   vInp       Array of input values
+  !> @param
+  !>   nOut       Number of output values
+  !> @param
+  !>   vOut       Array of output values (real, output)
   !>
-  !> On Output:                                               
+  !> @return
+  !>   nValsOut: Number of  processed output values
   !>
-  !>    vOut       Output real variable.
-  !>    nValsOut   Number of output values processed.
+  !> @note Adopted from the ROMS source (Utility/inp_par.F, load_r)
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION LoadREALVar(nInp, vInp, nOut, vOut) RESULT(nValsOut)
 
@@ -1573,9 +1663,19 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   T O  L O W E R  C A S E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Convert a string to lower-case
+  !> @brief
+  !>   Convert a string to lower-case.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   inpString   The input string
+  !>
+  !> @return
+  !>   outString: The ouput string in lower case
+  !>
   !----------------------------------------------------------------
   PURE FUNCTION ToLowerCase(inpString) RESULT(outString)
 
@@ -1603,9 +1703,18 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   T O  U P P E R  C A S E
   !----------------------------------------------------------------
-  !> Convert a string to upper-case
-  !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !>
+  !> @brief
+  !>   Convert a string to upper-case.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   inpString   The input string
+  !>
+  !> @return
+  !>   outString: The ouput string in upper case
   !>
   !----------------------------------------------------------------
   PURE FUNCTION ToUpperCase(inpString) RESULT(outString)
@@ -1634,9 +1743,19 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   C O N V  L O N
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Convert longitude values from the (0, 360) to the (-180, 180) notation.
+  !> @brief
+  !>   Convert longitude values from the (0, 360) to the (-180, 180) notation.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   inpLon   The longitude value to be converted
+  !>
+  !> @return
+  !>   myValOut: The converted longitude value
+  !>
   !----------------------------------------------------------------
   REAL(SZ) FUNCTION ConvLon(inpLon) RESULT (myValOut)
 
@@ -1655,20 +1774,28 @@ MODULE Utilities
   !----------------------------------------------------------------
   !  S U B R O U T I N E   G E O  TO  C P P  S C A L A R
   !----------------------------------------------------------------
-  !> Transform from geographical (lon, lat) coordinates into CPP (x, y) coordinates.
-  !  This is the Equidistant Cylindrical projection, also called equirectangular projection,
-  !  equidirectional projection,  geographic projection, plate carrée or
-  !  carte parallelogrammatique projection.
   !>
-  !> On input:
-  !>    lat     Latitude  (degrees north) - scalar
-  !>    lon     Longitude (degrees east ) - scalar
-  !>    lat0    Latitude  of projection origin (degrees north) - scalar
-  !>    lon0    Longitude of projection origin (degrees east ) - scalar
+  !> @brief
+  !>   Transform from geographical (lon, lat) coordinates into CPP (x, y) coordinates.
   !>
-  !> On output:
-  !>    x       x (m) - scalar
-  !>    y       y (m) - scalar
+  !> @details
+  !>   This is the Equidistant Cylindrical projection, also called equirectangular projection,
+  !>   equidirectional projection,  geographic projection, plate carree or
+  !>   carte parallelogrammatique projection.
+  !>
+  !> @param
+  !>   lat     Latitude  (degrees north) - real, scalar
+  !> @param
+  !>   lon     Longitude (degrees east ) - real, scalar
+  !> @param
+  !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
+  !> @param
+  !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
+  !> @param
+  !>   x       Calculated X coordinate: x (m) - real, scalar (output)
+  !> @param
+  !>   y       Calculated Y coordinate: y (m) - real, scalar (output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE GeoToCPP_Scalar(lat, lon, lat0, lon0, x, y)
 
@@ -1693,20 +1820,29 @@ MODULE Utilities
   !----------------------------------------------------------------
   !  S U B R O U T I N E   G E O  TO  C P P  1D
   !----------------------------------------------------------------
-  !> Transform from geographical (lon, lat) coordinates into CPP (x, y) coordinates.
-  !  This is the Equidistant Cylindrical projection, also called equirectangular projection,
-  !  equidirectional projection,  geographic projection, plate carrée or
-  !  carte parallelogrammatique projection.
   !>
-  !> On input:
-  !>    lat     Latitude  (degrees north) - 1D array
-  !>    lon     Longitude (degrees east ) - 1D array
-  !>    lat0    Latitude  of projection origin (degrees north) - scalar
-  !>    lon0    Longitude of projection origin (degrees east ) - scalar
+  !> @brief
+  !>   Transform from geographical (lon, lat) coordinates into CPP (x, y) coordinates.
   !>
-  !> On output:
-  !>    x       x (m) - 1D array
-  !>    y       y (m) - 1D array
+  !> @details
+  !>   Transforms 1D geographical coordinates into 1D CPP coordinates.
+  !>   This is the Equidistant Cylindrical projection, also called equirectangular projection,
+  !>   equidirectional projection,  geographic projection, plate carree or
+  !>   carte parallelogrammatique projection.
+  !>
+  !> @param
+  !>   lat     Latitude  (degrees north) - real, 1D array
+  !> @param
+  !>   lon     Longitude (degrees east ) - real, 1D array
+  !> @param
+  !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
+  !> @param
+  !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
+  !> @param
+  !>   x       Calculated X coordinate: x (m) - real, 1D array (output)
+  !> @param
+  !>   y       Calculated Y coordinate: y (m) - real, 1D array (output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE GeoToCPP_1D(lat, lon, lat0, lon0, x, y)
 
@@ -1731,20 +1867,28 @@ MODULE Utilities
   !----------------------------------------------------------------
   !  S U B R O U T I N E   C P P  T O  G E O  S C A L A R
   !----------------------------------------------------------------
-  !> Transform from CPP (x, y) coordinates into geographical (lon, lat) coordinates.
-  !  This is the Equidistant Cylindrical projection, also called equirectangular projection,
-  !  equidirectional projection,  geographic projection, plate carrée or
-  !  carte parallelogrammatique projection.
-  !> 
-  !> On input:
-  !>    x       x (m) - scalar
-  !>    y       y (m) - scalar
-  !>    lat0    Latitude  of projection origin (degrees north) - scalar
-  !>    lon0    Longitude of projection origin (degrees east ) - scalar
   !>
-  !> On output:
-  !>    lat     Latitude  (degrees north) - scalar
-  !>    lon     Longitude (degrees east ) - scalar
+  !> @brief
+  !>   Transform from CPP (x, y) coordinates into geographical (lon, lat) coordinates.
+  !>
+  !> @details
+  !>   This is the Equidistant Cylindrical projection, also called equirectangular projection,
+  !>   equidirectional projection,  geographic projection, plate carree or
+  !>   carte parallelogrammatique projection.
+  !>
+  !> @param
+  !>   x       X coordinate: x (m) - real, scalar
+  !> @param
+  !>   y       Y coordinate: y (m) - real, scalar
+  !> @param
+  !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
+  !> @param
+  !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
+  !> @param
+  !>   lat     Latitude  (degrees north) - real, scalar (output)
+  !> @param
+  !>   lon     Longitude (degrees east ) - real, scalar (output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE CPPToGeo_Scalar(x, y, lat0, lon0, lat, lon)
 
@@ -1769,20 +1913,29 @@ MODULE Utilities
   !----------------------------------------------------------------
   !  S U B R O U T I N E   C P P  T O  G E O  1D
   !----------------------------------------------------------------
-  !> Transform from CPP (x, y) coordinates into geographical (lon, lat) coordinates.
-  !  This is the Equidistant Cylindrical projection, also called equirectangular projection,
-  !  equidirectional projection,  geographic projection, plate carrée or
-  !  carte parallelogrammatique projection.
   !>
-  !> On input:
-  !>    x       x (meters) - 1D array
-  !>    y       y (meters) - 1D array
-  !>    lat0    Latitude  of projection origin (degrees north) - scalar
-  !>    lon0    Longitude of projection origin (degrees east ) - scalar
+  !> @brief
+  !>   Transform from CPP (x, y) coordinates into geographical (lon, lat) coordinates.
   !>
-  !> On output:
-  !>    lat     Latitude  (degrees north) - 1D array
-  !>    lon     Longitude (degrees east ) - 1D array
+  !> @details
+  !>   Transforms 1D CPP coordinates into 1D geographical coordinates.
+  !>   This is the Equidistant Cylindrical projection, also called equirectangular projection,
+  !>   equidirectional projection,  geographic projection, plate carree or
+  !>   carte parallelogrammatique projection.
+  !>
+  !> @param
+  !>   x       X coordinate: x (m) - real, 1D array
+  !> @param
+  !>   y       Y coordinate: y (m) - real, 1D array
+  !> @param
+  !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
+  !> @param
+  !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
+  !> @param
+  !>   lat     Latitude  (degrees north) - real, 1D array (output)
+  !> @param
+  !>   lon     Longitude (degrees east ) - real, 1D array (output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE CPPToGeo_1D(x, y, lat0, lon0, lat, lon)
 
@@ -1807,23 +1960,36 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   !  F U N C T I O N   S P H E R I C A L   D I S T A N C E
   ! ----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !> Function to get the great-circle distance along the surface of
-  !> a sphere (the earth's surface in this case).
-  !> Compute the great-circle distance using the Vincenty formula for
-  !> distance along a sphere.
   !>
-  !> References:
-  !>   https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
-  !>   https://en.wikipedia.org/wiki/Vincenty's_formulae
+  !> @brief
+  !>   Calculates the distance of two points along the great circle using the Vincenty formula.
   !>
-  !>   Vincenty, Thaddeus (April 1975a). "Direct and Inverse Solutions of Geodesics
-  !>      on the Ellipsoid with application of nested equations".
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
+  !> @see https://en.wikipedia.org/wiki/Vincenty's_formulae
+  !> @see Vincenty, Thaddeus (April 1975a). "Direct and Inverse Solutions of Geodesics \n
+  !>      on the Ellipsoid with application of nested equations". \n
   !>      Survey Review. XXIII (176): 88-93. doi:10.1179/sre.1975.23.176.88.
-  !>   Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points
+  !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
   !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
   !>
-  ! ----------------------------------------------------------------
+  !> @param
+  !>   lat1    Latitude of first point - real, scalar
+  !> @param
+  !>   lon1    Longitude of first point - real, scalar
+  !> @param
+  !>   lat2    Latitude of second point - real, scalar
+  !> @param
+  !>   lon2    Longitude of second point - real, scalar
+  !>
+  !> @return   myValOut: The great-circle distance in meters
+  !>
+  !----------------------------------------------------------------
   REAL(SZ) FUNCTION SphericalDistance_Scalar(lat1, lon1, lat2, lon2) RESULT(myValOut)
 
     USE PaHM_Global, ONLY : REARTH, DEG2RAD
@@ -1859,6 +2025,39 @@ MODULE Utilities
 
 !================================================================================
 
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  _  1 D
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Calculates the distance of points along the great circle using the Vincenty formula.
+  !>
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
+  !> @see https://en.wikipedia.org/wiki/Vincenty's_formulae
+  !> @see Vincenty, Thaddeus (April 1975a). "Direct and Inverse Solutions of Geodesics \n
+  !>      on the Ellipsoid with application of nested equations". \n
+  !>      Survey Review. XXIII (176): 88-93. doi:10.1179/sre.1975.23.176.88.
+  !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
+  !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
+  !>
+  !> @param
+  !>   lats    Latitude of first points - real, 1D array
+  !> @param
+  !>   lons    Longitude of first points - real, 1D array
+  !> @param
+  !>   lat0    Latitude of second point - real, scalar
+  !> @param
+  !>   lon0    Longitude of second point - real, scalar
+  !>
+  !> @return   myValOut: The great-circle distance in meters, 1D array
+  !>
+  !----------------------------------------------------------------
   FUNCTION SphericalDistance_1D(lats, lons, lat0, lon0) RESULT(myValOut)
 
     USE PaHM_Global, ONLY : REARTH, DEG2RAD
@@ -1925,6 +2124,39 @@ MODULE Utilities
 
 !================================================================================
 
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  _  2 D
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Calculates the distance of points along the great circle using the Vincenty formula.
+  !>
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
+  !> @see https://en.wikipedia.org/wiki/Vincenty's_formulae
+  !> @see Vincenty, Thaddeus (April 1975a). "Direct and Inverse Solutions of Geodesics \n
+  !>      on the Ellipsoid with application of nested equations". \n
+  !>      Survey Review. XXIII (176): 88-93. doi:10.1179/sre.1975.23.176.88.
+  !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
+  !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
+  !>
+  !> @param
+  !>   lats    Latitude of first points - real, 2D array
+  !> @param
+  !>   lons    Longitude of first points - real, 2D array
+  !> @param
+  !>   lat0    Latitude of second point - real, scalar
+  !> @param
+  !>   lon0    Longitude of second point - real, scalar
+  !>
+  !> @return   myValOut: The great-circle distance in meters, 2D array
+  !>
+  !----------------------------------------------------------------
   FUNCTION SphericalDistance_2D(lats, lons, lat0, lon0) RESULT(myValOut)
 
     USE PaHM_Global, ONLY : REARTH, DEG2RAD
@@ -1999,20 +2231,33 @@ MODULE Utilities
   ! ----------------------------------------------------------------
   !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  H A R V
   ! ----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !> Function to get the great-circle distance along the surface of
-  !> a sphere (the earth's surface in this case).
-  !> Compute the great-circle distance using the Haversine formula for
-  !> distance along a sphere.
   !>
-  !> References:
-  !>   https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
-  !>   https://en.wikipedia.org/wiki/Haversine_formula
+  !> @brief
+  !>   Calculates the distance of two points along the great circle using the Haversine formula.
   !>
-  !>   van Brummelen, Glen Robert (2013). Heavenly Mathematics: The Forgotten Art
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Haversine formula for
+  !>   distance along a sphere.
+  !>
+  !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
+  !> @see https://en.wikipedia.org/wiki/Haversine_formula
+  !> @see van Brummelen, Glen Robert (2013). Heavenly Mathematics: The Forgotten Art \n
   !>      of Spherical Trigonometry. Princeton University Press. ISBN 9780691148922.0691148929.
   !>
-  ! ----------------------------------------------------------------
+  !> @param
+  !>   lat1    Latitude of first point - real, scalar
+  !> @param
+  !>   lon1    Longitude of first point - real, scalar
+  !> @param
+  !>   lat2    Latitude of second point - real, scalar
+  !> @param
+  !>   lon2    Longitude of second point - real, scalar
+  !>
+  !> @return   myValOut: The great-circle distance in meters
+  !>
+  !----------------------------------------------------------------
   REAL(SZ) FUNCTION SphericalDistanceHarv(lat1, lon1, lat2, lon2) RESULT(myValOut)
 
     USE PaHM_Global, ONLY : REARTH, DEG2RAD
@@ -2047,67 +2292,75 @@ MODULE Utilities
 
 !================================================================================
 
-  ! ----------------------------------------------------------------
-  !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  A D C I R C
-  ! ----------------------------------------------------------------
-  !  jgf49.1001 PV to be deleted
-  !> Function to get the distance along the surface of
-  !> a sphere (the earth's surface in this case).
-  ! ----------------------------------------------------------------
-  REAL(SZ) FUNCTION SphericalDistanceADCIRC(dx, dy, y1, y2) RESULT(myValOut)
+!DEL ! ----------------------------------------------------------------
+!DEL !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  A D C I R C
+!DEL ! ----------------------------------------------------------------
+!DEL !  jgf49.1001 PV to be deleted
+!DEL !> Function to get the distance along the surface of
+!DEL !> a sphere (the earth's surface in this case).
+!DEL ! ----------------------------------------------------------------
+!DEL REAL(SZ) FUNCTION SphericalDistanceADCIRC(dx, dy, y1, y2) RESULT(myValOut)
 
-    USE PaHM_Global, ONLY : REARTH, DEG2RAD
+!DEL   USE PaHM_Global, ONLY : REARTH, DEG2RAD
 
-    IMPLICIT NONE
+!DEL   IMPLICIT NONE
 
-    REAL(SZ), INTENT(IN) :: dx    ! longitude distance in radians
-    REAL(SZ), INTENT(IN) :: dy    ! latitude distance in radians
-    REAL(SZ), INTENT(IN) :: y1    ! degrees latitude of starting point
-    REAL(SZ), INTENT(IN) :: y2    ! degrees latitude of ending point
+!DEL   REAL(SZ), INTENT(IN) :: dx    ! longitude distance in radians
+!DEL   REAL(SZ), INTENT(IN) :: dy    ! latitude distance in radians
+!DEL   REAL(SZ), INTENT(IN) :: y1    ! degrees latitude of starting point
+!DEL   REAL(SZ), INTENT(IN) :: y2    ! degrees latitude of ending point
 
-    ! compute the distances based on haversine formula for
-    ! distance along a sphere
-    myValOut = SQRT(SIN(dy / 2.0_SZ)**2 +                                         &
-                    COS(y1 * DEG2RAD) * COS(y2 * DEG2RAD) * SIN(dx / 2.0_SZ)**2)
+!DEL   ! compute the distances based on haversine formula for
+!DEL   ! distance along a sphere
+!DEL   myValOut = SQRT(SIN(dy / 2.0_SZ)**2 +                                         &
+!DEL                   COS(y1 * DEG2RAD) * COS(y2 * DEG2RAD) * SIN(dx / 2.0_SZ)**2)
 
-    ! This is the great-circle distance; REARTH in meters
-    myValOut = REARTH * (2.0_SZ * ASIN(myValOut))
+!DEL   ! This is the great-circle distance; REARTH in meters
+!DEL   myValOut = REARTH * (2.0_SZ * ASIN(myValOut))
 
-    RETURN
+!DEL   RETURN
 
-  END FUNCTION SphericalDistanceADCIRC
+!DEL END FUNCTION SphericalDistanceADCIRC
 
-!================================================================================
+!DEL================================================================================
 
   ! ----------------------------------------------------------------
   !  S U B R O U T I N E   S P H E R I C A L  F R A C  P O I N T
   ! ----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Calculates the latitude and longitude of an intermediate point at any fraction
-  !> that lies between two points along their great circle path.
+  !> @brief
+  !>   Calculates the coordinates of an intermediate point between two points along the great circle.
   !>
-  !>  On Input:
+  !> @details
+  !>   Calculates the latitude and longitude of an intermediate point at any fraction
+  !>   that lies between two points along their great circle path.
+  !>   Compute the great-circle distance using the Haversine formula for
+  !>   distance along a sphere.
   !>
-  !>  On input:
-  !>     lat1    Latitude of the first point (degrees north)
-  !>     lon1    Longitude of the first point (degrees east)
-  !>     lat2    Latitude of the second point (degrees north)
-  !>     lon2    Longitude of the second point (degrees east)
-  !> fraction    The fraction of the distance between points 1 and 2
-  !>             where the intemediate point is located (0 <= fraction <= 1)
+  !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
+  !> @see http://www.movable-type.co.uk/scripts/latlong.html
   !>
-  !>  On Output:
+  !> @param
+  !>   lat1       Latitude of the first point (degrees north)
+  !> @param
+  !>   lon1       Longitude of the first point (degrees east)
+  !> @param
+  !>   lat2       Latitude of the second point (degrees north)
+  !> @param
+  !>   lon2       Longitude of the second point (degrees east)
+  !> @param
+  !>   fraction   The fraction of the distance between points 1 and 2 \n
+  !>              where the intemediate point is located (0 <= fraction <= 1)
+  !> @param
+  !>   latf       The caclulated latitude of the intermidiate point (degrees north, output)
+  !> @param
+  !>   lonf       The caclulated longitude of the intermidiate point (degrees east, output)
+  !> @param
+  !>   distf      The great circle distance between the first and the intermediate point (m, output)
+  !> @param
+  !>   dist12     The great circle distance between the first and the second point (m, output)
   !>
-  !>     latf    The caclulated latitude of the intermidiate point (degrees north)
-  !>     lonf    The caclulated longitude of the intermidiate point (degrees east)
-  !>    distf    The great circle distance between the first and the intermediate point (m)
-  !>   dist12    The great circle distance between the first and the second point (m)
-  !>
-  !> References:
-  !>   https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
-  !>   http://www.movable-type.co.uk/scripts/latlong.html
-  ! ----------------------------------------------------------------
+  !----------------------------------------------------------------
   SUBROUTINE SphericalFracPoint(lat1, lon1, lat2, lon2, fraction, latf, lonf, distf, dist12)
 
     USE PaHM_Global, ONLY : REARTH, DEG2RAD, RAD2DEG
@@ -2183,24 +2436,28 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! S U B R O U T I N E   G E T  L O C  A N D  R A T I O
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Determines the linear interpolation parameters given the 1D input search
-  !> array arrVal and the search value val. The linear interpolation is performed
-  !> using the equation: VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1))
+  !> @brief
+  !>   Calculates the location of a value in an 1D array of values.
   !>
-  !>  On Input:
+  !> @details
+  !>   Determines the linear interpolation parameters given the 1D input search
+  !>   array arrVal and the search value val. The linear interpolation is performed
+  !>   using the equation: VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1)).
   !>
-  !>          val    The value to search for, such that arrVal(idx1) <= val <= arrVal(idx2)
-  !>       arrVal    The one-dimensional array to search (PV ordered in ascending order?)
+  !> @param
+  !>   val      The value to search for, such that arrVal(idx1) <= val <= arrVal(idx2)
+  !> @param
+  !>  arrVal    The one-dimensional array to search (PV ordered in ascending order?)
+  !> @param
+  !>   idx1     The index of the lowest array bound such that: arrVal(idx1) <= val (output)
+  !> @param
+  !>   idx2     The index of the highest array bound such that: arrVal(idx2) >= val (output)
+  !> @param
+  !>   wtRatio: The ratio factor used in the linear interpolation calculation: \n
+  !>            VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1)) \n
+  !>            where VAR is the variable to be interpolated
   !>
-  !>  On Output:
-  !>
-  !>         idx1    The index of the lowest array bound such that: arrVal(idx1) <= val
-  !>         idx2    The index of the highest array bound such that: arrVal(idx2) >= val
-  !>      wtRatio    The ratio factor used in the linear interpolation calculation:
-  !>                 VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1))
-  !>                 where VAR is the variable to be interpolated
   !----------------------------------------------------------------
   SUBROUTINE GetLocAndRatio(val, arrVal, idx1, idx2, wtRatio)
 
@@ -2298,10 +2555,23 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   C H A R  U N I Q U E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Find the unique non-blank elements in 1D character array.
-  !> The vector elements should be sorted.
+  !> @brief
+  !>   Find the unique non-blank elements in 1D character array.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   inpVec   The input 1D string array
+  !> @param
+  !>  outVec    The output 1D string array of the unique elements (output)
+  !> @param
+  !>   idxVec   The 1D array of indexes of the unique elements in the inpVec array (output)
+  !>
+  !> @return
+  !>   myRec:   The number of the uniques elements in the input array
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION CharUnique(inpVec, outVec, idxVec) RESULT (myRec)
 
@@ -2350,19 +2620,24 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   V A L  S T R
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Returns  the value of leading real numeric string
+  !> @brief
+  !>   Returns the value of the leading double precision real numeric string.
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>       String    The input string
+  !> @param
+  !>   String    The input string
   !>
-  !>  On Output:
+  !> @return
+  !>   myVal:    The value of the double precision real number as extracted from the input string
   !>
-  !>        myVal    The value of the real number as extracted from the String
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
+  !>
   !----------------------------------------------------------------
   REAL(SP) FUNCTION ValStr(String) Result(myVal)
 
@@ -2387,19 +2662,24 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   D  V A L  S T R
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Returns  the value of leading double precision real numeric string
+  !> @brief
+  !>   Returns the value of the leading double precision real numeric string.
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>       String    The input string
+  !> @param
+  !>   String    The input string
   !>
-  !>  On Output:
+  !> @return
+  !>   myVal:    The value of the real number in double precision as extracted from the input string
   !>
-  !>        myVal    The value of the real number in double precision as extracted from the String
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
+  !>
   !----------------------------------------------------------------
   REAL(HP) FUNCTION DValStr(String) Result(myVal)
 
@@ -2424,19 +2704,24 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   I N T  V A L  S T R
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Returns  the value of leading integer numeric string
+  !> @brief
+  !>   Returns the value of the leading integer numeric string.
   !>
-  !>  On Input:
+  !> @details
+  !>   
   !>
-  !>       String    The input string
+  !> @param
+  !>   String    The input string
   !>
-  !>  On Output:
+  !> @return
+  !>   myVal:    The value of the integer number as extracted from the input string
   !>
-  !>        myVal    The value of the integer number as extracted from the String
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
+  !>
   !----------------------------------------------------------------
   INTEGER FUNCTION IntValStr(String) Result(myVal)
 
@@ -2461,42 +2746,46 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   R E A L  S C A N
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Scans string looking for the leading real numeric string.
-  !> Scanning begins at the position specified by pos and continues to the end of the string.
-  !> Leading blanks are ignored.
+  !> @brief
+  !>   Scans string looking for the leading single precision real numeric string.
   !>
-  !> The numeric string must have the form:
+  !> @details
+  !>   Scanning begins at the position specified by pos and continues to the end of the string.
+  !>   Leading blanks are ignored.
+  !> @verbatim
+  !>   The numeric string must have the form:
+  !>   [sign] d+ ['.' d*] ['e' [sign] d+]        or
+  !>   [sign]     '.' d+  ['e' [sign] d+]
+  !>   where sign is '+' or '-',
+  !>   d* is zero or more digits,
+  !>   d+ is one  or more digits,
+  !>   '.' and 'e' are literal (also accept lower case 'e'),
+  !>   brackets [, ] delimit optional sequences.
   !>
-  !> [sign] d+ ['.' d*] ['e' [sign] d+]        or
-  !> [sign]     '.' d+  ['e' [sign] d+]
+  !>   Value is set to the numeric value of the string.
+  !>   The function value is set to the position within the string where
+  !>   the numeric string ends plus one (i.e., the break character).
+  !> @endverbatim
   !>
-  !> where sign is '+' or '-',
-  !> d* is zero or more digits,
-  !> d+ is one  or more digits,
-  !> '.' and 'e' are literal (also accept lower case 'e'),
-  !> brackets [, ] delimit optional sequences.
+  !> @param
+  !>   String    The input string
+  !> @param
+  !>   Pos       The position in the input string where the scanning begins
+  !> @param
+  !>   Value     The numeric value of the string
   !>
-  !> Value is set to the numeric value of the string.
-  !> The function value is set to the position within the string where
-  !> the numeric string ends plus one (i.e., the break character).
+  !> @return
+  !>   myVal:    The position within the string where the numeric string ends plus one
+  !>             (i.e., the break character)
   !>
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !>  On Input:
-  !>
-  !>       String    The input string
-  !>       String    The input string
-  !>
-  !>  On Output:
-  !>
-  !>        Value    The numeric value of the string
-  !>        myVal    The position within the string where the numeric string ends plus one
-  !>                 (i.e., the break character).
   !----------------------------------------------------------------
-  INTEGER FUNCTION RealScan(String,Pos,Value) Result(myVal)
+  INTEGER FUNCTION RealScan(String, Pos, Value) Result(myVal)
 
     IMPLICIT NONE
 
@@ -2611,41 +2900,44 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   D  R E A L  S C A N
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Scans string looking for the leading real numeric string.
-  !> Same as RealScan, but value is a double precision number.
-  !> Scanning begins at the position specified by pos and continues to the end of the string.
-  !> Leading blanks are ignored.
+  !> @brief
+  !>   Scans string looking for the leading double precision real numeric string.
   !>
-  !> The numeric string must have the form:
+  !> @details
+  !>   Scanning begins at the position specified by pos and continues to the end of the string.
+  !>   Leading blanks are ignored.
+  !> @verbatim
+  !>   The numeric string must have the form:
+  !>   [sign] d+ ['.' d*] ['e' [sign] d+]        or
+  !>   [sign]     '.' d+  ['e' [sign] d+]
+  !>   where sign is '+' or '-',
+  !>   d* is zero or more digits,
+  !>   d+ is one  or more digits,
+  !>   '.' and 'e' are literal (also accept lower case 'e'),
+  !>   brackets [, ] delimit optional sequences.
   !>
-  !> [sign] d+ ['.' d*] ['e' [sign] d+]        or
-  !> [sign]     '.' d+  ['e' [sign] d+]
+  !>   Value is set to the numeric value of the string.
+  !>   The function value is set to the position within the string where
+  !>   the numeric string ends plus one (i.e., the break character).
+  !> @endverbatim
   !>
-  !> where sign is '+' or '-',
-  !> d* is zero or more digits,
-  !> d+ is one  or more digits,
-  !> '.' and 'e' are literal (also accept lower case 'e'),
-  !> brackets [, ] delimit optional sequences.
+  !> @param
+  !>   String    The input string
+  !> @param
+  !>   Pos       The position in the input string where the scanning begins
+  !> @param
+  !>   Value     The numeric value of the string
   !>
-  !> Value is set to the numeric value of the string.
-  !> The function value is set to the position within the string where
-  !> the numeric string ends plus one (i.e., the break character).
+  !> @return
+  !>   myVal:    The position within the string where the numeric string ends plus one
+  !>             (i.e., the break character)
   !>
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !>  On Input:
-  !>
-  !>       String    The input string
-  !>       String    The input string
-  !>
-  !>  On Output:
-  !>
-  !>        Value    The numeric value of the string
-  !>        myVal    The position within the string where the numeric string ends plus one
-  !>                 (i.e., the break character).
   !----------------------------------------------------------------
   INTEGER FUNCTION DRealScan(String,Pos,Value) RESULT(myVal)
 
@@ -2763,36 +3055,44 @@ MODULE Utilities
   !----------------------------------------------------------------
   ! F U N C T I O N   I N T  S C A N
   !----------------------------------------------------------------
-  !  author C. L. Dunford - November 19, 3003
-  !  NSDFLIB          FORTRAN UTILITY SUBROUTINE PACKAGE
-  !  https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !> Scans string looking for the leading integer numeric string.
-  !> Scanning begins at the position specified by pos and continues to the end of the string.
-  !> Leading blanks are ignored.
+  !> @brief
+  !>   Scans string looking for the leading integer numeric string.
   !>
-  !> The search may be for a signed (signed = .true.) or unsigned (signed      
-  !> = .FALSE.) integer value.  If signed, leading plus (+) or minus (-)       
-  !> is allowed.  If unsigned, they will terminate the scan as they are
-  !> invalid for an unsigned integer.
+  !> @details
+  !>   Scanning begins at the position specified by pos and continues to the end of the string.
+  !>   Leading blanks are ignored.
+  !> @verbatim
+  !>   The search may be for a signed (signed = .true.) or unsigned
+  !>   (signed = .FALSE.) integer value.  If signed, leading plus (+) or minus (-)       
+  !>   is allowed.  If unsigned, they will terminate the scan as they are
+  !>   invalid for an unsigned integer.
   !>
-  !> Value is set to the numeric value of the string.
-  !> The function value is set to the position within the string where
-  !> the numeric string ends plus one (i.e., the break character).
+  !>   Value is set to the numeric value of the string.
+  !>   The function value is set to the position within the string where
+  !>   the numeric string ends plus one (i.e., the break character).
+  !> @endverbatim
   !>
+  !> @param
+  !>   String    The input string
+  !> @param
+  !>   Pos       The position in the input string where the scanning begins
+  !> @param
+  !>   Signed    The sign (+, -) of the numeric string, if present
+  !> @param
+  !>   Value     The numeric value of the string
   !>
-  !>  On Input:
+  !> @return
+  !>   myVal:    The position within the string where the numeric string ends plus one
+  !>             (i.e., the break character)
   !>
-  !>       String    The input string
-  !>       String    The input string
+  !> @author C. L. Dunford - November 19, 2003 \n
+  !>         NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE
+  !> @see
+  !>   https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html
   !>
-  !>  On Output:
-  !>
-  !>        Value    The numeric value of the string
-  !>        myVal    The position within the string where the numeric string ends plus one
-  !>                 (i.e., the break character).
   !----------------------------------------------------------------
-  INTEGER FUNCTION IntScan(String,Pos,Signed,Value) Result(myVal)
+  INTEGER FUNCTION IntScan(String, Pos, Signed, Value) Result(myVal)
 
     IMPLICIT NONE
 
@@ -2857,3 +3157,4 @@ MODULE Utilities
 !================================================================================
 
 END MODULE Utilities
+

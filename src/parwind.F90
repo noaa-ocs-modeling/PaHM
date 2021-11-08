@@ -1,8 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   P A R W I N D
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file parwind.F90
 !>
+!>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE ParWind
@@ -153,14 +161,19 @@ MODULE ParWind
   !----------------------------------------------------------------
   !  S U B R O U T I N E   R E A D  B E S T  T R A C K  F I L E
   !----------------------------------------------------------------
-  !> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Subroutine to read all a-deck/b-deck best track files (ATCF format).
+  !> @brief
+  !>   Subroutine to read all a-deck/b-deck best track files (ATCF format).
+  !>
+  !> @details
+  !>   It uses fortran format statements (old approach) to read the ATCF formatted
+  !>   track files as follows:
   !>   - a-deck: guidance information
   !>   - b-deck: best track information
-  !>   - Skips lines that are time repeats. ???PV check
+  !>   - Skips lines that are time repeats.
   !>   - Converts parameter values to the proper units.
   !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
+  !>
   !----------------------------------------------------------------
   SUBROUTINE ReadBestTrackFile()
 
@@ -406,6 +419,25 @@ MODULE ParWind
 
   END SUBROUTINE ReadBestTrackFile
 
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   R E A D  C S V  B E S T  T R A C K F I L E
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Subroutine to read all a-deck/b-deck best track files (ATCF format).
+  !>
+  !> @details
+  !>   It uses PaHM's CSV functionality (preferred approach) to read the ATCF formatted
+  !>   track files as follows:
+  !>   - a-deck: guidance information
+  !>   - b-deck: best track information
+  !>   - Skips lines that are time repeats. ???PV check
+  !>   - Converts parameter values to the proper units.
+  !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
+  !>
+  !----------------------------------------------------------------
   SUBROUTINE ReadCsvBestTrackFile()
 
     USE PaHM_Global, ONLY : nBTrFiles, bestTrackFileName
@@ -666,14 +698,25 @@ MODULE ParWind
   !----------------------------------------------------------------
   !  S U B R O U T I N E   P R O C E S S  H O L L A N D  D A T A
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Subroutine to support the Holland model (GetHolland).
-  !> Gets the next line from the file, skipping lines that are time repeats.
+  !> @brief
+  !>   Subroutine to support the Holland model (GetHolland).
+  !>
+  !> @details
+  !>   Subroutine to support the Holland model (GetHolland).
+  !>   Gets the next line from the file, skipping lines that are time repeats.
   !>   - Does conversions to the proper units.
   !>   - Uses old values of central pressure and rmw if the line is a
   !>     forecast, since forecasts do not have that data in them.
   !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
+  !>
+  !> @param
+  !>   idTrFile   The ID of the input track file (1, 2, ...)
+  !> @param
+  !>   strOut     The HollandData_T structure that stores all Holland model generated data (output)
+  !> @param
+  !>   status     Error status, 0 = no error (output)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE ProcessHollandData(idTrFile, strOut, status)
 
@@ -879,20 +922,27 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   G E T  H O L L A N D  F I E L D S
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Calculate wind velocities and MSL pressures at the mesh nodes from
-  !> the P-W Holland Wind model.
+  !> @brief
+  !>   Calculates wind velocities and MSL pressures at the mesh nodes from the P-W Holland Wind model.
   !>
-  !> The format statement takes into account whether the track data is
-  !> hindcast/nowcast (BEST) or forecast (OFCL).
+  !> @details
+  !>   Calculate wind velocities and MSL pressures at the mesh nodes from
+  !>   the P-W Holland Wind model.
   !>
-  !> The first line in the file MUST be a hindcast, since the central
-  !> pressure and the rmw are carried forward from hindcasts into
-  !> forecasts. So there needs to be at least one hindcast to carry the data
-  !> forward.
+  !>   The format statement takes into account whether the track data is
+  !>   hindcast/nowcast (BEST) or forecast (OFCL).
   !>
-  !> Assumes geographical coordinates.
+  !>   The first line in the file MUST be a hindcast, since the central
+  !>   pressure and the rmw are carried forward from hindcasts into
+  !>   forecasts. So there needs to be at least one hindcast to carry the data
+  !>   forward.
+  !>
+  !>   Assumes geographical coordinates.
+  !>
+  !> @param
+  !>   timeIDX   The time location to generate the fields for
+  !>
   !----------------------------------------------------------------
   SUBROUTINE GetHollandFields(timeIDX)
 
@@ -1249,21 +1299,21 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   W R I T E  B E S T  T R A C K  D A T A
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Writes the best track data (adjusted or not) to the "adjusted"
-  !> best track output file.
+  !> @brief
+  !>   Outputs the post-prossed best track data to file.
   !>
-  !>  On Input:
+  !> @details
+  !>   Writes the adjusted (or not) best track data to the "adjusted"
+  !>   best track output file.
   !>
-  !>   inpFile    The name of the input best tack file
-  !>  btrStruc    The structure of the "adjusted" best track data
-  !>    suffix    The suffix (optional) to be appended to the inpFile
-  !>              (default '_adj')
+  !> @param
+  !>   inpFile    The name of the input best track file
+  !> @param
+  !>   btrStruc   The "adjusted"  best track data structure that corresponds to the inpFile
+  !> @param
+  !>   suffix     The suffix (optional) to be appended to the inpFile (default '_adj')
   !>
-  !>  On Output:
-  !>
-  !>   outFile    The output file: inpFile // '_adj'
   !----------------------------------------------------------------
   SUBROUTINE WriteBestTrackData(inpFile, btrStruc, suffix)
 
@@ -1352,7 +1402,18 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A L L O C  B T R  S T R U C T
   !----------------------------------------------------------------
-  !> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !>
+  !> @brief
+  !>   Subroutine to allocate memory for a best track structure
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   str    The best track structure of type BestTrackData_T
+  !> @param
+  !>   nRec   The number of records in the structure
+  !>
   !----------------------------------------------------------------
   SUBROUTINE AllocBTrStruct(str, nRec)
 
@@ -1412,7 +1473,16 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   D E A L L O C  B T R  S T R U C T
   !----------------------------------------------------------------
-  !> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !>
+  !> @brief
+  !>   Subroutine to deallocate the memory allocated for a best track structure
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   str    The best track structure of type BestTrackData_T
+  !>
   !----------------------------------------------------------------
   SUBROUTINE DeAllocBTrStruct(str)
 
@@ -1471,7 +1541,18 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   A L L O C  H O L L  S T R U C T
   !----------------------------------------------------------------
-  !> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !>
+  !> @brief
+  !>   Subroutine to allocate memory for a holland structure
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   str    The holland structure of type HollandData_T
+  !> @param
+  !>   nRec   The number of records in the structure
+  !>
   !----------------------------------------------------------------
   SUBROUTINE AllocHollStruct(str, nRec)
 
@@ -1526,7 +1607,16 @@ MODULE ParWind
   !----------------------------------------------------------------
   ! S U B R O U T I N E   D E A L L O C  H O L L  S T R U C T
   !----------------------------------------------------------------
-  !> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !>
+  !> @brief
+  !>   Subroutine to deallocate memory of an allocated holland structure
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   str    The holland structure of type HollandData_T
+  !>
   !----------------------------------------------------------------
   SUBROUTINE DeAllocHollStruct(str)
 

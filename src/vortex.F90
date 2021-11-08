@@ -1,9 +1,16 @@
 !----------------------------------------------------------------
 !               M O D U L E   V O R T E X
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
-!  Adopted from the ADCIRC source code.
+!> @file vortex.F90
 !>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+!> @note Adopted from the ADCIRC source code.
 !----------------------------------------------------------------
 
 MODULE PaHM_Vortex
@@ -55,8 +62,6 @@ MODULE PaHM_Vortex
   !----------------------------------------------------------------
   ! S U B R O U T I N E   C A L C  I N T E N S I T Y  C H A N G E
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !>
   !> This subroutine calculates the intensity time change of a variable
   !> using second order mumerical accuracy and uneven spacing.
   !>
@@ -217,8 +222,6 @@ MODULE PaHM_Vortex
   !----------------------------------------------------------------
   ! S U B R O U T I N E   U V  T R A N S
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !>
   !> This subroutine calculates the translational velocity of a moving hurricane
   !> using second order mumerical accuracy and uneven spacing.
   !>
@@ -437,8 +440,6 @@ MODULE PaHM_Vortex
   !----------------------------------------------------------------
   ! S U B R O U T I N E   U V  T R A N S  P O I N T
   !----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !>
   !> This subroutine calculates the translational velocity of a moving hurricane.
   !>
   !> On input:
@@ -537,6 +538,7 @@ MODULE PaHM_Vortex
   ! S U B R O U T I N E   N E W  V O R T E X  F U L L
   !----------------------------------------------------------------
   !> A new vortex is created for the full gradient wind balance
+  !>
   !----------------------------------------------------------------
   SUBROUTINE NewVortexFull(pinf, p0, lat, lon, vm)
 
@@ -575,7 +577,6 @@ MODULE PaHM_Vortex
   !----------------------------------------------------------------
   ! S U B R O U T I N E   S E T  V O R T E X
   !----------------------------------------------------------------
-  !
   !> Set basic parameter for a new Vortex object.
   !>
   !> On input:
@@ -659,8 +660,8 @@ MODULE PaHM_Vortex
   !> On output:
   !>    rMax    radius of maximum winds (nm) in all quadrants, plus
   !>            2 extra values to tie down circular periodicity
-  !> Jie 2014.07 Modified with quadrant-varying vmBL, which not only
-  !> works for nws19 but for the simplified nws20
+  !  Jie 2014.07 Modified with quadrant-varying vmBL, which not only
+  !  works for nws19 but for the simplified nws20
   !----------------------------------------------------------------
   SUBROUTINE CalcRMaxes()
 

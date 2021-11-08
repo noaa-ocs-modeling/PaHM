@@ -1,9 +1,15 @@
 !----------------------------------------------------------------
 !               M O D U L E   G L O B A L
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
-!  Adopted from the ADCIRC source code.
+!> @file global.F90
 !>
+!> @brief
+!>   
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE PaHM_Global
@@ -217,26 +223,30 @@ MODULE PaHM_Global
   CONTAINS
 
 
-  ! ----------------------------------------------------------------
+  !----------------------------------------------------------------
   !  F U N C T I O N   A I R  D E N S I T Y
-  ! ----------------------------------------------------------------
-  !  author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+  !----------------------------------------------------------------
   !>
-  !> This function calculates the density of the moist air.
+  !> @brief
+  !>   This function calculates the density of the moist air.
   !>
-  !> On input:
-  !>   atmT     Air temperature (degrees Celcius)
-  !>   atmP     Atmospheric pressure (mb)
-  !>  relHum    Relative humidity (0 - 100)
+  !> @details
+  !>   
   !>
-  !> On output:
-  !>  myValOut  The density of moist air (kg/m^3)
+  !> @see https://en.wikipedia.org/wiki/Density_of_air
+  ! >@see http://www.emd.dk/files/windpro/WindPRO_AirDensity.pdf
   !>
-  !> References:
-  !>   https://en.wikipedia.org/wiki/Density_of_air
-  !>   http://www.emd.dk/files/windpro/WindPRO_AirDensity.pdf
+  !> @param
+  !>   atmT        Air temperature (@f$ ^0 C @f$)
+  !> @param
+  !>   atmP        Atmospheric pressure (@f$ mbar @f$)
+  !> @param
+  !>   relHum      Relative humidity (@f$ 0 - 100 @f$)
   !>
-  ! ----------------------------------------------------------------
+  !> @return
+  !>   myValOut:   The density of moist air (@f$ kg / m^3 @f$)
+  !>
+  !----------------------------------------------------------------
   REAL(SZ) FUNCTION AirDensity(atmT, atmP, relHum) RESULT(myValOut)
 
     IMPLICIT NONE
@@ -258,8 +268,8 @@ MODULE PaHM_Global
     IF (temp < -50.0) temp = -50.0_HP
     IF (temp > 100.0) temp = 100.0_HP
 
-    rd = 287.058_HP ! specific gas constant for dry air (J/kg·K)
-    rv = 461.495_HP ! specific gas constant for water vapor (J/kg·K)
+    rd = 287.058_HP ! specific gas constant for dry air (J/kg*K)
+    rv = 461.495_HP ! specific gas constant for water vapor (J/kg*K)
 
     ! Convert relative humidity to %
     rh = 0.01_SZ * rh

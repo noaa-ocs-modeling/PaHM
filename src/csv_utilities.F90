@@ -1,7 +1,17 @@
-!*******************************************************************************
-!> author: Jacob Williams
-!
-!  Utility routines.
+!----------------------------------------------------------------
+!               M O D U L E   C S V _ U T I L I T I E S
+!----------------------------------------------------------------
+!> @file csv_utilities.F90
+!>
+!> @brief
+!>   Utility routines.
+!>
+!> @details
+!>   
+!>
+!> @author Jacob Williams
+!> @copyright License BSD
+!----------------------------------------------------------------
 
     module csv_utilities
 
@@ -10,7 +20,7 @@
 
     private
 
-    integer,parameter :: max_size_for_insertion_sort = 20 !! max size for using insertion sort.
+    integer,parameter :: max_size_for_insertion_sort = 20 !> max size for using insertion sort.
 
     public :: unique
     public :: expand_vector
@@ -19,24 +29,42 @@
     contains
 !*******************************************************************************
 
-!*******************************************************************************
-!>
-!  Add elements to the integer vector in chunks.
-
-    pure subroutine expand_vector(vec,n,chunk_size,val,finished)
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   E X P A N D _ V E C T O R
+  !----------------------------------------------------------------
+  !> @brief
+  !>   Add elements to the integer vector in chunks.
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param
+  !>   vec          The input integer vector (input/output)
+  !> @param
+  !>   n            Counter for last element added to `vec`; must be initialized to `size(vec)` \n
+  !>                (or 0 if not allocated) before first call  (input/output)
+  !> @param
+  !>   chunk_size   Allocate `vec` in blocks of this size (>0)
+  !> @param
+  !>   val          The value to add to `vec` (optional)
+  !> @param
+  !>   finished     Set to true to return `vec` as its correct size (`n`) (optional)
+  !>
+  !----------------------------------------------------------------
+    pure subroutine expand_vector(vec, n, chunk_size, val, finished)
 
     implicit none
 
     integer,dimension(:),allocatable,intent(inout) :: vec
-    integer,intent(inout)       :: n           !! counter for last element added to `vec`.
-                                               !! must be initialized to `size(vec)`
-                                               !! (or 0 if not allocated) before first call
-    integer,intent(in)          :: chunk_size  !! allocate `vec` in blocks of this size (>0)
-    integer,intent(in),optional :: val         !! the value to add to `vec`
-    logical,intent(in),optional :: finished    !! set to true to return `vec`
-                                               !! as its correct size (`n`)
+    integer,intent(inout)       :: n           ! counter for last element added to `vec`.
+                                               ! must be initialized to `size(vec)`
+                                               ! (or 0 if not allocated) before first call
+    integer,intent(in)          :: chunk_size  ! allocate `vec` in blocks of this size (>0)
+    integer,intent(in),optional :: val         ! the value to add to `vec`
+    logical,intent(in),optional :: finished    ! set to true to return `vec`
+                                               ! as its correct size (`n`)
 
-    integer,dimension(:),allocatable :: tmp  !! temporary array
+    integer,dimension(:),allocatable :: tmp  ! temporary array
 
     if (present(val)) then
         if (allocated(vec)) then
@@ -69,20 +97,20 @@
 !*******************************************************************************
 
 !*******************************************************************************
-!>
-!  Returns only the unique elements of the vector.
+!
+!> Returns only the unique elements of the vector.
 
     function unique(vec,chunk_size) result(ivec_unique)
 
     implicit none
 
-    integer,dimension(:),intent(in)    :: vec        !! a vector of integers
-    integer,intent(in)                 :: chunk_size  !! chunk size for adding to arrays
-    integer,dimension(:),allocatable   :: ivec_unique !! unique elements of `ivec`
+    integer,dimension(:),intent(in)    :: vec        !> a vector of integers
+    integer,intent(in)                 :: chunk_size  !> chunk size for adding to arrays
+    integer,dimension(:),allocatable   :: ivec_unique !> unique elements of `ivec`
 
-    integer,dimension(size(vec)) :: ivec !! temp copy of vec
-    integer :: i !! counter
-    integer :: n !! number of unique elements
+    integer,dimension(size(vec)) :: ivec !> temp copy of vec
+    integer :: i !> counter
+    integer :: n !> number of unique elements
 
     ! first we sort it:
     ivec = vec ! make a copy
@@ -107,9 +135,9 @@
 
 !*******************************************************************************
 !>
-!  Sorts an integer array `ivec` in increasing order.
-!  Uses a basic recursive quicksort
-!  (with insertion sort for partitions with \(\le\) 20 elements).
+!> Sorts an integer array `ivec` in increasing order.
+!> Uses a basic recursive quicksort
+!> (with insertion sort for partitions with \f$ \le \f$ 20 elements).
 
     subroutine sort_ascending(ivec)
 
@@ -123,16 +151,16 @@
 
         recursive subroutine quicksort(ilow,ihigh)
 
-        !! Sort the array
+        !> Sort the array
 
         implicit none
 
         integer,intent(in) :: ilow
         integer,intent(in) :: ihigh
 
-        integer :: ipivot !! pivot element
-        integer :: i      !! counter
-        integer :: j      !! counter
+        integer :: ipivot !> pivot element
+        integer :: i      !> counter
+        integer :: j      !> counter
 
         if ( ihigh-ilow<=max_size_for_insertion_sort .and. ihigh>ilow ) then
 
@@ -160,8 +188,8 @@
 
         subroutine partition(ilow,ihigh,ipivot)
 
-        !! Partition the array, based on the
-        !! lexical ivecing comparison.
+        !> Partition the array, based on the
+        !> lexical ivecing comparison.
 
         implicit none
 
@@ -189,7 +217,7 @@
 
 !*******************************************************************************
 !>
-!  Swap two integer values.
+!> Swap two integer values.
 
     pure elemental subroutine swap(i1,i2)
 

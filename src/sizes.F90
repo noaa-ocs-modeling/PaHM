@@ -1,8 +1,15 @@
 !----------------------------------------------------------------
 !               M O D U L E   S I Z E S
 !----------------------------------------------------------------
-!> @author PanagiotisVelissariou <panagiotis.velissariou@noaa.gov>
+!> @file sizes.F90
 !>
+!> @brief
+!>    Contains the definitions of various number types and utilities used in PaHM.
+!>
+!> @details
+!>   
+!>
+!> @author Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 !----------------------------------------------------------------
 
 MODULE PaHM_Sizes
@@ -68,24 +75,28 @@ MODULE PaHM_Sizes
   !----------------------------------------------------------------
   ! F U N C T I O N   CompareDoubleReals
   !----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (...src/precision_basics.F90)
   !>
-  !> Compares two double precision numbers.
-  !> Allow users to define the value of eps. If not, eps equals to the default machine eps.
+  !> @brief
+  !>   Compares two double precision numbers.
   !>
-  !> On input:
-  !>    rVal1   The first value (double precision) in the comparison
-  !>    rVal2   The second value (double precision) in the comparison
-  !>      eps   The tolerance (optional) for the comparison
+  !> @details
+  !>   Allow users to define the value of eps. If not, eps equals to the default machine eps.
   !>
-  !> On output:
-  !>    N/A
+  !> @param
+  !>   rVal1   The first value (double precision number) in the comparison
+  !> @param
+  !>   rVal2   The second value (double precision number) in the comparison
+  !> @param
+  !>   eps     The tolerance (optional) for the comparison
   !>
-  !> Returns:
-  !>    -1 if rVal1 < rVal2
-  !>     0 if rVal1 = rVal2
-  !>    +1 if rVal1 > rVal2
+  !> @return myValOut
+  !> @verbatim
+  !>   -1 (if rVal1 < rVal2)
+  !>    0 (if rVal1 = rVal2)
+  !>   +1 (if rVal1 > rVal2)
+  !> @endverbatim
+  !>
+  !> @note The code was adopted from the D-Flow FM source (...src/precision_basics.F90)
   !----------------------------------------------------------------
   INTEGER FUNCTION CompareDoubleReals(rVal1, rVal2, eps) RESULT(myValOut)
 
@@ -131,24 +142,28 @@ MODULE PaHM_Sizes
   !----------------------------------------------------------------
   ! F U N C T I O N   C O M P A R E  S I N G L E  R E A L S
   !----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-  !  The code was adopted from the D-Flow FM source (...src/precision_basics.F90)
   !>
-  !> Compares two single precision numbers.
-  !> Allow users to define the value of eps. If not, eps equals to the default machine eps.
+  !> @brief
+  !>   Compares two single precision numbers.
   !>
-  !> On input:
-  !>    rVal1   The first value (single precision) in the comparison
-  !>    rVal2   The second value (single precision) in the comparison
-  !>      eps   The tolerance (optional) for the comparison
+  !> @details
+  !>   Allow users to define the value of eps. If not, eps equals to the default machine eps.
   !>
-  !> On output:
-  !>    N/A
+  !> @param
+  !>   rVal1   The first value (single precision number) in the comparison
+  !> @param
+  !>   rVal2   The second value (single precision number) in the comparison
+  !> @param
+  !>   eps     The tolerance (optional) for the comparison
   !>
-  !> Returns:
-  !>    -1 if rVal1 < rVal2
-  !>     0 if rVal1 = rVal2
-  !>    +1 if rVal1 > rVal2
+  !> @return myValOut
+  !> @verbatim
+  !>   -1 (if rVal1 < rVal2)
+  !>    0 (if rVal1 = rVal2)
+  !>   +1 (if rVal1 > rVal2)
+  !> @endverbatim
+  !>
+  !> @note The code was adopted from the D-Flow FM source (...src/precision_basics.F90)
   !----------------------------------------------------------------
   INTEGER FUNCTION CompareSingleReals(rVal1, rVal2, eps) RESULT(myValOut)
 
@@ -194,23 +209,28 @@ MODULE PaHM_Sizes
   !----------------------------------------------------------------
   ! F U N C T I O N   F I X  N E A R  W H O L E  D O U B L E  R E A L
   !----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Compares a double precision real number against its nearest whole number.
-  !> If the real number is very close (within a tolerance) to its nearest whole number
-  !> then it is set equal to its nearest whole number.
-  !> Allow users to define the value of the tolerance "eps". If not, then eps equals
-  !> to the default machine eps.
+  !> @brief
+  !>   Rounds a double precision real number to its nearest whole number.
   !>
-  !> On input:
-  !>     rVal   The real number value (double precision) in the comparison
-  !>      eps   The tolerance (optional) for the comparison
+  !> @details
+  !>   Rounds a double precision real number to its nearest whole number.
+  !>   If the real number is very close (within a tolerance) to its nearest whole number
+  !>   then it is set equal to its nearest whole number.
+  !>   Allow users to define the value of the tolerance "eps". If not, then eps equals
+  !>   to the default machine eps.
   !>
-  !> On output:
-  !> myValOut   The modified real number value
+  !> @param
+  !>   rVal   The real number value (double precision) in the comparison
+  !> @param
+  !>   eps    The tolerance (optional) for the comparison
   !>
-  !> Returns:
-  !> myValOut (double precision real)
+  !> @return myValOut : Either **rVal** or its nearest integer **iVar** converted to double
+  !> @verbatim
+  !>   rVal (if abs(rVal - iVal) >  eps
+  !>   iVal (if abs(rVal - iVal) <= eps
+  !> @endverbatim
+  !>
   !----------------------------------------------------------------
   REAL(HP) FUNCTION FixNearWholeDoubleReal(rVal, eps) RESULT(myValOut)
 
@@ -245,23 +265,28 @@ MODULE PaHM_Sizes
   !----------------------------------------------------------------
   ! F U N C T I O N   F I X  N E A R  W H O L E  S I N G L E  R E A L
   !----------------------------------------------------------------
-  !  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
   !>
-  !> Compares a single precision real number against its nearest whole number.
-  !> If the real number is very close (within a tolerance) to its nearest whole number
-  !> then it is set equal to its nearest whole number.
-  !> Allow users to define the value of the tolerance "eps". If not, then eps equals
-  !> to the default machine eps.
+  !> @brief
+  !>   Rounds a single precision real number to its nearest whole number.
   !>
-  !> On input:
-  !>     rVal   The real number value (single precision) in the comparison
-  !>      eps   The tolerance (optional) for the comparison
+  !> @details
+  !>   Rounds a single precision real number to its nearest whole number.
+  !>   If the real number is very close (within a tolerance) to its nearest whole number
+  !>   then it is set equal to its nearest whole number.
+  !>   Allow users to define the value of the tolerance "eps". If not, then eps equals
+  !>   to the default machine eps.
   !>
-  !> On output:
-  !> myValOut   The modified real number value
+  !> @param
+  !>   rVal   The real number value (single precision) in the comparison
+  !> @param
+  !>   eps    The tolerance (optional) for the comparison
   !>
-  !> Returns:
-  !> myValOut (single precision real)
+  !> @return myValOut : Either **rVal** or its nearest integer **iVar** converted to real
+  !> @verbatim
+  !>   rVal (if abs(rVal - iVal) >  eps
+  !>   iVal (if abs(rVal - iVal) <= eps
+  !> @endverbatim
+  !>
   !----------------------------------------------------------------
   REAL(SP) FUNCTION FixNearWholeSingleReal(rVal, eps) RESULT(myValOut)
 
