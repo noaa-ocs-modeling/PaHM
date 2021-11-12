@@ -859,7 +859,7 @@ MODULE ParWind
             CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), &
                           strOut%hour(iCnt), 0, 0.0_SZ, castTime(iCnt))
           ELSE
-           castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1) * 3600.0_SZ)
+           castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1)) * 3600.0_SZ
           END IF
 
           IF ((strOut%iCPress(iCnt) == 0) .OR. (strOut%iRmw(iCnt) == 0)) THEN
@@ -886,7 +886,7 @@ MODULE ParWind
             CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), &
                           strOut%hour(iCnt), 0, 0.0_SZ, castTime(iCnt))
           ELSE
-            castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1) * 3600.0_SZ) 
+            castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1)) * 3600.0_SZ
           END IF
 
         CASE DEFAULT        ! unrecognized
