@@ -1,5 +1,0 @@
-<map id="sortutils::quicksort" name="sortutils::quicksort">
-<area shape="rect" id="node1" title="Sorts the array arr1D into ascending numerical order using Quicksort." alt="" coords="5,32,156,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="213,5,499,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="204,59,508,88"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="utilities::dvalstr" name="utilities::dvalstr">
-<area shape="rect" id="node1" title="Returns the value of the leading double precision real numeric string." alt="" coords="5,5,132,35"/>
-<area shape="rect" id="node2" href="$namespaceutilities.html#ac6d4fd461bd13f1ca73e75038fd09fc9" title="Scans string looking for the leading double precision real numeric string." alt="" coords="180,5,331,35"/>
-<area shape="rect" id="node3" href="$namespaceutilities.html#a26a70a9de90e0016d323e4c8dbea1a5b" title="Scans string looking for the leading integer numeric string." alt="" coords="379,5,509,35"/>
-</map>

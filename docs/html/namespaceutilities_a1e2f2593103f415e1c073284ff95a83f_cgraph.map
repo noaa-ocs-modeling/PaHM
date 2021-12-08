@@ -1,6 +1,0 @@
-<map id="utilities::checkcontrolfileinputs" name="utilities::checkcontrolfileinputs">
-<area shape="rect" id="node1" title="Checks the user defined control file inputs." alt="" coords="5,59,240,88"/>
-<area shape="rect" id="node2" href="$namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b" title="Calculates the conversion factor between time units and seconds." alt="" coords="288,5,520,35"/>
-<area shape="rect" id="node3" href="$namespacetimedateutils.html#a393203cc78370648d0dd392fe96d66ff" title="Pre&#45;processes an arbitrary date string." alt="" coords="315,59,493,88"/>
-<area shape="rect" id="node4" href="$namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd" title="Convert a string to upper&#45;case." alt="" coords="320,112,488,141"/>
-</map>

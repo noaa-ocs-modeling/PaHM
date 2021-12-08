@@ -1,8 +1,0 @@
-<map id="pahm_netcdfio::netcdfterminate" name="pahm_netcdfio::netcdfterminate">
-<area shape="rect" id="node1" title="Terminates the program on NetCDF error." alt="" coords="1061,46,1307,75"/>
-<area shape="rect" id="node2" href="$namespacepahm__netcdfio.html#aa686f5f58121595cbd368f0f0b12bfba" title="Checks the return value from netCDF calls; if there was an error, it writes the error message to the ..." alt="" coords="781,5,952,52"/>
-<area shape="rect" id="node3" href="$namespacepahm__netcdfio.html#a850b1df36d9d2d229b8b03f0558c3703" title="Creates a new NetCDF data file and puts it in define mode." alt="" coords="720,77,1013,106"/>
-<area shape="rect" id="node4" href="$namespacepahm__netcdfio.html#a21917504b7e9d5594375d1a48bb4cb8f" title="Initializes a new NetCDF data file and puts it in define mode. Sets up netCDF dimensions and variable..." alt="" coords="387,77,672,106"/>
-<area shape="rect" id="node5" href="$namespacepahm__drivermod.html#a7ae4571521a5bb4eb55990dd7fb76237" title="Subroutine to run PaHM (timestepping)." alt="" coords="116,77,339,106"/>
-<area shape="rect" id="node6" href="$pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,77,68,106"/>
-</map>

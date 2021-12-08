@@ -1,5 +1,0 @@
-<map id="pahm_vortex::findroot" name="pahm_vortex::findroot">
-<area shape="rect" id="node1" title="Use brute&#45;force marching to find a root the interval [x1,x2]." alt="" coords="277,32,452,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__vortex.html#a580543eed13ec39a2d21135376a5f72a" title="Calculate the radius of maximum winds for all storm quadrants." alt="" coords="16,5,219,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__vortex.html#a5f7ee771ea7ff74d85f4f431886bbffb" title="Calculate the radius of maximum winds for all storm quadrants. Solving the full gradient wind equatio..." alt="" coords="5,59,229,88"/>
-</map>

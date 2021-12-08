@@ -1,4 +1,0 @@
-<map id="timedateutils::dayofyeartogreg" name="timedateutils::dayofyeartogreg">
-<area shape="rect" id="node1" title="Determines the Gregorian date (year, month, day) from a day of the year." alt="" coords="5,5,241,35"/>
-<area shape="rect" id="node2" href="$namespacetimedateutils.html#abc63ac16baec18b6c9bb2ee6e0400a63" title="Determines the Julian date from a Gregorian date." alt="" coords="289,5,496,35"/>
-</map>
