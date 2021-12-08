@@ -1,0 +1,20 @@
+
+This file contains tropical cyclone development classifications.
+
+DO NOT DELETE THE NEXT TWO LINES -- ATCF depends on them.
+START_OF_DATA:
+
+DB - disturbance
+TD - trop. depression
+TS - trop. storm
+TY - typhoon
+HU - hurricane
+ST - super typhoon
+TC - trop. cyclone
+SD - subtrop. depression
+SS - subtrop. storm
+EX - extratrop. cyclone
+PT - post tropical
+LO - low
+WV - trop. wave
+XX - unknown

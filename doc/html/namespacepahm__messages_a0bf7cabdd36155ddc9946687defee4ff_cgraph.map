@@ -1,0 +1,4 @@
+<map id="pahm_messages::programhelp" name="pahm_messages::programhelp">
+<area shape="rect" id="node1" title="Prints on the screen the help system of the program." alt="" coords="5,5,248,35"/>
+<area shape="rect" id="node2" href="$namespacepahm__messages.html#a339ae583dc62f85245ae10374b0c677f" title="Prints on the screen the versioning information of the program." alt="" coords="296,5,559,35"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="pahm_netcdfio::base_netcdfcheckerr" name="pahm_netcdfio::base_netcdfcheckerr">
+<area shape="rect" id="node1" title="Checks the return value from netCDF calls; if there was an error, it writes the error message to the ..." alt="" coords="5,35,176,82"/>
+<area shape="rect" id="node2" href="$namespacepahm__netcdfio.html#aa0987122588b6ef883046848cfcefe0b" title="Terminates the program on NetCDF error." alt="" coords="224,44,469,73"/>
+<area shape="rect" id="node3" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="526,5,813,35"/>
+<area shape="rect" id="node4" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="517,71,821,100"/>
+</map>

@@ -1,0 +1,429 @@
+NUM TECH ERRS RETIRED COLOR DEFAULTS INT-DEFS RADII-DEFS LONG-NAME
+ 00 CARQ   0      0     0      0        0         1                 Combined ARQ Position
+ 00 WRNG   0      0     0      0        0         1                 Warning
+ 03 OFCL   1      0    12      1        1         1                 NHC official forecast
+ 03 OFCI   0      0    11      1        1         1                 NHC official forecast (Interpolated 06 hours)
+ 03 OFC2   0      0    11      1        1         1                 NHC official forecast (Interpolated 12 hours)
+ 03 OFCP   1      0    11      1        1         1                 NHC provisional forecast
+ 03 OFPI   0      0    11      1        1         1                 NHC provisional forecast (Interpolated 06 hours)
+ 03 OFP2   0      0    11      1        1         1                 NHC provisional forecast (Interpolated 12 hours)
+ 03 OCD5   0      0     5      0        0         1                 Combination of CLP5 and Decay-SHIFOR run on operational inputs
+ 03 BCD5   0      0     5      0        0         1                 Combination of CLP5 and Decay-SHIFOR run on operational inputs
+ 03 OHPC   0      0    17      1        0         1                 WPC official forecast
+ 03 OOPC   0      0    17      1        0         1                 OPC official forecast
+ 03 JTWC   0      0    17      0        0         0                 JTWC official forecast
+ 03 JTWI   0      0    17      0        0         0                 JTWC official forecast (Interpolated 06 hours)
+ 03 XTRP   0      0     5      0        0         1                 Extrapolation using past 12-hr motion
+ 03 CLIP   0      0     2      0        0         1                 CLImatology-PERsistence model 3-day
+ 03 CLP5   0      0     2      1        0         1                 CLImatology-PERsistence model 5-day
+ 03 TCLP   0      0     2      1        0         1                 Trajectory CLIPER model 7-day
+ 03 BAMD   0      0    26      1        0         1                 Beta and Advection model, deep (NHC)
+ 03 BAMM   0      0    26      1        0         1                 Beta and Advection model, medium (NHC)
+ 03 BAMS   0      0    26      1        0         1                 Beta and Advection model, shallow (NHC)
+ 03 TABD   0      0    26      1        0         0                 Trajectory and Beta Model, deep (NHC)
+ 03 TABM   0      0    26      1        0         0                 Trajectory and Beta Model, medium (NHC)
+ 03 TABS   0      0    26      1        0         0                 Trajectory and Beta Model, shallow (NHC)
+ 03 LBAR   0      0    30      0        0         1                 LBAR
+ 03 FSSE   1      0    12      1        1         1                 FSU Superensemble
+ 03 HWRF   0      0     8      0        0         1                 HWRF model
+ 03 HWFI   1      0     8      1        1         1                 HWRF model (Interpolated 06 hours)
+ 03 HWF2   0      0     8      1        1         1                 HWRF model (Interpolated 12 hours)
+ 03 HWFE   0      0     8      0        0         1                 HWRF w/ ECMWF fields model
+ 03 HWEI   1      0     8      1        0         1                 HWRF w/ ECMWF fields model (Interpolated 06 hours)
+ 03 HWE2   0      0     8      1        0         1                 HWRF w/ ECMWF fields model (Interpolated 12 hours)
+ 03 HW3F   0      0     8      0        0         1                 HWRF model [2013 version]
+ 03 HW3I   1      0     8      1        0         1                 HWRF model [2013 version] (Interpolated 06 hours)
+ 03 HW32   0      0     8      1        0         1                 HWRF model [2013 version] (Interpolated 12 hours)
+ 03 GFDL   0      0     8      0        0         1                 GFDL model
+ 03 GFDI   1      0     8      1        0         1                 GFDL model (Interpolated 06 hours)
+ 03 GFD2   0      0     8      1        0         1                 GFDL model (Interpolated 12 hours)
+ 03 GFD5   0      0     8      0        0         1                 Parallel version of GFDL
+ 03 GF5I   1      0     8      1        0         1                 Parallel version of GFDL (Interpolated 06 hours)
+ 03 GF52   0      0     8      1        0         1                 Parallel version of GFDL (Interpolated 12 hours)
+ 03 GFDE   0      0     9      0        0         1                 GFDL w/ ECMWF fields model
+ 03 GFEI   1      0     9      1        0         1                 GFDL w/ ECMWF fields model (Interpolated 06 hours)
+ 03 GFE2   0      0     9      1        0         1                 GFDL w/ ECMWF fields model (Interpolated 12 hours)
+ 03 GHMI   0      0    25      0        1         1                 GFDL 06-h interpolated model using variable intensity offset
+ 03 GHM2   0      0    25      0        1         1                 GFDL 12-h interpolated model using variable intensity offset
+ 03 GFDT   0      0     7      0        0         1                 GFDL using [NCEP tracker]
+ 03 GFTI   1      0     7      0        0         1                 GFDL using [NCEP tracker] (Interpolated 06 hours)
+ 03 GFT2   0      0     7      0        0         1                 GFDL using [NCEP tracker] (Interpolated 12 hours)
+ 03 GFDN   0      0     6      0        0         1                 Navy GFDL model
+ 03 GFNI   0      0     6      1        0         1                 Navy GFDL model (Interpolated 06 hours)
+ 03 GFN2   0      0     6      1        0         1                 Navy GFDL model (Interpolated 12 hours)
+ 03 NAM    0      0    12      0        0         1                 NAM model
+ 03 NAMI   0      0    12      0        0         1                 NAM model (Interpolated 06 hours)
+ 03 NAM2   0      0    12      0        0         1                 NAM model (Interpolated 12 hours)
+ 03 COCE   0      0    29      0        0         1                 COAMPS Carib/E Pacific grid
+ 03 COEI   0      0    29      0        0         1                 COAMPS Carib/E Pacific grid (Interpolated 06 hours)
+ 03 COE2   0      0    29      0        0         1                 COAMPS Carib/E Pacific grid (Interpolated 12 hours)
+ 03 COAL   0      0    29      0        0         1                 COAMPS Atlantic grid
+ 03 COAI   0      0    29      0        0         1                 COAMPS Atlantic grid (Interpolated 06 hours)
+ 03 COA2   0      0    29      0        0         1                 COAMPS Atlantic grid (Interpolated 12 hours)
+ 03 AVNO   0      0     0      0        0         1      GFS        GFS Model
+ 03 AVNI   1      0    47      1        1         1      GFSI       GFS Model (Interpolated 06 hours)
+ 03 AVN2   0      0     0      1        1         1      GFS2       GFS Model (Interpolated 12 hours)
+ 03 AVXO   0      0    28      0        0         1      GFX        GFS Model 10-day tracker
+ 03 AVXI   1      0    28      1        0         1      GFXI       GFS Model 10-day tracker (Interpolated 06 hours)
+ 03 AVX2   0      0    28      1        0         1      GFX2       GFS Model 10-day tracker (Interpolated 12 hours)
+ 03 AC00   0      0    23      0        0         1      GC00       GFS Ensemble control member
+ 03 AP01   0      0    23      0        0         1      GP01       GFS Ensemble +01 member
+ 03 AP02   0      0    23      0        0         1      GP02       GFS Ensemble +02 member
+ 03 AP03   0      0    23      0        0         1      GP03       GFS Ensemble +03 member
+ 03 AP04   0      0    23      0        0         1      GP04       GFS Ensemble +04 member
+ 03 AP05   0      0    23      0        0         1      GP05       GFS Ensemble +05 member
+ 03 AP06   0      0    23      0        0         1      GP06       GFS Ensemble +06 member
+ 03 AP07   0      0    23      0        0         1      GP07       GFS Ensemble +07 member
+ 03 AP08   0      0    23      0        0         1      GP08       GFS Ensemble +08 member
+ 03 AP09   0      0    23      0        0         1      GP09       GFS Ensemble +09 member
+ 03 AP10   0      0    23      0        0         1      GP10       GFS Ensemble +10 member
+ 03 AP11   0      0    23      0        0         1      GP11       GFS Ensemble +11 member
+ 03 AP12   0      0    23      0        0         1      GP12       GFS Ensemble +12 member
+ 03 AP13   0      0    23      0        0         1      GP13       GFS Ensemble +13 member
+ 03 AP14   0      0    23      0        0         1      GP14       GFS Ensemble +14 member
+ 03 AP15   0      0    23      0        0         1      GP15       GFS Ensemble +15 member
+ 03 AP16   0      0    23      0        0         1      GP16       GFS Ensemble +16 member
+ 03 AP17   0      0    23      0        0         1      GP17       GFS Ensemble +17 member
+ 03 AP18   0      0    23      0        0         1      GP18       GFS Ensemble +18 member
+ 03 AP19   0      0    23      0        0         1      GP19       GFS Ensemble +19 member
+ 03 AP20   0      0    23      0        0         1      GP20       GFS Ensemble +20 member
+ 03 AEMN   0      0    24      0        0         1      GEMN       GFS Ensemble Mean
+ 03 AEMI   1      0    24      1        0         1      GEMI       GFS Ensemble Mean (Interpolated 06 hours)
+ 03 AEM2   0      0    24      1        0         1      GEM2       GFS Ensemble Mean (Interpolated 12 hours)
+ 03 AMMN   0      0    24      0        0         1      GMMN       GFS New Ensemble Mean
+ 03 UKM    0      0     5      1        0         1                 UKMET model (Developmental)
+ 03 UKMI   1      0    48      1        0         1                 UKMET model (Interpolated 06 hours)
+ 03 UKM2   1      0    48      1        0         1                 UKMET model (Interpolated 12 hours)
+ 03 EGRR   0      0    23      1        0         1                 UKMET model GTS (Official)
+ 03 EGRI   0      0    23      1        0         1                 UKMET model GTS (Official - Interpolated 06 hours)
+ 03 EGR2   0      0    23      1        0         1                 UKMET model GTS (Official - Interpolated 12 hours)
+ 03 KEGR   0      1    23      1        0         1                 UKMET model GTS (2014 test)
+ 03 KEGI   0      1    23      1        0         1                 UKMET model GTS (2014 test - Interpolated 06 hours)
+ 03 KEG2   0      1    23      1        0         1                 UKMET model GTS (2014 test - Interpolated 12 hours)
+ 03 UKX    0      0     5      0        0         1                 UKMET [GFS tracker]
+ 03 UKXI   1      0     5      0        0         1                 UKMET [GFS tracker] (Interpolated 06 hours)
+ 03 UKX2   1      0     5      0        0         1                 UKMET [GFS tracker] (Interpolated 12 hours)
+ 03 NGPS   0      0    14      1        0         1                 NOGAPS model
+ 03 NGPI   1      0    14      1        0         1                 NOGAPS model (Interpolated 06 hours)
+ 03 NGP2   0      0    14      1        0         1                 NOGAPS model (Interpolated 12 hours)
+ 03 NVGM   0      0    14      1        0         1                 NAVGEM model
+ 03 NVGI   1      0    14      1        0         1                 NAVGEM model (Interpolated 06 hours)
+ 03 NVG2   0      0    14      1        0         1                 NAVGEM model (Interpolated 12 hours)
+ 03 NGX    0      0    14      0        0         1                 NAVGEM/NOGAPS [GFS tracker]
+ 03 NGXI   1      0    14      0        0         1                 NAVGEM/NOGAPS [GFS tracker] (Interpolated 06 hours)
+ 03 NGX2   1      0    14      0        0         1                 NAVGEM/NOGAPS [GFS tracker] (Interpolated 12 hours)
+ 03 CMC    0      0     6      0        0         1                 Canadian model
+ 03 CMCI   1      0     6      0        0         1                 Canadian model (Interpolated 06 hours)
+ 03 CMC2   1      0     6      0        0         1                 Canadian Model (Interpolated 12 hours)
+ 03 CEMN   0      0     6      0        0         1                 Canadian model Ensemble Mean
+ 03 CEMI   0      0     6      0        0         1                 Canadian model Ensemble Mean (Interpolated 06 hours)
+ 03 CEM2   0      0     6      0        0         1                 Canadian model Ensemble Mean (Interpolated 12 hours)
+ 03 CC00   0      0     6      0        0         1                 Canadian model Ensemble control
+ 03 CP01   0      0     6      0        0         1                 Canadian model Ensemble +01 member
+ 03 CP02   0      0     6      0        0         1                 Canadian model Ensemble +02 member
+ 03 CP03   0      0     6      0        0         1                 Canadian model Ensemble +03 member
+ 03 CP04   0      0     6      0        0         1                 Canadian model Ensemble +04 member
+ 03 CP05   0      0     6      0        0         1                 Canadian model Ensemble +05 member
+ 03 CP06   0      0     6      0        0         1                 Canadian model Ensemble +06 member
+ 03 CP07   0      0     6      0        0         1                 Canadian model Ensemble +07 member
+ 03 CP08   0      0     6      0        0         1                 Canadian model Ensemble +08 member
+ 03 CP09   0      0     6      0        0         1                 Canadian model Ensemble +09 member
+ 03 CP10   0      0     6      0        0         1                 Canadian model Ensemble +10 member
+ 03 CP11   0      0     6      0        0         1                 Canadian model Ensemble +11 member
+ 03 CP12   0      0     6      0        0         1                 Canadian model Ensemble +12 member
+ 03 CP13   0      0     6      0        0         1                 Canadian model Ensemble +13 member
+ 03 CP14   0      0     6      0        0         1                 Canadian model Ensemble +14 member
+ 03 CP15   0      0     6      0        0         1                 Canadian model Ensemble +15 member
+ 03 CP16   0      0     6      0        0         1                 Canadian model Ensemble +16 member
+ 03 CP17   0      0     6      0        0         1                 Canadian model Ensemble +17 member
+ 03 CP18   0      0     6      0        0         1                 Canadian model Ensemble +18 member
+ 03 CP19   0      0     6      0        0         1                 Canadian model Ensemble +19 member
+ 03 CP20   0      0     6      0        0         1                 Canadian model Ensemble +20 member
+ 03 ECM    0      0     6      0        0         1                 ECMWF model
+ 03 ECMI   0      0     6      0        0         1                 ECMWF model (Interpolated 06 hours)
+ 03 ECM2   0      0     6      0        0         1                 ECMWF model (Interpolated 12 hours)
+ 03 EMX    0      0     6      0        0         1                 ECMWF model [NCEP tracker]
+ 03 EMXI   1      0     6      1        1         1                 ECMWF model [NCEP tracker] (Interpolated 06 hours)
+ 03 EMX2   1      0     6      1        1         1                 ECMWF model [NCEP tracker] (Interpolated 12 hours)
+ 03 EEMN   0      0     6      1        0         1                 ECMWF model Ensemble Mean [NCEP tracker]
+ 03 EMNI   0      0     6      1        0         1                 ECMWF model Ensemble Mean [NCEP tracker] (Interpolated 06 hours)
+ 03 EMN2   0      0     6      1        0         1                 ECMWF model Ensemble Mean [NCEP tracker] (Interpolated 12 hours)
+ 03 EMN3   0      0     6      1        0         1                 ECMWF model Ensemble Mean [NCEP tracker] (Interpolated 18 hours)
+ 03 EMN4   0      0     6      0        0         1                 ECMWF model Ensemble Mean [NCEP tracker] (Interpolated 24 hours)
+ 03 EC00   0      0     6      0        0         1                 ECMWF model Ensemble control member [NCEP tracker]
+ 03 EN01   0      0     6      0        0         1                 ECMWF model Ensemble +01 member [NCEP tracker]
+ 03 EN02   0      0     6      0        0         1                 ECMWF model Ensemble +02 member [NCEP tracker]
+ 03 EN03   0      0     6      0        0         1                 ECMWF model Ensemble +03 member [NCEP tracker]
+ 03 EN04   0      0     6      0        0         1                 ECMWF model Ensemble +04 member [NCEP tracker]
+ 03 EN05   0      0     6      0        0         1                 ECMWF model Ensemble +05 member [NCEP tracker]
+ 03 EN06   0      0     6      0        0         1                 ECMWF model Ensemble +06 member [NCEP tracker]
+ 03 EN07   0      0     6      0        0         1                 ECMWF model Ensemble +07 member [NCEP tracker]
+ 03 EN08   0      0     6      0        0         1                 ECMWF model Ensemble +08 member [NCEP tracker]
+ 03 EN09   0      0     6      0        0         1                 ECMWF model Ensemble +09 member [NCEP tracker]
+ 03 EN10   0      0     6      0        0         1                 ECMWF model Ensemble +10 member [NCEP tracker]
+ 03 EN11   0      0     6      0        0         1                 ECMWF model Ensemble +11 member [NCEP tracker]
+ 03 EN12   0      0     6      0        0         1                 ECMWF model Ensemble +12 member [NCEP tracker]
+ 03 EN13   0      0     6      0        0         1                 ECMWF model Ensemble +13 member [NCEP tracker]
+ 03 EN14   0      0     6      0        0         1                 ECMWF model Ensemble +14 member [NCEP tracker]
+ 03 EN15   0      0     6      0        0         1                 ECMWF model Ensemble +15 member [NCEP tracker]
+ 03 EN16   0      0     6      0        0         1                 ECMWF model Ensemble +16 member [NCEP tracker]
+ 03 EN17   0      0     6      0        0         1                 ECMWF model Ensemble +17 member [NCEP tracker]
+ 03 EN18   0      0     6      0        0         1                 ECMWF model Ensemble +18 member [NCEP tracker]
+ 03 EN19   0      0     6      0        0         1                 ECMWF model Ensemble +19 member [NCEP tracker]
+ 03 EN20   0      0     6      0        0         1                 ECMWF model Ensemble +20 member [NCEP tracker]
+ 03 EN21   0      0     6      0        0         1                 ECMWF model Ensemble +21 member [NCEP tracker]
+ 03 EN22   0      0     6      0        0         1                 ECMWF model Ensemble +22 member [NCEP tracker]
+ 03 EN23   0      0     6      0        0         1                 ECMWF model Ensemble +23 member [NCEP tracker]
+ 03 EN24   0      0     6      0        0         1                 ECMWF model Ensemble +24 member [NCEP tracker]
+ 03 EN25   0      0     6      0        0         1                 ECMWF model Ensemble +25 member [NCEP tracker]
+ 03 EP01   0      0     6      0        0         1                 ECMWF model Ensemble +26 member [NCEP tracker]
+ 03 EP02   0      0     6      0        0         1                 ECMWF model Ensemble +27 member [NCEP tracker]
+ 03 EP03   0      0     6      0        0         1                 ECMWF model Ensemble +28 member [NCEP tracker]
+ 03 EP04   0      0     6      0        0         1                 ECMWF model Ensemble +29 member [NCEP tracker]
+ 03 EP05   0      0     6      0        0         1                 ECMWF model Ensemble +30 member [NCEP tracker]
+ 03 EP06   0      0     6      0        0         1                 ECMWF model Ensemble +31 member [NCEP tracker]
+ 03 EP07   0      0     6      0        0         1                 ECMWF model Ensemble +32 member [NCEP tracker]
+ 03 EP08   0      0     6      0        0         1                 ECMWF model Ensemble +33 member [NCEP tracker]
+ 03 EP09   0      0     6      0        0         1                 ECMWF model Ensemble +34 member [NCEP tracker]
+ 03 EP10   0      0     6      0        0         1                 ECMWF model Ensemble +35 member [NCEP tracker]
+ 03 EP11   0      0     6      0        0         1                 ECMWF model Ensemble +36 member [NCEP tracker]
+ 03 EP12   0      0     6      0        0         1                 ECMWF model Ensemble +37 member [NCEP tracker]
+ 03 EP13   0      0     6      0        0         1                 ECMWF model Ensemble +38 member [NCEP tracker]
+ 03 EP14   0      0     6      0        0         1                 ECMWF model Ensemble +39 member [NCEP tracker]
+ 03 EP15   0      0     6      0        0         1                 ECMWF model Ensemble +40 member [NCEP tracker]
+ 03 EP16   0      0     6      0        0         1                 ECMWF model Ensemble +41 member [NCEP tracker]
+ 03 EP17   0      0     6      0        0         1                 ECMWF model Ensemble +42 member [NCEP tracker]
+ 03 EP18   0      0     6      0        0         1                 ECMWF model Ensemble +43 member [NCEP tracker]
+ 03 EP19   0      0     6      0        0         1                 ECMWF model Ensemble +44 member [NCEP tracker]
+ 03 EP20   0      0     6      0        0         1                 ECMWF model Ensemble +45 member [NCEP tracker]
+ 03 EP21   0      0     6      0        0         1                 ECMWF model Ensemble +46 member [NCEP tracker]
+ 03 EP22   0      0     6      0        0         1                 ECMWF model Ensemble +47 member [NCEP tracker]
+ 03 EP23   0      0     6      0        0         1                 ECMWF model Ensemble +48 member [NCEP tracker]
+ 03 EP24   0      0     6      0        0         1                 ECMWF model Ensemble +49 member [NCEP tracker]
+ 03 EP25   0      0     6      0        0         1                 ECMWF model Ensemble +50 member [NCEP tracker]
+ 03 ECMO   0      0     6      0        0         1                 ECMWF model [GTS tracker]
+ 03 ECOI   0      0     6      1        0         1                 ECMWF model [GTS tracker] (Interpolated 06 hours)
+ 03 ECO2   0      0     6      1        0         1                 ECMWF model [GTS tracker] (Interpolated 12 hours)
+ 03 ECME   0      0     6      1        0         1                 ECMWF model Ensemble Control Member [GTS tracker]
+ 03 EE01   0      0     6      0        0         1                 ECMWF model Ensemble +01 member [GTS tracker]
+ 03 EE02   0      0     6      0        0         1                 ECMWF model Ensemble +02 member [GTS tracker]
+ 03 EE03   0      0     6      0        0         1                 ECMWF model Ensemble +03 member [GTS tracker]
+ 03 EE04   0      0     6      0        0         1                 ECMWF model Ensemble +04 member [GTS tracker]
+ 03 EE05   0      0     6      0        0         1                 ECMWF model Ensemble +05 member [GTS tracker]
+ 03 EE06   0      0     6      0        0         1                 ECMWF model Ensemble +06 member [GTS tracker]
+ 03 EE07   0      0     6      0        0         1                 ECMWF model Ensemble +07 member [GTS tracker]
+ 03 EE08   0      0     6      0        0         1                 ECMWF model Ensemble +08 member [GTS tracker]
+ 03 EE09   0      0     6      0        0         1                 ECMWF model Ensemble +09 member [GTS tracker]
+ 03 EE10   0      0     6      0        0         1                 ECMWF model Ensemble +10 member [GTS tracker]
+ 03 EE11   0      0     6      0        0         1                 ECMWF model Ensemble +11 member [GTS tracker]
+ 03 EE12   0      0     6      0        0         1                 ECMWF model Ensemble +12 member [GTS tracker]
+ 03 EE13   0      0     6      0        0         1                 ECMWF model Ensemble +13 member [GTS tracker]
+ 03 EE14   0      0     6      0        0         1                 ECMWF model Ensemble +14 member [GTS tracker]
+ 03 EE15   0      0     6      0        0         1                 ECMWF model Ensemble +15 member [GTS tracker]
+ 03 EE16   0      0     6      0        0         1                 ECMWF model Ensemble +16 member [GTS tracker]
+ 03 EE17   0      0     6      0        0         1                 ECMWF model Ensemble +17 member [GTS tracker]
+ 03 EE18   0      0     6      0        0         1                 ECMWF model Ensemble +18 member [GTS tracker]
+ 03 EE19   0      0     6      0        0         1                 ECMWF model Ensemble +19 member [GTS tracker]
+ 03 EE20   0      0     6      0        0         1                 ECMWF model Ensemble +20 member [GTS tracker]
+ 03 EE21   0      0     6      0        0         1                 ECMWF model Ensemble +21 member [GTS tracker]
+ 03 EE22   0      0     6      0        0         1                 ECMWF model Ensemble +22 member [GTS tracker]
+ 03 EE23   0      0     6      0        0         1                 ECMWF model Ensemble +23 member [GTS tracker]
+ 03 EE24   0      0     6      0        0         1                 ECMWF model Ensemble +24 member [GTS tracker]
+ 03 EE25   0      0     6      0        0         1                 ECMWF model Ensemble +25 member [GTS tracker]
+ 03 EE26   0      0     6      0        0         1                 ECMWF model Ensemble +26 member [GTS tracker]
+ 03 EE27   0      0     6      0        0         1                 ECMWF model Ensemble +27 member [GTS tracker]
+ 03 EE29   0      0     6      0        0         1                 ECMWF model Ensemble +28 member [GTS tracker]
+ 03 EE29   0      0     6      0        0         1                 ECMWF model Ensemble +29 member [GTS tracker]
+ 03 EE30   0      0     6      0        0         1                 ECMWF model Ensemble +30 member [GTS tracker]
+ 03 EE31   0      0     6      0        0         1                 ECMWF model Ensemble +31 member [GTS tracker]
+ 03 EE32   0      0     6      0        0         1                 ECMWF model Ensemble +32 member [GTS tracker]
+ 03 EE33   0      0     6      0        0         1                 ECMWF model Ensemble +33 member [GTS tracker]
+ 03 EE34   0      0     6      0        0         1                 ECMWF model Ensemble +34 member [GTS tracker]
+ 03 EE35   0      0     6      0        0         1                 ECMWF model Ensemble +35 member [GTS tracker]
+ 03 EE36   0      0     6      0        0         1                 ECMWF model Ensemble +36 member [GTS tracker]
+ 03 EE37   0      0     6      0        0         1                 ECMWF model Ensemble +37 member [GTS tracker]
+ 03 EE38   0      0     6      0        0         1                 ECMWF model Ensemble +38 member [GTS tracker]
+ 03 EE39   0      0     6      0        0         1                 ECMWF model Ensemble +39 member [GTS tracker]
+ 03 EE40   0      0     6      0        0         1                 ECMWF model Ensemble +40 member [GTS tracker]
+ 03 EE41   0      0     6      0        0         1                 ECMWF model Ensemble +41 member [GTS tracker]
+ 03 EE42   0      0     6      0        0         1                 ECMWF model Ensemble +42 member [GTS tracker]
+ 03 EE43   0      0     6      0        0         1                 ECMWF model Ensemble +43 member [GTS tracker]
+ 03 EE44   0      0     6      0        0         1                 ECMWF model Ensemble +44 member [GTS tracker]
+ 03 EE45   0      0     6      0        0         1                 ECMWF model Ensemble +45 member [GTS tracker]
+ 03 EE46   0      0     6      0        0         1                 ECMWF model Ensemble +46 member [GTS tracker]
+ 03 EE47   0      0     6      0        0         1                 ECMWF model Ensemble +47 member [GTS tracker]
+ 03 EE48   0      0     6      0        0         1                 ECMWF model Ensemble +48 member [GTS tracker]
+ 03 EE49   0      0     6      0        0         1                 ECMWF model Ensemble +49 member [GTS tracker]
+ 03 EE50   0      0     6      0        0         1                 ECMWF model Ensemble +50 member [GTS tracker]
+ 48 JGSM   0      0    54      0        0         1                 Japanese Global Spectral Model
+ 03 JGSI   0      0    54      0        0         1                 Japanese Global Spectral Model (Interpolated 06 hours)
+ 03 JGS2   0      0    54      0        0         1                 Japanese Global Spectral Model (Interpolated 12 hours)
+ 03 CONU   0      1    21      1        0         1                 NHC Multi-Model Consensus (Retired)
+ 03 GUNA   0      0    21      1        0         1                 Consensus of all: AVNI/GHMI/EGRI/NGPI
+ 03 CGUN   0      0    22      1        0         1                 Corrected version of GUNA
+ 03 TCON   0      0    21      0        0         1                 Consensus of all: AVNI/EGRI/GHMI/HWFI (2016 version)
+ 03 TCOE   0      0    21      0        0         1                 Consensus of all: AVNI/EGRI/GHMI/HWFI (2016 version)
+ 03 TCOA   0      0    21      0        0         1                 Consensus of all: AVNI/EGRI/GHMI/HWFI (2016 version)
+ 03 TCCN   0      0    22      1        0         1                 Corrected version of TCON
+ 03 ICON   0      0     5      0        0         1                 Consensus of all: DSHP/LGEM/GHMI/HWFI (2016 version)
+ 03 TVCN   0      0    21      1        0         1                 Consensus of >=2: AVNI/EGRI/GHMI/HWFI/EMXI/CTCI (2016 version)
+ 03 TVCE   0      0    21      1        0         1                 Consensus of >=2: AVNI/EGRI/GHMI/HWFI/EMXI/CTCI (2016 version)
+ 03 TVCA   0      0    21      1        0         1                 Consensus of >=2: AVNI/EGRI/GHMI/HWFI/EMXI/CTCI (2016 version)
+ 03 TVCC   1      0    21      1        0         1                 Corrected version of TVCN
+ 03 TVCP   0      0    21      0        0         0                 Consensus of >=2: AVNI/EGRI/GHMI/HWFI/CTCI (2016 version)
+ 03 GFEX   0      0    21      1        0         1                 Consensus of AVNI and EMXI
+ 03 TVCX   0      0    21      1        0         1                 Consensus of >=2: AVNI/EGRI/GHMI/HWFI/EMXIx2/CTCI (2016 version)
+ 03 TVCY   0      0    21      1        0         1                 Consensus of >=2: AVNIx2/EGRI/GHMI/HWFI/EMXIx2/CTCI (2016 version)
+ 03 IVCN   0      0    24      0        1         1                 Consensus of >=2: DSHP/LGEM/GHMI/HWFI/CTCI (2016 version)
+ 03 IVCR   0      0    10      0        1         1                 Consensus of >=2: DSHP/LGEM/GHMI/HWFI/RI??+CTCI
+ 03 RYOC   0      0    22      1        0         1                 Forecaster Created Consensus Guidance (any model combination)
+ 03 MYOC   0      0    22      1        0         1                 Forecaster Created Consensus Guidance (any model combination)
+ 03 SHFR   0      0    14      0        0         1                 SHIFOR intensity model 3-day
+ 03 SHF5   0      0    14      0        0         1                 SHIFOR intensity model 5-day
+ 03 SHIP   0      0     5      0        0         1                 SHIPS model
+ 03 DSHP   0      0     5      0        1         1                 Decay SHIPS model
+ 03 LGEM   0      0     7      0        1         1                 SHIPS Logistic Growth Equation (LGE) forecast model
+ 03 SHPP   0      0     5      0        0         0                 SHIPS model parallel (experimental - do not use)
+ 03 DSPP   0      0     5      0        0         0                 Decay SHIPS model parallel (experimental - do not use)
+ 03 RI25   0      0    28      0        1         1                 Rapid Intensity Aid 25kts (24 hr RI Prob)
+ 03 RI30   0      0    28      0        1         1                 Rapid Intensity Aid 30kts (24 hr RI Prob)
+ 03 RI35   0      0    28      0        1         1                 Rapid Intensity Aid 35kts (24 hr RI Prob)
+ 03 RI40   0      0    28      0        1         1                 Rapid Intensity Aid 40kts (24 hr RI Prob)
+ 03 MRCL   0      0     5      0        0         1                 McAdie Radii CLIPER model
+ 03 MRCI   0      0     5      0        0         1                 McAdie Radii CLIPER model (Interpolated)
+ 03 DRCL   0      0     5      0        0         1                 DeMaria Radii CLIPER model
+ 03 DRCI   0      0     5      0        0         1                 DeMaria Radii CLIPER model (Interpolated)
+ 03 AHW4   0      0    59      0        0         1                 SUNY Advanced Hurricane WRF
+ 03 AHWI   0      0    59      0        0         1                 SUNY Advanced Hurricane WRF (Interpolated 06 hours)
+ 03 AHW2   0      0    59      0        0         1                 SUNY Advanced Hurricane WRF (Interpolated 12 hours)
+ 03 COTC   0      0    59      1        0         1                 NRL COAMPS-TC model
+ 03 COTI   0      0    59      1        1         1                 NRL COAMPS-TC model (Interpolated 06 hours)
+ 03 COT2   0      0    59      1        1         1                 NRL COAMPS-TC model (Interpolated 12 hours)
+ 03 CTCX   0      0    59      0        0         1                 NRL COAMPS-TC model experimental version
+ 03 CTCI   0      0    59      0        1         1                 NRL COAMPS-TC expt (Interpolated 06 hours)
+ 03 CTC2   0      0    59      0        1         1                 NRL COAMPS-TC expt (Interpolated 12 hours)
+ 03 A4PS   0      0    12      0        0         0                 PSU ARW w/Doppler 2011 version
+ 03 A4PI   0      0    12      0        0         0                 PSU ARW w/Doppler 2011 version (Interpolated 06 hours)
+ 03 A4P2   0      0    12      0        0         0                 PSU ARW w/Doppler 2011 version (Interpolated 12 hours)
+ 03 APSU   0      0    12      1        0         1                 PSU ARW
+ 03 APSI   0      0    12      1        0         1                 PSU ARW (Interpolated 06 hours)
+ 03 APS2   0      0    12      1        0         1                 PSU ARW (Interpolated 12 hours)
+ 03 FIMY   0      0    12      0        0         0                 ESRL FIM 2011 version
+ 03 FIMI   0      0    12      0        0         0                 ESRL FIM 2011 version (Interpolated 06 hours)
+ 03 FIM2   0      0    12      0        0         0                 ESRL FIM 2011 version (Interpolated 12 hours)
+ 03 FIM9   0      0    12      1        0         1                 ESRL FIM
+ 03 FM9I   0      0    12      1        0         1                 ESRL FIM (Interpolated 06 hours)
+ 03 FM92   0      0    12      1        0         1                 ESRL FIM (Interpolated 12 hours)
+ 03 UWN8   0      0    12      0        0         1                 UW-NMS 8km model
+ 03 UWNI   0      0    12      0        0         1                 UW-NMS 8km model (Interpolated 06 hours)
+ 03 UWN2   0      0    12      0        0         1                 UW-NMS 8km model (Interpolated 12 hours)
+ 03 UWN4   0      0    12      0        0         1                 UW-NMS 4km model
+ 03 UW4I   0      0    12      0        0         1                 UW-NMS 4km model (Interpolated 06 hours)
+ 03 UW42   0      0    12      0        0         1                 UW-NMS 4km model (Interpolated 12 hours)
+ 03 H3GP   0      0    12      1        0         1                 NCEP/AOML HWRF 3km model
+ 03 H3GI   0      0    12      1        0         1                 NCEP/AOML HWRF 3km (Interpolated 06 hours)
+ 03 H3G2   0      0    12      1        0         1                 NCEP/AOML HWRF 3km (Interpolated 12 hours)
+ 03 SPC3   0      0    12      0        1         1                 CSU-CIRA SPICE statistical intensity consensus
+ 03 TV15   0      0    12      1        0         1                 HFIP track consensus of >=2: AVNI/EGRI/HWFI/EMXI/GPMI (2014 version)
+ 03 IV15   0      0     5      0        0         1                 HFIP intensity consensus of >=2: DSHP/LGEM/HWFI/GPMI/CXTI/UW4I (2014 version)
+ 03 GPMN   0      0    12      1        0         1                 GFDL Ensemble Mean
+ 03 GPMI   0      0    12      1        0         1                 GFDL Ensemble Mean (Interpolated 06 hours)
+ 03 GPM2   0      0    12      1        0         1                 GFDL Ensemble Mean (Interpolated 12 hours)
+ 03 GP00   0      0    12      0        0         1                 GFDL Ensemble +00 Control
+ 03 G00I   0      0    12      0        0         1                 GFDL Ensemble +00 Control (Interpolated 06 hours)
+ 03 G002   0      0    12      0        0         1                 GFDL Ensemble +00 Control (Interpolated 12 hours)
+ 03 GP01   0      0    12      0        0         1                 GFDL Ensemble +01 member (unbogussed)
+ 03 G01I   0      0    12      0        0         1                 GFDL Ensemble +01 member (unbogussed) (Interpolated 06 hours)
+ 03 G012   0      0    12      0        0         1                 GFDL Ensemble +01 member (unbogussed) (Interpolated 12 hours)
+ 03 GP02   0      0    12      0        0         1                 GFDL Ensemble +02 member
+ 03 G02I   0      0    12      0        0         1                 GFDL Ensemble +02 member (Interpolated 06 hours)
+ 03 G022   0      0    12      0        0         1                 GFDL Ensemble +02 member (Interpolated 12 hours)
+ 03 GP03   0      0    12      0        0         1                 GFDL Ensemble +03 member
+ 03 G03I   0      0    12      0        0         1                 GFDL Ensemble +03 member (Interpolated 06 hours)
+ 03 G032   0      0    12      0        0         1                 GFDL Ensemble +03 member (Interpolated 12 hours)
+ 03 GP04   0      0    12      0        0         1                 GFDL Ensemble +04 member
+ 03 G04I   0      0    12      0        0         1                 GFDL Ensemble +04 member (Interpolated 06 hours)
+ 03 G042   0      0    12      0        0         1                 GFDL Ensemble +04 member (Interpolated 12 hours)
+ 03 GP05   0      0    12      0        0         1                 GFDL Ensemble +05 member
+ 03 G05I   0      0    12      0        0         1                 GFDL Ensemble +05 member (Interpolated 06 hours)
+ 03 G052   0      0    12      0        0         1                 GFDL Ensemble +05 member (Interpolated 12 hours)
+ 03 GP06   0      0    12      0        0         1                 GFDL Ensemble +06 member
+ 03 G06I   0      0    12      0        0         1                 GFDL Ensemble +06 member (Interpolated 06 hours)
+ 03 G062   0      0    12      0        0         1                 GFDL Ensemble +06 member (Interpolated 12 hours)
+ 03 GP07   0      0    12      0        0         1                 GFDL Ensemble +07 member
+ 03 G07I   0      0    12      0        0         1                 GFDL Ensemble +07 member (Interpolated 06 hours)
+ 03 G072   0      0    12      0        0         1                 GFDL Ensemble +07 member (Interpolated 12 hours)
+ 03 GP08   0      0    12      0        0         1                 GFDL Ensemble +08 member
+ 03 G08I   0      0    12      0        0         1                 GFDL Ensemble +08 member (Interpolated 06 hours)
+ 03 G082   0      0    12      0        0         1                 GFDL Ensemble +08 member (Interpolated 12 hours)
+ 03 GP09   0      0    12      0        0         1                 GFDL Ensemble +09 member
+ 03 G09I   0      0    12      0        0         1                 GFDL Ensemble +09 member (Interpolated 06 hours)
+ 03 G092   0      0    12      0        0         1                 GFDL Ensemble +09 member (Interpolated 12 hours)
+ 03 GP10   0      0    12      0        0         1                 GFDL Ensemble +10 member
+ 03 G10I   0      0    12      0        0         1                 GFDL Ensemble +10 member (Interpolated 06 hours)
+ 03 G102   0      0    12      0        0         1                 GFDL Ensemble +10 member (Interpolated 12 hours)
+ 03 GP11   0      0    12      0        0         1                 GFDL Ensemble +11 member
+ 03 G11I   0      0    12      0        0         1                 GFDL Ensemble +11 member (Interpolated 06 hours)
+ 03 G112   0      0    12      0        0         1                 GFDL Ensemble +11 member (Interpolated 12 hours)
+ 03 GP12   0      0    12      0        0         1                 GFDL Ensemble +12 member
+ 03 G12I   0      0    12      0        0         1                 GFDL Ensemble +12 member (Interpolated 06 hours)
+ 03 G122   0      0    12      0        0         1                 GFDL Ensemble +12 member (Interpolated 12 hours)
+ 03 GP13   0      0    12      0        0         1                 GFDL Ensemble +13 member
+ 03 G13I   0      0    12      0        0         1                 GFDL Ensemble +13 member (Interpolated 06 hours)
+ 03 G132   0      0    12      0        0         1                 GFDL Ensemble +13 member (Interpolated 12 hours)
+ 03 GP14   0      0    12      0        0         1                 GFDL Ensemble +14 member
+ 03 G14I   0      0    12      0        0         1                 GFDL Ensemble +14 member (Interpolated 06 hours)
+ 03 G142   0      0    12      0        0         1                 GFDL Ensemble +14 member (Interpolated 12 hours)
+ 03 GP15   0      0    12      0        0         1                 GFDL Ensemble +15 member
+ 03 G15I   0      0    12      0        0         1                 GFDL Ensemble +15 member (Interpolated 06 hours)
+ 03 G152   0      0    12      0        0         1                 GFDL Ensemble +15 member (Interpolated 12 hours)
+ 03 GP16   0      0    12      0        0         1                 GFDL Ensemble +16 member
+ 03 G16I   0      0    12      0        0         1                 GFDL Ensemble +16 member (Interpolated 06 hours)
+ 03 G162   0      0    12      0        0         1                 GFDL Ensemble +16 member (Interpolated 12 hours)
+ 03 GP17   0      0    12      0        0         1                 GFDL Ensemble +17 member
+ 03 G17I   0      0    12      0        0         1                 GFDL Ensemble +17 member (Interpolated 06 hours)
+ 03 G172   0      0    12      0        0         1                 GFDL Ensemble +17 member (Interpolated 12 hours)
+ 03 HWMN   0      0    12      1        0         1                 HWRF Ensemble Mean
+ 03 HWMI   0      0    12      1        0         1                 HWRF Ensemble Mean (Interpolated 06 hours)
+ 03 HWM2   0      0    12      1        0         1                 HWRF Ensemble Mean (Interpolated 12 hours)
+ 03 IVRI   0      0     5      0        1         1                 Consensus of 5: DHSP/LGEM/GHMI/HWFI/CTCI+RI40 or RI35 or RI30 or RI25
+ 03 KBMD   0      1    14      0        0         1                 Beta and Advection model, deep (NHC-NCO PARA)
+ 03 KBMM   0      1    14      0        0         1                 Beta and Advection model, medium (NHC-NCO PARA)
+ 03 KBMS   0      1    14      0        0         1                 Beta and Advection model, shallow (NHC-NCO PARA)
+ 03 KXTR   0      1    14      0        0         1                 Extrapolation using past 12-hr motion (NHC-NCO PARA)
+ 03 KCLP   0      1    14      0        0         1                 CLImatology-PERsistence model 3-day (NHC-NCO PARA)
+ 03 KCL5   0      1    14      0        0         1                 CLImatology-PERsistence model 5-day (NHC-NCO PARA)
+ 03 KLBR   0      1    14      0        0         1                 LBAR (NHC-NCO PARA)
+ 03 KOCD   0      1    14      0        0         1                 Combination of CLP5 and Decay-SHIFOR run on operational inputs (NHC-NCO PARA)
+ 03 KSFR   0      1    14      0        0         1                 SHIFOR intensity model 3-day (NHC-NCO PARA)
+ 03 KSF5   0      1    14      0        0         1                 SHIFOR intensity model 5-day (NHC-NCO PARA)
+ 03 KSHP   0      1    14      0        0         1                 SHIPS model (NHC-NCO PARA)
+ 03 KDSP   0      1    14      0        0         1                 Decay SHIPS model (NHC-NCO PARA)
+ 03 KLGM   0      1    14      0        0         1                 SHIPS Logistic Growth Equation (LGE) forecast model (NHC-NCO PARA)
+ 03 UE00   0      0    24      1        0         1                 UKMET MOGREPS-G Ensemble Control Member
+ 03 UE01   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +01 member
+ 03 UE02   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +02 member
+ 03 UE03   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +03 member
+ 03 UE04   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +04 member
+ 03 UE05   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +05 member
+ 03 UE06   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +06 member
+ 03 UE07   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +07 member
+ 03 UE08   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +08 member
+ 03 UE09   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +09 member
+ 03 UE10   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +10 member
+ 03 UE11   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +11 member
+ 03 UE12   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +12 member
+ 03 UE13   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +13 member
+ 03 UE14   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +14 member
+ 03 UE15   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +15 member
+ 03 UE16   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +16 member
+ 03 UE17   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +17 member
+ 03 UE18   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +18 member
+ 03 UE19   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +19 member
+ 03 UE20   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +20 member
+ 03 UE21   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +21 member
+ 03 UE22   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble +22 member
+ 03 UE23   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble Previous Control member
+ 03 UEMN   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble Mean
+ 03 UEMI   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble Mean (Interpolated 06 hours)
+ 03 UEM2   0      0    24      0        0         1                 UKMET MOGREPS-G Ensemble Mean (Interpolated 12 hours)

@@ -1,0 +1,62 @@
+NUM TECH ERRS RETIRED COLOR DEFAULTS INT-DEFS RADII-DEFS LONG-NAME
+ 00 CARQ   0      0     0      0        0         1                 Combined ARQ Position
+ 03 OMPC   0      0    17      1        0         1                 MPC official forecast
+ 03 HURN   0      0    10      0        0         1                 HURRAN model
+ 03 A67    0      0    12      0        0         1                 NHC-67 statistic model
+ 03 A72    0      0    12      0        0         1                 NHC-72 statistic model
+ 03 A73    0      0    12      0        0         1                 NHC-73 statistic model
+ 03 A83    0      0    12      0        0         1                 NHC-83 statistic-dynamic model
+ 03 A90E   0      0    13      0        0         1                 NHC-90 (early) statistic-dynamic model
+ 03 A90L   0      0    13      0        0         1                 NHC-90 (late) statistic-dynamic model
+ 03 90AE   0      0    13      0        0         1                 NHC-90 test
+ 03 90BE   0      0    13      0        0         1                 NHC-90 test
+ 03 A98E   0      0    26      0        0         1                 NHC-98 statistic-dynamic model
+ 03 A9UK   0      0    13      0        0         1                 NHC-98 (UKMET version)
+ 03 PSS    0      0     7      0        0         1                 EP statistic-synoptic model
+ 03 PSDE   0      0    13      0        0         1                 EP (early) statistic-dynamic model
+ 03 PSDL   0      0    13      0        0         1                 EP statistic-dynamic model  
+ 03 P91E   0      0    13      0        0         1                 EP NHC-91 (early) statistic-dynamic model
+ 03 P91L   0      0    24      0        0         1                 EP NHC-91 (late) statistic-dynamic model
+ 03 P9UK   0      0    13      0        0         1                 EP NHC_91 (UKMET version)
+ 03 SBAR   0      0    11      0        0         1                 SANBAR barotropic model
+ 03 BAMA   0      0    26      0        0         1                 BAM test A 
+ 03 BAMB   0      0    26      0        0         1                 BAM test B
+ 03 BAMC   0      0    26      0        0         1                 BAM test C 
+ 03 VBAR   0      0    31      0        0         1                 VICBAR
+ 03 VBRI   0      0    31      0        0         1                 VICBAR model (Interpolated) 
+ 03 MFM    0      0    12      0        0         1                 Medium Fine Mesh model
+ 03 QLM    0      0    12      0        0         1                 Quasi-Lagrangian model
+ 03 QLMI   0      0    12      0        0         1                 Quasi_Lagrangian model (Interpolated)
+ 03 GTSI   0      1     8      0        1         1                 GFDL model (Interpolated 06 hours) Test only - DO NOT USE!
+ 03 GTS2   0      1     8      0        1         1                 GFDL model (Interpolated 12 hours) Test only - DO NOT USE!
+ 03 GFDA   0      0     7      0        0         1                 GFDL model with Aviation boundary layer parm
+ 03 GFDE   0      0     7      0        0         1                 GFDL model with Emmanuel convective parm
+ 03 GFDU   0      0     7      0        0         1                 GFDL model (UKMET version)
+ 03 GFUI   0      0     7      0        0         1                 GFDL model (UKMET version) (Interpolated)
+ 03 GFDC   0      0     7      0        0         1                 GFDL coupled model
+ 03 GFCI   0      0     7      0        0         1                 GFDL coupled model (Interpolated)
+ 03 ETA    0      0    12      0        0         1                 ETA model
+ 03 ETAI   0      0    12      0        0         1                 ETA model (Interpolated 06 hours)
+ 03 ETA2   0      0    12      0        0         1                 ETA model (Interpolated 12 hours)
+ 03 NGM    0      0    12      0        0         1                 NGM model
+ 03 NGMI   0      0    12      0        0         1                 NGM model (Interpolated)
+ 03 AFW1   0      0    15      0        0         1                 MM5 Coarse resolution
+ 03 AF1I   0      0    15      0        0         1                 MM5 Coarse resolution (Interpolated 06 hours)
+ 03 AF12   0      0    15      0        0         1                 MM5 Coarse resolution (Interpolated 12 hours)
+ 03 MM36   0      0    12      0        0         1                 Air Force MM5 model
+ 03 M36I   0      0    12      0        0         1                 Air Force MM5 model (Interpolated)
+ 03 MRFO   0      0     8      0        0         1                 MRF Run
+ 03 FV5    0      0     7      0        0         1                 NASA fvGCM model
+ 03 FVGI   0      0     6      0        0         1                 NASA fvGCM model (Interpolated)
+ 03 GUNS   0      0    21      0        0         1                 Consensus of GFDI, UKMI and NGPI models
+ 03 GENA   0      0    21      1        0         1                 Consensus of AVNI, GFDI, EGRI/2 and NGPI models
+ 03 CONU   0      0    21      1        0         1                 Consensus of AVNI, GFDI, UKMI, NGPI and GFNI models
+ 03 CONE   0      0    21      1        0         1                 Consensus of AVNI, GFDI, UKMI, NGPI, ECMI and GFNI models
+ 03 CCON   1      0    22      1        0         1                 Corrected CONU Consensus
+ 03 DEF1   0      0    13      0        0         1       
+ 03 DEF2   0      0    13      0        0         1       
+ 03 DEF3   0      0    13      0        0         1       
+ 03 HCON   0      0     5      0        1         1                 Intensity Consensus (GFDI+HWFI+GFNI)
+ 03 ICON   0      0     5      0        1         1                 Intensity Consensus (DSHP+GFDI+HWFI)
+ 03 INT4   0      0     5      0        1         1                 Intensity Consensus (DSHP+GFDI+GFNI+LGEM)
+ 03 CONI   0      1     5      0        1         1                 Intensity Consensus Test only - DO NOT USE!
