@@ -1,0 +1,4 @@
+<map id="utilities::drealscan" name="utilities::drealscan">
+<area shape="rect" id="node1" title="Scans string looking for the leading double precision real numeric string." alt="" coords="5,5,156,35"/>
+<area shape="rect" id="node2" href="$namespaceutilities.html#a26a70a9de90e0016d323e4c8dbea1a5b" title="Scans string looking for the leading integer numeric string." alt="" coords="204,5,335,35"/>
+</map>

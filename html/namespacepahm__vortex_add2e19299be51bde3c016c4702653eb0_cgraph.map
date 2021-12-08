@@ -1,0 +1,5 @@
+<map id="pahm_vortex::uvpr" name="pahm_vortex::uvpr">
+<area shape="rect" id="node1" title="Calculate (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="5,32,159,61"/>
+<area shape="rect" id="node2" href="$namespacepahm__vortex.html#ac953414ecaf1b96028c4258cb011658d" title="Compute a wind angle to parameterize frictional inflow across isobars." alt="" coords="211,5,365,35"/>
+<area shape="rect" id="node3" href="$namespacepahm__vortex.html#a7fc78bcdd0071e81581505ac558c0e27" title="Rotate a 2D vector (x, y) by an angle." alt="" coords="207,59,369,88"/>
+</map>

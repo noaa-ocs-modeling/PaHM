@@ -1,0 +1,4 @@
+<map id="timedateutils::monthdays" name="timedateutils::monthdays">
+<area shape="rect" id="node1" title="Determines the days in the month of the year." alt="" coords="303,14,500,43"/>
+<area shape="rect" id="node2" href="$interfacetimedateutils_1_1splitdatetimestring.html#ab470f2a5a3e605e3a3d8f359154b3c29" title="Splits a date string into components." alt="" coords="5,5,255,52"/>
+</map>
