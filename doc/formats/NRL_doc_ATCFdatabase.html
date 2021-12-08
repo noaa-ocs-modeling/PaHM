@@ -1,0 +1,510 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0074)http://biolante.nmm.nrlmry.navy.mil/atcfwb/docs/database/new/database.html -->
+<HTML><HEAD><TITLE>ATCF Tropical Cyclone Database</TITLE>
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff link=#0000ff text=#000000 vLink=#800080><B>
+<P align=center>&nbsp;</P>
+<DIR>
+<DIR>
+<P align=center>
+<H2>ATCF TROPICAL CYCLONE DATABASE</H2>
+<H3><i>This is a copy of the NRL documentation for the ATCF (some links may not work)</i></H3>
+<H3><i>To view the officially maintained documentation use the link below:</i></H3>
+<A href="http://www.nrlmry.navy.mil/atcf_web/docs/database/new/database.html">http://www.nrlmry.navy.mil/atcf_web/docs/database/new/database.html </A>
+
+<P></P></B>
+<P align=center>&nbsp;</P></DIR></DIR>
+<dl>
+<DD><A 
+href="NRL_doc_ATCFdatabase.html#introduction">1. 
+INTRODUCTION</A> 
+<P>
+<P></P>
+<DD><A 
+href="NRL_doc_ATCFdatabase.html#coverage">2. 
+DATA COVERAGE</A> 
+<P>
+<P></P>
+<DD><A 
+href="NRL_doc_ATCFdatabase.html#datasources">3. 
+DATA SOURCES</A> 
+<P>
+<P></P>
+<DD><A 
+href="NRL_doc_ATCFdatabase.html#dataoverview">4. 
+DATA FORMATS</A> 
+<P>
+<P></P>
+<DIR>
+<LI>
+<DD> 
+<A href="descriptive.html">
+DESCRIPTIVE DATA FILE FORMAT</A>
+<LI>
+<DD><A 
+href="abdeck.txt">
+BEST TRACKS</A>
+<LI>
+<DD><A 
+href="abdeck.txt">
+BOGUSES</A> 
+<LI>
+<DD><A 
+href="abdeck.txt">
+AIDS AND FORECASTS</A> 
+<LI>
+<DD><a href="newfdeck.txt">
+FIXES</a> 
+<LI>
+<DD><a href="edeck.txt">
+PROBABILITY AIDS</a> 
+</DD>
+</DIR>
+<P></P>
+<DD><a href="NRL_doc_ATCFdatabase.html#associatedfiles">5.
+ASSOCIATED FILES</A>
+<DIR>
+<P></P>
+<LI>
+<DD><A 
+href="warningsummary.format">
+WARNING SUMMARY FORMAT</A> 
+</DD>
+<LI>
+<DD><a href="tcwfile.html"> 
+TCW FILE FORMAT</a> 
+</DD>
+<LI>
+<DD><a href="techlist.dat.nlmc"> 
+ATLANTIC/EASTERN PACIFIC BASIN OBJECTIVE AID LIST</a> 
+</DD>
+<LI>
+<DD><a href="techlist.dat.nhc"> 
+ATLANTIC/EASTERN PACIFIC BASIN OBJECTIVE AID LIST (NHC Version)</a> 
+</DD>
+<LI>
+<DD><a href="techlist.dat.pearl"> 
+WESTERN NORTH PACIFIC BASIN OBJECTIVE AID LIST</a> 
+</DD>
+<LI>
+<DD><a href="MTIFSpec.pdf"> 
+ATCF IMAGERY OVERLAY FORMAT (MTIFF)</a> 
+</DD>
+<DD><a href="fixes.html">
+OLD FIX FILE FORMAT</a> 
+</DD>
+</DIR>
+<P></P>
+<DD>6. CODE TO READ FILES</A></P></B>
+<DIR>
+<P></P>
+<LI>
+<DD>
+<A href="deck_readers_f90.tar">FORTRAN90 CODE FROM NRL and CIRA </A>
+</DD>
+</DIR>
+<HR width="100%">
+
+<P><A href="mailto:sampson@nrlmry.navy.mil;schrader@mind.net">Comments or 
+questions</A></P>
+<P>Last updated 03-Jul-07</P>
+<HR width="100%">
+
+<P>&nbsp;</P>
+<P>&nbsp;</P><B>
+<P><A name=introduction>1. INTRODUCTION</A></P></B>
+<P>&nbsp;</P>
+<P align=justify>Extensive evaluation of tropical cyclone characteristics, 
+motion, and forecast errors is often performed at the Joint Typhoon Warning 
+Center (JTWC), Fleet Numerical Oceanography Center (FNOC), the Naval Research 
+Laboratory (NRL) and elsewhere. This work has shown the need for a uniform 
+tropical cyclone data base. A flat-file database meeting this requirement was 
+developed for the Automated Tropical Cyclone Forecast System (ATCF). Within 
+ATCF, this database provides uniform data for the individual applications 
+requiring tropical cyclone data. ATCF applications work with the flat-file 
+database, making any modifications to the data there. At the end of a year, the 
+flat-file database is copied, compressed in an archive directory. Procedures 
+within ATCF can recall and modify data from the archive data without modifying 
+the archive itself.</P>
+<P>&nbsp;</P><B>
+<P><A name=coverage>2. DATA COVERAGE</A></P></B>
+<P>&nbsp;</P>
+<P align=justify>The data base covers five tropical cyclone basins. The length 
+and amount of data coverage varies between basins and is listed below along with 
+the definitions of the basins themselves (Table 1).</P>
+<DIR>
+<DIR><B>
+<P>Table 1: Area and Data Coverage for Storm Basins.</P></DIR></DIR></B>
+<P align=center>
+<TABLE border=1 borderColor=#000000 cellPadding=4 cellSpacing=1 width=551>
+  <TBODY>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P><B>
+      <P align=center>Basin</B></P></TD>
+    <TD vAlign=top width="13%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Latitude Span</B></P></TD>
+    <TD vAlign=top width="15%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Longitude Span</B></P></TD>
+    <TD vAlign=top width="11%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Track Data</B></P></TD>
+    <TD vAlign=top width="14%"><B>
+      <P>&nbsp;</P>
+      <P align=center>History Data</B></P></TD>
+    <TD vAlign=top width="12%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Forecast Data</B></P></TD>
+    <TD vAlign=top width="12%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Fix Data </B></P></TD>
+    <TD vAlign=top width="13%"><B>
+      <P>&nbsp;</P>
+      <P align=center>Wind Data</B></P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%"><B>
+      <P>&nbsp;</P></B>
+      <P>WP</P>
+      <P>&nbsp;</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60N</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>100-180E</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1945-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1967-76</P>
+      <P>1978-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1967-76 1978-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1966-77</P>
+      <P>1979-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P>
+      <P>IO</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60N</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>40-100E</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1945-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1978-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1978-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1972-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P>
+      <P>EP</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60N</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>140W-80W</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1949-80</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P>
+      <P>CP</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60N</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>180W-140W</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1949-80</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>1992-?</P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P>
+      <P>AL</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60N</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>100W-0W</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1945-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1992-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>&nbsp;</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1992-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>&nbsp;</P></TD></TR>
+  <TR>
+    <TD vAlign=top width="10%">
+      <P>&nbsp;</P>
+      <P>SH</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>EQ-60S</P></TD>
+    <TD vAlign=top width="15%">
+      <P>&nbsp;</P>
+      <P>20E-120W</P></TD>
+    <TD vAlign=top width="11%">
+      <P>&nbsp;</P>
+      <P>1980-?</P></TD>
+    <TD vAlign=top width="14%">
+      <P>&nbsp;</P>
+      <P>1980-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1980-?</P></TD>
+    <TD vAlign=top width="12%">
+      <P>&nbsp;</P>
+      <P>1980-?</P></TD>
+    <TD vAlign=top width="13%">
+      <P>&nbsp;</P>
+      <P>1989-?</P></TD></TR></TBODY></TABLE>
+<P>&nbsp;</P>
+<P align=justify>(Notes: Question marks indicate data updated yearly. Southern 
+Hemisphere storm years are July 1 - June 30. For example, the first tropical 
+cyclone after June 30, 1982 would be the first storm of the 1983 storm 
+year).</P>
+<P>&nbsp;</P>
+<DIR></DIR><B>
+<P><A name=datasources>3. DATA SOURCES</A></P></B>
+<P>&nbsp;</P>
+<P align=justify>The tropical cyclone data comes from a variety of sources. Best 
+track data for the Southern Hemisphere 1945-79, for the Indian Ocean 1945-77, 
+and for the Western Pacific 1945-66 were obtained from the Consolidated 
+World-Wide Tropical Cyclone Data Base, National Climatic Data Center, Asheville, 
+NC. Best track data for the Eastern Pacific, Central Pacific and the Atlantic 
+are from the National Hurricane Center. The remaining data was extracted from 
+the Joint Typhoon Warning Center (JTWC) Tropical Cyclone Data.</P>
+<P>&nbsp;</P><B>
+<P><A name=dataoverview>4. DATA FORMAT</A></P></B>
+<P>&nbsp;</P>
+<P align=justify>The tropical cyclone description data is stored in ascii files. 
+Each storm is given a unique eight character code called the <U>storm ID</U> to 
+identify it in the database. The storm ID is of the format <I>RECYYYYY</I>, 
+where</P>
+<DIR>
+<P align=justify>RE = Region (basin) of Origin</P>
+<DIR>
+<P align=justify>AL - North Atlantic</P>
+<P align=justify>WP - Western North Pacific</P>
+<P align=justify>CP - Central North Pacific</P>
+<P align=justify>EP - Eastern North Pacific</P>
+<P align=justify>IO - North Indian Ocean</P>
+<P align=justify>SH - Southern Hemisphere</P></DIR>
+<P align=justify>LS - Southern Atlantic</P></DIR>
+<P align=justify>CY = Annual Cyclone Number(01-99)</P>
+<P align=justify>YYYY = Year</P></DIR>
+<P align=justify>For example, WP011992 is the first (01) western North Pacific 
+(WP) storm in 1992 (1992).</P>
+<P align=justify>It should also be noted that while there is a best track for 
+every storm with forecast and fix data, the reverse is not true. There are five
+types of data for tropical cyclones which are discussed in the remainder of this 
+section.</P>
+<P align=justify>In the ATCF, tropical cyclone data are stored in flat files and are 
+accessed via executables or scripts. The $ATCFSTRMS directory on ATCF contains 
+data files for active storms; the $ATCFARCHIVES directory contains data for all 
+storms. This section outlines flat file data formats for each of the file types 
+in the ATCF database. </P>
+<P>&nbsp;</P>
+<B><P>4.1 DESCRIPTIVE DATA</P></B>
+<P>&nbsp;</P>
+<P align=justify>These data include storm name, basin of origin, sub-basin of 
+origin, storm number, year of origin, track type, beginning date, ending date, 
+number of basins entered, storm state (e.g., warning or archive), and the 
+specific basins entered.
+<P align=justify>Note: Track type is a subjective classification of the storm as a 
+straight mover, recurver, or odd mover. A straight storm path is one which 
+maintained a somewhat constant heading between 250<SUP>o</SUP> - 
+360<SUP>o</SUP>. A storm is considered a recurver if it turned from an initial 
+path toward the west or northwest to a path toward the northeast. An odd moving 
+storm, therefore, is one which did not fit in the other two categories or 
+contained loops in the track.
+</A>).</P>
+<P align=justify>Each storm has one descriptive record which is a brief summary
+of the storm history including storm name, track type, maximum development
+level, etc. The information is stored in the file <B>storms.txt</B> for all active
+storms, and <B>storms.archive</B> for all storms for a selected year. 
+</P>
+<DIR>
+<LI>
+<A href="descriptive.html">Descriptive Data File Format </A>
+<LI>
+<A href="storms.ex">Descriptive Data File Example </A>
+
+</DIR>
+</P><B>
+<P>&nbsp;</P>
+<P>4.2 BEST TRACK</P></B>
+<P>&nbsp;</P>
+<P align=justify>These data are the 6-hourly storm positions based on a 
+post-storm, subjectively smoothed path.
+In some cases, the data obtained was in 12 hour increments. For these 
+storms, 6-hourly positions were interpolated using the method of Akima (1970). 
+The best tracks files are named <I>b&lt;stormid&gt;.dat</I>.
+For example, bwp132000.dat contains best track positions for the 13th storm of the 2000 western
+north pacific season.
+</P>
+<DIR>
+<LI>
+<A href="abdeck.txt">Best Track File Format </A>
+<LI>
+<A href="bwp132000.ex">Best Track File Example </A>
+</DIR>
+</P><B>
+<P>&nbsp;</P>
+<P>4.3 STORM HISTORY</P></B>
+<P>&nbsp;</P>
+<P align=justify>These data are the real-time storm positions, intensity, and 
+structure of the storm. The data are used for warning generation (00Z, 06Z, 12Z, 
+and 18Z), to generate synthetic observations for global and mesoscale models (COMS), and to initiate 
+objective aid forecasts (CARQ). 
+( <A 
+href="awp132000.history">Fig 3
+</A>). Lines beginning with 01CARQ and 02WRNG are storm history lines.
+The forecasts are in files are named <I>a&lt;stormid&gt;.dat</I>.
+For example, awp132000.dat contains forecasts for the 13th storm of the 2000 western
+north pacific season.
+</P>
+<DIR>
+<LI>
+<A href="abdeck.txt">Storm History Record Format </A>
+<LI>
+<A href="awp132000.history">Storm History Record Example </A>
+</DIR>
+<P>&nbsp;</P>
+<B><P>4.4 FORECASTS</P></B>
+<P>&nbsp;</P>
+<P align=justify>These data contain the objective forecasts, and the official 
+forecast. Lines without CARQ, WRNG, or COMS are forecasts. 
+Each date-time group may contain one or both types of data. A description of the 
+various objective forecasts may be found in the techlist.dat file on ATCF, which
+is updated frequently.
+published by JTWC.</P>
+
+<P align=justify>Tropical cyclone wind radii forecasts and observations are
+included in these data. Specifically, the forecasts are for 64, 50 and 34 kt winds. Prior
+to 1990, 30 knot wind radii were forecast in the western North Pacific Ocean, 
+the Indian Ocean, and the Southern Hemisphere.  There are also cases with 100 kt wind radii
+prior to 2000.
+Here is an example of the naming convention: awp132000.dat contains forecasts for the 13th storm of the 2000 western
+north pacific season.</P> 
+<DIR>
+<LI>
+<A href="abdeck.txt">Forecast Record Format </A>
+<LI>
+<A href="awp132000.forecast">Forecast Record Example </A>
+</DIR>
+
+<P>&nbsp;</P>
+<B><P>4.5 FIXES</P></B>
+<P>&nbsp;</P>
+<P align=justify>Tropical cyclone fixes from five different platforms (radar, 
+satellite, aircraft, scatterometer, and synoptic fixes taken from weather charts)
+are contained in the data base. 
+The files are named <I>f&lt;stormid&gt;.dat</I>.
+For example, fwp132000.dat is the fix file for the 13th storm of the 2000 western
+north pacific season.</P> 
+<DIR>
+<LI>
+<A href="fixes.html">Fix File Format </A>
+<LI>
+<A href="fwp132000.ex">Fix File Example </A>
+</DIR>
+
+<P>&nbsp;</P>
+<B><P><A name=associatedfiles>5. ASSOCIATED FILES</A></P></B>
+<P>&nbsp;</P>
+<P align=justify>ATCF produces a few different ascii files for use by other systems. 
+Among these are the official warning, the warning summary (a shorthand version of
+the official warning), the "tcw" file (a file containing the warning summary, followed
+by the official warning, followed by the best track), and the Navy OVERLAY/2 or "JOTS"
+file (this is another representation of the warning as a set of graphical instructions - pen up, pen down, etc.).
+The files all have names similar to other ATCF files.  The naming convention is <I>&lt;stormid&gt;.xxx</I>,
+where xxx is the file type (xxx=wrn for warnings, xxx=sum for warning summaries, xxx=tcw for 
+tcw files, and xxx=jts for JOTS files).  For example, wp132000.wrn is the warning text for the 13th storm 
+of the 2000 western north pacific season.</P>  The following are formats and examples for 
+this growing list of output files:
+<P>&nbsp;</P>
+<DIR>
+<LI>
+<A href="warningformat.html">Warning Format </A>
+<LI>
+<A href="wp132000.wrn">Warning File Example </A>
+<LI>
+<A href="warningsummary.format">Warning Summary Format </A>
+<LI>
+<A href="wp132000.sum">Warning Summary File Example </A>
+<LI>
+<A href="tcwfile.html">TCW File Format </A>
+<LI>
+<A href="wp132000.tcw">TCW File Example </A>
+<LI>
+<A href="jotsfile.format.pdf">JOTS File Format (See Page 96)</A>
+<LI>
+<A href="wp132000.jts">JOTS File Example </A>
+</DIR>
+
+
+<P align=justify>&nbsp;</P></BODY>
+
+</HTML>

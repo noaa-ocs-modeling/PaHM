@@ -1,0 +1,742 @@
+#!/bin/bash-*-Shell-script-functions*-
+
+###########################################################################
+### Author:  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+###
+### Version - 1.0 Mon Nov 16 2020
+###########################################################################
+
+set +u
+
+MY_COMPILING_SYTEMS="gnu, intel, pgi"
+MY_COMPILING_PLATFORMS="custom, linux, cheyenne, gaea, hera, jet, orion, stampede, wcoss"
+
+##################################################
+### MODELLING SYSTEM BUILD FUNCTIONS
+##################################################
+
+###========================================
+### ParseArgs()
+### Usage:      ParseArgs args
+### Parameters: args = the script options
+### Returns:    0
+### Echoes:     NONE
+###
+### Gets the supplied options to the script.
+###========================================
+ParseArgs()
+{
+  local nm_func=$( basename ${BASH_SOURCE[${#BASH_SOURCE[@]}-1]} )
+
+  local opt_all opt_opt opt_arg opt_chk
+
+  local t_VAR
+  local ans0 ans ival intN
+  local all_evars
+
+  all_evars="MY_CLEAN MY_ADD_CMAKE_FLAGS MY_COMPILER
+             MY_PARALLEL MY_PARMAKE MY_PLATFORM MY_INSTALL_DIR
+             MY_PROJECT_DIR MY_TYPE MY_VERBOSE"
+
+  for ival in ${all_evars}; do unset __${ival}; done
+
+
+  __MY_CLEAN=0
+  __MY_ADD_CMAKE_FLAGS=
+  __MY_COMPILER=
+  __MY_PARALLEL=0
+  __MY_PARMAKE=1
+  __MY_PLATFORM=
+  __MY_INSTALL_DIR=
+  __MY_PROJECT_DIR=
+  __MY_TYPE=R
+  __MY_VERBOSE=0
+          
+
+  # -----
+  # Process the function options
+  opt_all=( c clean cmake_flags comp j par parallel plat platform prefix proj t type v verbose
+            h help )
+  opt_all=":$( echo "${opt_all[@]/#/-} ${opt_all[@]/#/--}" | sed 's/ /:/g' ):"
+
+  unset __OPTION_LIST
+  while test $# -gt 0; do
+    case "${1}" in
+      -[^-]*=* | --[^-]*=* )
+        opt_opt="$( toLOWER "$( echo "${1}" | sed 's/=.*//' )" )"
+        len=$(( ${#opt_opt} + 1 ))
+        opt_arg="$( strTrim "$( echo "${1:${len}}" )" 2 )"
+        [ "$( echo "${opt_all}" | egrep -o ":${opt_arg}:" )" ] && \
+          opt_arg=
+        ;;
+      -[^-]* | --[^-]* )
+        opt_opt="$( toLOWER "${1}" )"
+        opt_chk="$( toLOWER "$( echo "${2}" | sed 's/=.*//' )" )"
+        if [ "$( echo "${opt_all}" | egrep -o ":${opt_chk}:" )" ]; then
+          opt_arg=
+        else
+          opt_arg="$( strTrim "$( echo "${2}" )" )"
+        fi
+        ;;
+      *)
+        opt_opt=
+        opt_arg=
+        ;;
+    esac
+
+    case "${opt_opt}" in
+      -c | --c | -clean | --clean )
+          checkFuncOpt "--clean"
+          if [ $? -eq 0 ]; then
+            __MY_CLEAN=1
+            if [ "X${opt_arg}" != "X" ]; then
+              if `isInteger "${opt_arg}"` ; then
+                __MY_CLEAN=$( echo "${opt_arg}" )
+                [ ${opt_arg} -le -3 ] && __MY_CLEAN=-3
+                [ ${opt_arg} -ge  2 ] && __MY_CLEAN=2
+              else
+                __MY_CLEAN=0
+                [ "$( getYesNo "${opt_arg}" )" = "yes" ] && __MY_CLEAN=1
+              fi
+            fi
+          fi
+        ;;
+      -cmake_flags | --cmake_flags )
+          checkFuncOpt "--cmake_flags"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_ADD_CMAKE_FLAGS="$( echo "${opt_arg}" )"
+            fi
+          fi
+        ;;
+      -compiler | --compiler )
+          checkFuncOpt "--compiler"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_COMPILER="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+              __MY_COMPILER="$( toLOWER ${__MY_COMPILER} )"
+            fi
+          fi
+        ;;
+      -j | --j )
+          checkFuncOpt "--j"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_PARMAKE=1
+              t_VAR="$( getPosInteger "${opt_arg}" )"
+              [ ! -z "${t_VAR}" ] && __MY_PARMAKE=${t_VAR}
+            fi
+          fi
+        ;;
+      -par | --par | -parallel | --parallel )
+          checkFuncOpt "--parallel"
+          if [ $? -eq 0 ]; then
+            __MY_PARALLEL=1
+            if [ "X${opt_arg}" != "X" ]; then
+              if `isInteger "${opt_arg}"` ; then
+                __MY_PARALLEL=0
+                [ ${opt_arg} -ge 1 ] && __MY_PARALLEL=1
+              else
+                __MY_PARALLEL=0
+                [ "$( getYesNo "${opt_arg}" )" = "yes" ] && __MY_PARALLEL=1
+              fi
+            fi
+          fi
+        ;;
+      -plat | --plat | -platform | --platform)
+          checkFuncOpt "--platform"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_PLATFORM="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+              __MY_PLATFORM="$( toLOWER ${__MY_PLATFORM} )"
+            fi
+          fi
+        ;;
+      -prefix | --prefix )
+          checkFuncOpt "--prefix"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_INSTALL_DIR="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+            fi
+          fi
+        ;;
+      -proj | --proj )
+          checkFuncOpt "--proj"
+          if [ $? -eq 0 ]; then
+            checkFuncOpt "$( echo "${opt_opt}" | sed 's/^[-]*//' )"
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_PROJECT_DIR="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+            fi
+          fi
+        ;;
+      -t | --t | -type | --type )
+          checkFuncOpt "--type"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_TYPE="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+              __MY_TYPE="$( toUPPER ${__MY_TYPE} )"
+            fi
+          fi
+        ;;
+      -v | --v | -verbose | --verbose )
+          checkFuncOpt "--verbose"
+          if [ $? -eq 0 ]; then
+            __MY_VERBOSE=1
+            if [ "X${opt_arg}" != "X" ]; then
+              if `isInteger "${opt_arg}"` ; then
+                __MY_VERBOSE=0
+                [ ${opt_arg} -ge 1 ] && __MY_VERBOSE=1
+              else
+                __MY_VERBOSE=0
+                [ "$( getYesNo "${opt_arg}" )" = "yes" ] && __MY_VERBOSE=1
+              fi
+            fi
+          fi
+        ;;
+      -h | -help | --h | --help )
+          UsageBuild ${nm_func}
+        ;;
+      *) ;; # DEFAULT
+    esac
+    shift
+    opt_opt= 
+    opt_arg=
+  done
+  unset __OPTION_LIST
+  # -----
+
+
+  case "${__MY_TYPE}" in
+     "D") ;; # Do nothing
+     "R") ;; # Do nothing
+    "RD") ;; # Do nothing
+    "MR") ;; # Do nothing
+    *) echo "Wrong CMake type ${__MY_TYPE}, should be one of [D, R, RD, MR]"
+       exit 1
+       ;;
+  esac
+
+  if [ -z "${__MY_PLATFORM}" ]; then
+    case "$(uname -s)" in
+      Darwin ) __MY_PLATFORM="macosx" ;;
+      Linux  ) __MY_PLATFORM="linux" ;;
+            *) __MY_PLATFORM="linux";; # DEFAULT
+    esac
+  fi
+
+  # Export the values of all __* variables.
+  for ival in ${all_evars}
+  do
+    ans0="$( eval "echo \${$(echo ${ival}):-}" )"
+    ans="$( eval "echo \${$(echo __${ival}):-}" )"
+    ans=${ans:-${ans0:-}}
+
+    eval "${ival}=\${ans}"
+    export ${ival}
+
+    unset __${ival}
+  done
+
+  return 0
+}
+
+UsageBuild()
+{
+  local nm="$( basename ${0} )"
+
+  echo
+  echo "Usage: \"${nm}\" [{-|--}option1{=|space}[option_value1]] [{-|--}option2{=|space}[option_value2]] ..."
+  echo
+
+  echo "  -h|-help|--h|--help"
+  echo "    Show this help screen."
+  echo
+  #---
+  echo "  -c|--c|-clean|--clean [=|space] \"0|1|2|-3|-2|-1|yes|no\" (OPTIONAL)."
+  echo "    Only clean the already compiled CMake build system."
+  echo "    Default: 0|no."
+  echo "    Example: --clean=1   Clean the system (make clean) and exit."
+  echo "                    =2   Completely clean the system (make distclean) and exit."
+  echo "                    =-1  During the compilation stage, clean the system (make clean)"
+  echo "                         and continue with the compilation."
+  echo "                    =-2  During the compilation stage, completely clean the system (make distclean)"
+  echo "                         and continue with the  compilation."
+  echo "                    =-3  Do not clean anything but continue with the compilation."
+  echo "                    =0   Do not clean anything (default)."
+  echo
+  #---
+  echo "  -cmake_flags|--cmake_flags [=|space] \"cmake_flags\" (OPTIONAL)."
+  echo "    Additional flags to pass to the cmake program."
+  echo "    Example: --cmake_flags=\"-DFLAG1=VAL1 -DFLAG2=VAL2 ...\"."
+  echo "    Default: none."
+  echo
+  #---
+  echo "  -compiler|--compiler [=|space] \"compiling_system\" (OPTIONAL)."
+  echo "    The compiling system to use (${MY_COMPILING_SYTEMS})."
+  echo "    Default: none."
+  echo
+  #---
+  echo "  -j|--j [=|space] \"N\" (OPTIONAL)."
+  echo "    Define the number of make jobs to run simultaneously."
+  echo "    Default: 1."
+  echo
+  #---
+  echo "  -par|--par|-parallel|--parallel [=|space] \"0|1|yes|no\" (OPTIONAL)."
+  echo "    Activate the use of parallel compilers."
+  echo "    Default: 0|no."
+  echo
+  #---
+  echo "  -plat|--plat|-platform|--platform [=|space] \"platform\" (OPTIONAL)."
+  echo "    The name of the compute HPC platform to consider."
+  echo "    Selecting a platform additional macros are defined for the"
+  echo "    compilation stage that are specific to that platform."
+  echo "    Supported platforms: ${MY_COMPILING_PLATFORMS}."
+  echo "    Default: OS."
+  echo
+  #---
+  echo "  -prefix|--prefix [=|space] \"install_dir\" (OPTIONAL)."
+  echo "    The path to the installation directory."
+  echo "    Default: The location of this script."
+  echo
+  #---
+  echo "  -proj|--proj [=|space] \"project_dir\" (OPTIONAL)."
+  echo "    The path to the user's project directory."
+  echo "    Default: The location of this script."
+  echo
+  #---
+  echo "  -t|--t|-type|--type [=|space] \"cmake_build_type\" (OPTIONAL)."
+  echo "    To set the CMAKE_BUILD_TYPE option (Debug Release RelWithDebInfo MinSizeRel)."
+  echo "       D = Debug."
+  echo "       R = Release."
+  echo "      RD = RelWithDebInfo."
+  echo "      MR = MinSizeRel."
+  echo "    Default: R."
+  echo
+  #---
+  echo "  -v|--v|-verbose|--verbose [=|space] \"0|1|yes|no\" (OPTIONAL)."
+  echo "    Enable verbosity in the make files during compilation."
+  echo "    Default: 0|no."
+  echo
+  #---
+
+  exit 0
+}
+
+ParseArgsTracs()
+{
+  local nm_func=$( basename ${BASH_SOURCE[${#BASH_SOURCE[@]}-1]} )
+
+  local opt_all opt_opt opt_arg opt_chk
+
+  local t_VAR
+  local ans0 ans ival intN
+  local all_evars
+
+  all_evars="MY_ROOTDIR MY_BASIN MY_YEAR MY_STORMNAME"
+
+  for ival in ${all_evars}; do unset __${ival}; done
+
+
+  __MY_ROOTDIR=
+  __MY_BASIN=
+  __MY_YEAR=
+  __MY_STORMNAME=
+          
+
+  # -----
+  # Process the function options
+  opt_all=( b basin d dir y year s storm h help )
+  opt_all=":$( echo "${opt_all[@]/#/-} ${opt_all[@]/#/--}" | sed 's/ /:/g' ):"
+
+  unset __OPTION_LIST
+  while test $# -gt 0; do
+    case "${1}" in
+      -[^-]*=* | --[^-]*=* )
+        opt_opt="$( toLOWER "$( echo "${1}" | sed 's/=.*//' )" )"
+        len=$(( ${#opt_opt} + 1 ))
+        opt_arg="$( strTrim "$( echo "${1:${len}}" )" 2 )"
+        [ "$( echo "${opt_all}" | egrep -o ":${opt_arg}:" )" ] && \
+          opt_arg=
+        ;;
+      -[^-]* | --[^-]* )
+        opt_opt="$( toLOWER "${1}" )"
+        opt_chk="$( toLOWER "$( echo "${2}" | sed 's/=.*//' )" )"
+        if [ "$( echo "${opt_all}" | egrep -o ":${opt_chk}:" )" ]; then
+          opt_arg=
+        else
+          opt_arg="$( strTrim "$( echo "${2}" )" )"
+        fi
+        ;;
+      *)
+        opt_opt=
+        opt_arg=
+        ;;
+    esac
+
+    case "${opt_opt}" in
+      -b | --b | -basin | --basin )
+          checkFuncOpt "--basin"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_BASIN="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+              __MY_BASIN="$( toUPPER ${__MY_BASIN} )"
+            fi
+          fi
+        ;;
+      -d | --d | -dir | --dir )
+          checkFuncOpt "--dir"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_ROOTDIR="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+            fi
+          fi
+        ;;
+      -s | --s | -storm | --storm )
+          checkFuncOpt "--storm"
+          if [ $? -eq 0 ]; then
+            if [ "X${opt_arg}" != "X" ]; then
+              __MY_STORMNAME="$( echo "${opt_arg}" | sed 's/[[:space:]]//g' )"
+              __MY_STORMNAME="$( toUPPER ${__MY_STORMNAME} )"
+            fi
+          fi
+        ;;
+      -y | --y | -year | --year )
+          checkFuncOpt "--year"
+          if [ "X${opt_arg}" != "X" ]; then
+            __MY_YEAR=$( getPosInteger "${opt_arg}" )
+          fi
+        ;;
+      -h | -help | --h | --help )
+          UsageTracs ${nm_func}
+        ;;
+      *) ;; # DEFAULT
+    esac
+    shift
+    opt_opt= 
+    opt_arg=
+  done
+  unset __OPTION_LIST
+  # -----
+
+  # Export the values of all __* variables.
+  for ival in ${all_evars}
+  do
+    ans0="$( eval "echo \${$(echo ${ival}):-}" )"
+    ans="$( eval "echo \${$(echo __${ival}):-}" )"
+    ans=${ans:-${ans0:-}}
+
+    eval "${ival}=\${ans}"
+    export ${ival}
+
+    unset __${ival}
+  done
+
+  return 0
+}
+
+UsageTracs()
+{
+  local nm="$( basename ${0} )"
+
+  echo
+  echo "Usage: \"${nm}\" [{-|--}option1{=|space}[option_value1]] [{-|--}option2{=|space}[option_value2]] ..."
+  echo
+
+  echo "  -h|-help|--h|--help"
+  echo "    Show this help screen."
+  echo
+  #---
+  echo "  -d|--d|-dir|--dir [=|space] \"data_dir\"."
+  echo "    The path to the data directory."
+  echo "    Default: none."
+  echo
+  #---
+  echo "  -b|--b|-basin|--basin [=|space] \"basin\"."
+  echo "    The basin to use (WP, IO, SH, CP, EP, AL, LS)."
+  echo "      For HurDat2, one of: WP, IO, SH, CP, EP, AL, LS."
+  echo "      For IBTrACS, one of: EP, NA, NI, SA, SI, SP, WP."
+  echo "    Default: none."
+  echo
+  #---
+  echo "  -s|--s|-storm|--storm [=|space] \"storm_name\"."
+  echo "    The storm to use."
+  echo "    Default: none."
+  echo
+  #---
+  echo "  -y|--y|-year|--year [=|space] \"year_of_storm\"."
+  echo "    The year the storm happened."
+  echo "    Default: none."
+  echo
+  #---
+
+  exit 0
+}
+
+
+###========================================
+### checkFuncOpt()
+### Usage:      checkFuncOpt opt_name
+### Parameters:
+###   opt_name: The name of the option to a function
+###
+### Returns : Exits on error
+###
+### Exports : __OPTION_LIST
+###
+### Echoes  : NONE
+###
+### checkFuncOpt: Checks if an option to a function is already supplied.
+###========================================
+checkFuncOpt() {
+  local opt_inp opt_list
+
+  [ $# -eq 0 ] && return -1
+
+  opt_inp="$( strTrim "${1}" 2 )"
+  opt_inp="$( echo "${opt_inp}" | sed 's/^[-]*//' )"
+
+  opt_list="$( strTrim "${__OPTION_LIST}" 2 )"
+  [ -n ${opt_list:+1} ] && \
+    opt_list=":$( echo "${opt_list}" | sed 's/ /:/g' ):"
+
+  [ "$( echo "${opt_list}" | egrep -o ":${opt_inp}:" )" ] && return 1
+
+  __OPTION_LIST="${__OPTION_LIST} ${opt_inp}"
+  export __OPTION_LIST
+
+  return 0
+}
+
+###========================================
+### isInteger()
+### Usage:      isInteger var
+### Parameters: var
+### Returns:    1 if var is not an integer (0 is an integer as well)
+###             0 in any other case
+### Echoes:     NONE
+###========================================
+isInteger()
+{
+  local -i retval=1
+
+  [ $# -eq 0 ] && return ${retval}
+
+  if [ "${1:-UNDEF}" -eq "${1}" ] 2>/dev/null
+  then
+    retval=0
+  fi
+
+  return ${retval}
+}
+
+###========================================
+### getInteger()
+### Usage:      getInteger int
+### Parameters: int (int >=0 or, int < 0)
+### Returns:    1 if var is not an integer
+###             0 in any other case
+### Echoes:     int, if it is a valid integer (including 0),
+###             in any other case echoes an empty string
+###========================================
+getInteger()
+{
+  local -i retval=0
+  local echoval= minus=
+
+  # strip spaces, '+' signs and '-' signs
+  # if the first character of the string is '-', set the minus variable
+  echoval="$( echo "${1}" | sed 's/[[:space:]+]//g' )"
+  [ "X$( echo "${echoval:0:1}" )" = "X-" ] && minus="-"
+  echoval="${minus}$( echo "${echoval}" | sed 's/[[:space:]-]//g' )"
+
+  if isInteger ${echoval}; then
+    echoval="$(echo "scale=0; ${echoval} + 0" | bc -ql 2>/dev/null)"
+    retval=$?
+    echoval="${echoval:-0}"
+  else
+    echoval=
+    retval=1
+  fi
+
+  echo -n ${echoval}
+
+  return ${retval}
+}
+
+###========================================
+### getPosInteger()
+### Usage:      getPosInteger posint
+### Parameters: posint (posint >= 0)
+### Returns:    1 if var is not a positive integer
+###             0 in any other case
+### Echoes:     posint if it is a valid positive integer
+###             (including 0), in any other case echoes an
+###             empty string
+###========================================
+getPosInteger()
+{
+  local -i retval=0
+  local echoval=
+
+  echoval=$( getInteger "${1}" )
+  retval=$?
+
+  if [ ${retval} -ne 0 ] ; then
+    echoval=
+    retval=1
+  else
+    if [ ${echoval} -lt 0 ]; then
+      echoval=
+      retval=1
+    fi
+  fi
+
+  echo -n ${echoval}
+
+  return ${retval}
+}
+
+###========================================
+### getYesNo()
+### Usage:      getYesNo value
+### Parameters:
+###   value : The input value (the value of a parameter)
+###           The value of a bash parameter that is checked
+###           against TRUE/FALSE. If the value is one of:
+###             ">=1|y|yes|yea|yeah|yep"
+###           then the value of parameter is TRUE (answer = yes).
+###           If the value is one of:
+###             "<=0|n|no|not|nop|nope"
+###           then the value of parameter is FALSE (answer = no).
+###           If the value is empty then the value of parameter
+###           is FALSE (answer = no)
+###
+### Returns : NONE
+###
+### Exports : NONE
+###
+### Echoes  : A "yes" or "no" answer.
+###
+### getYesNo: Checks if a parameter is assigned a TRUE/FALSE value.
+###========================================
+getYesNo()
+{
+  local param answer
+  
+  param="$( echo "${1}" | tr '[:upper:]' '[:lower:]' )"
+
+  if [ "${param}" -eq "${param}" ] 2>/dev/null
+  then
+    [ ${param} -le 0 ] && param=0
+    [ ${param} -gt 0 ] && param=1
+  fi
+
+  case "${param}" in
+    1|y|yes|yea|yeah|yep) answer="yes" ;;
+     0|n|no|not|nop|nope) answer="no"  ;;
+                       *) answer=""    ;; # DEFAULT
+  esac
+
+  echo -n "${answer}"
+}
+
+###========================================
+### toUPPER()
+### Usage:      toUPPER string
+### Parameters:
+###   string : The string in to convert
+###
+### Returns : NONE
+###
+### Exports : NONE
+###
+### Echoes  : The input string converted to an all upper case string
+###
+### toUPPER: Converts a string to an all upper case string
+###========================================
+function toUPPER()
+{
+  echo "${1}" | tr '[:lower:]' '[:upper:]'
+}
+
+###========================================
+### toLOWER()
+### Usage:      toLOWER string
+### Parameters:
+###   string : The string in to convert
+###
+### Returns : NONE
+###
+### Exports : NONE
+###
+### Echoes  : The input string converted to an all lower case string
+###
+### toLOWER: Converts a string to an all lower case string
+###========================================
+function toLOWER()
+{
+  echo "${1}" | tr '[:upper:]' '[:lower:]'
+}
+
+###========================================
+### strESC()
+### Usage:      strESC string
+### Parameters:
+###   string : The input string
+###            The input string on which this function is applied
+###            to escape special characters used in bash/sed ...
+###
+### Returns : NONE
+###
+### Exports : NONE
+###
+### Echoes  : The modified string with its special characters escaped
+###
+### strESC: Escapes special characters in a string: "'()/[]*.
+###========================================
+strESC()
+{
+  echo -n "$( echo "${*}" | sed -e "s/[\"\'\(\)\/\*\!]/\\\&/g;s/\[/\\\&/g;s/\]/\\\&/g" )"
+}
+
+strESC1()
+{
+  echo -n "$( echo "${*}" | sed -e "s/[\&\/\*\!]/\\\&/g;s/\[/\\\&/g;s/\]/\\\&/g" )"
+}
+
+###========================================
+### strTrim()
+### Usage:      strTrim s1 flag
+### Parameters:
+###     s1 : The input string
+###   flag : Integer
+###          A value that controls the action of strTrim.
+###          If flag is zero or not present, trailing blanks are removed.
+###          Leading blanks are removed if it is equal to 1.
+###          Both are removed if it is equal to 2.
+###          In any other case, trailing blanks are removed.
+###
+### Returns : NONE
+###
+### Exports : NONE
+###
+### Echoes  : s1 with all leading and/or trailing
+###           white spaces removed.
+###
+### strTrim: Removes all leading and/or trailing white spaces
+###          from the input string
+###========================================
+function strTrim ()
+{
+  local trimFLG="${2:-0}"
+  local out_str=
+
+  case ${trimFLG} in
+    0) out_str="$(echo "${1}" | sed 's/[[:space:]]*$//')" ;;
+    1) out_str="$(echo "${1}" | sed 's/^[[:space:]]*//')" ;;
+    2) out_str="$(echo "${1}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" ;;
+    *) out_str="$(echo "${1}" | sed 's/[[:space:]]*$//')" ;;
+  esac
+
+  echo -n ${out_str}
+}

@@ -1,0 +1,6 @@
+<map id="pahm_drivermod::pahm_finalize" name="pahm_drivermod::pahm_finalize">
+<area shape="rect" id="node1" title="Subroutine to finalize a PaHM run." alt="" coords="5,50,196,97"/>
+<area shape="rect" id="node2" href="$namespacepahm__messages.html#ac4e3ac4677b30069fdf8e71c1c6445d4" title="Closes an opened log file." alt="" coords="279,5,513,35"/>
+<area shape="rect" id="node3" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="253,59,539,88"/>
+<area shape="rect" id="node4" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="244,112,548,141"/>
+</map>

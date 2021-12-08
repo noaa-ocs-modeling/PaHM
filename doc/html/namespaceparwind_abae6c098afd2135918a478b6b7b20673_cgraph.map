@@ -1,0 +1,12 @@
+<map id="parwind::readbesttrackfile" name="parwind::readbesttrackfile">
+<area shape="rect" id="node1" title="Subroutine to read all a&#45;deck/b&#45;deck best track files (ATCF format)." alt="" coords="5,216,212,245"/>
+<area shape="rect" id="node2" href="$namespaceparwind.html#a9b826e18db73886e01f39d55bf7e5b85" title="Subroutine to allocate memory for a best track structure." alt="" coords="280,5,459,35"/>
+<area shape="rect" id="node3" href="$namespaceutilities.html#a241eabd46f9d0e4a26adc221570ad79f" title="Find the unique non&#45;blank elements in 1D character array." alt="" coords="289,59,449,88"/>
+<area shape="rect" id="node4" href="$namespaceutilities.html#a8723656afba63e33ed1c6cc8e5440b63" title="Gets a line from a file." alt="" coords="283,112,456,141"/>
+<area shape="rect" id="node5" href="$namespaceutilities.html#a2a41067ed5533ec0c36318e8f1e960bf" title="This subroutine opens an existing file for reading." alt="" coords="276,269,463,299"/>
+<area shape="rect" id="node6" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="535,216,822,245"/>
+<area shape="rect" id="node7" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="527,269,831,299"/>
+<area shape="rect" id="node8" href="$namespacepahm__messages.html#a8fdeeba7e0469ebda6435518f619444b" title="Terminates the calling program when a fatal error is encountered." alt="" coords="260,216,479,245"/>
+<area shape="rect" id="node9" href="$namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd" title="Convert a string to upper&#45;case." alt="" coords="285,373,453,403"/>
+<area shape="rect" id="node10" href="$namespaceparwind.html#a7a4d6eb0de8c960ffd29e8705b11e707" title="Writes the best track data (adjusted or not) to the &quot;adjusted&quot; best track output file." alt="" coords="260,427,479,456"/>
+</map>

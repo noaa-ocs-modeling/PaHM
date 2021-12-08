@@ -1,0 +1,357 @@
+*
+
+GENERAL FIX FORMAT FOR ALL FIX TYPES (Columns 1-24)
+
+ 
+
+*
+
+FCYYYYYMMDDHHMNLAT0LONG0
+
+FORMAT (A1,A2,A10,A2,I3,A1,I4,A1)
+
+where
+
+F = Fix Type:
+
+1, A, or I -- Satellite
+
+2, B, or J -- Aircraft
+
+3, C, or K -- Radar
+
+4, D, or L -- Synoptic
+
+The letters A, B, C, and D are used to flag the fix so JTWC Best Track
+program will ignore it (i.e., the fix is unrepresentative of the best
+track). The letters I, J, K, and L tell the program to over-ride the
+abort procedure during fix continuity error check.
+
+CY = Annual cyclone number.
+
+YYMMDDHH = Date-Time group: 00010100 through 99123123.
+
+MN = Minute: 00 through 60.
+
+LAT0,LONG0 = Latitude, longitude fix position.
+
+Latitude: 0 through 900.
+
+Longitude: 0 through 1800.
+
+"0" is the hemispheric index (N/S, E/W).
+
+ 
+
+SATELLITE FIX CODE (Columns 25-81)
+
+_
+
+Column
+
+_
+
+25 or 26 PCN # or CONF # (only one entered).
+
+PCN code 1 = Eye/Geography
+
+2 = Eye/Ephemeris
+
+3 = Well Defined Circ. Center/Geography
+
+4 = Well Defined Circ. Center/Ephemeris
+
+5 = Poorly Defined Circ. Center/Geography
+
+6 = Poorly Defined Circ. Center/Ephemeris
+
+_
+
+Column
+
+_
+
+27-36 Dvorak Code (no decimals or slashes)
+
+Example: T4.0/4.0+/D1.0/24HRS
+
+Entry: 4040+D1024
+
+37-38 CI 24 hr Forecast
+
+39-44 Satellite Type (left justified with no blanks or dashes)
+
+45 Sensor Type V - visual
+
+I - infrared
+
+B - both
+
+S - SSMI
+
+46-77 Comments
+
+78-81 Fix Site
+
+__
+
+_ENTRY_ _SITE_
+
+PGTW DET 1 1WW, GUAM
+
+RKSO OSAN AB, KOREA
+
+RPMK CLARK AB, PHILIPPINE ISLANDS
+
+RODN KADENA AB, OKINAWA JAPAN
+
+PHIK HICKAM AFB, HAWAII (DMSP & NOAA)
+
+PHNL NWS HONOLULU, HAWAII (GOES)
+
+KGWC OFFUTT AFB, NEBRASKA
+
+FJDG DIEGO GARCIA, INDIAN OCEAN
+
+KNSS FLEET WEATHER FACILITY, SUITLAND, MD
+
+NNUL USS CONSTELLATION
+
+NZFF USS KITTYHAWK
+
+NRPG USS LASALLE
+
+NPOC NAVAL POLAR OCEANOGRAPHY CENTER
+
+Pre 1978 Corrections:
+
+1973-1977
+
+_
+
+Column
+
+_
+
+45-46 blank
+
+47-51 "MSLP="
+
+52-56 Mean sea level pressure
+
+57-65 "ESTMAXWND" or "(STG UNK)"
+
+66-69 Maximum wind speed
+
+70-73 " KTS"
+
+74-81 blank
+
+1972
+
+46-56 Dvorak code
+
+57-81 Same as 1973-1977
+
+1966-1971
+
+45-81 blank
+
+ 
+
+AIRCRAFT FIX CODE (Column 25-81)
+
+_
+
+Column
+
+_
+
+25-33 Flight Level (CHARLIE)
+
+25-26 100's of feet or
+
+27-29 Millibars
+
+30-33 Minimum height in meters
+
+34-36 Maximum Surface Wind Intensity in knots (DELTA)
+
+37-41 Maximum Surface Wind (ECHO)
+
+37-38 Bearing (degrees/10)
+
+39-41 Range (n. mi.)
+
+42-46 Maximum Flight Level Wind (FOXTROT)
+
+42-43 Direction (degrees/10)
+
+44-46 Intensity (knots)
+
+47-51 Maximum Flight Level Wind (GOLF)
+
+47-48 Bearing (degrees/10)
+
+49-51 Range (n. mi.)
+
+52-54 Minimum Sea Level Pressure in millibars (HOTEL)
+
+55-57 Temperature Outside Eye in Celsius (INDIA)
+
+58-60 Temperature Inside Eye in Celsius (JULIET)
+
+61-65 Temperature (rounded to whole degree) (KILO)
+
+61-63 Dew Point Temperature (Celsius)
+
+64-65 Sea Surface Temperature (Celsius)
+
+66-67 Wall Cloud Thickness in N. Mi. (LIMA)
+
+68-75 Eye Characteristics (MIKE)
+
+68-69 Shape: CI, circular; EL, elliptic; CO, concentric
+
+70-71 Orientation (degrees/10)
+
+72-73 Diameter (n. mi.) (long axis if elliptical)
+
+74-75 Short Axis (n. mi.) (blank if not elliptical)
+
+76-79 Accuracy (PAPA)
+
+76-77 Navigational (n. mi.)
+
+78-79 Meteorological (n. mi.)
+
+80-81 Mission Number
+
+Pre 1978 corrections
+
+1966-1971
+
+_
+
+Column
+
+_
+
+55-57 Blank
+
+58-60 Temperature Inside Eye (C)
+
+61-63 Temperature Outside Eye (C)
+
+79-81 Missing
+
+Notes: For aircraft fixes 1966-1970, a dash (-) denotes missing data.
+
+ 
+
+RADAR FIX CODE (Columns 23-79)
+
+A. RADOB - A_c S_c W_c a_c r_c t_e d_s d_s f_s f_s
+
+Also enter slashes if reported and in place of blanks
+
+_
+
+Column
+
+_
+
+25 Fix Type: L - Land; S - Ship; A - Aircraft
+
+26-35 RADOB CODE
+
+36-67 Comments
+
+68-76 Radar Site Position (same format as columns 16-24)
+
+77-81 WMO Identifier
+
+B. Plain Language
+
+_
+
+Column
+
+_
+
+25 Fix Type: L - Land; S - Ship; A - Aircraft
+
+26 Accuracy: G - Good; F - Fair; P - Poor
+
+27-28 Eye Shape: CI - Circular; EL - Elliptic; CO - concentric
+
+29-31 Eye Diameter (n. mi.)
+
+32-33 Percent Of Eye Wall Observed (99 = 100%)
+
+34-35 Spiral Overlay (degrees)
+
+36-67 Comments
+
+68-76 Radar Site Position (same format as columns 16-24)
+
+77-81 WMO Identifier
+
+Pre 1978 corrections
+
+1972-1977
+
+_
+
+Column
+
+_
+
+25-67 Blank
+
+68-76 Radar Site Position (same format as columns 16-24)
+
+77-81 Blank
+
+1966-1971
+
+24-81 Blank
+
+ 
+
+SYNOPTIC FIX CODE
+
+_
+
+Column
+
+_
+
+25-27 Intensity Estimate (knots)
+
+28-30 Distance to Nearest Data (n. mi.)
+
+31-81 Comments
+
+Pre 1978 Corrections
+
+1966-1977
+
+_
+
+Column
+
+_
+
+25-81 Blank
+
+Notes: For aircraft fixes 1966-1970, a dash (-) denotes missing data.
+
+Storm numbers greater than 50 have no corresponding best track and thus
+have meaningless storm id cards.
+
+ 
+
+Return to previous page
+<https://www.nrlmry.navy.mil/atcf_web/docs/database/new/database.html>
+

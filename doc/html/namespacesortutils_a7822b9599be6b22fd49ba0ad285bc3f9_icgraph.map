@@ -1,0 +1,4 @@
+<map id="sortutils::stringlexcomp" name="sortutils::stringlexcomp">
+<area shape="rect" id="node1" title="Performs a lexical comparison between two strings." alt="" coords="193,14,377,43"/>
+<area shape="rect" id="node2" href="$interfacesortutils_1_1indexx.html#ae59fb4eaf41ea6af9149f9dc28df4421" title="Indexes a 1D string array in ascending order." alt="" coords="5,5,145,52"/>
+</map>
