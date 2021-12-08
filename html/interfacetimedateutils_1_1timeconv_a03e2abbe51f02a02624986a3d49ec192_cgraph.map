@@ -1,8 +1,0 @@
-<map id="timedateutils::timeconv::timeconvrsec" name="timedateutils::timeconv::timeconvrsec">
-<area shape="rect" id="node1" title="Convert time from year, month, day, hour, min, sec into seconds since the reference date of the simul..." alt="" coords="5,75,189,122"/>
-<area shape="rect" id="node2" href="$namespacetimedateutils.html#a109255326a7eb93c3ccdb4b543c26385" title="Calculates the elapsed time in seconds." alt="" coords="241,5,452,35"/>
-<area shape="rect" id="node4" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="513,71,799,100"/>
-<area shape="rect" id="node5" href="$namespacepahm__messages.html#a8fdeeba7e0469ebda6435518f619444b" title="Terminates the calling program when a fatal error is encountered." alt="" coords="237,109,456,139"/>
-<area shape="rect" id="node6" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="504,148,808,177"/>
-<area shape="rect" id="node3" href="$namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b" title="Calculates the conversion factor between time units and seconds." alt="" coords="540,5,772,35"/>
-</map>

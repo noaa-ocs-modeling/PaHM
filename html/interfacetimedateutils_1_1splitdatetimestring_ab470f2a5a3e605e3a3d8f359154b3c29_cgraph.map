@@ -1,6 +1,0 @@
-<map id="timedateutils::splitdatetimestring::splitdatetimestring" name="timedateutils::splitdatetimestring::splitdatetimestring">
-<area shape="rect" id="node1" title="Splits a date string into components." alt="" coords="5,23,255,70"/>
-<area shape="rect" id="node2" href="$namespacetimedateutils.html#a101cf9ce5907971b096d77575d8d249d" title="Determines the days in the month of the year." alt="" coords="353,5,551,35"/>
-<area shape="rect" id="node4" href="$namespacetimedateutils.html#a2561d57f398381d56d2fa94f5f9a1147" title="Pre&#45;processes an arbitrary date string." alt="" coords="303,59,601,88"/>
-<area shape="rect" id="node3" href="$namespacetimedateutils.html#ac0661d72fdf8161ad7d0b30d0dc57bd6" title="Checks for a leap year." alt="" coords="649,5,832,35"/>
-</map>
