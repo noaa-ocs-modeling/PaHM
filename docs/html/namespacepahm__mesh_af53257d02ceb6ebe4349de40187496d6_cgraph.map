@@ -1,7 +1,0 @@
-<map id="pahm_mesh::readmeshasciifort14" name="pahm_mesh::readmeshasciifort14">
-<area shape="rect" id="node1" title="Reads the ADCIRC fort.14 mesh file." alt="" coords="5,57,268,87"/>
-<area shape="rect" id="node2" href="$namespacepahm__mesh.html#a3ac2350cf2b06f708810684f67950e69" title="Allocates memory to mesh arrays." alt="" coords="316,5,671,35"/>
-<area shape="rect" id="node3" href="$namespaceutilities.html#a2a41067ed5533ec0c36318e8f1e960bf" title="This subroutine opens an existing file for reading." alt="" coords="400,109,587,139"/>
-<area shape="rect" id="node4" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="727,57,1014,87"/>
-<area shape="rect" id="node5" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="719,111,1023,140"/>
-</map>
