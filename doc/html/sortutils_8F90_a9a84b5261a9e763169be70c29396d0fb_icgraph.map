@@ -1,8 +1,0 @@
-<map id="icompxchg" name="icompxchg">
-<area shape="rect" id="node1" title=" " alt="" coords="193,155,292,185"/>
-<area shape="rect" id="node2" href="$interfacesortutils_1_1indexx.html#a14dc4f3d78c6d7a518f48185dac60b8c" title="Indexes a 1D double precision array in ascending order." alt="" coords="5,5,145,52"/>
-<area shape="rect" id="node3" href="$interfacesortutils_1_1indexx.html#a4e4fa36a9147b5a7eb8a9fd718fafc50" title="Indexes a 1D integer array in ascending order." alt="" coords="5,76,145,123"/>
-<area shape="rect" id="node4" href="$interfacesortutils_1_1indexx.html#abca639f6c4c72a7a97e26522db8c1249" title="Indexes a 1D 32&#45;bit integer array in ascending order." alt="" coords="5,147,145,193"/>
-<area shape="rect" id="node5" href="$interfacesortutils_1_1indexx.html#af7ae6ba72f204c10de0faa8023f9fc4a" title="Indexes a 1D single precision array in ascending order." alt="" coords="5,217,145,264"/>
-<area shape="rect" id="node6" href="$interfacesortutils_1_1indexx.html#ae59fb4eaf41ea6af9149f9dc28df4421" title="Indexes a 1D string array in ascending order." alt="" coords="5,288,145,335"/>
-</map>

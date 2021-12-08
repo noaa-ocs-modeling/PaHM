@@ -1,4 +1,0 @@
-<map id="timedateutils::splitdate" name="timedateutils::splitdate">
-<area shape="rect" id="node1" title="Pre&#45;processes an arbitrary date string." alt="" coords="260,14,440,43"/>
-<area shape="rect" id="node2" href="$interfacetimedateutils_1_1gregtojulday.html#a6a65e9e2d0f95a66554e1290a9f13a6f" title="Determines the Julian date from a Gregorian date." alt="" coords="5,5,212,52"/>
-</map>

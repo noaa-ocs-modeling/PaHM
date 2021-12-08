@@ -1,8 +1,0 @@
-<map id="pahm_vortex::getusequadrantvr" name="pahm_vortex::getusequadrantvr">
-<area shape="rect" id="node1" title=" " alt="" coords="540,59,787,88"/>
-<area shape="rect" id="node2" href="$namespacepahm__vortex.html#a758504d51e519dac32d8146e79fccd2c" title=" " alt="" coords="293,5,476,35"/>
-<area shape="rect" id="node4" href="$namespacepahm__vortex.html#a1e9c82cf5fb1c37ebd0629060e93d5fa" title="External function f(x) = 0 for which a root is sought using Brent&#39;s root&#45;finding method." alt="" coords="287,59,482,88"/>
-<area shape="rect" id="node5" href="$namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39" title="External function f(x) = 0 for which a root is sought using Brent&#39;s root&#45;finding method." alt="" coords="277,112,492,141"/>
-<area shape="rect" id="node3" href="$namespacepahm__vortex.html#a580543eed13ec39a2d21135376a5f72a" title="Calculate the radius of maximum winds for all storm quadrants." alt="" coords="16,32,219,61"/>
-<area shape="rect" id="node6" href="$namespacepahm__vortex.html#a5f7ee771ea7ff74d85f4f431886bbffb" title="Calculate the radius of maximum winds for all storm quadrants. Solving the full gradient wind equatio..." alt="" coords="5,112,229,141"/>
-</map>

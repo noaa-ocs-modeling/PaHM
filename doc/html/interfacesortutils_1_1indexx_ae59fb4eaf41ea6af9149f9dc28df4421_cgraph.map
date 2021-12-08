@@ -1,8 +1,0 @@
-<map id="sortutils::indexx::indexxstring" name="sortutils::indexx::indexxstring">
-<area shape="rect" id="node1" title="Indexes a 1D string array in ascending order." alt="" coords="5,77,145,123"/>
-<area shape="rect" id="node2" href="$sortutils_8F90.html#a9a84b5261a9e763169be70c29396d0fb" title=" " alt="" coords="296,5,395,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="202,59,489,88"/>
-<area shape="rect" id="node4" href="$namespacesortutils.html#a7822b9599be6b22fd49ba0ad285bc3f9" title="Performs a lexical comparison between two strings." alt="" coords="253,112,437,141"/>
-<area shape="rect" id="node6" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="193,165,497,195"/>
-<area shape="rect" id="node5" href="$namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd" title="Convert a string to upper&#45;case." alt="" coords="545,112,713,141"/>
-</map>
