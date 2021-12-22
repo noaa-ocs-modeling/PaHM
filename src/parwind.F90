@@ -859,7 +859,7 @@ MODULE ParWind
             CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), &
                           strOut%hour(iCnt), 0, 0.0_SZ, castTime(iCnt))
           ELSE
-           castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1) * 3600.0_SZ)
+           castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1)) * 3600.0_SZ
           END IF
 
           IF ((strOut%iCPress(iCnt) == 0) .OR. (strOut%iRmw(iCnt) == 0)) THEN
@@ -886,7 +886,7 @@ MODULE ParWind
             CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), &
                           strOut%hour(iCnt), 0, 0.0_SZ, castTime(iCnt))
           ELSE
-            castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1) * 3600.0_SZ) 
+            castTime(iCnt) = castTime(iCnt - 1) + (strOut%fcstInc(iCnt) - strOut%fcstInc(iCnt - 1)) * 3600.0_SZ
           END IF
 
         CASE DEFAULT        ! unrecognized
@@ -1251,31 +1251,31 @@ MODULE ParWind
           ! Find the wind velocity components.
           sfVelX = -grVel * SIN(theta)
           sfVelY =  grVel * COS(theta)
-          !print *, sfVelX, sfVelY
+          !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
+
           ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
           ! which, is what the Holland curve fit produces, to 10-m wind velocity.
           sfVelX = sfVelX * blAdjustFac
           sfVelY = sfVelY * blAdjustFac
-          !print *, sfVelX, sfVelY
+          !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
+
           ! Convert from 1-minute averaged winds to 10-minute averaged winds.
           sfVelX = sfVelX * ONE2TEN
           sfVelY = sfVelY * ONE2TEN
-          !print *, sfVelX, sfVelY
+
           ! Add back the storm translation speed.
           sfVelX = sfVelX + trSpdX
           sfVelY = sfVelY + trSpdY
-
           !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
+
           !PV Need to interpolate between storms if this nodal point
           !   is affected by more than on storm
           wPress(i) = sfPress
           wVelX(i)  = sfVelX
           wVelY(i)  = sfVelY
-
           !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
           !print *, '--------------------------------------'
         END DO ! npCnt = 1, maxRadIDX
-
       END DO ! stCnt = 1, nBTrFiles
 !    END DO ! iCnt = 1, nOutDT
 !    WRITE(scratchMessage, '(a)') 'End of the main time loop'
