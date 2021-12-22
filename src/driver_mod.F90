@@ -155,6 +155,7 @@ CONTAINS
       CASE (1)
         DO iCnt = cntTimeBegin, cntTimeEnd
           CALL GetHollandFields(iCnt)
+
           IF (outFileNameSpecified) THEN
             ! Create the output NetCDF file and fill it with the static data only
             ! Initialize all variables. This subroutine is called just once

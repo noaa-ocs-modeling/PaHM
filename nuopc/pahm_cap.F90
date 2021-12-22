@@ -430,7 +430,7 @@ MODULE Pahm_Cap
     ALLOCATE(dataPtr_uWnd(mdataOut%NumOwnedNd))
 
     CALL State_GetFldPtr(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_uWnd, &
-                         rc = rc, dump = .TRUE., timeStr = timeStr)
+                         rc = rc, dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &

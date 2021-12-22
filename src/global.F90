@@ -117,7 +117,7 @@ MODULE PaHM_Global
   REAL(SZ)                :: backgroundAtmPress = DEFV_ATMPRESS   ! mb      Background atmospheric pressure
 
   ! This is for the BL reduction factor used in the Holland model
-  REAL(SZ), PARAMETER     :: DEFV_BLADJUSTFAC = 0.9_SZ
+  REAL(SZ), PARAMETER     :: DEFV_BLADJUSTFAC = 0.90_SZ
   REAL(SZ)                :: windReduction    = DEFV_BLADJUSTFAC  ! PV BL reduction factor used in the Holland model
   REAL(SZ)                :: blAdjustFac      = DEFV_BLADJUSTFAC   !PV same as windReduction?
 
