@@ -7,8 +7,11 @@
 ###########################################################################
 
 # Check if the intel module is loaded so we have access to the Intel compilers.
+#if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
+#  message(FATAL_ERROR "The intel module is not loaded. Load the module before running this cmake")
+#endif()
 if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
-  message(FATAL_ERROR "The intel module is not loaded. Load the module before running this cmake")
+  message(WARNING "The INTEL_LICENSE_FILE variable is not set. Is the intel module loaded? If not, load the module before running this cmake")
 endif()
 
 ###========================================

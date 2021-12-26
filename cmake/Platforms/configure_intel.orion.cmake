@@ -10,6 +10,9 @@
 #if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
 #  message(FATAL_ERROR "The intel module is not loaded. Load the module before running this cmake")
 #endif()
+if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
+  message(WARNING "The INTEL_LICENSE_FILE variable is not set. Is the intel module loaded? If not, load the module before running this cmake")
+endif()
 
 ###========================================
 ### Check the environment and set required variables

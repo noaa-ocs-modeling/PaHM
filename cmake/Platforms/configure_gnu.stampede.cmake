@@ -7,8 +7,11 @@
 ###########################################################################
 
 # Check if the gcc module is loaded so we have access to the newest GCC compilers.
+#if("$ENV{TACC_GCC_DIR}" STREQUAL "")
+#  message(FATAL_ERROR "The gcc module is not loaded. Load the module before running this cmake")
+#endif()
 if("$ENV{TACC_GCC_DIR}" STREQUAL "")
-  message(FATAL_ERROR "The gcc module is not loaded. Load the module before running this cmake")
+  message(WARNING "The TACC_GCC_DIR variable is not set. Is the gcc module loaded?. If not, load the module before running this cmake")
 endif()
 
 ###========================================

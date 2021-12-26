@@ -7,8 +7,11 @@
 ###########################################################################
 
 # Check if the pgi module is loaded so we have access to the PGI compilers.
+#if("$ENV{PGI}" STREQUAL "" AND "$ENV{NVHPC}" STREQUAL "")
+#  message(FATAL_ERROR "The pgi module is not loaded. Load the module before running this cmake")
+#endif()
 if("$ENV{PGI}" STREQUAL "" AND "$ENV{NVHPC}" STREQUAL "")
-  message(FATAL_ERROR "The pgi module is not loaded. Load the module before running this cmake")
+  message(WARNING "The PGI variable is not set. Is the pgi module loaded?. If not, load the module before running this cmake")
 endif()
 
 ###========================================
