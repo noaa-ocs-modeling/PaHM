@@ -215,6 +215,7 @@ MODULE PaHM_Global
   !REAL(SZ), DIMENSION(:, :), ALLOCATABLE :: wVelX, wVelY, wPress
   REAL(SZ), DIMENSION(:), ALLOCATABLE :: wVelX, wVelY, wPress
   REAL(SZ), DIMENSION(:), ALLOCATABLE :: Times
+  CHARACTER(19), DIMENSION(:), ALLOCATABLE :: DatesTimes
 !################################################################
 !###   END :: GLOBAL DATA ARRAYS
 !################################################################

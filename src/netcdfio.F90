@@ -140,7 +140,7 @@ MODULE PaHM_NetCDFIO
     INTEGER             :: ierr ! success or failure of a netcdf call
     INTEGER             :: iCnt, jCnt
 
-    LOGICAL, SAVE                        :: firstCall = .TRUE.
+    LOGICAL, SAVE       :: firstCall = .TRUE.
 
 
     IF (firstCall) THEN
@@ -214,9 +214,6 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, crdTime%varID, 'units',         TRIM(refDateTimeStr))
           CALL NetCDFCheckErr(ierr)
-
-        ALLOCATE(crdTime%var(crdTime%varDims))
-        crdTime%var = Times * GetTimeConvSec(unitTime, 1)
 
       !----- Longitude variable
       tmpVarName = 'longitude'
@@ -418,9 +415,6 @@ MODULE PaHM_NetCDFIO
         ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'mesh',          'adcirc_mesh')
           CALL NetCDFCheckErr(ierr)
 
-  !PV    ALLOCATE(datAtmPres%var(datAtmPres%varDims(1), datAtmPres%varDims(2)))
-  !PV    datAtmPres%var = wPress
-
       !----- Wind velocity variables
       ! Eastward
       tmpVarName = TRIM(ncVarNam_WndX)
@@ -452,9 +446,6 @@ MODULE PaHM_NetCDFIO
         ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'mesh',          'adcirc_mesh')
           CALL NetCDFCheckErr(ierr)
 
-  !PV    ALLOCATE(datWindX%var(datWindX%varDims(1), datWindX%varDims(2)))
-  !PV    datWindX%var = wVelX
-
       ! Northward
       tmpVarName = TRIM(ncVarNam_WndY)
         datWindY%varname      = TRIM(tmpVarName)
@@ -484,9 +475,6 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'mesh',          'adcirc_mesh')
           CALL NetCDFCheckErr(ierr)
-
-  !PV    ALLOCATE(datWindY%var(datWindY%varDims(1), datWindY%varDims(2)))
-  !PV    datWindY%var = wVelY
 
       !====================
       !===== (3) Set Deflate parameters if requested by the user
@@ -558,9 +546,6 @@ MODULE PaHM_NetCDFIO
       !====================
       !===== (5) Put the static data into the NetCDF file and then close it
       !====================
-      ierr = NF90_PUT_VAR(ncID, crdTime%varID, crdTime%var, crdTime%start, crdTime%count)
-        CALL NetCDFCheckErr(ierr)
-      
       ierr = NF90_PUT_VAR(ncID, crdLons%varID, crdLons%var, crdLons%start, crdLons%count)
         CALL NetCDFCheckErr(ierr)
 
@@ -576,20 +561,9 @@ MODULE PaHM_NetCDFIO
       ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
         CALL NetCDFCheckErr(ierr)
 
-  !PV    ierr = NF90_PUT_VAR(ncID, datElements%varID, datElements%var, datElements%start, datElements%count)
-  !PV      CALL NetCDFCheckErr(ierr)
-   
-  !PV     ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, datAtmPres%var, datAtmPres%start, datAtmPres%count)
-  !PV      CALL NetCDFCheckErr(ierr)
-
-  !PV     ierr = NF90_PUT_VAR(ncID, datWindX%varID, datWindX%var, datWindX%start, datWindX%count)
-  !PV      CALL NetCDFCheckErr(ierr)
-
-  !PV     ierr = NF90_PUT_VAR(ncID, datWindY%varID, datWindY%var, datWindY%start, datWindY%count)
-  !PV      CALL NetCDFCheckErr(ierr)
-
-
-      !---------- (16) Set all the "initialized" flags to .TRUE.
+      !====================
+      !===== (6) Set all the "initialized" flags to .TRUE.
+      !====================
       crdLons%initialized      = .TRUE.
       crdLats%initialized      = .TRUE.
       crdXCs%initialized       = .TRUE.
@@ -817,9 +791,10 @@ MODULE PaHM_NetCDFIO
 
     CHARACTER(LEN=*), INTENT(IN) :: adcircOutFile
 
-    INTEGER :: timeLoc
-    INTEGER :: ncID, ierr, nodes
-    INTEGER :: start(2), kount(2)
+    INTEGER  :: timeLoc
+    INTEGER  :: ncID, ierr, nodes
+    INTEGER  :: start(2), kount(2)
+    REAL(SZ) :: currTime
 
 
     CALL SetMessageSource("WriteNetCDFRecord")
@@ -834,12 +809,20 @@ MODULE PaHM_NetCDFIO
     kount(1) = nodes
     kount(2) = 1
 
+    !----- This is the for the time record
+    currTime = Times(timeLoc) * GetTimeConvSec(unitTime, 1)
+    ierr = NF90_PUT_VAR(ncID, crdTime%varID, currTime, (/timeLoc/))
+      CALL NetCDFCheckErr(ierr)
+
+    !----- This is the for the atmospheric pressure record
     ierr = NF90_PUT_VAR(ncID, datAtmPres%varID, wPress, start, kount)
       CALL NetCDFCheckErr(ierr)
 
+    !----- This is the for the 10-m longitudinal wind speed component
     ierr = NF90_PUT_VAR(ncID, datWindX%varID, wVelX, start, kount)
       CALL NetCDFCheckErr(ierr)
 
+    !----- This is the for the 10-m meridional wind speed component
     ierr = NF90_PUT_VAR(ncID, datWindY%varID, wVelY, start, kount)
      CALL NetCDFCheckErr(ierr)
 

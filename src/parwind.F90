@@ -948,13 +948,15 @@ MODULE ParWind
 
     USE PaHM_Mesh, ONLY : slam, sfea, xcSlam, ycSfea, np, isMeshOK
     USE PaHM_Global, ONLY : gravity, rhoWater, rhoAir,                     &
-                       backgroundAtmPress, blAdjustFac, ONE2TEN,      &
-                       DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA, &
-                       nBTrFiles, bestTrackFileName,                  &
-                       nOutDT, mdBegSimTime, mdEndSimTime, mdOutDT,   &
-                       wVelX, wVelY, wPress, Times
+                       backgroundAtmPress, blAdjustFac, ONE2TEN,           &
+                       DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA,      &
+                       nBTrFiles, bestTrackFileName,                       &
+                       nOutDT, mdBegSimTime, mdEndSimTime, mdOutDT,        &
+                       refYear, refMonth, refDay, refHour, refMin, refSec, &
+                       Times, DatesTimes,                                  &
+                       wVelX, wVelY, wPress
     USE Utilities, ONLY : SphericalDistance, SphericalFracPoint, GetLocAndRatio
-    USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay
+    USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String
     !USE PaHM_NetCDFIO
 
     IMPLICIT NONE
@@ -988,6 +990,9 @@ MODULE ParWind
     INTEGER                              :: iCnt, stCnt, npCnt
     INTEGER                              :: i, jl1, jl2
     INTEGER                              :: status
+
+    REAL(SZ)                             :: jday
+    INTEGER                              :: iYear, iMonth, iDay, iHour, iMin, iSec
 
     CHARACTER(LEN=64)                    :: tmpTimeStr, tmpStr1, tmpStr2
 
@@ -1037,8 +1042,12 @@ MODULE ParWind
 
       ! Allocate storage for the Times array that contains the output times.
       ALLOCATE(Times(nOutDT))
+      ALLOCATE(DatesTimes(nOutDT))
       DO iCnt = 1, nOutDT
         Times(iCnt) = mdBegSimTime + (iCnt - 1) * mdOutDT
+        jday = (Times(iCnt) *  GetTimeConvSec('D', 1)) + GregToJulDay(refYear, refMonth, refDay, refHour, refMin, refSec)
+        CALL JulDayToGreg(jday, iYear, iMonth, iDay, iHour, iMin, iSec)
+        DatesTimes(iCnt) = DateTime2String(iYear, iMonth, iDay, iHour, iMin, iSec, 0)
       END DO
     END IF
 
@@ -1114,7 +1123,8 @@ MODULE ParWind
         WRITE(tmpStr1, '(i5)') iCnt
         WRITE(tmpStr2, '(i5)') nOutDT
       tmpStr1 = '(' // TRIM(tmpStr1) // '/' // TRIM(ADJUSTL(tmpStr2)) // ')'
-        WRITE(tmpTimeStr, '(f20.3)') Times(iCnt)
+        !WRITE(tmpTimeStr, '(f20.3)') Times(iCnt)
+        WRITE(tmpTimeStr, '(a)') DatesTimes(iCnt)
       WRITE(scratchMessage, '(a)') 'Working on time frame: ' // TRIM(ADJUSTL(tmpStr1)) // " " // TRIM(ADJUSTL(tmpTimeStr))
       CALL AllMessage(scratchMessage)
 
