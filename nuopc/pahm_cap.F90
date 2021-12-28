@@ -328,9 +328,9 @@ MODULE Pahm_Cap
 
 
     ! exports
-    REAL(ESMF_KIND_R8), POINTER :: dataPtr_uWnd(:)
-    REAL(ESMF_KIND_R8), POINTER :: dataPtr_vWnd(:)
-    REAL(ESMF_KIND_R8), POINTER :: dataPtr_pres(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_izwh10m(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_imwh10m(:)
+    REAL(ESMF_KIND_R8), POINTER :: dataPtr_pmsl(:)
 
     TYPE(ESMF_StateItem_Flag)   :: itemType
     TYPE(ESMF_Mesh)             :: mesh
@@ -426,51 +426,51 @@ MODULE Pahm_Cap
     !------------------------------------------------------------
     ! Exported fields from PaHM: pack and send exported fields
     !------------------------------------------------------------
-    !--- (FIELD 1): PACK and send uWnd
-    ALLOCATE(dataPtr_uWnd(mdataOut%NumOwnedNd))
+    !--- (FIELD 1): PACK and send u-x wind component
+    ALLOCATE(dataPtr_izwh10m(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_uWnd, &
+    CALL State_GetFldPtr(ST = exportState, fldName = 'izwh10m', fldPtr = dataPtr_izwh10m, &
                          rc = rc, dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for dataPtr_uWnd vector
+    ! Fill only owned nodes for dataPtr_izwh10m vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      dataPtr_uWnd(iCnt) = wVelX(mdataOut%owned_to_present_nodes(iCnt))
+      dataPtr_izwh10m(iCnt) = wVelX(mdataOut%owned_to_present_nodes(iCnt))
     END DO
 
-    !--- (FIELD 2): PACK and send vWnd
-    ALLOCATE(dataPtr_vWnd(mdataOut%NumOwnedNd))
+    !--- (FIELD 2): PACK and send v-y wind component
+    ALLOCATE(dataPtr_imwh10m(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr(ST = exportState,fldName = 'imwh10m', fldPtr = dataPtr_vWnd, &
+    CALL State_GetFldPtr(ST = exportState,fldName = 'imwh10m', fldPtr = dataPtr_imwh10m, &
                          rc = rc, dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for dataPtr_vWnd vector
+    ! Fill only owned nodes for dataPtr_imwh10m vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      dataPtr_vWnd(iCnt) = wVelY(mdataOut%owned_to_present_nodes(iCnt))
+      dataPtr_imwh10m(iCnt) = wVelY(mdataOut%owned_to_present_nodes(iCnt))
     END DO
 
-    !--- (FIELD 3): PACK and send pres
-    ALLOCATE(dataPtr_pres(mdataOut%NumOwnedNd))
+    !--- (FIELD 3): PACK and send pmsl
+    ALLOCATE(dataPtr_pmsl(mdataOut%NumOwnedNd))
 
-    CALL State_GetFldPtr(ST = exportState, fldName = 'pmsl', fldPtr = dataPtr_pres, &
+    CALL State_GetFldPtr(ST = exportState, fldName = 'pmsl', fldPtr = dataPtr_pmsl, &
                          rc = rc,dump = .FALSE., timeStr = timeStr)
     IF (ESMF_LogFoundError(rcToCheck = rc, msg = ESMF_LOGERR_PASSTHRU, &
         line = __LINE__,  &
         file = __FILE__)) &
       RETURN  ! bail out
 
-    ! Fill only owned nodes for dataPtr_pres vector
+    ! Fill only owned nodes for dataPtr_pmsl vector
     DO iCnt = 1, mdataOut%NumOwnedNd, 1
-      dataPtr_pres(iCnt) = wPress(mdataOut%owned_to_present_nodes(iCnt))
+      dataPtr_pmsl(iCnt) = wPress(mdataOut%owned_to_present_nodes(iCnt))
 
-      IF (ABS(dataPtr_pres(iCnt)) > 1e11) THEN
+      IF (ABS(dataPtr_pmsl(iCnt)) > 1e11) THEN
         STOP '  dataPtr_pmsl > mask1 > in PaHM ! '     
       END IF
     END DO
