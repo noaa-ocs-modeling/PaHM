@@ -114,7 +114,7 @@ MODULE ParWind
   END TYPE BestTrackData_T
 
   ! Array of info about the best track data (extension to use multiple storms)
-  TYPE(BestTrackData_T), ALLOCATABLE, TARGET :: bestTrackData(:)
+  TYPE(BestTrackData_T), ALLOCATABLE    :: bestTrackData(:)
 
   !----------------------------------------------------------------
   ! The HollandData_T structure holds all required data for the Holland model
@@ -154,6 +154,7 @@ MODULE ParWind
                                                             ! moving hurricane (m/s)
   END TYPE HollandData_T
 
+  TYPE(HollandData_T), ALLOCATABLE      :: holStru(:)       ! array of Holland data structures
 
   CONTAINS
 
@@ -908,7 +909,7 @@ MODULE ParWind
     CALL UVTrans(strOut%lat, strOut%lon, castTime, strOut%trVx, strOut%trVy, status, 2)
 
     DEALLOCATE(castTime)
-!--------------------
+    !--------------------
 
     DEALLOCATE(outDTG)
     DEALLOCATE(idxDTG)
@@ -963,7 +964,6 @@ MODULE ParWind
 
     INTEGER, INTENT(IN)                  :: timeIDX
 
-    TYPE(HollandData_T), ALLOCATABLE     :: holStru(:)          ! array of Holland data structures
     INTEGER                              :: stormNumber         ! storm identification number
     REAL(SZ)                             :: hlB                 ! Holland B parameter
     REAL(SZ)                             :: rrp                 ! radius of the last closed isobar (m)
@@ -1013,10 +1013,12 @@ MODULE ParWind
         CALL Terminate()
     END IF
 
-    ! This part of the code should only be executed just once
+
+!################################################################
+!###   BEG:: FIRSTCALL BLOCK
+!###         This part of the code should only be executed once
+!################################################################
     IF (firstCall) THEN
-      firstCall = .FALSE.
-       
       ! Check if the mash variables are set and that nOutDT is greater than zero.
       IF (.NOT. isMeshOK) THEN
         WRITE(scratchMessage, '(a)') 'The mesh variables are not established properly. ' // &
@@ -1040,264 +1042,280 @@ MODULE ParWind
         END IF
       END IF
 
-      ! Allocate storage for the Times array that contains the output times.
+
+      !------------------------------
+      ! Allocate storage for the Times and DatesTimes arrays and populate them
+      ! with the output times and ouput dates respectively.
+      !------------------------------
       ALLOCATE(Times(nOutDT))
       ALLOCATE(DatesTimes(nOutDT))
+
       DO iCnt = 1, nOutDT
         Times(iCnt) = mdBegSimTime + (iCnt - 1) * mdOutDT
         jday = (Times(iCnt) *  GetTimeConvSec('D', 1)) + GregToJulDay(refYear, refMonth, refDay, refHour, refMin, refSec)
         CALL JulDayToGreg(jday, iYear, iMonth, iDay, iHour, iMin, iSec)
         DatesTimes(iCnt) = DateTime2String(iYear, iMonth, iDay, iHour, iMin, iSec, 0)
       END DO
+      !------------------------------
+
+
+      !------------------------------
+      ! Allocate storage for the output atmospheric field arrays.
+      ! These arrays share the same mesh with the ocean and wave model
+      !------------------------------
+      ALLOCATE(wVelX(np))
+      ALLOCATE(wVelY(np))
+      ALLOCATE(wPress(np))
+      !------------------------------
+
+
+      !------------------------------
+      ! Allocate the Holland data structures and store the Holland
+      ! data into the data structure array for subsequent use.
+      ! The Holland structures are allocated by calling the ProcessHollandData
+      ! subroutine.
+      ! Process and store the "best track" data into the array of Holland structures
+      ! for subsequent use. All required data to generate the P-W model wind fields
+      ! are contained in these structures. We take into consideration that might be
+      ! more than one "best track" file for the simulation period.
+      !------------------------------
+      ALLOCATE(holStru(nBTrFiles))
+
+      DO stCnt = 1, nBTrFiles
+        CALL ProcessHollandData(stCnt, holStru(stCnt), status)
+
+        IF (.NOT. holStru(stCnt)%loaded) THEN
+          WRITE(scratchMessage, '(a)') 'There was an error loading the Holland data structure for the best track file: ' // &
+                                       TRIM(ADJUSTL(bestTrackFileName(stCnt)))
+          CALL AllMessage(ERROR, scratchMessage)
+
+          CALL DeAllocHollStruct(holStru(stCnt))
+          DEALLOCATE(holStru)
+
+          CALL UnsetMessageSource()
+
+          CALL Terminate()
+        ELSE IF (status /= 0) THEN
+          WRITE(scratchMessage, '(a)') 'There was an error processing the Holland data structure for the best track file: ' // &
+                                       TRIM(ADJUSTL(bestTrackFileName(stCnt)))
+          CALL AllMessage(ERROR, scratchMessage)
+
+          CALL DeAllocHollStruct(holStru(stCnt))
+          DEALLOCATE(holStru)
+
+          CALL UnsetMessageSource()
+
+          CALL Terminate()
+        ELSE
+          WRITE(scratchMessage, '(a)') 'Processing the Holland data structure for the best track file: ' // &
+                                       TRIM(ADJUSTL(bestTrackFileName(stCnt)))
+          CALL LogMessage(INFO, scratchMessage)
+        END IF
+      END DO
+      !------------------------------
+
+
+      firstCall = .FALSE.
     END IF
+!################################################################
+!###   END:: FIRSTCALL BLOCK
+!################################################################
 
 
     !------------------------------
-    ! Allocate storage for required arrays.
-    IF (.NOT. ALLOCATED(wVelX))  ALLOCATE(wVelX(np))
-    IF (.NOT. ALLOCATED(wVelY))  ALLOCATE(wVelY(np))
-    IF (.NOT. ALLOCATED(wPress)) ALLOCATE(wPress(np))
-
     ! Initialize the arrays. Here we are resetting the fields to their defaults.
-    ! This subroutine is called repeatdly and its time the following fields
-    ! are recalculated.
+    ! This subroutine is called repeatdly and each time the following
+    ! atmospheric fields are recalculated.
+    !------------------------------
     wVelX  = 0.0_SZ
     wVelY  = wVelX
     wPress = backgroundAtmPress * MB2PA
     !------------------------------
 
-    !------------------------------
-    ! ALLOCATE THE HOLLAND DATA STRUCTURES AND STORE THE HOLLAND
-    ! DATA INTO THE DATA STRUCTURE ARRAY FOR SUBSEQUENT USE
-    !------------------------------
-    !
-    ! Allocate the array of Holland data structures. The Holland
-    ! structures are allocated by calling the ProcessHollandData
-    ! subroutine.
-    ALLOCATE(holStru(nBTrFiles))
 
-    ! Process and store the "best track" data into the array of Holland structures
-    ! for subsequent use. All required data to generate the P-W model wind fields
-    ! are contained in these structures. We take into consideration that might be
-    ! more than one "best track" file for the simulation period.
+    !------------------------------
+    ! THIS IS THE MAIN TIME LOOP
+    ! IT USES "timeIDX" TO ADVANCE THE CALCULATIONS IN TIME
+    !------------------------------
+    iCnt = timeIDX
+      WRITE(tmpStr1, '(i5)') iCnt
+      WRITE(tmpStr2, '(i5)') nOutDT
+    tmpStr1 = '(' // TRIM(tmpStr1) // '/' // TRIM(ADJUSTL(tmpStr2)) // ')'
+      !WRITE(tmpTimeStr, '(f20.3)') Times(iCnt)
+      WRITE(tmpTimeStr, '(a)') DatesTimes(iCnt)
+    WRITE(scratchMessage, '(a)') 'Working on time frame: ' // TRIM(ADJUSTL(tmpStr1)) // " " // TRIM(ADJUSTL(tmpTimeStr))
+    CALL AllMessage(scratchMessage)
+
     DO stCnt = 1, nBTrFiles
-      CALL ProcessHollandData(stCnt, holStru(stCnt), status)
+      ! Get the bin interval where Times(iCnt) is bounded and the corresponding ratio
+      ! factor for the subsequent linear interpolation in time. In order for this to
+      ! work, the array holStru%castTime should be ordered in ascending order.
+      CALL GetLocAndRatio(Times(iCnt), holStru(stCnt)%castTime, jl1, jl2, wtRatio)
 
-      IF (.NOT. holStru(stCnt)%loaded) THEN
-        WRITE(scratchMessage, '(a)') 'There was an error loading the Holland data structure for the best track file: ' // &
-                                     TRIM(ADJUSTL(bestTrackFileName(stCnt)))
-        CALL AllMessage(ERROR, scratchMessage)
-
-        CALL DeAllocHollStruct(holStru(stCnt))
-        DEALLOCATE(holStru)
-
-        CALL UnsetMessageSource()
-
-        CALL Terminate()
-      ELSE IF (status /= 0) THEN
-        WRITE(scratchMessage, '(a)') 'There was an error processing the Holland data structure for the best track file: ' // &
-                                     TRIM(ADJUSTL(bestTrackFileName(stCnt)))
-        CALL AllMessage(ERROR, scratchMessage)
-
-        CALL DeAllocHollStruct(holStru(stCnt))
-        DEALLOCATE(holStru)
-
-        CALL UnsetMessageSource()
-
-        CALL Terminate()
-      ELSE
-        WRITE(scratchMessage, '(a)') 'Processing the Holland data structure for the best track file: ' // &
-                                     TRIM(ADJUSTL(bestTrackFileName(stCnt)))
+      ! Skip the subsequent calculations if Times(iCnt) is outside the castTime range
+      ! by exiting this loop
+      IF ((jl1 <= 0) .OR. (jl2 <= 0)) THEN
+        WRITE(scratchMessage, '(a)') 'Requested output time: ' // TRIM(ADJUSTL(tmpTimeStr)) // &
+                                     ', skipping generating data for this time'
         CALL LogMessage(INFO, scratchMessage)
+
+        EXIT
       END IF
-    END DO
-    !------------------------------
+
+      ! Perform linear interpolation in time
+      stormNumber = holStru(stCnt)%stormNumber(jl1)
+
+      CALL SphericalFracPoint(holStru(stCnt)%lat(jl1), holStru(stCnt)%lon(jl1), &
+                              holStru(stCnt)%lat(jl2), holStru(stCnt)%lon(jl2), &
+                              wtRatio, lat, lon)
+      !lat    = holStru(stCnt)%lat(jl1) + &
+      !         wtRatio * (holStru(stCnt)%lat(jl2) - holStru(stCnt)%lat(jl1))
+      !lon    = holStru(stCnt)%lon(jl1) + &
+      !         wtRatio * (holStru(stCnt)%lon(jl2) - holStru(stCnt)%lon(jl1))
+
+      ! Radius of the last closed isobar
+      rrp = holStru(stCnt)%rrp(jl1) + &
+              wtRatio * (holStru(stCnt)%rrp(jl2) - holStru(stCnt)%rrp(jl1))
+
+      ! Radius of maximum winds
+      rmw = holStru(stCnt)%rmw(jl1) + &
+              wtRatio * (holStru(stCnt)%rmw(jl2) - holStru(stCnt)%rmw(jl1))
+
+      ! Get all the distances of the mesh nodes from (lat, lon)
+      rad    = SphericalDistance(sfea, slam, lat, lon)
+      ! ... and the indices of the nodal points where rad <= rrp
+      radIDX = PACK([(i, i = 1, np)], rad <= rrp)
+      maxRadIDX = SIZE(radIDX)
+
+      ! If the condition rad <= rrp is not satisfied anywhere then exit this loop
+      IF (maxRadIDX == 0) THEN
+        WRITE(tmpStr1, '(f20.3)') rrp
+          tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
+        WRITE(scratchMessage, '(a)') 'No nodal points found inside the radius of the last closed isobar ' // &
+                                     TRIM(ADJUSTL(tmpStr1)) // ' for storm: ' // &
+                                     TRIM(ADJUSTL(holStru(stCnt)%thisStorm))
+        CALL LogMessage(INFO, scratchMessage)
+
+        EXIT
+      END IF
+
+      speed  = holStru(stCnt)%speed(jl1) + &
+               wtRatio * (holStru(stCnt)%speed(jl2) - holStru(stCnt)%speed(jl1))
+
+      cPress = holStru(stCnt)%cPress(jl1) + &
+               wtRatio * (holStru(stCnt)%cPress(jl2) - holStru(stCnt)%cPress(jl1))
+
+      trVX   = holStru(stCnt)%trVx(jl1) + &
+              wtRatio * (holStru(stCnt)%trVx(jl2) - holStru(stCnt)%trVx(jl1))
+      trVY   = holStru(stCnt)%trVy(jl1) + &
+              wtRatio * (holStru(stCnt)%trVy(jl2) - holStru(stCnt)%trVy(jl1))
+
+      ! If this is a "CALM" period, set winds to zero velocity and pressure equal to the
+      ! background pressure and return. PV: check if this is actually needed
+      IF (cPress < 0.0_SZ) THEN
+        wVelX  = 0.0_SZ
+        wVelY  = wVelX
+        wPress = backgroundAtmPress * MB2PA
+
+        WRITE(scratchMessage, '(a)') 'Calm period found, generating zero atmospheric fields for this time'
+        CALL LogMessage(INFO, scratchMessage)
+
+        EXIT
+      END IF
+
+      ! Calculate and limit central pressure deficit; some track files (e.g., Charley 2004)
+      ! may have a central pressure greater than the ambient pressure that this subroutine assumes
+      cPressDef = backgroundAtmPress * MB2PA - cPress
+      IF (cPressDef < 100.0_SZ) cPressDef = 100.0_SZ
+
+      ! Subtract the translational speed of the storm from the observed max wind speed to avoid
+      ! distortion in the Holland curve fit. The translational speed will be added back later.
+      trSPD = SQRT(trVX * trVX + trVY * trVY)
+      speed = speed - trSPD
+
+      ! Convert wind speed from 10 meter altitude (which is what the
+      ! NHC forecast contains) to wind speed at the top of the atmospheric
+      ! boundary layer (which is what the Holland curve fit requires).
+      speed = speed / blAdjustFac
+
+      ! Calculate Holland parameters and limit the result to its appropriate range.
+      hlB = rhoAir * BASEE * (speed**2) / cPressDef
+      IF (hlB < 1.0_SZ) hlB = 1.0_SZ
+      IF (hlB > 2.5_SZ) hlB = 2.5_SZ
+
+      ! If we are running storm 2 in the Lake Pontchartrain !PV Do we need this?
+      ! Forecast System ensemble, the final wind speeds should be multiplied by 1.2.
+      windMultiplier = 1.0_SZ
+      IF (stormNumber == 2) windMultiplier = 1.2_SZ
+
+      DO npCnt = 1, maxRadIDX
+        i = radIDX(npCnt)
+
+        dx    = SphericalDistance(lat, lon, lat, slam(i))
+        dy    = SphericalDistance(lat, lon, sfea(i), lon)
+        theta = ATAN2(dy, dx)
+
+        ! Compute coriolis
+        coriolis = 2.0_SZ * OMEGA * SIN(sfea(i) * DEG2RAD)
+
+        ! Compute the pressure (Pa) at a distance rad(i); all distances are in meters
+        sfPress = cPress + cPressDef * EXP(-(rmw / rad(i))**hlB)
+
+        ! Compute wind speed (speed - trSPD) at gradient level (m/s) and at a distance rad(i);
+        ! all distances are in meters. Using absolute value for coriolis for Southern Hempisphere
+        grVel = SQRT(speed**2 * (rmw / rad(i))**hlB * EXP(1.0_SZ - (rmw / rad(i))**hlB) +   &
+                     (rad(i) * ABS(coriolis) / 2.0_SZ)**2) -                                &
+                rad(i) * ABS(coriolis) / 2.0_SZ
+
+        ! Determine translation speed that should be added to final !PV CHECK ON THIS
+        ! storm wind speed. This is tapered to zero as the storm wind tapers
+        ! to zero toward the eye of the storm and at long distances from the storm.
+        trSpdX = (ABS(grVel) / speed ) * trVX
+        trSpdY = (ABS(grVel) / speed ) * trVY
+
+        ! Apply mutliplier for Storm #2 in LPFS ensemble.
+        grVel = grVel * windMultiplier
+
+        ! Find the wind velocity components.
+        sfVelX = -grVel * SIN(theta)
+        sfVelY =  grVel * COS(theta)
+        !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
+
+        ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
+        ! which, is what the Holland curve fit produces, to 10-m wind velocity.
+        sfVelX = sfVelX * blAdjustFac
+        sfVelY = sfVelY * blAdjustFac
+        !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
+
+        ! Convert from 1-minute averaged winds to 10-minute averaged winds.
+        sfVelX = sfVelX * ONE2TEN
+        sfVelY = sfVelY * ONE2TEN
+
+        ! Add back the storm translation speed.
+        sfVelX = sfVelX + trSpdX
+        sfVelY = sfVelY + trSpdY
+        !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
+
+        !PV Need to interpolate between storms if this nodal point
+        !   is affected by more than on storm
+        wPress(i) = sfPress
+        wVelX(i)  = sfVelX
+        wVelY(i)  = sfVelY
+        !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
+        !print *, '--------------------------------------'
+      END DO ! npCnt = 1, maxRadIDX
+    END DO ! stCnt = 1, nBTrFiles
+
 
     !------------------------------
-    ! THIS IS THE MAIN TIME LOOP   timeIDX
+    ! Deallocate the arrays
     !------------------------------
-!    WRITE(scratchMessage, '(a)') 'Start of the main time loop'
-!    CALL AllMessage(INFO, scratchMessage)
-!    DO iCnt = 1, nOutDT
-        iCnt = timeIDX
-        WRITE(tmpStr1, '(i5)') iCnt
-        WRITE(tmpStr2, '(i5)') nOutDT
-      tmpStr1 = '(' // TRIM(tmpStr1) // '/' // TRIM(ADJUSTL(tmpStr2)) // ')'
-        !WRITE(tmpTimeStr, '(f20.3)') Times(iCnt)
-        WRITE(tmpTimeStr, '(a)') DatesTimes(iCnt)
-      WRITE(scratchMessage, '(a)') 'Working on time frame: ' // TRIM(ADJUSTL(tmpStr1)) // " " // TRIM(ADJUSTL(tmpTimeStr))
-      CALL AllMessage(scratchMessage)
-
-      DO stCnt = 1, nBTrFiles
-        ! Get the bin interval where Times(iCnt) is bounded and the corresponding ratio
-        ! factor for the subsequent linear interpolation in time. In order for this to
-        ! work, the array holStru%castTime should be ordered in ascending order.
-        CALL GetLocAndRatio(Times(iCnt), holStru(stCnt)%castTime, jl1, jl2, wtRatio)
-
-        ! Skip the subsequent calculations if Times(iCnt) is outside the castTime range
-        ! by exiting this loop
-        IF ((jl1 <= 0) .OR. (jl2 <= 0)) THEN
-          WRITE(scratchMessage, '(a)') 'Requested output time: ' // TRIM(ADJUSTL(tmpTimeStr)) // &
-                                       ', skipping generating data for this time'
-          CALL LogMessage(INFO, scratchMessage)
-
-          EXIT
-        END IF
-
-        ! Perform linear interpolation in time
-        stormNumber = holStru(stCnt)%stormNumber(jl1)
-
-        CALL SphericalFracPoint(holStru(stCnt)%lat(jl1), holStru(stCnt)%lon(jl1), &
-                                holStru(stCnt)%lat(jl2), holStru(stCnt)%lon(jl2), &
-                                wtRatio, lat, lon)
-        !lat    = holStru(stCnt)%lat(jl1) + &
-        !         wtRatio * (holStru(stCnt)%lat(jl2) - holStru(stCnt)%lat(jl1))
-        !lon    = holStru(stCnt)%lon(jl1) + &
-        !         wtRatio * (holStru(stCnt)%lon(jl2) - holStru(stCnt)%lon(jl1))
-
-        ! Radius of the last closed isobar
-        rrp = holStru(stCnt)%rrp(jl1) + &
-                wtRatio * (holStru(stCnt)%rrp(jl2) - holStru(stCnt)%rrp(jl1))
-
-        ! Radius of maximum winds
-        rmw = holStru(stCnt)%rmw(jl1) + &
-                wtRatio * (holStru(stCnt)%rmw(jl2) - holStru(stCnt)%rmw(jl1))
-
-        ! Get all the distances of the mesh nodes from (lat, lon)
-        rad    = SphericalDistance(sfea, slam, lat, lon)
-        ! ... and the indices of the nodal points where rad <= rrp
-        radIDX = PACK([(i, i = 1, np)], rad <= rrp)
-        maxRadIDX = SIZE(radIDX)
-
-        ! If the condition rad <= rrp is not satisfied anywhere then exit this loop
-        IF (maxRadIDX == 0) THEN
-          WRITE(tmpStr1, '(f20.3)') rrp
-            tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
-          WRITE(scratchMessage, '(a)') 'No nodal points found inside the radius of the last closed isobar ' // &
-                                       TRIM(ADJUSTL(tmpStr1)) // ' for storm: ' // &
-                                       TRIM(ADJUSTL(holStru(stCnt)%thisStorm))
-          CALL LogMessage(INFO, scratchMessage)
-
-          EXIT
-        END IF
-
-        speed  = holStru(stCnt)%speed(jl1) + &
-                 wtRatio * (holStru(stCnt)%speed(jl2) - holStru(stCnt)%speed(jl1))
-
-        cPress = holStru(stCnt)%cPress(jl1) + &
-                 wtRatio * (holStru(stCnt)%cPress(jl2) - holStru(stCnt)%cPress(jl1))
-
-        trVX   = holStru(stCnt)%trVx(jl1) + &
-                wtRatio * (holStru(stCnt)%trVx(jl2) - holStru(stCnt)%trVx(jl1))
-        trVY   = holStru(stCnt)%trVy(jl1) + &
-                wtRatio * (holStru(stCnt)%trVy(jl2) - holStru(stCnt)%trVy(jl1))
-
-        ! If this is a "CALM" period, set winds to zero velocity and pressure equal to the
-        ! background pressure and return. PV: check if this is actually needed
-        IF (cPress < 0.0_SZ) THEN
-          wVelX  = 0.0_SZ
-          wVelY  = wVelX
-          wPress = backgroundAtmPress * MB2PA
-
-          WRITE(scratchMessage, '(a)') 'Calm period found, generating zero atmospheric fields for this time'
-          CALL LogMessage(INFO, scratchMessage)
-
-          EXIT
-        END IF
-
-        ! Calculate and limit central pressure deficit; some track files (e.g., Charley 2004)
-        ! may have a central pressure greater than the ambient pressure that this subroutine assumes
-        cPressDef = backgroundAtmPress * MB2PA - cPress
-        IF (cPressDef < 100.0_SZ) cPressDef = 100.0_SZ
-
-        ! Subtract the translational speed of the storm from the observed max wind speed to avoid
-        ! distortion in the Holland curve fit. The translational speed will be added back later.
-        trSPD = SQRT(trVX * trVX + trVY * trVY)
-        speed = speed - trSPD
-
-        ! Convert wind speed from 10 meter altitude (which is what the
-        ! NHC forecast contains) to wind speed at the top of the atmospheric
-        ! boundary layer (which is what the Holland curve fit requires).
-        speed = speed / blAdjustFac
-
-        ! Calculate Holland parameters and limit the result to its appropriate range.
-        hlB = rhoAir * BASEE * (speed**2) / cPressDef
-        IF (hlB < 1.0_SZ) hlB = 1.0_SZ
-        IF (hlB > 2.5_SZ) hlB = 2.5_SZ
-
-        ! If we are running storm 2 in the Lake Pontchartrain !PV Do we need this?
-        ! Forecast System ensemble, the final wind speeds should be multiplied by 1.2.
-        windMultiplier = 1.0_SZ
-        IF (stormNumber == 2) windMultiplier = 1.2_SZ
-
-        DO npCnt = 1, maxRadIDX
-          i = radIDX(npCnt)
-
-          dx    = SphericalDistance(lat, lon, lat, slam(i))
-          dy    = SphericalDistance(lat, lon, sfea(i), lon)
-          theta = ATAN2(dy, dx)
-
-          ! Compute coriolis
-          coriolis = 2.0_SZ * OMEGA * SIN(sfea(i) * DEG2RAD)
-
-          ! Compute the pressure (Pa) at a distance rad(i); all distances are in meters
-          sfPress = cPress + cPressDef * EXP(-(rmw / rad(i))**hlB)
-
-          ! Compute wind speed (speed - trSPD) at gradient level (m/s) and at a distance rad(i);
-          ! all distances are in meters. Using absolute value for coriolis for Southern Hempisphere
-          grVel = SQRT(speed**2 * (rmw / rad(i))**hlB * EXP(1.0_SZ - (rmw / rad(i))**hlB) +   &
-                       (rad(i) * ABS(coriolis) / 2.0_SZ)**2) -                                &
-                  rad(i) * ABS(coriolis) / 2.0_SZ
-
-          ! Determine translation speed that should be added to final !PV CHECK ON THIS
-          ! storm wind speed. This is tapered to zero as the storm wind tapers
-          ! to zero toward the eye of the storm and at long distances from the storm.
-          trSpdX = (ABS(grVel) / speed ) * trVX
-          trSpdY = (ABS(grVel) / speed ) * trVY
-
-          ! Apply mutliplier for Storm #2 in LPFS ensemble.
-          grVel = grVel * windMultiplier
-
-          ! Find the wind velocity components.
-          sfVelX = -grVel * SIN(theta)
-          sfVelY =  grVel * COS(theta)
-          !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
-
-          ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
-          ! which, is what the Holland curve fit produces, to 10-m wind velocity.
-          sfVelX = sfVelX * blAdjustFac
-          sfVelY = sfVelY * blAdjustFac
-          !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
-
-          ! Convert from 1-minute averaged winds to 10-minute averaged winds.
-          sfVelX = sfVelX * ONE2TEN
-          sfVelY = sfVelY * ONE2TEN
-
-          ! Add back the storm translation speed.
-          sfVelX = sfVelX + trSpdX
-          sfVelY = sfVelY + trSpdY
-          !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
-
-          !PV Need to interpolate between storms if this nodal point
-          !   is affected by more than on storm
-          wPress(i) = sfPress
-          wVelX(i)  = sfVelX
-          wVelY(i)  = sfVelY
-          !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
-          !print *, '--------------------------------------'
-        END DO ! npCnt = 1, maxRadIDX
-      END DO ! stCnt = 1, nBTrFiles
-!    END DO ! iCnt = 1, nOutDT
-!    WRITE(scratchMessage, '(a)') 'End of the main time loop'
-!    CALL AllMessage(INFO, scratchMessage)
-
-    !---------- Deallocate the arrays
     IF (ALLOCATED(rad)) DEALLOCATE(rad)
     IF (ALLOCATED(radIDX)) DEALLOCATE(radIDX)
-    DO iCnt = 1, nBTrFiles
-      CALL DeAllocHollStruct(holStru(iCnt))
-    END DO
-    DEALLOCATE(holStru)
+    !DO iCnt = 1, nBTrFiles
+    !  CALL DeAllocHollStruct(holStru(iCnt))
+    !END DO
+    !DEALLOCATE(holStru)
     !----------
 
     CALL UnsetMessageSource()
