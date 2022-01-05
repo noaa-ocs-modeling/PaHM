@@ -115,12 +115,9 @@ MODULE PaHM_NetCDFIO
   !>   Initializes a new NetCDF data file and puts it in define mode.
   !>   Sets up netCDF dimensions and variables.
   !>
-  !> @param
+  !> @param[in,out]
   !>   adcircOutFile   The name of the file to be initialized. The file is first
   !>                   created by calling NewAdcircNetCDFOutFile.
-  !>
-  !> @return
-  !>   adcircOutFile:  The renamed input file.
   !>
   !----------------------------------------------------------------
   SUBROUTINE InitAdcircNetCDFOutFile(adcircOutFile)
@@ -600,14 +597,10 @@ MODULE PaHM_NetCDFIO
   !>   The file extension is replaced by .nc or .nc4. If a file with the
   !>   same name exists, it is renamed to: adcircOutFile.ext-YYYYMMDDhhmmss
   !>
-  !> @param
+  !> @param[out]
   !>   ncID            The NetCDF ID of the file to be created (output)
-  !> @param
+  !> @param[in,out]
   !>   adcircOutFile   The name of the file to be created (input/output)
-  !>
-  !> @return
-  !>   adcircOutFile:  The renamed input file
-  !>   ncID:           The id of the newly created file
   !>
   !----------------------------------------------------------------
   SUBROUTINE NewAdcircNetCDFOutFile(ncID, adcircOutFile)
@@ -700,16 +693,12 @@ MODULE PaHM_NetCDFIO
   !>   it writes the error message to the screen and to the log file and then
   !>   terminates the program.
   !>
-  !> @param
+  !> @param[in]
   !>   ierr           The error status from a NetCDF library call
-  !> @param
+  !> @param[in]
   !>   file           The name of the file the error occured
-  !> @param
+  !> @param[in]
   !>   line           The line number of the file the error occured
-  !>
-  !> @return
-  !>   adcircOutFile: The renamed input file
-  !>   ncID:          The id of the newly created file
   !>
   !----------------------------------------------------------------
   SUBROUTINE BASE_NetCDFCheckErr(ierr, file, line)
@@ -777,9 +766,9 @@ MODULE PaHM_NetCDFIO
   !> @details
   !>   This subroutine is called repeatedly to write the 2D field records in the NetCDF file.
   !>
-  !> @param
+  !> @param[in]
   !>   adcircOutFile   The name of the NetCDF file
-  !> @param
+  !> @param[in]
   !>   timeLoc         The time record to write
   !>
   !----------------------------------------------------------------
@@ -790,8 +779,8 @@ MODULE PaHM_NetCDFIO
     IMPLICIT NONE
 
     CHARACTER(LEN=*), INTENT(IN) :: adcircOutFile
+    INTEGER, INTENT(IN)          :: timeLoc
 
-    INTEGER  :: timeLoc
     INTEGER  :: ncID, ierr, nodes
     INTEGER  :: start(2), kount(2)
     REAL(SZ) :: currTime
@@ -850,16 +839,12 @@ MODULE PaHM_NetCDFIO
   !>   Data that occur after the inserted data will remain, due to the inability
   !>   of netcdf to delete data from files.
   !>
-  !> @param
+  !> @param[in]
   !>   ncID   The ID of the NetCDF file
-  !> @param
+  !> @param[in,out]
   !>   f      The file structure
-  !> @param
+  !> @param[in,out]
   !>   t      The time structure
-  !>
-  !> @return
-  !>   f:     The updated file structure
-  !>   t:     The updated time structure
   !>
   !----------------------------------------------------------------
   SUBROUTINE SetRecordCounterAndStoreTime(ncID, f, t)

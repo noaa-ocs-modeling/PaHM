@@ -237,11 +237,11 @@ MODULE PaHM_Global
   !> @see https://en.wikipedia.org/wiki/Density_of_air
   ! >@see http://www.emd.dk/files/windpro/WindPRO_AirDensity.pdf
   !>
-  !> @param
+  !> @param[in]
   !>   atmT        Air temperature (@f$ ^0 C @f$)
-  !> @param
+  !> @param[in]
   !>   atmP        Atmospheric pressure (@f$ mbar @f$)
-  !> @param
+  !> @param[in]
   !>   relHum      Relative humidity (@f$ 0 - 100 @f$)
   !>
   !> @return

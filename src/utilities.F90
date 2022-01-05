@@ -57,11 +57,11 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   lun        The logical unit number (LUN) to use
-  !> @param
+  !> @param[in]
   !>   fileName   The full pathname of the input file
-  !> @param
+  !> @param[out]
   !>   errorIO    The error status, no error: status = 0 (output)
   !>
   !----------------------------------------------------------------
@@ -146,7 +146,7 @@ MODULE Utilities
   !>   settings (user configured) required to run the program. Most of the settings
   !>   have default values, in case the user hasn't supplied a value.
   !>
-  !> @param
+  !> @param[in]
   !>   inpFile   The full pathname of the input file
   !>
   !----------------------------------------------------------------
@@ -756,14 +756,14 @@ MODULE Utilities
   !>   from a file for further processing.
   !>   Commented lines are those with a first character either "#" or "!".
   !>
-  !> @param
+  !> @param[in]
   !>   inpLine    The input text line
-  !> @param
+  !> @param[in]
   !>   lastCommFlag    Optional flag to check/remove commented portion at the right of the text line \n
   !>                   lastCommFlag <= 0 do nothing \n
   !>                   lastCommFlag  > 0 check for "#!" symbols at the right of the
   !>                   text line and remove that portion of the line
-  !> @param
+  !> @param[out]
   !>   outLine    The output line (the left adjusted input line)
   !>
   !> @return
@@ -847,17 +847,17 @@ MODULE Utilities
   !>   the settings for the program's variables. It is called repeatedly from
   !>   ReadControlFile that sets all required program variables.
   !>
-  !> @param
+  !> @param[in]
   !>   inpLine    The input text line
-  !> @param
+  !> @param[out]
   !>   outLine    The output line, left adjusted input line (output)
-  !> @param
+  !> @param[in,out]
   !>   keyWord    The keyword to extract settings for (input/output)
-  !> @param
+  !> @param[in,out]
   !>   nVal       The number of values provided for the keyword (input/output)
-  !> @param
+  !> @param[in,out]
   !>   cVal       String array (cVal(nVal)) that holds the string values provided for the keyword (input/output)
-  !> @param
+  !> @param[in,out]
   !>   rVal       Real array (rVal(nVal)) that holds the values provided for the keyword (input/output)
   !>
   !> @return
@@ -1460,13 +1460,13 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   nInp       Number of input values
-  !> @param
+  !> @param[in]
   !>   vInp       Array of input values
-  !> @param
+  !> @param[in]
   !>   nOut       Number of output values
-  !> @param
+  !> @param[out]
   !>   vOut       Array of output values (integer, output)
   !>
   !> @return
@@ -1526,13 +1526,13 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   nInp       Number of input values
-  !> @param
+  !> @param[in]
   !>   vInp       Array of input values
-  !> @param
+  !> @param[in]
   !>   nOut       Number of output values
-  !> @param
+  !> @param[out]
   !>   vOut       Array of output values (logical, output)
   !>
   !> @return
@@ -1604,13 +1604,13 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   nInp       Number of input values
-  !> @param
+  !> @param[in]
   !>   vInp       Array of input values
-  !> @param
+  !> @param[in]
   !>   nOut       Number of output values
-  !> @param
+  !> @param[out]
   !>   vOut       Array of output values (real, output)
   !>
   !> @return
@@ -1670,7 +1670,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   inpString   The input string
   !>
   !> @return
@@ -1710,7 +1710,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   inpString   The input string
   !>
   !> @return
@@ -1750,7 +1750,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   inpLon   The longitude value to be converted
   !>
   !> @return
@@ -1761,7 +1761,7 @@ MODULE Utilities
 
     IMPLICIT NONE
 
-    REAL(SZ) :: inpLon
+    REAL(SZ), INTENT(IN) :: inpLon
 
     myValOut = MOD(inpLon + 180.0_SZ, 360.0_SZ) - 180.0_SZ
 
@@ -1783,17 +1783,17 @@ MODULE Utilities
   !>   equidirectional projection,  geographic projection, plate carree or
   !>   carte parallelogrammatique projection.
   !>
-  !> @param
+  !> @param[in]
   !>   lat     Latitude  (degrees north) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon     Longitude (degrees east ) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
-  !> @param
+  !> @param[out]
   !>   x       Calculated X coordinate: x (m) - real, scalar (output)
-  !> @param
+  !> @param[out]
   !>   y       Calculated Y coordinate: y (m) - real, scalar (output)
   !>
   !----------------------------------------------------------------
@@ -1830,17 +1830,17 @@ MODULE Utilities
   !>   equidirectional projection,  geographic projection, plate carree or
   !>   carte parallelogrammatique projection.
   !>
-  !> @param
+  !> @param[in]
   !>   lat     Latitude  (degrees north) - real, 1D array
-  !> @param
+  !> @param[in]
   !>   lon     Longitude (degrees east ) - real, 1D array
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
-  !> @param
+  !> @param[out]
   !>   x       Calculated X coordinate: x (m) - real, 1D array (output)
-  !> @param
+  !> @param[out]
   !>   y       Calculated Y coordinate: y (m) - real, 1D array (output)
   !>
   !----------------------------------------------------------------
@@ -1876,17 +1876,17 @@ MODULE Utilities
   !>   equidirectional projection,  geographic projection, plate carree or
   !>   carte parallelogrammatique projection.
   !>
-  !> @param
+  !> @param[in]
   !>   x       X coordinate: x (m) - real, scalar
-  !> @param
+  !> @param[in]
   !>   y       Y coordinate: y (m) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
-  !> @param
+  !> @param[out]
   !>   lat     Latitude  (degrees north) - real, scalar (output)
-  !> @param
+  !> @param[out]
   !>   lon     Longitude (degrees east ) - real, scalar (output)
   !>
   !----------------------------------------------------------------
@@ -1923,17 +1923,17 @@ MODULE Utilities
   !>   equidirectional projection,  geographic projection, plate carree or
   !>   carte parallelogrammatique projection.
   !>
-  !> @param
+  !> @param[in]
   !>   x       X coordinate: x (m) - real, 1D array
-  !> @param
+  !> @param[in]
   !>   y       Y coordinate: y (m) - real, 1D array
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude  of projection origin (degrees north) - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of projection origin (degrees east ) - real, scalar
-  !> @param
+  !> @param[out]
   !>   lat     Latitude  (degrees north) - real, 1D array (output)
-  !> @param
+  !> @param[out]
   !>   lon     Longitude (degrees east ) - real, 1D array (output)
   !>
   !----------------------------------------------------------------
@@ -1978,13 +1978,13 @@ MODULE Utilities
   !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
   !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
   !>
-  !> @param
+  !> @param[in]
   !>   lat1    Latitude of first point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon1    Longitude of first point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lat2    Latitude of second point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon2    Longitude of second point - real, scalar
   !>
   !> @return   myValOut: The great-circle distance in meters
@@ -2046,13 +2046,13 @@ MODULE Utilities
   !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
   !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
   !>
-  !> @param
+  !> @param[in]
   !>   lats    Latitude of first points - real, 1D array
-  !> @param
+  !> @param[in]
   !>   lons    Longitude of first points - real, 1D array
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude of second point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of second point - real, scalar
   !>
   !> @return   myValOut: The great-circle distance in meters, 1D array
@@ -2145,13 +2145,13 @@ MODULE Utilities
   !> @see Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal points \n
   !>      (Technical report). DMAAC Geodetic Survey Squadron. doi:10.5281/zenodo.32999.
   !>
-  !> @param
+  !> @param[in]
   !>   lats    Latitude of first points - real, 2D array
-  !> @param
+  !> @param[in]
   !>   lons    Longitude of first points - real, 2D array
-  !> @param
+  !> @param[in]
   !>   lat0    Latitude of second point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon0    Longitude of second point - real, scalar
   !>
   !> @return   myValOut: The great-circle distance in meters, 2D array
@@ -2246,13 +2246,13 @@ MODULE Utilities
   !> @see van Brummelen, Glen Robert (2013). Heavenly Mathematics: The Forgotten Art \n
   !>      of Spherical Trigonometry. Princeton University Press. ISBN 9780691148922.0691148929.
   !>
-  !> @param
+  !> @param[in]
   !>   lat1    Latitude of first point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon1    Longitude of first point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lat2    Latitude of second point - real, scalar
-  !> @param
+  !> @param[in]
   !>   lon2    Longitude of second point - real, scalar
   !>
   !> @return   myValOut: The great-circle distance in meters
@@ -2292,38 +2292,6 @@ MODULE Utilities
 
 !================================================================================
 
-!DEL ! ----------------------------------------------------------------
-!DEL !  F U N C T I O N   S P H E R I C A L   D I S T A N C E  A D C I R C
-!DEL ! ----------------------------------------------------------------
-!DEL !  jgf49.1001 PV to be deleted
-!DEL !> Function to get the distance along the surface of
-!DEL !> a sphere (the earth's surface in this case).
-!DEL ! ----------------------------------------------------------------
-!DEL REAL(SZ) FUNCTION SphericalDistanceADCIRC(dx, dy, y1, y2) RESULT(myValOut)
-
-!DEL   USE PaHM_Global, ONLY : REARTH, DEG2RAD
-
-!DEL   IMPLICIT NONE
-
-!DEL   REAL(SZ), INTENT(IN) :: dx    ! longitude distance in radians
-!DEL   REAL(SZ), INTENT(IN) :: dy    ! latitude distance in radians
-!DEL   REAL(SZ), INTENT(IN) :: y1    ! degrees latitude of starting point
-!DEL   REAL(SZ), INTENT(IN) :: y2    ! degrees latitude of ending point
-
-!DEL   ! compute the distances based on haversine formula for
-!DEL   ! distance along a sphere
-!DEL   myValOut = SQRT(SIN(dy / 2.0_SZ)**2 +                                         &
-!DEL                   COS(y1 * DEG2RAD) * COS(y2 * DEG2RAD) * SIN(dx / 2.0_SZ)**2)
-
-!DEL   ! This is the great-circle distance; REARTH in meters
-!DEL   myValOut = REARTH * (2.0_SZ * ASIN(myValOut))
-
-!DEL   RETURN
-
-!DEL END FUNCTION SphericalDistanceADCIRC
-
-!DEL================================================================================
-
   ! ----------------------------------------------------------------
   !  S U B R O U T I N E   S P H E R I C A L  F R A C  P O I N T
   ! ----------------------------------------------------------------
@@ -2340,24 +2308,24 @@ MODULE Utilities
   !> @see https://en.wikipedia.org/wiki/Great-circle_distance#Computational_formulas
   !> @see http://www.movable-type.co.uk/scripts/latlong.html
   !>
-  !> @param
+  !> @param[in]
   !>   lat1       Latitude of the first point (degrees north)
-  !> @param
+  !> @param[in]
   !>   lon1       Longitude of the first point (degrees east)
-  !> @param
+  !> @param[in]
   !>   lat2       Latitude of the second point (degrees north)
-  !> @param
+  !> @param[in]
   !>   lon2       Longitude of the second point (degrees east)
-  !> @param
+  !> @param[in]
   !>   fraction   The fraction of the distance between points 1 and 2 \n
   !>              where the intemediate point is located (0 <= fraction <= 1)
-  !> @param
+  !> @param[out]
   !>   latf       The caclulated latitude of the intermidiate point (degrees north, output)
-  !> @param
+  !> @param[out]
   !>   lonf       The caclulated longitude of the intermidiate point (degrees east, output)
-  !> @param
+  !> @param[out]
   !>   distf      The great circle distance between the first and the intermediate point (m, output)
-  !> @param
+  !> @param[out]
   !>   dist12     The great circle distance between the first and the second point (m, output)
   !>
   !----------------------------------------------------------------
@@ -2445,15 +2413,15 @@ MODULE Utilities
   !>   array arrVal and the search value val. The linear interpolation is performed
   !>   using the equation: VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1)).
   !>
-  !> @param
+  !> @param[in]
   !>   val      The value to search for, such that arrVal(idx1) <= val <= arrVal(idx2)
-  !> @param
+  !> @param[in]
   !>  arrVal    The one-dimensional array to search (PV ordered in ascending order?)
-  !> @param
+  !> @param[out]
   !>   idx1     The index of the lowest array bound such that: arrVal(idx1) <= val (output)
-  !> @param
+  !> @param[out]
   !>   idx2     The index of the highest array bound such that: arrVal(idx2) >= val (output)
-  !> @param
+  !> @param[out]
   !>   wtRatio: The ratio factor used in the linear interpolation calculation: \n
   !>            VAR(estimated) = VAR(idx1) + wtRatio * (VAR(idx2) - VAR(idx1)) \n
   !>            where VAR is the variable to be interpolated
@@ -2562,11 +2530,11 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   inpVec   The input 1D string array
-  !> @param
+  !> @param[out]
   !>  outVec    The output 1D string array of the unique elements (output)
-  !> @param
+  !> @param[out]
   !>   idxVec   The 1D array of indexes of the unique elements in the inpVec array (output)
   !>
   !> @return
@@ -2627,7 +2595,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
   !>
   !> @return
@@ -2669,7 +2637,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
   !>
   !> @return
@@ -2711,7 +2679,7 @@ MODULE Utilities
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
   !>
   !> @return
@@ -2768,11 +2736,11 @@ MODULE Utilities
   !>   the numeric string ends plus one (i.e., the break character).
   !> @endverbatim
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
-  !> @param
+  !> @param[in]
   !>   Pos       The position in the input string where the scanning begins
-  !> @param
+  !> @param[out]
   !>   Value     The numeric value of the string
   !>
   !> @return
@@ -2922,11 +2890,11 @@ MODULE Utilities
   !>   the numeric string ends plus one (i.e., the break character).
   !> @endverbatim
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
-  !> @param
+  !> @param[in]
   !>   Pos       The position in the input string where the scanning begins
-  !> @param
+  !> @param[out]
   !>   Value     The numeric value of the string
   !>
   !> @return
@@ -3073,13 +3041,13 @@ MODULE Utilities
   !>   the numeric string ends plus one (i.e., the break character).
   !> @endverbatim
   !>
-  !> @param
+  !> @param[in]
   !>   String    The input string
-  !> @param
+  !> @param[in]
   !>   Pos       The position in the input string where the scanning begins
-  !> @param
+  !> @param[in]
   !>   Signed    The sign (+, -) of the numeric string, if present
-  !> @param
+  !> @param[out]
   !>   Value     The numeric value of the string
   !>
   !> @return

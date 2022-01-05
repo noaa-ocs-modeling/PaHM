@@ -132,6 +132,9 @@ CONTAINS
   !> @details
   !>   
   !>
+  !> @param[in]
+  !>   nTimeSTP    The timestep index (optional)
+  !>
   !----------------------------------------------------------------
   SUBROUTINE PaHM_Run(nTimeSTP)
 

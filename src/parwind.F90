@@ -711,11 +711,11 @@ MODULE ParWind
   !>     forecast, since forecasts do not have that data in them.
   !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
   !>
-  !> @param
+  !> @param[in]
   !>   idTrFile   The ID of the input track file (1, 2, ...)
-  !> @param
+  !> @param[out]
   !>   strOut     The HollandData_T structure that stores all Holland model generated data (output)
-  !> @param
+  !> @param[out]
   !>   status     Error status, 0 = no error (output)
   !>
   !----------------------------------------------------------------
@@ -941,7 +941,7 @@ MODULE ParWind
   !>
   !>   Assumes geographical coordinates.
   !>
-  !> @param
+  !> @param[in]
   !>   timeIDX   The time location to generate the fields for
   !>
   !----------------------------------------------------------------
@@ -1335,11 +1335,11 @@ MODULE ParWind
   !>   Writes the adjusted (or not) best track data to the "adjusted"
   !>   best track output file.
   !>
-  !> @param
+  !> @param[in]
   !>   inpFile    The name of the input best track file
-  !> @param
+  !> @param[in]
   !>   btrStruc   The "adjusted"  best track data structure that corresponds to the inpFile
-  !> @param
+  !> @param[in]
   !>   suffix     The suffix (optional) to be appended to the inpFile (default '_adj')
   !>
   !----------------------------------------------------------------
@@ -1350,7 +1350,7 @@ MODULE ParWind
     IMPLICIT NONE
 
     ! Global variables
-    CHARACTER(LEN=*)                       :: inpFile
+    CHARACTER(LEN=*), INTENT(IN)           :: inpFile
     TYPE(BestTrackData_T), INTENT(IN)      :: btrStruc
     CHARACTER(LEN=*), OPTIONAL, INTENT(IN) :: suffix
 
@@ -1437,9 +1437,9 @@ MODULE ParWind
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in,out]
   !>   str    The best track structure of type BestTrackData_T
-  !> @param
+  !> @param[in]
   !>   nRec   The number of records in the structure
   !>
   !----------------------------------------------------------------
@@ -1447,8 +1447,8 @@ MODULE ParWind
 
     IMPLICIT NONE
 
-    TYPE(BestTrackData_T) :: str
-    INTEGER, INTENT(IN)   :: nRec
+    TYPE(BestTrackData_T), INTENT(INOUT) :: str
+    INTEGER, INTENT(IN)                  :: nRec
 
     str%numRec = nRec
     str%loaded = .FALSE.
@@ -1508,7 +1508,7 @@ MODULE ParWind
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in,out]
   !>   str    The best track structure of type BestTrackData_T
   !>
   !----------------------------------------------------------------
@@ -1516,7 +1516,7 @@ MODULE ParWind
 
     IMPLICIT NONE
 
-    TYPE(BestTrackData_T) :: str
+    TYPE(BestTrackData_T), INTENT(INOUT) :: str
 
     str%numRec = -1
     str%loaded = .FALSE.
@@ -1576,9 +1576,9 @@ MODULE ParWind
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in,out]
   !>   str    The holland structure of type HollandData_T
-  !> @param
+  !> @param[in]
   !>   nRec   The number of records in the structure
   !>
   !----------------------------------------------------------------
@@ -1586,8 +1586,8 @@ MODULE ParWind
 
     IMPLICIT NONE
 
-    TYPE(HollandData_T) :: str
-    INTEGER, INTENT(IN) :: nRec
+    TYPE(HollandData_T), INTENT(INOUT) :: str
+    INTEGER, INTENT(IN)                :: nRec
 
     str%numRec = nRec
     str%loaded = .FALSE.
@@ -1642,7 +1642,7 @@ MODULE ParWind
   !> @details
   !>   
   !>
-  !> @param
+  !> @param[in,out]
   !>   str    The holland structure of type HollandData_T
   !>
   !----------------------------------------------------------------
@@ -1650,7 +1650,7 @@ MODULE ParWind
 
     IMPLICIT NONE
 
-    TYPE(HollandData_T), INTENT(OUT) :: str
+    TYPE(HollandData_T), INTENT(INOUT) :: str
 
     str%numRec = -1
     str%loaded = .FALSE.
