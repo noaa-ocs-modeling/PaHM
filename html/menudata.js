@@ -24,7 +24,7 @@
 */
 var menudata={children:[
 {text:"PaHM",url:"index.html"},
-{text:"PaHM code",url:"pahm_dev_doc.html",children:[
+{text:"PaHM code",url:"df/dbe/pahm_dev_doc.html",children:[
 {text:"Modules List",url:"namespaces.html",children:[
 {text:"Modules List",url:"namespaces.html"},
 {text:"Module Members",url:"namespacemembers.html",children:[
