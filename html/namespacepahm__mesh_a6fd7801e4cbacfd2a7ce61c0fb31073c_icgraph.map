@@ -1,5 +1,0 @@
-<map id="pahm_mesh::readmesh" name="pahm_mesh::readmesh">
-<area shape="rect" id="node1" title="Reads an input mesh file for the specified supported model type." alt="" coords="384,5,573,35"/>
-<area shape="rect" id="node2" href="$namespacepahm__drivermod.html#ae0d4b223a96ba116b38152caf6b0768c" title="Subroutine to initialize a PaHM run." alt="" coords="116,5,336,35"/>
-<area shape="rect" id="node3" href="$pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,5,68,35"/>
-</map>

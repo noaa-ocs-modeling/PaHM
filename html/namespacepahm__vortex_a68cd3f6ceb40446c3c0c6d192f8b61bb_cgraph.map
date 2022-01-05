@@ -1,5 +1,0 @@
-<map id="pahm_vortex::uvtrans" name="pahm_vortex::uvtrans">
-<area shape="rect" id="node1" title="This subroutine calculates the translational velocity of a moving hurricane using second order mumeri..." alt="" coords="5,32,180,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="237,5,523,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="228,59,532,88"/>
-</map>

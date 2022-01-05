@@ -1,5 +1,0 @@
-<map id="pahm_vortex::rotate" name="pahm_vortex::rotate">
-<area shape="rect" id="node1" title="Rotate a 2D vector (x, y) by an angle." alt="" coords="207,32,369,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__vortex.html#a90ff68ab89a00a014a2429d42758a3f5" title="Calculate (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="8,5,156,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__vortex.html#add2e19299be51bde3c016c4702653eb0" title="Calculate (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="5,59,159,88"/>
-</map>

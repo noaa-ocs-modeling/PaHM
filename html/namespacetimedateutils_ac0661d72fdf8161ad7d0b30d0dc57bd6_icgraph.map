@@ -1,9 +1,0 @@
-<map id="timedateutils::leapyear" name="timedateutils::leapyear">
-<area shape="rect" id="node1" title="Checks for a leap year." alt="" coords="557,155,740,185"/>
-<area shape="rect" id="node2" href="$interfacetimedateutils_1_1gregtojulday.html#a6a65e9e2d0f95a66554e1290a9f13a6f" title="Determines the Julian date from a Gregorian date." alt="" coords="303,5,509,52"/>
-<area shape="rect" id="node3" href="$interfacetimedateutils_1_1gregtojulday.html#afc8af3bdb0b4ce15757d5d57c4dccd35" title="Determines the Julian date from a Gregorian date." alt="" coords="303,76,509,123"/>
-<area shape="rect" id="node4" href="$interfacetimedateutils_1_1gregtojulday.html#a69d60502d5a566a83c486c68ef728178" title="Determines the Julian date from a Gregorian date." alt="" coords="303,147,509,193"/>
-<area shape="rect" id="node5" href="$namespacetimedateutils.html#a101cf9ce5907971b096d77575d8d249d" title="Determines the days in the month of the year." alt="" coords="307,218,505,247"/>
-<area shape="rect" id="node7" href="$namespacetimedateutils.html#aca37b13adf7e4d6eba9469a5f47b0df5" title="Determines the days of the year." alt="" coords="314,271,498,301"/>
-<area shape="rect" id="node6" href="$interfacetimedateutils_1_1splitdatetimestring.html#ab470f2a5a3e605e3a3d8f359154b3c29" title="Splits a date string into components." alt="" coords="5,209,255,256"/>
-</map>

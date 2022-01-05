@@ -1,4 +1,0 @@
-<map id="utilities::realscan" name="utilities::realscan">
-<area shape="rect" id="node1" title="Scans string looking for the leading single precision real numeric string." alt="" coords="172,5,313,35"/>
-<area shape="rect" id="node2" href="$namespaceutilities.html#af02043c76be30cc5e092ffaf0e28fb6d" title="Returns the value of the leading double precision real numeric string." alt="" coords="5,5,124,35"/>
-</map>
