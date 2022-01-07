@@ -36,30 +36,45 @@ var NAVTREE =
       ] ]
     ] ],
     [ "PaHM code", "df/dbe/pahm_dev_doc.html", [
-      [ "Modules List", "namespaces.html", [
-        [ "Modules List", "namespaces.html", "namespaces_dup" ],
-        [ "Module Members", "namespacemembers.html", [
-          [ "All", "namespacemembers.html", "namespacemembers_dup" ],
-          [ "Functions/Subroutines", "namespacemembers_func.html", null ],
-          [ "Variables", "namespacemembers_vars.html", "namespacemembers_vars" ]
-        ] ]
-      ] ],
-      [ "Class List", "annotated.html", [
-        [ "Data Types List", "annotated.html", "annotated_dup" ],
-        [ "Data Types", "classes.html", null ],
-        [ "Data Fields", "functions.html", [
-          [ "All", "functions.html", null ],
-          [ "Functions/Subroutines", "functions_func.html", null ],
-          [ "Variables", "functions_vars.html", null ]
-        ] ]
-      ] ],
-      [ "File List", "files.html", [
-        [ "File List", "files.html", "files_dup" ],
-        [ "File Members", "globals.html", [
-          [ "All", "globals.html", null ],
-          [ "Functions/Subroutines", "globals_func.html", null ],
-          [ "Macros", "globals_defs.html", null ]
-        ] ]
+      [ "Class list", "df/dbe/pahm_dev_doc.html#autotoc_md0", null ],
+      [ "File list", "df/dbe/pahm_dev_doc.html#autotoc_md1", null ],
+      [ "Todo list", "df/dbe/pahm_dev_doc.html#autotoc_md2", null ],
+      [ "Deprecated list", "df/dbe/pahm_dev_doc.html#autotoc_md3", null ]
+    ] ],
+    [ "Modeling System Description", "dd/d8c/model.html", [
+      [ "Introduction", "dd/d8c/model.html#autotoc_md11", null ],
+      [ "Purposes", "dd/d8c/model.html#autotoc_md12", null ],
+      [ "Technical features list", "dd/d8c/model.html#autotoc_md13", [
+        [ "Modeling features", "dd/d8c/model.html#autotoc_md14", null ],
+        [ "Numerical features", "dd/d8c/model.html#autotoc_md15", null ],
+        [ "System and validation features", "dd/d8c/model.html#autotoc_md16", null ],
+        [ "Third-party libraries", "dd/d8c/model.html#autotoc_md17", null ],
+        [ "Compilation tools", "dd/d8c/model.html#autotoc_md18", null ]
+      ] ]
+    ] ],
+    [ "Modules", "namespaces.html", [
+      [ "Modules List", "namespaces.html", "namespaces_dup" ],
+      [ "Module Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
+        [ "Functions/Subroutines", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", "namespacemembers_vars" ]
+      ] ]
+    ] ],
+    [ "Data Types List", "annotated.html", [
+      [ "Data Types List", "annotated.html", "annotated_dup" ],
+      [ "Data Types", "classes.html", null ],
+      [ "Data Fields", "functions.html", [
+        [ "All", "functions.html", null ],
+        [ "Functions/Subroutines", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", null ]
+      ] ]
+    ] ],
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ],
+      [ "File Members", "globals.html", [
+        [ "All", "globals.html", null ],
+        [ "Functions/Subroutines", "globals_func.html", null ],
+        [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
   ] ]

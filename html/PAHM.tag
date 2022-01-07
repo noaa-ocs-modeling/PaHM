@@ -2,17 +2,17 @@
 <tagfile doxygen_version="1.9.3">
   <compound kind="file">
     <name>dev_doc.md</name>
-    <path>/home/takis/CSDL/parwinds/doc/manual/</path>
+    <path>/home/takis/CSDL/parwinds/doc/user-guide/</path>
     <filename>d1/dfe/dev__doc_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>mainpage.md</name>
-    <path>/home/takis/CSDL/parwinds/doc/manual/</path>
+    <path>/home/takis/CSDL/parwinds/doc/user-guide/</path>
     <filename>dc/dc6/mainpage_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>model.md</name>
-    <path>/home/takis/CSDL/parwinds/doc/manual/</path>
+    <path>/home/takis/CSDL/parwinds/doc/user-guide/</path>
     <filename>dd/dc5/model_8md.html</filename>
   </compound>
   <compound kind="file">
@@ -6470,13 +6470,13 @@
     <name>pahm_dev_doc</name>
     <title>PaHM code</title>
     <filename>df/dbe/pahm_dev_doc.html</filename>
-    <docanchor file="df/dbe/pahm_dev_doc.html">md_doc_manual_dev_doc</docanchor>
+    <docanchor file="df/dbe/pahm_dev_doc.html">md_doc_user_guide_dev_doc</docanchor>
   </compound>
   <compound kind="page">
     <name>model</name>
     <title>Modeling System Description</title>
     <filename>dd/d8c/model.html</filename>
-    <docanchor file="dd/d8c/model.html">md_doc_manual_model</docanchor>
+    <docanchor file="dd/d8c/model.html">md_doc_user_guide_model</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>
