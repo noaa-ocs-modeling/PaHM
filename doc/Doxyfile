@@ -1,13 +1,3 @@
-###########################################################################
-### Doxygen file for the Parametric Hurricane Model (PaHM)
-### Doxyfile :: The Doxyfile configuration file for the project documentation
-###             Modified copy of the doxygen/doc/Doxyfile
-###
-### Author: Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
-###
-### Version - 1.0 Mon Nov 18 2021
-###########################################################################
-
 # Doxyfile 1.9.3
 
 # This file describes the settings to be used by the documentation system
@@ -34,6 +24,16 @@
 # https://www.gnu.org/software/libiconv/ for the list of possible encodings.
 # The default value is: UTF-8.
 
+###########################################################################
+### Doxygen file for the Parametric Hurricane Model (PaHM)
+### Doxyfile :: The Doxyfile configuration file for the project documentation
+###             Modified copy of the doxygen/doc/Doxyfile
+###
+### Author: Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
+###
+### Version - 1.0 Mon Nov 18 2021
+###########################################################################
+
 DOXYFILE_ENCODING      = UTF-8
 
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded by
@@ -54,7 +54,7 @@ PROJECT_NUMBER         = $(DOXYGEN_PAHM_VERSION)
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = Parametric Hurricane Modeling System
+PROJECT_BRIEF          = "Parametric Hurricane Modeling System"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -271,9 +271,9 @@ TAB_SIZE               = 4
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                = LaTeX="\f(\LaTeX\f)"
-ALIASES               += TeX="\f(\TeX\f)"
-ALIASES               += forceNewPage="\latexonly \newpage \endlatexonly"
+ALIASES                = LaTeX=\f(\LaTeX\f) \
+                         TeX=\f(\TeX\f) \
+                         "forceNewPage=\latexonly \newpage \endlatexonly"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -869,7 +869,10 @@ WARN_FORMAT            = "$file:$line: $text"
 
 # The WARN_LOGFILE tag can be used to specify a file to which warning and error
 # messages should be written. If left blank the output is written to standard
-# error (stderr).
+# error (stderr). In case the file specified cannot be opened for writing the
+# warning and error messages are written to standard error. When as file - is
+# specified the warning and error messages are written to standard output
+# (stdout).
 
 WARN_LOGFILE           = warnings.log
 
@@ -883,7 +886,8 @@ WARN_LOGFILE           = warnings.log
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = manual $(DOXYGEN_SOURCE_DIRECTORY)
+INPUT                  = user-guide \
+                         $(DOXYGEN_SOURCE_DIRECTORY)
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -912,8 +916,7 @@ INPUT_ENCODING         = UTF-8
 # comment), *.py, *.pyw, *.f90, *.f95, *.f03, *.f08, *.f18, *.f, *.for, *.vhd,
 # *.vhdl, *.ucf, *.qsf and *.ice.
 
-FILE_PATTERNS          = *.doc \
-                         *.c \
+FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
                          *.cpp \
@@ -926,7 +929,7 @@ FILE_PATTERNS          = *.doc \
                          *.markdown \
                          *.md \
                          *.f90 \
-                         *.F90
+                         *.F90 \
                          *.f95 \
                          *.f03 \
                          *.f08 \
@@ -969,7 +972,7 @@ EXCLUDE_PATTERNS       =
 # (namespaces, classes, functions, etc.) that should be excluded from the
 # output. The symbol name can be a fully qualified name, a word, or if the
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
-# AClass::ANamespace, ANamespace::*Test
+# ANamespace::AClass, ANamespace::*Test
 #
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
@@ -1083,7 +1086,6 @@ INLINE_SOURCES         = NO
 # The default value is: YES.
 
 STRIP_CODE_COMMENTS    = YES
-#STRIP_CODE_COMMENTS    = NO
 
 # If the REFERENCED_BY_RELATION tag is set to YES then for each documented
 # entity all documented functions referencing it will be listed.
@@ -1246,8 +1248,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-#HTML_HEADER            = src/doc/html_extras/layout/notus_header.html
-HTML_HEADER            =
+HTML_HEADER            = layout/html/html_header.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1269,9 +1270,7 @@ HTML_FOOTER            =
 # obsolete.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-#HTML_STYLESHEET        = src/doc/html_extras/layout/doxygen_manual.css
-#HTML_STYLESHEET        = pahm_manual.css
-HTML_STYLESHEET        =
+HTML_STYLESHEET        = layout/html/doxygen_manual.css
 
 # The HTML_EXTRA_STYLESHEET tag can be used to specify additional user-defined
 # cascading style sheets that are included after the standard style sheets
@@ -1284,8 +1283,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-#HTML_EXTRA_STYLESHEET  = src/doc/html_extras/layout/extra.css
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = layout/html/extra.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1295,9 +1293,9 @@ HTML_EXTRA_STYLESHEET  =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-#HTML_EXTRA_FILES       = src/doc/html_extras/layout/background.png
 HTML_EXTRA_FILES       = images/pahm_logo.png \
-                         images/pahm_logo-text.png
+                         images/pahm_logo-text.png \
+                         images/background.jpg
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
@@ -1355,7 +1353,6 @@ HTML_DYNAMIC_MENUS     = YES
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-#HTML_DYNAMIC_SECTIONS  = YES
 HTML_DYNAMIC_SECTIONS  = NO
 
 # With HTML_INDEX_NUM_ENTRIES one can control the preferred number of entries
@@ -1393,6 +1390,13 @@ GENERATE_DOCSET        = NO
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
 DOCSET_FEEDNAME        = "Doxygen generated docs"
+
+# This tag determines the URL of the docset feed. A documentation feed provides
+# an umbrella under which multiple documentation sets from a single provider
+# (such as a company or product suite) can be grouped.
+# This tag requires that the tag GENERATE_DOCSET is set to YES.
+
+DOCSET_FEEDURL         =
 
 # This tag specifies a string that should uniquely identify the documentation
 # set bundle. This should be a reverse domain-name style string, e.g.
@@ -1598,7 +1602,7 @@ GENERATE_TREEVIEW      = YES
 # area (value NO) or if it should extend to the full height of the window (value
 # YES). Setting this to YES gives a layout similar to
 # https://docs.readthedocs.io with more room for contents, but less room for the
-# project logo, title, and description. If either GENERATOR_TREEVIEW or
+# project logo, title, and description. If either GENERATE_TREEVIEW or
 # DISABLE_INDEX is set to NO, this option has no effect.
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
@@ -1628,6 +1632,13 @@ TREEVIEW_WIDTH         = 250
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 EXT_LINKS_IN_WINDOW    = NO
+
+# If the OBFUSCATE_EMAILS tag is set to YES, doxygen will obfuscate email
+# addresses.
+# The default value is: YES.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+OBFUSCATE_EMAILS       = YES
 
 # If the HTML_FORMULA_FORMAT option is set to svg, doxygen will use the pdf2svg
 # tool (see https://github.com/dawbarton/pdf2svg) or inkscape (see
@@ -1946,7 +1957,6 @@ LATEX_FOOTER           =
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
 LATEX_EXTRA_STYLESHEET =
-#LATEX_EXTRA_STYLESHEET = manual.sty
 
 # The LATEX_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the LATEX_OUTPUT output
@@ -2179,10 +2189,6 @@ DOCBOOK_OUTPUT         = docbook
 GENERATE_AUTOGEN_DEF   = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to Sqlite3 output
-#---------------------------------------------------------------------------
-
-#---------------------------------------------------------------------------
 # Configuration options related to the Perl module output
 #---------------------------------------------------------------------------
 
@@ -2267,7 +2273,8 @@ INCLUDE_PATH           =
 # used.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-INCLUDE_FILE_PATTERNS  = *.f90 *.F90
+INCLUDE_FILE_PATTERNS  = *.f90 \
+                         *.F90
 
 # The PREDEFINED tag can be used to specify one or more macro names that are
 # defined before the preprocessor is started (similar to the -D option of e.g.
@@ -2348,15 +2355,6 @@ EXTERNAL_PAGES         = YES
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
 
-# If the CLASS_DIAGRAMS tag is set to YES, doxygen will generate a class diagram
-# (in HTML and LaTeX) for classes with base or super classes. Setting the tag to
-# NO turns the diagrams off. Note that this option also works with HAVE_DOT
-# disabled, but it is recommended to install and use dot, since it yields more
-# powerful graphs.
-# The default value is: YES.
-
-CLASS_DIAGRAMS         = YES
-
 # You can include diagrams made with dia in doxygen documentation. Doxygen will
 # then run dia to produce the diagram and insert it in the documentation. The
 # DIA_PATH tag allows you to specify the directory where the dia binary resides.
@@ -2413,11 +2411,14 @@ DOT_FONTSIZE           = 12
 
 DOT_FONTPATH           =
 
-# If the CLASS_GRAPH tag is set to YES then doxygen will generate a graph for
-# each documented class showing the direct and indirect inheritance relations.
-# Setting this tag to YES will force the CLASS_DIAGRAMS tag to NO.
+# If the CLASS_GRAPH tag is set to YES (or GRAPH) then doxygen will generate a
+# graph for each documented class showing the direct and indirect inheritance
+# relations. In case HAVE_DOT is set as well dot will be used to draw the graph,
+# otherwise the built-in generator will be used. If the CLASS_GRAPH tag is set
+# to TEXT the direct and indirect inheritance relations will be shown as texts /
+# links.
+# Possible values are: NO, YES, TEXT and GRAPH.
 # The default value is: YES.
-# This tag requires that the tag HAVE_DOT is set to YES.
 
 CLASS_GRAPH            = YES
 
@@ -2443,7 +2444,6 @@ GROUP_GRAPHS           = YES
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-#UML_LOOK               = NO
 UML_LOOK               = YES
 
 # If the UML_LOOK tag is enabled, the fields and methods are shown inside the
@@ -2547,6 +2547,13 @@ GRAPHICAL_HIERARCHY    = YES
 
 DIRECTORY_GRAPH        = YES
 
+# The DIR_GRAPH_MAX_DEPTH tag can be used to limit the maximum number of levels
+# of child directories generated in directory dependency graphs by dot.
+# Minimum value: 1, maximum value: 25, default value: 1.
+# This tag requires that the tag DIRECTORY_GRAPH is set to YES.
+
+DIR_GRAPH_MAX_DEPTH    = 1
+
 # The DOT_IMAGE_FORMAT tag can be used to set the image format of the images
 # generated by dot. For an explanation of the image formats see the section
 # output formats in the documentation of the dot tool (Graphviz (see:
@@ -2600,10 +2607,10 @@ MSCFILE_DIRS           =
 DIAFILE_DIRS           =
 
 # When using plantuml, the PLANTUML_JAR_PATH tag should be used to specify the
-# path where java can find the plantuml.jar file. If left blank, it is assumed
-# PlantUML is not used or called during a preprocessing step. Doxygen will
-# generate a warning when it encounters a \startuml command in this case and
-# will not generate output for the diagram.
+# path where java can find the plantuml.jar file or to the filename of jar file
+# to be used. If left blank, it is assumed PlantUML is not used or called during
+# a preprocessing step. Doxygen will generate a warning when it encounters a
+# \startuml command in this case and will not generate output for the diagram.
 
 PLANTUML_JAR_PATH      =
 
@@ -2665,6 +2672,8 @@ DOT_MULTI_TARGETS      = NO
 # If the GENERATE_LEGEND tag is set to YES doxygen will generate a legend page
 # explaining the meaning of the various boxes and arrows in the dot generated
 # graphs.
+# Note: This tag requires that UML_LOOK isn't set, i.e. the doxygen internal
+# graphical representation for inheritance and collaboration diagrams is used.
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
