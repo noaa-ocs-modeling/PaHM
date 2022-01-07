@@ -1,6 +1,0 @@
-<map id="pahm_vortex::calcrmaxesfull" name="pahm_vortex::calcrmaxesfull">
-<area shape="rect" id="node1" title="Calculate the radius of maximum winds for all storm quadrants. Solving the full gradient wind equatio..." alt="" coords="5,32,229,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__vortex.html#a24ea19697c70ab6e010e36a71faefcbc" title="Use brute&#45;force marching to find a root the interval [x1,x2]." alt="" coords="297,5,472,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39" title="External function f(x) = 0 for which a root is sought using Brent&#39;s root&#45;finding method." alt="" coords="277,59,492,88"/>
-<area shape="rect" id="node4" href="$namespacepahm__vortex.html#a632207c65211e9337eb3f016f274558d" title=" " alt="" coords="540,59,787,88"/>
-</map>

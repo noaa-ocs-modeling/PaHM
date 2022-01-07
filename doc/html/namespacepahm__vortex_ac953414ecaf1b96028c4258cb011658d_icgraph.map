@@ -1,5 +1,0 @@
-<map id="pahm_vortex::fang" name="pahm_vortex::fang">
-<area shape="rect" id="node1" title="Compute a wind angle to parameterize frictional inflow across isobars." alt="" coords="207,32,360,61"/>
-<area shape="rect" id="node2" href="$namespacepahm__vortex.html#a90ff68ab89a00a014a2429d42758a3f5" title="Calculate (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="8,5,156,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__vortex.html#add2e19299be51bde3c016c4702653eb0" title="Calculate (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="5,59,159,88"/>
-</map>
