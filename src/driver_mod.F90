@@ -94,8 +94,8 @@ CONTAINS
   SUBROUTINE PaHM_Init()
 
     USE PaHM_Global, ONLY : nOutDT
-    USE PaHM_Mesh, ONLY : ReadMesh
-    USE ParWind, ONLY : ReadCsvBestTrackFile
+    USE PaHM_Mesh, ONLY   : ReadMesh
+    USE ParWind, ONLY     : ReadBestTrackFile, ReadCsvBestTrackFile
 
     ! Initialize the logging system, needs to be called first
     CALL InitLogging()
@@ -138,8 +138,8 @@ CONTAINS
   !----------------------------------------------------------------
   SUBROUTINE PaHM_Run(nTimeSTP)
 
-    USE PaHM_Global, ONLY : modelType, wVelX, wVelY, wPress, Times
-    USE ParWind, ONLY : GetHollandFields
+    USE PaHM_Global, ONLY : modelType
+    USE ParWind
     USE PaHM_NetCDFIO
   
     IMPLICIT NONE
@@ -158,6 +158,19 @@ CONTAINS
       CASE (1)
         DO iCnt = cntTimeBegin, cntTimeEnd
           CALL GetHollandFields(iCnt)
+
+          IF (outFileNameSpecified) THEN
+            ! Create the output NetCDF file and fill it with the static data only
+            ! Initialize all variables. This subroutine is called just once
+            CALL InitAdcircNetCDFOutFile(outFileName)
+
+            CALL WriteNetCDFRecord(outFileName, iCnt)
+          END IF
+        END DO
+
+      CASE (10)
+        DO iCnt = cntTimeBegin, cntTimeEnd
+          CALL GetGAHMFields(iCnt)
 
           IF (outFileNameSpecified) THEN
             ! Create the output NetCDF file and fill it with the static data only

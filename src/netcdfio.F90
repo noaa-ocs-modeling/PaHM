@@ -34,7 +34,7 @@ MODULE PaHM_NetCDFIO
   INTEGER, PARAMETER, PRIVATE :: nc3Form = IOR(NF90_CLOBBER, 0)
 
   INTEGER, PRIVATE :: nodeDimID, vertDimID, elemDimID, meshDimID
-  INTEGER, PRIVATE :: elemVarID, meshVarID, projVarID
+  INTEGER, PRIVATE :: meshVarID, projVarID
 
   TYPE :: FileData_T
     LOGICAL                 :: initialized = .FALSE.

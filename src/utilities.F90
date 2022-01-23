@@ -160,30 +160,37 @@ MODULE Utilities
     IMPLICIT NONE
 
     ! Global variables
-    CHARACTER(LEN=*), INTENT(IN)        :: inpFile
+    CHARACTER(LEN=*), INTENT(IN)          :: inpFile
 
     ! Local variables
-    LOGICAL                             :: fileFound   ! .TRUE. if the file is present
-    CHARACTER(LEN=LEN(inpFile))         :: tmpFileName
-    CHARACTER(LEN=512)                  :: inpLine, outLine
-    CHARACTER(LEN=40)                   :: keyWord
+    INTEGER, PARAMETER                    :: maxNumELEM = 200
+    INTEGER, PARAMETER                    :: maxStrLEN = 512
 
-    INTEGER                             :: iUnit, errIO, status
+    LOGICAL                               :: fileFound   ! .TRUE. if the file is present
+    CHARACTER(LEN=LEN(inpFile))           :: tmpFileName
+    CHARACTER(LEN=maxStrLEN)              :: inpLine, outLine
+    CHARACTER(LEN=40)                     :: keyWord
 
-    INTEGER                             :: nPnts
-    INTEGER                             :: nVal, i
-    REAL(SZ), DIMENSION(200)            :: realVal
-    CHARACTER(LEN=512), DIMENSION(200)  :: charVal
-    CHARACTER(LEN=512)                  :: tmpCharVal
+    INTEGER                               :: iUnit, errIO, status
 
-    INTEGER                             :: iValOut(1)
-    REAL(SZ)                            :: rValOut(1)
+    INTEGER                               :: nPnts
+    INTEGER                               :: nVal
+    REAL(SZ), ALLOCATABLE                 :: realVal(:)
+    CHARACTER(LEN=maxStrLEN), ALLOCATABLE :: charVal(:)
+    CHARACTER(LEN=maxStrLEN)              :: tmpCharVal
+
+    INTEGER                               :: iValOut(1)
+    REAL(SZ)                              :: rValOut(1)
     
-    LOGICAL                             :: wrtPARS, gotNBTRFILES = .FALSE.
+    LOGICAL                               :: gotNBTRFILES = .FALSE.
     
-    CHARACTER(LEN=512)                  :: cntlFmtStr, fmtDimParInvalid, fmtParNotFound
-    CHARACTER(LEN=FNAMELEN)             :: tmpStr
-    REAL(SZ)                            :: jday
+    CHARACTER(LEN=maxStrLEN)              :: cntlFmtStr, fmtDimParInvalid, fmtParNotFound
+    CHARACTER(LEN=FNAMELEN)               :: tmpStr
+    REAL(SZ)                              :: jday
+
+
+    ALLOCATE(realVal(maxNumELEM))
+    ALLOCATE(charVal(maxNumELEM))
 
 
     !---------- Initialize variables
@@ -351,9 +358,9 @@ MODULE Utilities
             backgroundAtmPress = rValOut(1)
 
           !----- CASE
-          CASE ('BLADJUSTFAC')
+          CASE ('WINDREDUCTION')
             nPnts = LoadREALVar(nVal, realVal, 1, rValOut)
-            blAdjustFac = rValOut(1)
+            windReduction = rValOut(1)
 
           !----- CASE
           CASE ('REFDATETIME')
@@ -672,8 +679,8 @@ MODULE Utilities
       WRITE(*, '(a, a)')    '   rhoAir               = ', TRIM(ADJUSTL(tmpStr)) // " kg/m^3"
          WRITE(tmpStr, '(f20.5)') backgroundAtmPress
       WRITE(*, '(a, a)')    '   backgroundAtmPress   = ', TRIM(ADJUSTL(tmpStr)) // " mbar"
-         WRITE(tmpStr, '(f20.2)') blAdjustFac
-      WRITE(*, '(a, a)')    '   blAdjustFac          = ', TRIM(ADJUSTL(tmpStr))
+         WRITE(tmpStr, '(f20.2)') windReduction
+      WRITE(*, '(a, a)')    '   windReduction        = ', TRIM(ADJUSTL(tmpStr))
 
         PRINT *, ''
       WRITE(*, '(a, a)')    '   refDateTime          = ', TRIM(ADJUSTL(refDateTime))
@@ -1150,7 +1157,7 @@ MODULE Utilities
     INTEGER                      :: iCnt
     LOGICAL                      :: fileFound
     REAL(SZ)                     :: gregJD, refJD, jd0, jd1
-    REAL(SZ)                     :: timeSec, timeConvFac
+    REAL(SZ)                     :: timeSec
     CHARACTER(LEN=64)            :: tmpStr, tmpStr1, tmpStr2
 
 
@@ -1369,7 +1376,7 @@ MODULE Utilities
     !----- 5) modelType (mandatory variable) -----
     SELECT CASE (modelType)
       !CASE (1, 2, 3, 4)
-      CASE (1)
+      CASE (1, 10)
         ! These are all valid values
     
       CASE DEFAULT
@@ -1420,7 +1427,7 @@ MODULE Utilities
       rhoAir = DEFV_RHOAIR
     END IF
 
-    IF ((backgroundAtmPress < 900.0) .OR. (backgroundAtmPress > 1025.0)) THEN
+    IF ((backgroundAtmPress < 1000.0) .OR. (backgroundAtmPress > 1025.0)) THEN
       WRITE(tmpStr1, '(f20.5, a)') backgroundAtmPress
         tmpStr1 = TRIM(tmpStr1) // ' mb'
       WRITE(tmpStr2, '(f20.5, a)') DEFV_ATMPRESS
@@ -1433,15 +1440,15 @@ MODULE Utilities
       backgroundAtmPress = DEFV_ATMPRESS
     END IF    
 
-    IF ((blAdjustFac < 0.65) .OR. (blAdjustFac > 1.0)) THEN
-      WRITE(tmpStr1, '(f20.5)') blAdjustFac
-      WRITE(tmpStr2, '(f20.5)') DEFV_BLADJUSTFAC
-      WRITE(scratchMessage, '(a)') 'The value of blAdjustFac = ' // TRIM(ADJUSTL(tmpStr1)) // &
-                                   ' is adjusted to: blAdjustFac = ' // TRIM(ADJUSTL(tmpStr2))
+    IF ((windReduction < 0.65) .OR. (windReduction > 1.0)) THEN
+      WRITE(tmpStr1, '(f20.5)') windReduction
+      WRITE(tmpStr2, '(f20.5)') DEFV_WINDREDUCTION
+      WRITE(scratchMessage, '(a)') 'The value of windReduction = ' // TRIM(ADJUSTL(tmpStr1)) // &
+                                   ' is adjusted to: windReduction = ' // TRIM(ADJUSTL(tmpStr2))
 
       CALL LogMessage(INFO, scratchMessage)
 
-      blAdjustFac = DEFV_BLADJUSTFAC
+      windReduction = DEFV_WINDREDUCTION
     END IF
 
     errStatus = errNum
@@ -2453,7 +2460,7 @@ MODULE Utilities
     jl = MINLOC(ABS(val - arrVal), 1)
 
     !---------- Check if we got an exact bin value
-    IF (CompareReals(val - arrVal(jl), 0.0_SZ, 0.0001_SZ) == 0) THEN
+    IF (CompareReals(val - arrVal(jl), 0.0_SZ) == 0) THEN
       idx1 = jl
       idx2 = jl
       wtRatio = 0.0_SZ
@@ -2474,16 +2481,18 @@ MODULE Utilities
 
       diffVal = arrVal(jl2) - arrVal(jl1)
 
-      IF (CompareReals(diffVal, 0.0_SZ, 0.0001_SZ) == 0) THEN
+      IF (CompareReals(diffVal, 0.0_SZ) == 0) THEN
         idx1 = jl1
         idx2 = jl1
         wtRatio = 0.0_SZ
+
       ELSE
         IF (CompareReals(val - arrVal(jl1), 0.0_SZ) * &
             CompareReals(val - arrVal(jl2), 0.0_SZ) < 0) THEN
           idx1 = jl1
           idx2 = jl2
           wtRatio = (val - arrVal(jl1)) / diffVal
+
         END IF
       END IF
 
@@ -2767,7 +2776,7 @@ MODULE Utilities
 
     ! CHECK POS.
     myVal = Pos
-    Value = 0.0
+    Value = 0.0_SP
     IF(Pos < 1 .OR. LEN(String) < Pos)RETURN
 
     ! SET UP WORKING VARIABLES.
@@ -2839,7 +2848,7 @@ MODULE Utilities
                    ! THAT THE 'E' IS A TERMINATOR (E.G., 5.3EV) AND
                    ! RETURN WHAT WE HAVE SO FAR (E.G., 5.3).
                    myVal = myVal - 1
-                   Value = intg + fract/10.0**kfract
+                   Value = intg + REAL(fract/10.0**kfract, SP)
                    IF(pmsign == -1)Value = -Value
                    RETURN
                 ELSE
@@ -2851,9 +2860,9 @@ MODULE Utilities
 
        ! COMPUTE REAL VALUE FROM ITS PARTS.
        IF(kfract.NE.0) THEN
-          Value = (intg+fract/10.0**kfract)*10.0**power
+          Value = REAL((intg + fract/10.0**kfract)*10.0**power, SP)
        ELSE
-          Value = intg*10.0**power
+          Value = REAL(intg*10.0**power, SP)
        END IF
        IF(pmsign == -1)Value = -Value
        EXIT

@@ -897,8 +897,8 @@ MODULE ParWind
   SUBROUTINE GetHollandFields()
 
     USE PaHM_Mesh, ONLY : slam, sfea, xcSlam, ycSfea, np, isMeshOK
-    USE PaHM_Global, ONLY : gravity, rhoWater, rhoAir,                     &
-                       backgroundAtmPress, blAdjustFac, ONE2TEN,      &
+    USE PaHM_Global, ONLY : gravity, rhoWater, rhoAir,                &
+                       backgroundAtmPress, windReduction, ONE2TEN,    &
                        DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA, &
                        nBTrFiles, bestTrackFileName,                  &
                        nOutDT, mdBegSimTime, mdEndSimTime, mdOutDT,   &
@@ -1131,7 +1131,7 @@ MODULE ParWind
         ! Convert wind speed from 10 meter altitude (which is what the
         ! NHC forecast contains) to wind speed at the top of the atmospheric
         ! boundary layer (which is what the Holland curve fit requires).
-        speed = speed / blAdjustFac
+        speed = speed / windReduction
 
         ! Calculate Holland parameters and limit the result to its appropriate range.
         hlB = rhoAir * BASEE * (speed**2) / cPressDef
@@ -1177,8 +1177,8 @@ MODULE ParWind
           !print *, sfVelX, sfVelY
           ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
           ! which, is what the Holland curve fit produces, to 10-m wind velocity.
-          sfVelX = sfVelX * blAdjustFac
-          sfVelY = sfVelY * blAdjustFac
+          sfVelX = sfVelX * windReduction
+          sfVelY = sfVelY * windReduction
           !print *, sfVelX, sfVelY
           ! Convert from 1-minute averaged winds to 10-minute averaged winds.
           sfVelX = sfVelX * ONE2TEN

@@ -21,6 +21,25 @@ MODULE PaHM_Vortex
   IMPLICIT NONE
   SAVE
 
+   PUBLIC :: newVortex, calcRmaxes, fitRmaxes,        &
+             Rmw, uvp, uvtrans, fang,                 &
+             getShapeParameter, setShapeParameter,    &
+             getLatestRmax, getLatestAngle,           &
+             getUseQuadrantVr, getRmaxes,             &
+             setUseQuadrantVr,     setRmaxes,         &
+             setIsotachWindSpeed,                     &
+             getShapeParameters,   getPhiFactors,     &
+             setIsotachWindSpeeds, setIsotachRadii,   &
+             setVortex, spInterp, interpR,            &
+             setUseVmaxesBL,                          &
+             getVmaxesBL, setVmaxesBL,                &
+             fitRmaxes4, calcRmaxesFull,              &
+             UVPR, newVortexFull,                     &
+             rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
+             CalcIntensityChange, UVTransPoint
+
+  PRIVATE
+
   INTEGER, PARAMETER              :: NQUADS  = 4            ! Number of quadrants for which wind radii are provided
   INTEGER, PARAMETER              :: NPOINTS = NQUADS + 2   ! Number of (theta, rMax) points for curve fit
   REAL(SZ), DIMENSION(NPOINTS)    :: rMaxes                 ! Radius of maximum winds
@@ -815,8 +834,6 @@ MODULE PaHM_Vortex
     INTEGER, PARAMETER  :: cont = 400     ! Max # of iterations
     INTEGER             :: iCont, ibCont  ! iteration counter
 
-    211 FORMAT(a7, x ,i2, x, a38)
-
     !-----------------------------
     ! Loop over quadrants of storm
     !-----------------------------
@@ -838,12 +855,15 @@ MODULE PaHM_Vortex
         r2 = OUTERRADIUS
         dr = 1.0_SZ
         DO iter = 1, ITERMAX
+!PV        print *, 'RS = ', r1, r2, r3, r4
           root = FindRoot(VhWithCoriFull, r1, r2, dr, r3, r4)
           r1 = r3
           r2 = r4
           dr = dr * ZOOM
         END DO
-
+!PV print *, 'r3 = ', r3
+!PV print *, 'r4 = ', r4
+!PV print *, 'root = ', root
         ! avoid invalid B value when root is not found        
         IF (root < 0.0_SZ) THEN
         !  r1 = INNERRADIUS
@@ -879,11 +899,9 @@ MODULE PaHM_Vortex
           IF (ABS(bNew - bNew1) <= 0.01_SZ) EXIT
         END DO
 
-        ! debug with aswip          
         !IF (ibCont >= cont) THEN
-        !  WRITE(1111, 211) "iquad=", n, "bNew did not fully converge, procede"
+        !  WRITE(1111, '(a7, x ,i2, x, a38)') "iquad=", n, "bNew did not fully converge, procede"
         !END IF
-        ! end debug with aswip         
 
         IF (ABS(B - bNew) <= 0.01_SZ) EXIT
  
@@ -897,11 +915,9 @@ MODULE PaHM_Vortex
       bs(n + 1)   = bNew
       phis(n +1 ) = phiNew
 
-      ! debug with aswip         
       !IF (iCont >= cont) THEN
-      !  WRITE(1111, 211) "iquad=", n, "B did not fully converge, procede"
+      !  WRITE(1111, '(a7, x ,i2, x, a38)') "iquad=", n, "B did not fully converge, procede"
       !END IF
-      ! end debug with aswip 
 
       ! determine if rMax is actually in the vicinity of the
       ! isotach radius that we are using to solve for rMax,
@@ -1127,6 +1143,21 @@ MODULE PaHM_Vortex
 !================================================================================
 
   !----------------------------------------------------------------
+  ! S U B R O U T I N E   S E T  I S O T A C H  W I N D  S P E E D 
+  !----------------------------------------------------------------
+  SUBROUTINE SetIsotachWindSpeed(sp)
+
+    IMPLICIT NONE
+
+    REAL(SZ), INTENT(IN) :: sp
+
+    vr = sp
+
+  END SUBROUTINE SetIsotachWindSpeed
+
+!================================================================================
+
+  !----------------------------------------------------------------
   ! S U B R O U T I N E   S E T  U S E  Q U A D R A N T  V R
   !----------------------------------------------------------------
   SUBROUTINE SetUsequadrantVR(u)
@@ -1200,7 +1231,9 @@ MODULE PaHM_Vortex
     ELSE IF (opt == 3) THEN
       param = vmBL4    
     END IF   
-    
+
+    deltaAngle = 0.0_SZ
+
     IF (angle <= 45.0_SZ) THEN
       iQuad = 5
       deltaAngle = 45.0_SZ + angle
@@ -1292,7 +1325,7 @@ MODULE PaHM_Vortex
         ! For whatever reason if our algorithm fails, add the following
         ! line to avoid run-time errors
         myValOut = quadVal(quadSel, MAXLOC(quadFlag4(quadSel, :), 1)) 
-        WRITE(*, *) "ERROR: InterpR failed in nws20get." !PV remove it of modify it?
+        !WRITE(*, *) "ERROR: InterpR failed in nws20get." !PV remove it of modify it?
     END SELECT
          
   END FUNCTION InterpR
@@ -1323,6 +1356,9 @@ MODULE PaHM_Vortex
     REAL(SZ), INTENT(IN) :: angle
     INTEGER              :: baseQuadrant
     REAL(SZ)             :: deltaAngle
+
+    deltaAngle = 0.0_SZ
+    baseQuadrant = 5
 
     IF (angle <= 45.0_SZ) THEN
       baseQuadrant = 5
@@ -1696,11 +1732,16 @@ MODULE PaHM_Vortex
     REAL(SZ), INTENT(IN) :: r
     REAL(SZ), INTENT(IN) :: rmx
 
-    IF ((0.0_SZ <= r) .AND. (r < rmx)) THEN
+    ! CompareReals(r1, r2)
+    !   -1 (if r1 < r2)
+    !    0 (if r1 = r2)
+    !   +1 (if r1 > r2)
+
+    IF (CompareReals(0.0_SZ, r) /= 1 .AND. CompareReals(r, rmx) == -1) THEN
       myValOut = 10.0_SZ * r / rmx
-    ELSE IF ((rmx <= r) .AND. (r < 1.0_SZ * rmx)) THEN
+    ELSE IF (CompareReals(rmx, r) /= 1 .AND. CompareReals(r, 1.2_SZ * rmx) == -1) THEN
       myValOut = 10.0_SZ + 75.0_SZ * (r / rmx - 1.0_SZ)
-    ELSE IF (r >= 1.0_SZ * rmx) THEN
+    ELSE IF (CompareReals(r, 1.2_SZ * rmx) /= -1) THEN
       myValOut = 25.0_SZ
     ELSE
       myValOut = 0.0_SZ
@@ -1962,6 +2003,11 @@ MODULE PaHM_Vortex
     INTEGER , PARAMETER   :: ITERMAX = 400   ! Max # of iterations
     INTEGER               :: iter            ! iteration counter
     REAL(SZ)              :: fa, fb          ! function values f(x)
+
+    ! For the time being keep the x2 parameter, set it to
+    ! dummy to eliminate unused variable messages from the compiler
+    REAL(SZ)              :: xdummy
+    xdummy = x2
 
     ! Initialize left side of interval
     a  = x1

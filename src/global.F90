@@ -117,9 +117,8 @@ MODULE PaHM_Global
   REAL(SZ)                :: backgroundAtmPress = DEFV_ATMPRESS   ! mb      Background atmospheric pressure
 
   ! This is for the BL reduction factor used in the Holland model
-  REAL(SZ), PARAMETER     :: DEFV_BLADJUSTFAC = 0.90_SZ
-  REAL(SZ)                :: windReduction    = DEFV_BLADJUSTFAC  ! PV BL reduction factor used in the Holland model
-  REAL(SZ)                :: blAdjustFac      = DEFV_BLADJUSTFAC   !PV same as windReduction?
+  REAL(SZ), PARAMETER     :: DEFV_WINDREDUCTION = 0.90_SZ
+  REAL(SZ)                :: windReduction      = DEFV_WINDREDUCTION  ! BL reduction factor used in the Holland model
 
   !====================
   !=== This block is for the : time/date and time stepping variables
@@ -199,9 +198,9 @@ MODULE PaHM_Global
                                                    !  0: Rankin Vortex
                                                    !  1: Holland B (1998)
                                                    !  2: Holland B (2010)
-                                                   !  3: Willoughby model - NOT IMPLEMENTED YET
+                                                   !  3: Willoughby model
                                                    !  9: Assymetric vortex model (Mattocks)
-                                                   ! 10: Generalized assymetric vortex Holland model
+                                                   ! 10: Generalized assymetric vortex Holland model (GAHM)
   LOGICAL                 :: writeParams = .FALSE.
 !################################################################
 !###   END :: VARIABLES RELATED TO THE CONTROL FILE

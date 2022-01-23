@@ -95,7 +95,7 @@ gravity                  = 9.80665d0                        ! m/s^2   Gravitatio
 rhoWater                 = 1000.0d0                         ! kg/m^3  Mean water density (fresh water, 4 deg C)
 rhoAir                   = 1.1478d0                         ! kg/m^3  Mean air density (1013.25 mb, Rel. Hum  90%, 30 deg C)
 backgroundAtmPress       = 1013.25d0                        ! mb      Background atmospheric pressure
-blAdjustFac              = 0.9d0                            ! Boundary layer reduction factor used in the Holland model
+windReduction            = 0.9d0                            ! Boundary layer reduction factor used in the Holland models
 
 !----------
 ! Time-Stepping parameters
@@ -120,9 +120,9 @@ endDateTime              = 2008-09-18 00:00:00
 ! Model parameters
 !----------
 modelType                = 1                                ! The parametric model to use
-                                                            !  1: Holland B (1980)
+                                                            !  0: Rankin Vortex - NOT IMPLEMENTED YET
+                                                            !  1: Holland B (1998)
                                                             !  2: Holland B (2010)
-                                                            !  6: Assymetric vortex model (Mattocks)
-                                                            !  7: Generalized assymetric vortex Holland model
-                                                            !  8: Willoughby model - NOT IMPLEMENTED YET
-                                                            !  9:
+                                                            !  3: Willoughby model - NOT IMPLEMENTED YET
+                                                            !  9: Assymetric vortex model (Mattocks) - NOT IMPLEMENTED
+                                                            ! 10: Generalized assymetric vortex Holland model (GAHM)

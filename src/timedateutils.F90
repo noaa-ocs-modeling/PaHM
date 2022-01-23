@@ -320,7 +320,7 @@ MODULE TimeDateUtils
 
     !----- START CALCULATIONS -----
 
-    IF (iYear < 1582) Then
+    IF (iYear < 1582) THEN
       myVal = .FALSE.
 
       RETURN
@@ -805,18 +805,18 @@ MODULE TimeDateUtils
     ! purposes the min date supported 1582/10/05 is sufficient. Most likely,
     ! it is not necessary to go beyond that date.
 
+    CALL SplitDate(iDate, iYear, iMonth, iDay)
+    CALL SplitDate(iTime, iHour, iMin, iSec)
+
     ! Is this a LEAP year?
     leap = 1
     IF (LeapYear(iYear)) leap = 2
 
-    CALL SplitDate(iDate, iYear, iMonth, iDay)
-    CALL SplitDate(iTime, iHour, iMin, iSec)
-
-    IF ((iYear  < 1582) .OR. (iMonth < 1) .OR. (iMonth > 12)                     &
-                        .OR. (iDay   < 1) .OR. (iDay   > monLen(iMonth, leap))   &
-                        .OR. (iHour  < 0) .OR. (iHour  > 23)                     &
-                        .OR. (iMin   < 0) .OR. (iMin   > 59)                     &
-                        .OR. (iSec   < 0) .OR. (iSec   > 60)) THEN
+    IF ((iYear < 1582) .OR. (iMonth < 1) .OR. (iMonth > 12)                     &
+                       .OR. (iDay   < 1) .OR. (iDay   > monLen(iMonth, leap))   &
+                       .OR. (iHour  < 0) .OR. (iHour  > 23)                     &
+                       .OR. (iMin   < 0) .OR. (iMin   > 59)                     &
+                       .OR. (iSec   < 0) .OR. (iSec   > 60)) THEN
       myVal = RMISSV
 
       RETURN
