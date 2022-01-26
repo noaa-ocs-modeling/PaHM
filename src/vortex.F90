@@ -641,7 +641,6 @@ MODULE PaHM_Vortex
     phis(1:6) = phi
     vmBL(1:6) = vMax
 
-    ! Jie 2013.01 
     ! B = MAX(MIN(B, 2.0_SZ), 1.0_SZ) ! limit B to range 1.0->2.5
 
   END SUBROUTINE NewVortexFull
@@ -782,8 +781,14 @@ MODULE PaHM_Vortex
       ! and if so, take another shot at finding the
       ! rMax using the gradient wind balance that neglects
       ! coriolis (and is appropriate in the vicinity of rMax)
+      !
+      ! CompareReals(r1, r2)
+      !   -1 (if r1 < r2)
+      !    0 (if r1 = r2)
+      !   +1 (if r1 > r2)
       vicinity = ABS(root - radius(quad)) / root
-      IF ((root < 0.0_SZ) .OR. (vicinity <= 0.0_SZ)) THEN
+      !PV DEL IF ((root < 0.0_SZ) .OR. (vicinity <= 0.1_SZ)) THEN
+      IF (CompareReals(root, 0.0_SZ) == -1 .OR. CompareReals(vicinity, 0.1_SZ) /= 1) THEN
         r1 = INNERRADIUS
         r2 = OUTERRADIUS
         dr = 1.0_SZ
@@ -854,17 +859,15 @@ MODULE PaHM_Vortex
         r1 = INNERRADIUS
         r2 = OUTERRADIUS
         dr = 1.0_SZ
+
         DO iter = 1, ITERMAX
-!PV        print *, 'RS = ', r1, r2, r3, r4
           root = FindRoot(VhWithCoriFull, r1, r2, dr, r3, r4)
           r1 = r3
           r2 = r4
           dr = dr * ZOOM
         END DO
-!PV print *, 'r3 = ', r3
-!PV print *, 'r4 = ', r4
-!PV print *, 'root = ', root
-        ! avoid invalid B value when root is not found        
+
+        ! Avoid invalid B value when root is not found        
         IF (root < 0.0_SZ) THEN
         !  r1 = INNERRADIUS
         !  r2 = OUTERRADIUS
@@ -875,14 +878,13 @@ MODULE PaHM_Vortex
         !    r2 = r4
         !    dr = dr * ZOOM
         !  END DO
-          root = 1.0 * radius(quad)
+          root = 1.0_SZ * radius(quad)
           noRootFlag = 1
         END IF
 
         rMaxes(n + 1) = root  
-              
-        ! Jie 2013.02
-        ! determine if B converges, if yes, break loop and assign 
+
+        ! Determine if B converges, if yes, break loop and assign 
         ! values to rMaxes, if not, continue the loop to re-calculate 
         ! root and re-evaluate bs
         phiNew = 1 + vMax * KT2MS * root * NM2M * corio /                                &
@@ -903,7 +905,12 @@ MODULE PaHM_Vortex
         !  WRITE(1111, '(a7, x ,i2, x, a38)') "iquad=", n, "bNew did not fully converge, procede"
         !END IF
 
-        IF (ABS(B - bNew) <= 0.01_SZ) EXIT
+        ! CompareReals(r1, r2)
+        !   -1 (if r1 < r2)
+        !    0 (if r1 = r2)
+        !   +1 (if r1 > r2)
+        !PV DEL IF IF (ABS(B - bNew) <= 0.01_SZ) EXIT
+        IF (CompareReals(ABS(B - bNew), 0.01_SZ) /= 1) EXIT
  
         ! update B and phi for next iteration
         ! warning: modifications made here also affect other subroutines
@@ -919,12 +926,11 @@ MODULE PaHM_Vortex
       !  WRITE(1111, '(a7, x ,i2, x, a38)') "iquad=", n, "B did not fully converge, procede"
       !END IF
 
-      ! determine if rMax is actually in the vicinity of the
+      ! Determine if rMax is actually in the vicinity of the
       ! isotach radius that we are using to solve for rMax,
       ! and if so, take another shot at finding the
       ! rMax using the gradient wind equation that neglects
       ! coriolis (and is appropriate in the vicinity of rMax)
-      ! Jie 2013.01
       !vicinity = ABS(root - radius(quad)) / root
       IF (noRootFlag == 1) THEN
          WRITE(*, *) "iquad=", n, "No root found, return dist. to Isotach"  
@@ -1234,16 +1240,20 @@ MODULE PaHM_Vortex
 
     deltaAngle = 0.0_SZ
 
-    IF (angle <= 45.0_SZ) THEN
+    ! CompareReals(r1, r2)
+    !   -1 (if r1 < r2)
+    !    0 (if r1 = r2)
+    !   +1 (if r1 > r2)
+    IF (CompareReals(angle, 45.0_SZ) /= 1) THEN
       iQuad = 5
       deltaAngle = 45.0_SZ + angle
-    ELSE IF (angle <= 135.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 135.0_SZ) /= 1) THEN
       iQuad = 2
       deltaAngle = angle - 45.0_SZ
-    ELSE IF (angle <= 225.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 225.0_SZ) /= 1) THEN
       iQuad = 3
       deltaAngle = angle - 135.0_SZ
-    ELSE IF (angle <= 315.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 315.0_SZ) /= 1) THEN
       iQuad = 4
       deltaAngle = angle - 225.0_SZ
     ELSE IF (angle > 315.0_SZ) THEN
@@ -1360,16 +1370,20 @@ MODULE PaHM_Vortex
     deltaAngle = 0.0_SZ
     baseQuadrant = 5
 
-    IF (angle <= 45.0_SZ) THEN
+    ! CompareReals(r1, r2)
+    !   -1 (if r1 < r2)
+    !    0 (if r1 = r2)
+    !   +1 (if r1 > r2)
+    IF (CompareReals(angle, 45.0_SZ) /= 1) THEN
       baseQuadrant = 5
       deltaAngle = 45.0_SZ + angle
-    ELSE IF (angle <= 135.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 135.0_SZ) /= 1) THEN
       baseQuadrant = 2
       deltaAngle = angle - 45.0_SZ
-    ELSE IF (angle <= 225.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 225.0_SZ) /= 1) THEN
       baseQuadrant = 3
       deltaAngle = angle - 135.0_SZ
-    ELSE IF (angle <= 315.0_SZ) THEN
+    ELSE IF (CompareReals(angle, 315.0_SZ) /= 1) THEN
       baseQuadrant = 4
       deltaAngle = angle - 225.0_SZ
     ELSE IF (angle > 315.0_SZ) THEN
@@ -1498,23 +1512,23 @@ MODULE PaHM_Vortex
                  (NM2M * dist * percentCoriolis * corio / 2.0_SZ)**2)                    &
                 - NM2M * dist * percentCoriolis * corio / 2.0_SZ
 
-    ! calculate the wind speed (m/s) at rMax, using
+    ! Calculate the wind speed (m/s) at rMax, using
     ! equation that includes full coriolis
     speedAtRMax = SQRT((vMax * KT2MS)**2 * EXP(0.0_SZ) +                      &
                        (NM2M * dist * percentCoriolis * corio / 2.0_SZ)**2)   &
                       - NM2M * dist * percentCoriolis * corio / 2.0_SZ
 
-    ! calculate a factor to place the velocity profile so that
+    ! Calculate a factor to place the velocity profile so that
     ! it hits vMax
     vMaxFactor = vMax * KT2MS / speedAtRMax
 
-    ! jgf20111007: Calculate NWS8-like translation speed
+    ! Calculate NWS8-like translation speed
     transSpdX = (ABS(speed / speedAtRMax)) * uTrans * KT2MS
     transSpdY = (ABS(speed / speedAtRMax)) * vTrans * KT2MS
 
     speed = speed * vMaxFactor
 
-    ! now reduce the wind speed to the surface
+    ! Now reduce the wind speed to the surface
     speed = speed * windReduction
 
     u = -speed * COS(DEG2RAD * angle)
@@ -1537,7 +1551,7 @@ MODULE PaHM_Vortex
     ! Compute surface pressure from asymmetric hurricane vortex
     p = MB2PA * (pc + (pn - pc) * EXP(-(rmx / dist)**B))
 
-    ! cut off the vortex field after 401nm
+    ! cut off the vortex field after 401nm !PV Attend to this
     ! TODO: 401nm should be replaced with something less
     ! arbitrary ... and find a better way to blend this
     !IF ( dist > 401.0_SZ ) THEN
@@ -1649,34 +1663,34 @@ MODULE PaHM_Vortex
     ! model.
     !---------------------------------------------------
     percentCoriolis = 1.0_SZ
-    ! Jie 2014.07
+
     IF (geof == 1) THEN
       speed = SQRT(((vMax * KT2MS)**2 + vMax * KT2MS * rmx * NM2M * percentCoriolis * corio) *   &
-                   (rmx / iDist)**B * EXP(phi * (1.0_SZ - (rmx / iDist)**B)) +                        &
-                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -                         &
+                   (rmx / iDist)**B * EXP(phi * (1.0_SZ - (rmx / iDist)**B)) +                   &
+                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -                       &
                   NM2M * iDist * percentCoriolis * corio / 2.0_SZ 
     ELSE 
-      speed = SQRT((vMax * KT2MS)**2 * (rmx / iDist)**B * EXP(1.0_SZ - (rmx / iDist)**B) +   &
-                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -   &
+      speed = SQRT((vMax * KT2MS)**2 * (rmx / iDist)**B * EXP(1.0_SZ - (rmx / iDist)**B) + &
+                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -                 &
                   NM2M * iDist * percentCoriolis * corio / 2.0_SZ      
     ENDIF
 
-    ! jgf20111007: Calculate NWS8-like translation speed
+    ! Calculate NWS8-like translation speed
     transSpdX = (ABS(speed / (vMax * KT2MS))) * uTrans * KT2MS
     transSpdY = (ABS(speed / (vMax * KT2MS))) * vTrans * KT2MS
 
-    ! now reduce the wind speed to the surface
+    ! Now reduce the wind speed to the surface
     speed = speed * windReduction
 
     u = -speed * COS(DEG2RAD * iAngle)
     v =  speed * SIN(DEG2RAD * iAngle)
-    !
+
     ! Alter wind direction by adding a frictional inflow angle
     CALL Rotate(u, v, FAng(iDist, iRmxTrue), cLat, uf, vf)
     u = uf
     v = vf
-    !
-    ! jgf20111007: Add in the translation velocity
+
+    ! Add in the translation velocity
     u = u + transSpdX
     v = v + transSpdY
 
@@ -1692,7 +1706,7 @@ MODULE PaHM_Vortex
       p = MB2PA * (pc + (pn - pc) * EXP(-(rmx / iDist)**B))
     ENDIF
 
-    ! cut off the vortex field after 401nm
+    ! cut off the vortex field after 401nm !PV Attend to this
     ! TODO: 401nm should be replaced with something less
     ! arbitrary ... and find a better way to blend this
     !if ( dist > 401.0_SZ ) then
@@ -1736,7 +1750,6 @@ MODULE PaHM_Vortex
     !   -1 (if r1 < r2)
     !    0 (if r1 = r2)
     !   +1 (if r1 > r2)
-
     IF (CompareReals(0.0_SZ, r) /= 1 .AND. CompareReals(r, rmx) == -1) THEN
       myValOut = 10.0_SZ * r / rmx
     ELSE IF (CompareReals(rmx, r) /= 1 .AND. CompareReals(r, 1.2_SZ * rmx) == -1) THEN
@@ -1870,11 +1883,10 @@ MODULE PaHM_Vortex
       thisVR = vr
     END IF
 
-    ! Jie 2013.02
-    vh = MS2KT * (SQRT(((vMax * KT2MS)**2 + vMax * KT2MS * testRMax * NM2M * corio) *     &
-                       (testRMax / radius(quad))**B *                                        &
-                       EXP(phi * (1.0_SZ - (testRMax / radius(quad))**B)) +                   &
-                       (NM2M * radius(quad) * corio / 2.0_SZ)**2) -                         &
+    vh = MS2KT * (SQRT(((vMax * KT2MS)**2 + vMax * KT2MS * testRMax * NM2M * corio) * &
+                       (testRMax / radius(quad))**B *                                 &
+                       EXP(phi * (1.0_SZ - (testRMax / radius(quad))**B)) +           &
+                       (NM2M * radius(quad) * corio / 2.0_SZ)**2) -                   &
                   NM2M * radius(quad) * corio / 2.0_SZ)
 
     myValOut = vh - thisVR
@@ -1923,9 +1935,9 @@ MODULE PaHM_Vortex
       thisVR = vr
     END IF
 
-    vh = MS2KT * (SQRT((vMax * KT2MS)**2 * (testRMax / radius(quad))**B *                 &
-                                              EXP(1.0_SZ - (testRMax / radius(quad))**B) +     &
-                       (NM2M * radius(quad) * corio / 2.0_SZ)**2) -                       &
+    vh = MS2KT * (SQRT((vMax * KT2MS)**2 * (testRMax / radius(quad))**B *                  &
+                                              EXP(1.0_SZ - (testRMax / radius(quad))**B) + &
+                       (NM2M * radius(quad) * corio / 2.0_SZ)**2) -                        &
                   NM2M * radius(quad) * corio / 2.0_SZ)
 
     myValOut = vh - thisVR
@@ -1955,7 +1967,7 @@ MODULE PaHM_Vortex
       thisVR = vr
     END IF
 
-    myValOut = ABS(MS2KT * SQRT((vMax * KT2MS)**2 * (testRMax / radius(quad))**B *     &
+    myValOut = ABS(MS2KT * SQRT((vMax * KT2MS)**2 * (testRMax / radius(quad))**B * &
                                 EXP(1 - (testRMax / radius(quad))**B))) - thisVR
 
     RETURN

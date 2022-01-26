@@ -591,7 +591,6 @@ MODULE TimeDateUtils
               + REAL(iSec, HP) - 43200.0_HP
 
       IF (modJul) THEN
-      print *, 'we are using mod jul with MDJOFFSET = ', MDJOFFSET
         myVal = temp2 + (temp1 / 86400.0_HP) - MDJOFFSET
       ELSE
         myVal = temp2 + (temp1 / 86400.0_HP)

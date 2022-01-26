@@ -281,7 +281,7 @@ MODULE ParWind
     INTEGER                        :: iFile, iCnt             ! loop counters
     INTEGER                        :: iUnit, errIO, ios, status
 
-    CHARACTER(LEN=4)               :: castType
+    !CHARACTER(LEN=4)               :: castType
 
     CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
     INTEGER, ALLOCATABLE           :: idxArrStr(:)
@@ -522,18 +522,20 @@ MODULE ParWind
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
-      kCnt = 0
       DO iCnt = 1, bestTrackData(iFile)%numRec
-        castType = ToUpperCase(TRIM(ADJUSTL(bestTrackData(iFile)%tech(iCnt))))
+        ! This is for the cycleNum, the last column we consider
         IF (iCnt == 1) THEN
           kCnt = iCnt
           bestTrackData(iFile)%cycleNum(iCnt) = kCnt
         ELSE
-          IF (bestTrackData(iFile)%dtg(iCnt) /= &
-              bestTrackData(iFile)%dtg(iCnt-1) .AND. castType /= 'BEST') kCnt = kCnt + 1
+          kCnt = kCnt + 1
+          IF (bestTrackData(iFile)%dtg(iCnt) == bestTrackData(iFile)%dtg(iCnt-1)) THEN
+            bestTrackData(iFile)%cycleNum(iCnt) = bestTrackData(iFile)%cycleNum(iCnt-1)
+            kCnt = kCnt - 1
+          ELSE
+            bestTrackData(iFile)%cycleNum(iCnt) = kCnt
+          END IF
         END IF
-
-        bestTrackData(iFile)%cycleNum(iCnt) = kCnt
       END DO
 
       !---------- This should be last after the fields are indexed in ascending order.
@@ -596,7 +598,7 @@ MODULE ParWind
     CHARACTER(LEN=512)             :: line
     CHARACTER(LEN=64)              :: tmpStr
 
-    CHARACTER(LEN=4)               :: castType
+    !CHARACTER(LEN=4)               :: castType
 
     INTEGER                        :: iFile, nLines, lenLine
     INTEGER                        :: iCnt, jCnt, kCnt, kMax       ! loop counters
@@ -713,20 +715,6 @@ MODULE ParWind
           bestTrackData(iFile)%intSpeed(iCnt)  = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 27))))
           !--- col: 28
           WRITE(bestTrackData(iFile)%stormName(iCnt), '(a10)') TRIM(ADJUSTL(sval2D(iCnt, 28)))
-
-          ! This is for the cycleNum, the last column we consider
-          !IF (iCnt == 1) THEN
-          !  kCnt = iCnt
-          !  bestTrackData(iFile)%cycleNum(iCnt) = kCnt
-          !ELSE
-          !  kCnt = kCnt + 1
-          !  IF (bestTrackData(iFile)%dtg(iCnt) == bestTrackData(iFile)%dtg(iCnt-1)) THEN
-          !    bestTrackData(iFile)%cycleNum(iCnt) = bestTrackData(iFile)%cycleNum(iCnt-1)
-          !    kCnt = kCnt - 1
-          !  ELSE
-          !    bestTrackData(iFile)%cycleNum(iCnt) = kCnt
-          !  END IF
-          !END IF
                    
           !---------- Convert lat/lon values to S/N and W/E notations
           IF (ToUpperCase(bestTrackData(iFile)%ns(iCnt)) == 'S') THEN
@@ -839,21 +827,6 @@ MODULE ParWind
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
-     !kCnt = 0
-     !DO iCnt = 1, bestTrackData(iFile)%numRec
-     !  castType = ToUpperCase(TRIM(ADJUSTL(bestTrackData(iFile)%tech(iCnt))))
-     !  IF (iCnt == 1) THEN
-     !    kCnt = iCnt
-     !    bestTrackData(iFile)%cycleNum(iCnt) = kCnt
-     !  ELSE
-     !    IF (bestTrackData(iFile)%dtg(iCnt) /= &
-     !        bestTrackData(iFile)%dtg(iCnt-1) .AND. castType /= 'BEST') kCnt = kCnt + 1
-     !  END IF
-     !
-     !  bestTrackData(iFile)%cycleNum(iCnt) = kCnt
-     !END DO
-
-
       DO iCnt = 1, bestTrackData(iFile)%numRec
         ! This is for the cycleNum, the last column we consider
         IF (iCnt == 1) THEN
@@ -869,7 +842,6 @@ MODULE ParWind
           END IF
         END IF
       END DO
-
 
       !---------- This should be last after the fields are indexed in ascending order.  !PV NEED TO CHECK ON THIS
       !           We generate arbitrarily the forecast increments for internal use only.
@@ -1316,7 +1288,6 @@ MODULE ParWind
       strOut%castTime(iCnt) = castTime(iCnt)
 
       !---------- Check for a new cycle
-      !PV DO we need cycleTime or CastTime instead?
       IF (iCnt /= 1) THEN
         IF (strOut%fcstInc(iCnt) /= strOut%fcstInc(iCnt-1)) THEN
           nCycles = nCycles + 1
@@ -2316,13 +2287,11 @@ MODULE ParWind
         ! Find the wind velocity components.
         sfVelX = -grVel * SIN(theta)
         sfVelY =  grVel * COS(theta)
-        !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
 
         ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
         ! which, is what the Holland curve fit produces, to 10-m wind velocity.
         sfVelX = sfVelX * windReduction
         sfVelY = sfVelY * windReduction
-        !print *, 'sfVelX, sfVelY:', sfVelX, sfVelY
 
         ! Convert from 1-minute averaged winds to 10-minute averaged winds.
         sfVelX = sfVelX * ONE2TEN
@@ -2331,15 +2300,13 @@ MODULE ParWind
         ! Add back the storm translation speed.
         sfVelX = sfVelX + trSpdX
         sfVelY = sfVelY + trSpdY
-        !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
 
-        !PV Need to interpolate between storms if this nodal point
+        !PV Need to account for multiple storms in the basin
+        !   Need to interpolate between storms if this nodal point
         !   is affected by more than on storm
         wPress(i) = sfPress
         wVelX(i)  = sfVelX
         wVelY(i)  = sfVelY
-        !print *, sfVelX, sfVelY, wVelX(i), wVelY(i)
-        !print *, '--------------------------------------'
       END DO ! npCnt = 1, maxRadIDX
     END DO ! stCnt = 1, nBTrFiles
 
@@ -2397,7 +2364,7 @@ MODULE ParWind
                               Times, DatesTimes,                                                        &
                               wVelX, wVelY, wPress
     USE Utilities, ONLY     : ToUpperCase, SphericalDistance, SphericalFracPoint, GetLocAndRatio
-    USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String
+    USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String, TimeConv
     USE PaHM_Vortex, ONLY   : spInterp, fitRmaxes4, rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
                               setVortex, UVPR
 
@@ -2408,7 +2375,7 @@ MODULE ParWind
     REAL(SZ)                             :: coriolis ! Coriolis force (1/s)
 
     INTEGER                              :: iCnt, kCnt, stCnt
-    INTEGER                              :: i, j, jl1, jl2
+    INTEGER                              :: i, jl1, jl2
     INTEGER                              :: status
 
     REAL(SZ)                             :: jday
@@ -2435,7 +2402,7 @@ MODULE ParWind
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: iSpeed, iCPress
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: fcstInc ! hours between forecasts
     REAL(SZ), DIMENSION(:, :), ALLOCATABLE, SAVE            :: hollB
-    INTEGER,  DIMENSION(:),    ALLOCATABLE, SAVE            :: nCycles, iCycTrk
+    INTEGER,  DIMENSION(:),    ALLOCATABLE, SAVE            :: nCycles
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: numCycle
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: isotachsPerCycle
 
@@ -2457,15 +2424,9 @@ MODULE ParWind
     REAL(SZ), ALLOCATABLE, SAVE :: crmaxw(:)
     REAL(SZ), ALLOCATABLE, SAVE :: crmaxwTrue(:)
 
-    REAL(SZ) :: newVortexRMW ! average Rmax at icyc   (next fort.22 time value)
-    REAL(SZ) :: oldVortexRMW ! average Rmax at icyc-1 (previous fort.22 time value)
-
-
     REAL(SZ), SAVE                      :: uTransNow, vTransNow ! time-interpolated overland speed, kts
     REAL(SZ), SAVE                      :: dirNow ! Jie
-    REAL(SZ), SAVE                      :: numRmaxes ! number of Rmax values selected by user
 
-    REAL(SZ), SAVE                      :: timeOffset
     REAL(SZ), SAVE                      :: pn    ! Ambient surface pressure (mb)
     REAL(SZ), SAVE                      :: pc    ! Surface pressure at center of storm (mb)
     REAL(SZ), SAVE                      :: cLat, cLon  ! Current eye location (degrees north, degrees east)
@@ -2618,7 +2579,6 @@ MODULE ParWind
       ALLOCATE(fcstInc(nBTrFiles,          maxTrackRecords))
       ALLOCATE(hollB(nBTrFiles,            maxTrackRecords))
       ALLOCATE(nCycles(nBTrFiles))
-      ALLOCATE(iCycTrk(nBTrFiles))
       ALLOCATE(numCycle(nBTrFiles,         maxTrackRecords))
       ALLOCATE(isotachsPerCycle(nBTrFiles, maxTrackRecords))
       ALLOCATE(ipn(nBTrFiles,              maxTrackRecords))
@@ -2648,127 +2608,122 @@ MODULE ParWind
       !------------------------------
 
 
-      DO stCnt = 1, nBTrFiles ! HERE
+      DO stCnt = 1, nBTrFiles
 
         ! Loop through records in input data structure
         DO kCnt = 1, asyVortStru(stCnt)%numRec
-         ! pick out the cycle data that the user wants to use
-         ! by looping through quads
-         IF (kCnt == 1) THEN
-           iCyc = 1
-           iSot = 1
+          ! pick out the cycle data that the user wants to use
+          ! by looping through quads
+          IF (kCnt == 1) THEN
+            iCyc = 1
+            iSot = 1
 
-           stormNumber(stCnt, iCyc) = asyVortStru(stCnt)%stormNumber(kCnt)
-           year(stCnt, iCyc)        = asyVortStru(stCnt)%year(kCnt)
-           month(stCnt, iCyc)       = asyVortStru(stCnt)%month(kCnt)
-           day(stCnt, iCyc)         = asyVortStru(stCnt)%day(kCnt)
+            stormNumber(stCnt, iCyc) = asyVortStru(stCnt)%stormNumber(kCnt)
+            year(stCnt, iCyc)        = asyVortStru(stCnt)%year(kCnt)
+            month(stCnt, iCyc)       = asyVortStru(stCnt)%month(kCnt)
+            day(stCnt, iCyc)         = asyVortStru(stCnt)%day(kCnt)
+            hour(stCnt, iCyc)        = asyVortStru(stCnt)%hour(kCnt)
+            castType(stCnt, iCyc)    = asyVortStru(stCnt)%castType(kCnt)
+            fcstInc(stCnt, iCyc)     = asyVortStru(stCnt)%fcstInc(kCnt)
+            lat(stCnt, iCyc)         = asyVortStru(stCnt)%lat(kCnt)
+            lon(stCnt, iCyc)         = asyVortStru(stCnt)%lon(kCnt)
+            iSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iSpeed(kCnt)
+            iCPress(stCnt, iCyc)     = asyVortStru(stCnt)%iCPress(kCnt)
+            ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
+            ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
+            iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
 
-           hour(stCnt, iCyc)        = asyVortStru(stCnt)%hour(kCnt)
-           castType(stCnt, iCyc)    = asyVortStru(stCnt)%castType(kCnt)
-           fcstInc(stCnt, iCyc)     = asyVortStru(stCnt)%fcstInc(kCnt)
-           lat(stCnt, iCyc)         = asyVortStru(stCnt)%lat(kCnt)
-           lon(stCnt, iCyc)         = asyVortStru(stCnt)%lon(kCnt)
-           iSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iSpeed(kCnt)
-           iCPress(stCnt, iCyc)     = asyVortStru(stCnt)%iCPress(kCnt)
-           ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
-           ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
-           iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
+            hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
+            hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
+            stormName(stCnt, iCyc)   = asyVortStru(stCnt)%stormName(kCnt)
+            numCycle(stCnt, iCyc)    = asyVortStru(stCnt)%numCycle(kCnt)
+            hollB(stCnt, iCyc)       = asyVortStru(stCnt)%hollB(kCnt)
 
-           hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
-           hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
-           stormName(stCnt, iCyc)   = asyVortStru(stCnt)%stormName(kCnt)
-           numCycle(stCnt, iCyc)    = asyVortStru(stCnt)%numCycle(kCnt)
-           hollB(stCnt, iCyc)       = asyVortStru(stCnt)%hollB(kCnt)
+            uTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVx(kCnt)
+            vTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVy(kCnt)
 
-           uTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVx(kCnt)
-           vTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVy(kCnt)
+            CALL TimeConv(year(stCnt, iCyc), month(stCnt, iCyc), day(stCnt, iCyc), hour(stCnt, iCyc), &
+                          0, 0, cycleTime(stCnt, iCyc))
 
-           ! We use timeOffset to relate the cycleTime to the simulation time. If
-           ! asyVortStru(stCnt)%fcstInc(kCnt) = 0, then timeOffset = 0.0
-           timeOffset =  asyVortStru(stCnt)%fcstInc(kCnt) *3600.0_SZ
+            isotachsPerCycle(stCnt, iCyc) = asyVortStru(stCnt)%isotachsPerCycle(kCnt)
 
-           cycleTime(stCnt, iCyc)        = mdBegSimTime - timeOffset + asyVortStru(stCnt)%fcstInc(kCnt) * 3600.0_SZ
-           !cycleTime(stCnt, iCyc)        = asyVortStru(stCnt)%fcstInc(kCnt) * 3600.0_SZ
-           isotachsPerCycle(stCnt, iCyc) = asyVortStru(stCnt)%isotachsPerCycle(kCnt)
-
-           DO i = 1, 4
-             IF (asyVortStru(stCnt)%quadFlag(kCnt, i) == 1) THEN
-               ir(stCnt, iCyc, i, iSot)       = asyVortStru(stCnt)%ir(kCnt, i)
-               rMaxW(stCnt, iCyc, i, iSot)    = asyVortStru(stCnt)%rMaxW(kCnt, i)
-               quadFlag(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%quadFlag(kCnt, i)
-               hollBs(stCnt, iCyc, i, iSot)   = asyVortStru(stCnt)%hollBs(kCnt, i)
-               vMaxesBL(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%vMaxesBL(kCnt, i)
-             END IF
-           END DO
-
-         ELSE ! kCnt == 1
-           IF (asyVortStru(stCnt)%numCycle(kCnt) == asyVortStru(stCnt)%numCycle(kCnt-1)) THEN
-              IF (iSot > 4) THEN
-                WRITE(scratchMessage,'(a, i0, a)')                                          &
-                   'The GAHM asymmetric data structure has more than 4 iSotachs in cycle ', &
-                   asyVortStru(stCnt)%numCycle(kCnt), '.'
-                CALL AllMessage(ERROR, scratchMessage)
-                CALL Terminate()
+            DO i = 1, 4
+              IF (asyVortStru(stCnt)%quadFlag(kCnt, i) == 1) THEN
+                ir(stCnt, iCyc, i, iSot)       = asyVortStru(stCnt)%ir(kCnt, i)
+                rMaxW(stCnt, iCyc, i, iSot)    = asyVortStru(stCnt)%rMaxW(kCnt, i)
+                quadFlag(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%quadFlag(kCnt, i)
+                hollBs(stCnt, iCyc, i, iSot)   = asyVortStru(stCnt)%hollBs(kCnt, i)
+                vMaxesBL(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%vMaxesBL(kCnt, i)
               END IF
-              iSot = iSot + 1 ! same iCyc, next iSotach
-           ELSE
-             iSot = 1 ! initialize iSotach #
-             IF (asyVortStru(stCnt)%fcstInc(kCnt) == 0 .AND. asyVortStru(stCnt)%fcstInc(iCyc) == 0) THEN
-                iCyc = iCyc
-             ELSE
-                iCyc = iCyc + 1
-             END IF
-           END IF
+            END DO
 
-           stormNumber(stCnt, iCyc) = asyVortStru(stCnt)%stormNumber(kCnt)
-           year(stCnt, iCyc)        = asyVortStru(stCnt)%year(kCnt)
-           month(stCnt, iCyc)       = asyVortStru(stCnt)%month(kCnt)
-           day(stCnt, iCyc)         = asyVortStru(stCnt)%day(kCnt)
-           hour(stCnt, iCyc)        = asyVortStru(stCnt)%hour(kCnt)
-           castType(stCnt, iCyc)    = asyVortStru(stCnt)%castType(kCnt)
-           fcstInc(stCnt, iCyc)     = asyVortStru(stCnt)%fcstInc(kCnt)
-           lat(stCnt, iCyc)         = asyVortStru(stCnt)%lat(kCnt)
-           lon(stCnt, iCyc)         = asyVortStru(stCnt)%lon(kCnt)
-           iSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iSpeed(kCnt)
-           iCPress(stCnt, iCyc)     = asyVortStru(stCnt)%iCPress(kCnt)
-           ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
-           ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
-           iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
-           hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
-           hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
-           stormName(stCnt, iCyc)   = asyVortStru(stCnt)%stormName(kCnt)
-           numCycle(stCnt, iCyc)    = asyVortStru(stCnt)%numCycle(kCnt)
-           hollB(stCnt, iCyc)       = asyVortStru(stCnt)%hollB(kCnt)
+          ELSE ! kCnt == 1
+            IF (asyVortStru(stCnt)%numCycle(kCnt) == asyVortStru(stCnt)%numCycle(kCnt-1)) THEN
+               IF (iSot > 4) THEN
+                 WRITE(scratchMessage,'(a, i0, a)')                                          &
+                    'The GAHM asymmetric data structure has more than 4 iSotachs in cycle ', &
+                    asyVortStru(stCnt)%numCycle(kCnt), '.'
+                 CALL AllMessage(ERROR, scratchMessage)
+                 CALL Terminate()
+               END IF
+               iSot = iSot + 1 ! same iCyc, next iSotach
+            ELSE
+              iSot = 1 ! initialize iSotach #
+              IF (asyVortStru(stCnt)%fcstInc(kCnt) == 0 .AND. asyVortStru(stCnt)%fcstInc(iCyc) == 0) THEN
+                 iCyc = iCyc
+              ELSE
+                 iCyc = iCyc + 1
+              END IF
+            END IF
 
-           uTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVx(kCnt)
-           vTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVy(kCnt)
+            stormNumber(stCnt, iCyc) = asyVortStru(stCnt)%stormNumber(kCnt)
+            year(stCnt, iCyc)        = asyVortStru(stCnt)%year(kCnt)
+            month(stCnt, iCyc)       = asyVortStru(stCnt)%month(kCnt)
+            day(stCnt, iCyc)         = asyVortStru(stCnt)%day(kCnt)
+            hour(stCnt, iCyc)        = asyVortStru(stCnt)%hour(kCnt)
+            castType(stCnt, iCyc)    = asyVortStru(stCnt)%castType(kCnt)
+            fcstInc(stCnt, iCyc)     = asyVortStru(stCnt)%fcstInc(kCnt)
+            lat(stCnt, iCyc)         = asyVortStru(stCnt)%lat(kCnt)
+            lon(stCnt, iCyc)         = asyVortStru(stCnt)%lon(kCnt)
+            iSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iSpeed(kCnt)
+            iCPress(stCnt, iCyc)     = asyVortStru(stCnt)%iCPress(kCnt)
+            ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
+            ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
+            iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
+            hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
+            hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
+            stormName(stCnt, iCyc)   = asyVortStru(stCnt)%stormName(kCnt)
+            numCycle(stCnt, iCyc)    = asyVortStru(stCnt)%numCycle(kCnt)
+            hollB(stCnt, iCyc)       = asyVortStru(stCnt)%hollB(kCnt)
 
-           cycleTime(stCnt, iCyc)        = mdBegSimTime - timeOffset + asyVortStru(stCnt)%fcstInc(kCnt) * 3600.0_SZ
-           !cycleTime(stCnt, iCyc)        = asyVortStru(stCnt)%fcstInc(kCnt) * 3600.0_SZ
-           isotachsPerCycle(stCnt, iCyc) = asyVortStru(stCnt)%isotachsPerCycle(kCnt)
+            uTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVx(kCnt)
+            vTrans(stCnt, iCyc)      = asyVortStru(stCnt)%trVy(kCnt)
 
-           DO i = 1, 4
-             IF (asyVortStru(stCnt)%quadFlag(kCnt, i) == 1) THEN
-               ir(stCnt, iCyc, i, iSot)       = asyVortStru(stCnt)%ir(kCnt, i)
-               rMaxW(stCnt, iCyc, i, iSot)    = asyVortStru(stCnt)%rMaxW(kCnt, i)
-               quadFlag(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%quadFlag(kCnt, i)
-               hollBs(stCnt, iCyc, i, iSot)   = asyVortStru(stCnt)%hollBs(kCnt, i)
-               vMaxesBL(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%vMaxesBL(kCnt, i)
-             END IF
-           END DO
-         END IF ! kCnt /= 1
-        END DO ! asyVortStru(stCnt)%numRec
+            CALL TimeConv(year(stCnt, iCyc), month(stCnt, iCyc), day(stCnt, iCyc), hour(stCnt, iCyc), &
+                          0, 0, cycleTime(stCnt, iCyc))
+
+            isotachsPerCycle(stCnt, iCyc) = asyVortStru(stCnt)%isotachsPerCycle(kCnt)
+
+            DO i = 1, 4
+              IF (asyVortStru(stCnt)%quadFlag(kCnt, i) == 1) THEN
+                ir(stCnt, iCyc, i, iSot)       = asyVortStru(stCnt)%ir(kCnt, i)
+                rMaxW(stCnt, iCyc, i, iSot)    = asyVortStru(stCnt)%rMaxW(kCnt, i)
+                quadFlag(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%quadFlag(kCnt, i)
+                hollBs(stCnt, iCyc, i, iSot)   = asyVortStru(stCnt)%hollBs(kCnt, i)
+                vMaxesBL(stCnt, iCyc, i, iSot) = asyVortStru(stCnt)%vMaxesBL(kCnt, i)
+              END IF
+            END DO
+          END IF ! kCnt /= 1
+        END DO ! kCnt = 1, asyVortStru(stCnt)%numRec
 
         nCycles(stCnt) = asyVortStru(stCnt)%nCycles
-        iCycTrk(stCnt) = 1 ! Is this realy ok? PV CHECK THIS PLEASE
-      END DO ! HERE
+      END DO ! nBTrFiles
 
       firstCall = .FALSE.
     END IF
 !################################################################
 !###   END:: FIRSTCALL BLOCK
 !################################################################
-
 
     !------------------------------
     ! Initialize the arrays. Here we are resetting the fields to their defaults.
@@ -2800,7 +2755,7 @@ MODULE ParWind
       ! factor for the subsequent linear interpolation in time. In order for this to
       ! work, the array asyVortStru%castTime should be ordered in ascending order.
       !PV (iCyc, iCyc - 1) = (jl2, jl1) jl1: lower limit and jl2: upper limit
-      CALL GetLocAndRatio(Times(iCnt), cycleTime(stCnt, :), jl1, jl2, wtRatio)
+      CALL GetLocAndRatio(Times(iCnt), cycleTime(stCnt, 1:nCycles(stCnt)), jl1, jl2, wtRatio)
 
       ! Skip the subsequent calculations if Times(iCnt) is outside the castTime range
       ! by exiting this loop
@@ -2823,7 +2778,6 @@ MODULE ParWind
       ! Perform linear interpolation in time
       CALL SphericalFracPoint(lat(stCnt, jl1), lon(stCnt, jl1), lat(stCnt, jl2), lon(stCnt, jl2), wtRatio, cLat, cLon)
 
-
       !----- Calculate distance/azimuth of points in CPP plane
       dx      = DEG2RAD * REARTH * (slam - cLon) * COS(DEG2RAD * cLat)
       dy      = DEG2RAD * REARTH * (sfea - cLat)
@@ -2832,14 +2786,13 @@ MODULE ParWind
       WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
       !-----
 
-
       quadFlag4(2:5, 1:4) = quadFlag(stCnt, jl1, 1:4, 1:4)
       quadIr4(2:5, 1:4)   = REAL(ir(stCnt, jl1, 1:4, 1:4))
-      rMaxes4(2:5, 1:4)   = rMaxw(stCnt, jl1,1:4, 1:4)
-      bs4(2:5, 1:4)       = hollBs(stCnt, jl1,1:4, 1:4)
+      rMaxes4(2:5, 1:4)   = rMaxw(stCnt, jl1, 1:4, 1:4)
+      bs4(2:5, 1:4)       = hollBs(stCnt, jl1, 1:4, 1:4)
       vmBL4(2:5, 1:4)     = vMaxesBL(stCnt, jl1, 1:4, 1:4)
 
-      CALL fitRmaxes4()
+      CALL FitRMaxes4()
 
       DO i = 1, np
         crmaxw1(i)     = spInterp(azimuth(i), dist(i), 1)
@@ -2857,7 +2810,7 @@ MODULE ParWind
       bs4(2:5, 1:4)       = hollBs(stCnt, jl2,1:4, 1:4)
       vmBL4(2:5, 1:4)     = vMaxesBL(stCnt, jl2, 1:4, 1:4)
 
-      CALL fitRmaxes4()
+      CALL FitRMaxes4()
 
       DO i = 1, np
         crmaxw2(i)     = spInterp(azimuth(i), dist(i), 1)
@@ -2891,30 +2844,6 @@ MODULE ParWind
       uTransNow = uTrans(stCnt, jl1) + wtratio * (uTrans(stCnt, jl2) - utrans(stCnt, jl1))
       vTransNow = vTrans(stCnt, jl1) + wtratio * (vTrans(stCnt, jl2) - vTrans(stCnt, jl1))
 
-      ! Arithmetic mean of the Rmax in the selected storm quadrants from
-      ! the selected isotachs
-      numRMaxes = 0.0_SZ ! count how many Rmax values we have to work with
-      DO i = 1, 4   ! loop quads
-        DO j = 1, 3 ! loop isotachs
-          IF (quadFlag(stCnt, jl1, i, j) == 1) THEN
-             oldVortexRMW = oldVortexRMW + rmaxw(stCnt, jl1, i, j)
-             numRMaxes = numRMaxes + 1.0_SZ
-          END IF
-        END DO
-      END DO
-      oldVortexRMW = oldVortexRMW / numRMaxes
-
-      numRMaxes = 0.0_SZ ! count how many Rmax values we have to work with
-      DO i = 1, 4  ! loop quads
-        DO j = 1, 3  ! loop isotachs
-          IF (quadFlag(stCnt, jl2, i, j) == 1) THEN
-            newVortexRMW = newVortexRMW + rmaxw(stCnt, jl2, i, j)
-            numRMaxes = numRMaxes + 1.0_SZ
-          END IF
-        END DO
-      END DO
-      newVortexRMW = newVortexRMW / numRMaxes
-
       !-------------------------------
       ! Create a new asymmetric hurricane vortex.
       !
@@ -2937,9 +2866,10 @@ MODULE ParWind
       stormMotionV = COS(dirNow / RAD2DEG) * stormMotion
       CALL setVortex(pn, pc, cLat, cLon)
 
+      !PV Need to account for multiple storms in the basin
       DO i = 1, np
         CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
-             cHollBs(i), cVmwBL(i),cPhiFactor(i),stormMotionU,  &
+             cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
       END DO
 
