@@ -18,10 +18,20 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -102,9 +116,13 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 &#160;
 
 <h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
+<li>add_cell()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a33cbac9cb533148ecd71dfb2cf972774">csv_module</a></li>
+<li>add_matrix()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a9aea10c998962d0ea34bc33a2e120707">csv_module</a></li>
+<li>add_vector()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a5f906bf5dc2331ba5654372a5d00fffc">csv_module</a></li>
 <li>airdensity()&#160;:&#160;<a class="el" href="d0/dda/namespacepahm__global.html#afa2b239f1665acd461276bf4722ff2de">pahm_global</a></li>
 <li>allmessage_1()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#aa47ab82c1278db0578d303d97d408924">pahm_messages</a></li>
 <li>allmessage_2()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a46370bbbd651ed45bb7a49926530310d">pahm_messages</a></li>
+<li>allocasymvortstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a13a3511750757644c7ab3dbeb92ca4a3">parwind</a></li>
 <li>allocatenodalandelementalarrays()&#160;:&#160;<a class="el" href="d2/dd9/namespacepahm__mesh.html#a3ac2350cf2b06f708810684f67950e69">pahm_mesh</a></li>
 <li>allocbtrstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a9b826e18db73886e01f39d55bf7e5b85">parwind</a></li>
 <li>allochollstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a7bbd86c1fc9b715f2dd8c8d340c6964c">parwind</a></li>
@@ -126,17 +144,19 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 
 
 <h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
-<li>calcintensitychange()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a2c7cf08c2619746ea1c60556b6487b35">pahm_vortex</a></li>
-<li>calcrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a580543eed13ec39a2d21135376a5f72a">pahm_vortex</a></li>
-<li>calcrmaxesfull()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a5f7ee771ea7ff74d85f4f431886bbffb">pahm_vortex</a></li>
+<li>calcintensitychange()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a9bcc2778159c3bcce3d559c793cf1fcf">pahm_vortex</a></li>
+<li>calcrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a8b8e9e59c6d25c54f87fbd516c0d6ee0">pahm_vortex</a></li>
+<li>calcrmaxesfull()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a4aa80220bd5616d4d2f267e48bfe3861">pahm_vortex</a></li>
 <li>charunique()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a241eabd46f9d0e4a26adc221570ad79f">utilities</a></li>
 <li>checkcontrolfileinputs()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a1e2f2593103f415e1c073284ff95a83f">utilities</a></li>
+<li>close_csv_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a72faedce1f37b151ba5ded34a908f701">csv_module</a></li>
 <li>closelogfile()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#ac4e3ac4677b30069fdf8e71c1c6445d4">pahm_messages</a></li>
 <li>comparedoublereals()&#160;:&#160;<a class="el" href="d0/dee/namespacepahm__sizes.html#a147e8c42dc40888b4d1bbfb29ceb65fb">pahm_sizes</a></li>
 <li>comparesinglereals()&#160;:&#160;<a class="el" href="d0/dee/namespacepahm__sizes.html#a4b43a656d83547f88e80147de3e78e53">pahm_sizes</a></li>
 <li>convlon()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a7c756f058ce3e335cd942877a0217a08">utilities</a></li>
 <li>cpptogeo_1d()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a975d96b5387531bcf6b6993cd476c51e">utilities</a></li>
 <li>cpptogeo_scalar()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a0e78cb7bc0913f6070986b017d32fb08">utilities</a></li>
+<li>csv_get_value()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a650414ac2ed01f87425f588c2daba839">csv_module</a></li>
 </ul>
 
 
@@ -144,8 +164,10 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <li>datetime2string()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a565d549493d69e2c9ea5b7af18247df5">timedateutils</a></li>
 <li>dayofyear()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a82e2ed05beb5d53c80fb1c863b6934fc">timedateutils</a></li>
 <li>dayofyeartogreg()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a86f68bd48786e32c535b0564f3bdea5c">timedateutils</a></li>
+<li>deallocasymvortstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a7ef7c703a8b49ca555541ebb59f20a76">parwind</a></li>
 <li>deallocbtrstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#af91396f17ff340762da3b6da495fa690">parwind</a></li>
 <li>deallochollstruct()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a0ed4ae2d2927c042da5b0f3df42f5ef8">parwind</a></li>
+<li>destroy_csv_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a9f0d01443b014f24b77dcd733024853d">csv_module</a></li>
 <li>drealscan()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#ac6d4fd461bd13f1ca73e75038fd09fc9">utilities</a></li>
 <li>dvalstr()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#aad75f7f3cadcd2677693859a6d525ba2">utilities</a></li>
 </ul>
@@ -158,10 +180,10 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 
 
 <h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
-<li>fang()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ac953414ecaf1b96028c4258cb011658d">pahm_vortex</a></li>
+<li>fang()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a4d3964bc688515cb90cce06075736a3e">pahm_vortex</a></li>
 <li>findroot()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a24ea19697c70ab6e010e36a71faefcbc">pahm_vortex</a></li>
-<li>fitrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a057b1daa57ff7309fe0c66eae712d258">pahm_vortex</a></li>
-<li>fitrmaxes4()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#adaad3a34592cbf6503b8817c4be1b6fd">pahm_vortex</a></li>
+<li>fitrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a0f13790ce7521fa4fc3a704b89c79c69">pahm_vortex</a></li>
+<li>fitrmaxes4()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a5a31eb08b00f4f789596959da9447049">pahm_vortex</a></li>
 <li>fixnearwholedoublereal()&#160;:&#160;<a class="el" href="d0/dee/namespacepahm__sizes.html#a3239d3c5bf5f30554b9c68f39c2ce32b">pahm_sizes</a></li>
 <li>fixnearwholesinglereal()&#160;:&#160;<a class="el" href="d0/dee/namespacepahm__sizes.html#a4472044c53b98880a96871c4d4dc8f1b">pahm_sizes</a></li>
 </ul>
@@ -170,19 +192,29 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
 <li>geotocpp_1d()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#aed263ca845c3927079dc88493190e915">utilities</a></li>
 <li>geotocpp_scalar()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#aea170adb23141b079617bc2824d32d47">utilities</a></li>
+<li>get_character_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a927fb75f11713d7777f1fe0193300074">csv_module</a></li>
+<li>get_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a28b52781aaa2a9871c5d70181f40d6f0">csv_module</a></li>
+<li>get_csv_data_as_str()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a3a80796da0c4249bd569bb195e91f0da">csv_module</a></li>
+<li>get_csv_string_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a5a4ceefb76bd849ea02ae885ae197594">csv_module</a></li>
+<li>get_header_csv_str()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a0218de64ca7fa8dc49fae600c20139eb">csv_module</a></li>
+<li>get_header_str()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#aa05825295e68549013e1583d97322663">csv_module</a></li>
+<li>get_integer_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a9847f10986d9a798bbe51ab9c092ede2">csv_module</a></li>
+<li>get_logical_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a791a2afbb75c69e6cd2cff20f41be9c5">csv_module</a></li>
+<li>get_real_column()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a930d4cf8629ce9f0ee7cc45c7e3ab5a3">csv_module</a></li>
+<li>getgahmfields()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#ad79f0c20f27839cc6d7f50d7d1698b7c">parwind</a></li>
 <li>gethollandfields()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#ad2cf2a3c40591a24959e6dd126066294">parwind</a></li>
-<li>getlatestangle()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a936cc297a827f7c645bc265e4f53f66c">pahm_vortex</a></li>
-<li>getlatestrmax()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ac03267d57521ba6131e172157e13012d">pahm_vortex</a></li>
+<li>getlatestangle()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a0daa576207da1ada8f518014e142749d">pahm_vortex</a></li>
+<li>getlatestrmax()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a98090dcce169d097d6e1ac1fb60517df">pahm_vortex</a></li>
 <li>getlinerecord()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a8723656afba63e33ed1c6cc8e5440b63">utilities</a></li>
 <li>getlocandratio()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a35b859c005e3b9cc063bdc46a1675159">utilities</a></li>
-<li>getphifactors()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#abb7c7e54b03cd6f403c01f93d049a9d1">pahm_vortex</a></li>
+<li>getphifactors()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a50a6a2176317ad8726e41c879aa369ca">pahm_vortex</a></li>
 <li>getprogramcmdlargs()&#160;:&#160;<a class="el" href="de/d07/namespacepahm__drivermod.html#a3294ddc68b72ff9220010a8764a8afe3">pahm_drivermod</a></li>
-<li>getrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ab7cd240c554d0b57cbd5980646414ba4">pahm_vortex</a></li>
-<li>getshapeparameter()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#acdebbf3bff175f8a57b0bbfaf1540b5b">pahm_vortex</a></li>
-<li>getshapeparameters()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a6a318caea255e63a0974363afb650978">pahm_vortex</a></li>
+<li>getrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a49b70ea3a709e8aca72137cb61cda8fe">pahm_vortex</a></li>
+<li>getshapeparameter()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ae27ba7661c30ad1c20c0d6cb6f0b5e44">pahm_vortex</a></li>
+<li>getshapeparameters()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ab942e7c7cd5894dcefe967e609d9ab67">pahm_vortex</a></li>
 <li>gettimeconvsec()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b">timedateutils</a></li>
-<li>getusequadrantvr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a632207c65211e9337eb3f016f274558d">pahm_vortex</a></li>
-<li>getvmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aba997224fa8147c6bdd36326ed510fbf">pahm_vortex</a></li>
+<li>getusequadrantvr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a7ec34dd62a9f644c1e235bb030bcb312">pahm_vortex</a></li>
+<li>getvmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#acc3d1bbecfc799064da25d4f79a84c72">pahm_vortex</a></li>
 <li>gregtojulday2()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a13cdb1276bdd39ad969c4e3cf8747a86">timedateutils</a></li>
 <li>gregtojuldayisec()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#aef55e36ba18ec5b170232411ab9bca4b">timedateutils</a></li>
 <li>gregtojuldayrsec()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#ae97abca6832e55ab454ebcd9d81ea02e">timedateutils</a></li>
@@ -195,10 +227,11 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <li>indexxint8()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a71ecf74a3285fdc541c1568239a0f14f">sortutils</a></li>
 <li>indexxsingle()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a60b2d53d05f8973577d0e193b05b4993">sortutils</a></li>
 <li>indexxstring()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a818ba4d77bf55b1b9e171e1c00924d55">sortutils</a></li>
+<li>infer_variable_type()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#ab0bfadc5d97513c62e333b32957398fb">csv_module</a></li>
 <li>initadcircnetcdfoutfile()&#160;:&#160;<a class="el" href="da/dd1/namespacepahm__netcdfio.html#a21917504b7e9d5594375d1a48bb4cb8f">pahm_netcdfio</a></li>
 <li>initialize_csv_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a9813e1ff838ed6024c464bb5c443bada">csv_module</a></li>
 <li>initlogging()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#ad2fb6cca6853de16ee45c8cdebe6190a">pahm_messages</a></li>
-<li>interpr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a27ef69f6ab3e859d5f3f55d0d34b6a02">pahm_vortex</a></li>
+<li>interpr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#abd4f842d9803153921d04e4113b58889">pahm_vortex</a></li>
 <li>intscan()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a26a70a9de90e0016d323e4c8dbea1a5b">utilities</a></li>
 <li>intvalstr()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a2a5c60da3dadf9f6ef913709c07dbee7">utilities</a></li>
 </ul>
@@ -228,12 +261,15 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <h3><a id="index_n" name="index_n"></a>- n -</h3><ul>
 <li>netcdfterminate()&#160;:&#160;<a class="el" href="da/dd1/namespacepahm__netcdfio.html#aa0987122588b6ef883046848cfcefe0b">pahm_netcdfio</a></li>
 <li>newadcircnetcdfoutfile()&#160;:&#160;<a class="el" href="da/dd1/namespacepahm__netcdfio.html#a850b1df36d9d2d229b8b03f0558c3703">pahm_netcdfio</a></li>
-<li>newvortex()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a0d6e7c14014a6e29428891858e9a62ef">pahm_vortex</a></li>
-<li>newvortexfull()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aa3e39ffdec786880d02ec45c22b4e927">pahm_vortex</a></li>
+<li>newvortex()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a39900375b1f6025119b1b97a00cebf04">pahm_vortex</a></li>
+<li>newvortexfull()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a2068d15c97a85bd4476a4522c233820e">pahm_vortex</a></li>
+<li>next_row()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#ae6c3b03771db0b519b02d9a2340e535a">csv_module</a></li>
+<li>number_of_lines_in_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a01c25fb47f1e50e51438d5b7661ad07a">csv_module</a></li>
 </ul>
 
 
 <h3><a id="index_o" name="index_o"></a>- o -</h3><ul>
+<li>open_csv_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#acf38cf051c567059f8f14fc09323e7d7">csv_module</a></li>
 <li>openfileforread()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a2a41067ed5533ec0c36318e8f1e960bf">utilities</a></li>
 <li>openlogfile()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a4856e55c31868efd23b7f6ca723004e5">pahm_messages</a></li>
 </ul>
@@ -246,6 +282,7 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <li>parseline()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#ab30d13ba0fcebcb933a30be2237ec162">utilities</a></li>
 <li>preprocessdatetimestring()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a2561d57f398381d56d2fa94f5f9a1147">timedateutils</a></li>
 <li>printmodelparams()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a57953a3306e17ea2e28254e3d2091516">utilities</a></li>
+<li>processasymmetricvortexdata()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#ac27ad597b28ef7e2b0f2eba529c0c3a2">parwind</a></li>
 <li>processhollanddata()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a6efcf8be68b268f0a6d92ceb5f8c6f41">parwind</a></li>
 <li>programhelp()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a0bf7cabdd36155ddc9946687defee4ff">pahm_messages</a></li>
 <li>programversion()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a339ae583dc62f85245ae10374b0c677f">pahm_messages</a></li>
@@ -258,13 +295,15 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 
 
 <h3><a id="index_r" name="index_r"></a>- r -</h3><ul>
+<li>read_csv_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a95642923259cb41370798af573c1babc">csv_module</a></li>
+<li>read_line_from_file()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a2525b4dc1e22fe51898bc6d8018c41c5">csv_module</a></li>
 <li>readbesttrackfile()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#abae6c098afd2135918a478b6b7b20673">parwind</a></li>
 <li>readcontrolfile()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#ab095172ef12ae151ab5c9aacf82f4dc6">utilities</a></li>
 <li>readcsvbesttrackfile()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a75c722a5d8fdb18014543923d7e4dcca">parwind</a></li>
 <li>readmesh()&#160;:&#160;<a class="el" href="d2/dd9/namespacepahm__mesh.html#a6fd7801e4cbacfd2a7ce61c0fb31073c">pahm_mesh</a></li>
 <li>readmeshasciifort14()&#160;:&#160;<a class="el" href="d2/dd9/namespacepahm__mesh.html#af53257d02ceb6ebe4349de40187496d6">pahm_mesh</a></li>
 <li>realscan()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a3101905bb797cb61841b9a73bbc419bb">utilities</a></li>
-<li>rmw()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ae5616e321c85eb04b486fa78ea556773">pahm_vortex</a></li>
+<li>rmw()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a50a8918951ce464c2fb1174a44068be5">pahm_vortex</a></li>
 <li>rotate()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a7fc78bcdd0071e81581505ac558c0e27">pahm_vortex</a></li>
 </ul>
 
@@ -272,16 +311,17 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
 <li>screenmessage_1()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a5572ed7e47d76c06eaf6a63775b4e508">pahm_messages</a></li>
 <li>screenmessage_2()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#ad2147826ba7ea43c9bbeeb651f522385">pahm_messages</a></li>
-<li>setisotachradii()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a7ad967d7396daacf3ef95f295de84820">pahm_vortex</a></li>
-<li>setisotachwindspeeds()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a68419bdad6df6ac19750abe443efaaf2">pahm_vortex</a></li>
+<li>setisotachradii()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aaab97c7e261e40b1326920c6ea427f2d">pahm_vortex</a></li>
+<li>setisotachwindspeed()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a2e071f1fb9f280e8bea7fde3dfe12ea1">pahm_vortex</a></li>
+<li>setisotachwindspeeds()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ae829eb4bd86cf66b7417dd8c135cd14c">pahm_vortex</a></li>
 <li>setmessagesource()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c">pahm_messages</a></li>
 <li>setrecordcounterandstoretime()&#160;:&#160;<a class="el" href="da/dd1/namespacepahm__netcdfio.html#a9247da765972aa9c8c5b0d116238416f">pahm_netcdfio</a></li>
-<li>setrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#afec35a32a17a3ef20b24c8a693200dd0">pahm_vortex</a></li>
-<li>setshapeparameter()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a032db54f236d415cab607757db794ba3">pahm_vortex</a></li>
-<li>setusequadrantvr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a57aabcc3f59fcf7075aa0f34d35cf312">pahm_vortex</a></li>
-<li>setusevmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a7e71325e734bf727749e63f1d2992b3a">pahm_vortex</a></li>
-<li>setvmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#adb1d4d61cb0809eb699973ec567239d3">pahm_vortex</a></li>
-<li>setvortex()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#afb46a3a7951e556063be8ec3d95a02b4">pahm_vortex</a></li>
+<li>setrmaxes()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a6ac42021ebc990ab658690351f56122d">pahm_vortex</a></li>
+<li>setshapeparameter()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a1bf0351187fc578afaf4de1c3a752b70">pahm_vortex</a></li>
+<li>setusequadrantvr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a2babf5c497b67cb302ce24a444d46b69">pahm_vortex</a></li>
+<li>setusevmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aa71f92eb0375994452c5d67fe09a906c">pahm_vortex</a></li>
+<li>setvmaxesbl()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a599c0f12ed25a3614a8d819202840888">pahm_vortex</a></li>
+<li>setvortex()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aec49ae4ff8d891838b8406c4bdda4315">pahm_vortex</a></li>
 <li>sort2()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a9ede2e4d77a01ef0a1c54e8dc4cf3b35">sortutils</a></li>
 <li>sort_ascending()&#160;:&#160;<a class="el" href="dc/d33/namespacecsv__utilities.html#a07f2d0f6e53440f20e140a6c90f8ab2f">csv_utilities</a></li>
 <li>sphericaldistance_1d()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a65f6dec547eb8e07b61b2222f2427d60">utilities</a></li>
@@ -289,11 +329,13 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <li>sphericaldistance_scalar()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#aacad1715b8a79f2e07520316fe552236">utilities</a></li>
 <li>sphericaldistanceharv()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a2e123da7ff9aefba8edc1e32d89bc172">utilities</a></li>
 <li>sphericalfracpoint()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a0ef8b9a5f7a0aac72618c3e7b05adf44">utilities</a></li>
-<li>spinterp()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a096ca385730b45c246bbbf997a6e8b48">pahm_vortex</a></li>
+<li>spinterp()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a36692ff3ecdbb6e597657d579df88a12">pahm_vortex</a></li>
+<li>split()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a93688c838159ffaf313d24b71dff1c2b">csv_module</a></li>
 <li>splitdate()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a6954898ee8b7d8be2df0b30c0c167c87">timedateutils</a></li>
 <li>splitdatetimestring()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#aea0cae13558be0360a240895e12f0265">timedateutils</a></li>
 <li>splitdatetimestring2()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#aefc8d34ba419aa2d839266b9ccb355b7">timedateutils</a></li>
 <li>stringlexcomp()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a7822b9599be6b22fd49ba0ad285bc3f9">sortutils</a></li>
+<li>swap()&#160;:&#160;<a class="el" href="dc/d33/namespacecsv__utilities.html#ad5588bf7cfadb052191fa2d0c82265c8">csv_utilities</a></li>
 <li>swapdouble()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a7961c8e1a4388802af9461d77e17db0c">sortutils</a></li>
 <li>swapdoublevec()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a4ca8f6baf733365b2949165cc4e178b2">sortutils</a></li>
 <li>swapint()&#160;:&#160;<a class="el" href="db/d34/namespacesortutils.html#a38ea05ad4de58f84a113df331a89a6c3">sortutils</a></li>
@@ -307,6 +349,10 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <li>terminate()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#a8fdeeba7e0469ebda6435518f619444b">pahm_messages</a></li>
 <li>timeconvisec()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#aecff7363d62093ca61c250308c44d81f">timedateutils</a></li>
 <li>timeconvrsec()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a06ba200273d53bc52c89a983537e00df">timedateutils</a></li>
+<li>to_integer()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a6be3694bd93818db748eba1dfbedbbc8">csv_module</a></li>
+<li>to_logical()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#afdb32ff9495b79418037e3fae406e67f">csv_module</a></li>
+<li>to_real()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#afa16fb149f3106c9326e9c31a8bb083f">csv_module</a></li>
+<li>tokenize_csv_line()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#a72b45c18168ec635068da3c5e6241288">csv_module</a></li>
 <li>tolowercase()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a376978b945cbdf5d33ff8bf905d19866">utilities</a></li>
 <li>touppercase()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd">utilities</a></li>
 </ul>
@@ -315,15 +361,17 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
 <li>unique()&#160;:&#160;<a class="el" href="dc/d33/namespacecsv__utilities.html#a6c1f008f2a5f0ec6727aa9627a9e7bc4">csv_utilities</a></li>
 <li>unsetmessagesource()&#160;:&#160;<a class="el" href="d4/d3b/namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc">pahm_messages</a></li>
-<li>uvp()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a90ff68ab89a00a014a2429d42758a3f5">pahm_vortex</a></li>
-<li>uvpr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#add2e19299be51bde3c016c4702653eb0">pahm_vortex</a></li>
-<li>uvtrans()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a68cd3f6ceb40446c3c0c6d192f8b61bb">pahm_vortex</a></li>
-<li>uvtranspoint()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ab5519766ad94937768730d763a1b60ea">pahm_vortex</a></li>
+<li>upp()&#160;:&#160;<a class="el" href="d4/d19/namespacetimedateutils.html#a09a914846a02d3d430348f83c67d58b5">timedateutils</a></li>
+<li>uvp()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aab234ce6758e2aa3ce44a3ff0f19c1f6">pahm_vortex</a></li>
+<li>uvpr()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#aa42dc3ab759309e12cbb96f3eb1357c4">pahm_vortex</a></li>
+<li>uvtrans()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ac9c0f4fcac5fb2067133acb366bae984">pahm_vortex</a></li>
+<li>uvtranspoint()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a152bcd63167a2f915475a55f5b4d9f2e">pahm_vortex</a></li>
 </ul>
 
 
 <h3><a id="index_v" name="index_v"></a>- v -</h3><ul>
 <li>valstr()&#160;:&#160;<a class="el" href="d2/d96/namespaceutilities.html#af02043c76be30cc5e092ffaf0e28fb6d">utilities</a></li>
+<li>variable_types()&#160;:&#160;<a class="el" href="d3/d46/namespacecsv__module.html#ace66eaa8da32c4eadee2b6bac017bdc9">csv_module</a></li>
 <li>vhnocori()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a758504d51e519dac32d8146e79fccd2c">pahm_vortex</a></li>
 <li>vhwithcori()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a1e9c82cf5fb1c37ebd0629060e93d5fa">pahm_vortex</a></li>
 <li>vhwithcorifull()&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39">pahm_vortex</a></li>
@@ -331,7 +379,8 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 
 
 <h3><a id="index_w" name="index_w"></a>- w -</h3><ul>
-<li>writebesttrackdata()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a7a4d6eb0de8c960ffd29e8705b11e707">parwind</a></li>
+<li>writeasymmetricvortexdata()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#af04c6a174b50bd3f2995936289522213">parwind</a></li>
+<li>writebesttrackdata()&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#a7989fce3f35ac76cf6c9a81eed22a3b7">parwind</a></li>
 <li>writenetcdfrecord()&#160;:&#160;<a class="el" href="da/dd1/namespacepahm__netcdfio.html#aaf8d794ff0adcfbca0e2d13c8b71162a">pahm_netcdfio</a></li>
 </ul>
 
@@ -344,7 +393,7 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html',''); initR
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

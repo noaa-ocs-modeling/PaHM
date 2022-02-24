@@ -18,10 +18,20 @@
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="../../search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="../../search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "../../search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="../../menudata.js"></script>
-<script type="text/javascript" src="../../menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('../../',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -116,85 +130,87 @@ Modules</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
-<tr class="memitem:a2c7cf08c2619746ea1c60556b6487b35"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a2c7cf08c2619746ea1c60556b6487b35">pahm_vortex::calcintensitychange</a> (var, times, calcInt, status, order)</td></tr>
-<tr class="memdesc:a2c7cf08c2619746ea1c60556b6487b35"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the intensity time change of a variable using second order mumerical accuracy and uneven spacing.  <a href="../../de/d94/namespacepahm__vortex.html#a2c7cf08c2619746ea1c60556b6487b35">More...</a><br /></td></tr>
-<tr class="separator:a2c7cf08c2619746ea1c60556b6487b35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68cd3f6ceb40446c3c0c6d192f8b61bb"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a68cd3f6ceb40446c3c0c6d192f8b61bb">pahm_vortex::uvtrans</a> (lat, lon, times, u, v, status, order)</td></tr>
-<tr class="memdesc:a68cd3f6ceb40446c3c0c6d192f8b61bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the translational velocity of a moving hurricane using second order mumerical accuracy and uneven spacing.  <a href="../../de/d94/namespacepahm__vortex.html#a68cd3f6ceb40446c3c0c6d192f8b61bb">More...</a><br /></td></tr>
-<tr class="separator:a68cd3f6ceb40446c3c0c6d192f8b61bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5519766ad94937768730d763a1b60ea"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ab5519766ad94937768730d763a1b60ea">pahm_vortex::uvtranspoint</a> (lat1, lon1, lat2, lon2, time1, time2, u, v)</td></tr>
-<tr class="memdesc:ab5519766ad94937768730d763a1b60ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the translational velocity of a moving hurricane.  <a href="../../de/d94/namespacepahm__vortex.html#ab5519766ad94937768730d763a1b60ea">More...</a><br /></td></tr>
-<tr class="separator:ab5519766ad94937768730d763a1b60ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d6e7c14014a6e29428891858e9a62ef"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a0d6e7c14014a6e29428891858e9a62ef">pahm_vortex::newvortex</a> (pinf, p0, lat, lon, vm)</td></tr>
-<tr class="memdesc:a0d6e7c14014a6e29428891858e9a62ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#a0d6e7c14014a6e29428891858e9a62ef">More...</a><br /></td></tr>
-<tr class="separator:a0d6e7c14014a6e29428891858e9a62ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3e39ffdec786880d02ec45c22b4e927"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aa3e39ffdec786880d02ec45c22b4e927">pahm_vortex::newvortexfull</a> (pinf, p0, lat, lon, vm)</td></tr>
-<tr class="memdesc:aa3e39ffdec786880d02ec45c22b4e927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#aa3e39ffdec786880d02ec45c22b4e927">More...</a><br /></td></tr>
-<tr class="separator:aa3e39ffdec786880d02ec45c22b4e927"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb46a3a7951e556063be8ec3d95a02b4"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#afb46a3a7951e556063be8ec3d95a02b4">pahm_vortex::setvortex</a> (pinf, p0, lat, lon)</td></tr>
-<tr class="memdesc:afb46a3a7951e556063be8ec3d95a02b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets basic parameters for a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#afb46a3a7951e556063be8ec3d95a02b4">More...</a><br /></td></tr>
-<tr class="separator:afb46a3a7951e556063be8ec3d95a02b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afec35a32a17a3ef20b24c8a693200dd0"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#afec35a32a17a3ef20b24c8a693200dd0">pahm_vortex::setrmaxes</a> (rMaxW)</td></tr>
-<tr class="separator:afec35a32a17a3ef20b24c8a693200dd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7cd240c554d0b57cbd5980646414ba4"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ab7cd240c554d0b57cbd5980646414ba4">pahm_vortex::getrmaxes</a> (rMaxW)</td></tr>
-<tr class="separator:ab7cd240c554d0b57cbd5980646414ba4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a580543eed13ec39a2d21135376a5f72a"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a580543eed13ec39a2d21135376a5f72a">pahm_vortex::calcrmaxes</a> ()</td></tr>
-<tr class="memdesc:a580543eed13ec39a2d21135376a5f72a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a580543eed13ec39a2d21135376a5f72a">More...</a><br /></td></tr>
-<tr class="separator:a580543eed13ec39a2d21135376a5f72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f7ee771ea7ff74d85f4f431886bbffb"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a5f7ee771ea7ff74d85f4f431886bbffb">pahm_vortex::calcrmaxesfull</a> ()</td></tr>
-<tr class="memdesc:a5f7ee771ea7ff74d85f4f431886bbffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a5f7ee771ea7ff74d85f4f431886bbffb">More...</a><br /></td></tr>
-<tr class="separator:a5f7ee771ea7ff74d85f4f431886bbffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a057b1daa57ff7309fe0c66eae712d258"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a057b1daa57ff7309fe0c66eae712d258">pahm_vortex::fitrmaxes</a> ()</td></tr>
-<tr class="memdesc:a057b1daa57ff7309fe0c66eae712d258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the coefficients that fit the given radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a057b1daa57ff7309fe0c66eae712d258">More...</a><br /></td></tr>
-<tr class="separator:a057b1daa57ff7309fe0c66eae712d258"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaad3a34592cbf6503b8817c4be1b6fd"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#adaad3a34592cbf6503b8817c4be1b6fd">pahm_vortex::fitrmaxes4</a> ()</td></tr>
-<tr class="separator:adaad3a34592cbf6503b8817c4be1b6fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb1d4d61cb0809eb699973ec567239d3"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#adb1d4d61cb0809eb699973ec567239d3">pahm_vortex::setvmaxesbl</a> (vMaxW)</td></tr>
-<tr class="separator:adb1d4d61cb0809eb699973ec567239d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba997224fa8147c6bdd36326ed510fbf"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aba997224fa8147c6bdd36326ed510fbf">pahm_vortex::getvmaxesbl</a> (vMaxW)</td></tr>
-<tr class="separator:aba997224fa8147c6bdd36326ed510fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e71325e734bf727749e63f1d2992b3a"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a7e71325e734bf727749e63f1d2992b3a">pahm_vortex::setusevmaxesbl</a> (u)</td></tr>
-<tr class="separator:a7e71325e734bf727749e63f1d2992b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a032db54f236d415cab607757db794ba3"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a032db54f236d415cab607757db794ba3">pahm_vortex::setshapeparameter</a> (param)</td></tr>
-<tr class="separator:a032db54f236d415cab607757db794ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdebbf3bff175f8a57b0bbfaf1540b5b"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#acdebbf3bff175f8a57b0bbfaf1540b5b">pahm_vortex::getshapeparameter</a> ()</td></tr>
-<tr class="separator:acdebbf3bff175f8a57b0bbfaf1540b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a318caea255e63a0974363afb650978"><td class="memItemLeft" align="right" valign="top">real(sz) function, dimension(4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a6a318caea255e63a0974363afb650978">pahm_vortex::getshapeparameters</a> ()</td></tr>
-<tr class="separator:a6a318caea255e63a0974363afb650978"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb7c7e54b03cd6f403c01f93d049a9d1"><td class="memItemLeft" align="right" valign="top">real(sz) function, dimension(4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#abb7c7e54b03cd6f403c01f93d049a9d1">pahm_vortex::getphifactors</a> ()</td></tr>
-<tr class="separator:abb7c7e54b03cd6f403c01f93d049a9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ad967d7396daacf3ef95f295de84820"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a7ad967d7396daacf3ef95f295de84820">pahm_vortex::setisotachradii</a> (ir)</td></tr>
-<tr class="separator:a7ad967d7396daacf3ef95f295de84820"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68419bdad6df6ac19750abe443efaaf2"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a68419bdad6df6ac19750abe443efaaf2">pahm_vortex::setisotachwindspeeds</a> (vrQ)</td></tr>
-<tr class="separator:a68419bdad6df6ac19750abe443efaaf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57aabcc3f59fcf7075aa0f34d35cf312"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a57aabcc3f59fcf7075aa0f34d35cf312">pahm_vortex::setusequadrantvr</a> (u)</td></tr>
-<tr class="separator:a57aabcc3f59fcf7075aa0f34d35cf312"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a632207c65211e9337eb3f016f274558d"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a632207c65211e9337eb3f016f274558d">pahm_vortex::getusequadrantvr</a> ()</td></tr>
-<tr class="separator:a632207c65211e9337eb3f016f274558d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a096ca385730b45c246bbbf997a6e8b48"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a096ca385730b45c246bbbf997a6e8b48">pahm_vortex::spinterp</a> (angle, dist, opt)</td></tr>
-<tr class="memdesc:a096ca385730b45c246bbbf997a6e8b48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial Interpolation function based on angle and r.  <a href="../../de/d94/namespacepahm__vortex.html#a096ca385730b45c246bbbf997a6e8b48">More...</a><br /></td></tr>
-<tr class="separator:a096ca385730b45c246bbbf997a6e8b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27ef69f6ab3e859d5f3f55d0d34b6a02"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a27ef69f6ab3e859d5f3f55d0d34b6a02">pahm_vortex::interpr</a> (quadVal, quadSel, quadDis)</td></tr>
-<tr class="separator:a27ef69f6ab3e859d5f3f55d0d34b6a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5616e321c85eb04b486fa78ea556773"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ae5616e321c85eb04b486fa78ea556773">pahm_vortex::rmw</a> (angle)</td></tr>
-<tr class="memdesc:ae5616e321c85eb04b486fa78ea556773"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the radius of maximum winds.  <a href="../../de/d94/namespacepahm__vortex.html#ae5616e321c85eb04b486fa78ea556773">More...</a><br /></td></tr>
-<tr class="separator:ae5616e321c85eb04b486fa78ea556773"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90ff68ab89a00a014a2429d42758a3f5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a90ff68ab89a00a014a2429d42758a3f5">pahm_vortex::uvp</a> (lat, lon, uTrans, vTrans, u, v, p)</td></tr>
-<tr class="memdesc:a90ff68ab89a00a014a2429d42758a3f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model.  <a href="../../de/d94/namespacepahm__vortex.html#a90ff68ab89a00a014a2429d42758a3f5">More...</a><br /></td></tr>
-<tr class="separator:a90ff68ab89a00a014a2429d42758a3f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add2e19299be51bde3c016c4702653eb0"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#add2e19299be51bde3c016c4702653eb0">pahm_vortex::uvpr</a> (iDist, iAngle, iRmx, iRmxTrue, iB, iVm, iPhi, uTrans, vTrans, geof, u, v, p)</td></tr>
-<tr class="memdesc:add2e19299be51bde3c016c4702653eb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model.  <a href="../../de/d94/namespacepahm__vortex.html#add2e19299be51bde3c016c4702653eb0">More...</a><br /></td></tr>
-<tr class="separator:add2e19299be51bde3c016c4702653eb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac953414ecaf1b96028c4258cb011658d"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ac953414ecaf1b96028c4258cb011658d">pahm_vortex::fang</a> (r, rmx)</td></tr>
-<tr class="memdesc:ac953414ecaf1b96028c4258cb011658d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a wind angle to parameterize frictional inflow across isobars.  <a href="../../de/d94/namespacepahm__vortex.html#ac953414ecaf1b96028c4258cb011658d">More...</a><br /></td></tr>
-<tr class="separator:ac953414ecaf1b96028c4258cb011658d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bcc2778159c3bcce3d559c793cf1fcf"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a9bcc2778159c3bcce3d559c793cf1fcf">pahm_vortex::calcintensitychange</a> (var, times, calcInt, status, order)</td></tr>
+<tr class="memdesc:a9bcc2778159c3bcce3d559c793cf1fcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the intensity time change of a variable using second order mumerical accuracy and uneven spacing.  <a href="../../de/d94/namespacepahm__vortex.html#a9bcc2778159c3bcce3d559c793cf1fcf">More...</a><br /></td></tr>
+<tr class="separator:a9bcc2778159c3bcce3d559c793cf1fcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c0f4fcac5fb2067133acb366bae984"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ac9c0f4fcac5fb2067133acb366bae984">pahm_vortex::uvtrans</a> (lat, lon, times, u, v, status, order)</td></tr>
+<tr class="memdesc:ac9c0f4fcac5fb2067133acb366bae984"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the translational velocity of a moving hurricane using second order mumerical accuracy and uneven spacing.  <a href="../../de/d94/namespacepahm__vortex.html#ac9c0f4fcac5fb2067133acb366bae984">More...</a><br /></td></tr>
+<tr class="separator:ac9c0f4fcac5fb2067133acb366bae984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a152bcd63167a2f915475a55f5b4d9f2e"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a152bcd63167a2f915475a55f5b4d9f2e">pahm_vortex::uvtranspoint</a> (lat1, lon1, lat2, lon2, time1, time2, u, v)</td></tr>
+<tr class="memdesc:a152bcd63167a2f915475a55f5b4d9f2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This subroutine calculates the translational velocity of a moving hurricane.  <a href="../../de/d94/namespacepahm__vortex.html#a152bcd63167a2f915475a55f5b4d9f2e">More...</a><br /></td></tr>
+<tr class="separator:a152bcd63167a2f915475a55f5b4d9f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39900375b1f6025119b1b97a00cebf04"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a39900375b1f6025119b1b97a00cebf04">pahm_vortex::newvortex</a> (pinf, p0, lat, lon, vm)</td></tr>
+<tr class="memdesc:a39900375b1f6025119b1b97a00cebf04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#a39900375b1f6025119b1b97a00cebf04">More...</a><br /></td></tr>
+<tr class="separator:a39900375b1f6025119b1b97a00cebf04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2068d15c97a85bd4476a4522c233820e"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a2068d15c97a85bd4476a4522c233820e">pahm_vortex::newvortexfull</a> (pinf, p0, lat, lon, vm)</td></tr>
+<tr class="memdesc:a2068d15c97a85bd4476a4522c233820e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#a2068d15c97a85bd4476a4522c233820e">More...</a><br /></td></tr>
+<tr class="separator:a2068d15c97a85bd4476a4522c233820e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec49ae4ff8d891838b8406c4bdda4315"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aec49ae4ff8d891838b8406c4bdda4315">pahm_vortex::setvortex</a> (pinf, p0, lat, lon)</td></tr>
+<tr class="memdesc:aec49ae4ff8d891838b8406c4bdda4315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets basic parameters for a new Vortex object.  <a href="../../de/d94/namespacepahm__vortex.html#aec49ae4ff8d891838b8406c4bdda4315">More...</a><br /></td></tr>
+<tr class="separator:aec49ae4ff8d891838b8406c4bdda4315"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ac42021ebc990ab658690351f56122d"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a6ac42021ebc990ab658690351f56122d">pahm_vortex::setrmaxes</a> (rMaxW)</td></tr>
+<tr class="separator:a6ac42021ebc990ab658690351f56122d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49b70ea3a709e8aca72137cb61cda8fe"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a49b70ea3a709e8aca72137cb61cda8fe">pahm_vortex::getrmaxes</a> (rMaxW)</td></tr>
+<tr class="separator:a49b70ea3a709e8aca72137cb61cda8fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b8e9e59c6d25c54f87fbd516c0d6ee0"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a8b8e9e59c6d25c54f87fbd516c0d6ee0">pahm_vortex::calcrmaxes</a> ()</td></tr>
+<tr class="memdesc:a8b8e9e59c6d25c54f87fbd516c0d6ee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a8b8e9e59c6d25c54f87fbd516c0d6ee0">More...</a><br /></td></tr>
+<tr class="separator:a8b8e9e59c6d25c54f87fbd516c0d6ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aa80220bd5616d4d2f267e48bfe3861"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a4aa80220bd5616d4d2f267e48bfe3861">pahm_vortex::calcrmaxesfull</a> ()</td></tr>
+<tr class="memdesc:a4aa80220bd5616d4d2f267e48bfe3861"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a4aa80220bd5616d4d2f267e48bfe3861">More...</a><br /></td></tr>
+<tr class="separator:a4aa80220bd5616d4d2f267e48bfe3861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f13790ce7521fa4fc3a704b89c79c69"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a0f13790ce7521fa4fc3a704b89c79c69">pahm_vortex::fitrmaxes</a> ()</td></tr>
+<tr class="memdesc:a0f13790ce7521fa4fc3a704b89c79c69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the coefficients that fit the given radius of maximum winds for all storm quadrants.  <a href="../../de/d94/namespacepahm__vortex.html#a0f13790ce7521fa4fc3a704b89c79c69">More...</a><br /></td></tr>
+<tr class="separator:a0f13790ce7521fa4fc3a704b89c79c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a31eb08b00f4f789596959da9447049"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a5a31eb08b00f4f789596959da9447049">pahm_vortex::fitrmaxes4</a> ()</td></tr>
+<tr class="separator:a5a31eb08b00f4f789596959da9447049"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a599c0f12ed25a3614a8d819202840888"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a599c0f12ed25a3614a8d819202840888">pahm_vortex::setvmaxesbl</a> (vMaxW)</td></tr>
+<tr class="separator:a599c0f12ed25a3614a8d819202840888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc3d1bbecfc799064da25d4f79a84c72"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#acc3d1bbecfc799064da25d4f79a84c72">pahm_vortex::getvmaxesbl</a> (vMaxW)</td></tr>
+<tr class="separator:acc3d1bbecfc799064da25d4f79a84c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa71f92eb0375994452c5d67fe09a906c"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aa71f92eb0375994452c5d67fe09a906c">pahm_vortex::setusevmaxesbl</a> (u)</td></tr>
+<tr class="separator:aa71f92eb0375994452c5d67fe09a906c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bf0351187fc578afaf4de1c3a752b70"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a1bf0351187fc578afaf4de1c3a752b70">pahm_vortex::setshapeparameter</a> (param)</td></tr>
+<tr class="separator:a1bf0351187fc578afaf4de1c3a752b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae27ba7661c30ad1c20c0d6cb6f0b5e44"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ae27ba7661c30ad1c20c0d6cb6f0b5e44">pahm_vortex::getshapeparameter</a> ()</td></tr>
+<tr class="separator:ae27ba7661c30ad1c20c0d6cb6f0b5e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab942e7c7cd5894dcefe967e609d9ab67"><td class="memItemLeft" align="right" valign="top">real(sz) function, dimension(4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ab942e7c7cd5894dcefe967e609d9ab67">pahm_vortex::getshapeparameters</a> ()</td></tr>
+<tr class="separator:ab942e7c7cd5894dcefe967e609d9ab67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a6a2176317ad8726e41c879aa369ca"><td class="memItemLeft" align="right" valign="top">real(sz) function, dimension(4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a50a6a2176317ad8726e41c879aa369ca">pahm_vortex::getphifactors</a> ()</td></tr>
+<tr class="separator:a50a6a2176317ad8726e41c879aa369ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaab97c7e261e40b1326920c6ea427f2d"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aaab97c7e261e40b1326920c6ea427f2d">pahm_vortex::setisotachradii</a> (ir)</td></tr>
+<tr class="separator:aaab97c7e261e40b1326920c6ea427f2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae829eb4bd86cf66b7417dd8c135cd14c"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ae829eb4bd86cf66b7417dd8c135cd14c">pahm_vortex::setisotachwindspeeds</a> (vrQ)</td></tr>
+<tr class="separator:ae829eb4bd86cf66b7417dd8c135cd14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e071f1fb9f280e8bea7fde3dfe12ea1"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a2e071f1fb9f280e8bea7fde3dfe12ea1">pahm_vortex::setisotachwindspeed</a> (sp)</td></tr>
+<tr class="separator:a2e071f1fb9f280e8bea7fde3dfe12ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2babf5c497b67cb302ce24a444d46b69"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a2babf5c497b67cb302ce24a444d46b69">pahm_vortex::setusequadrantvr</a> (u)</td></tr>
+<tr class="separator:a2babf5c497b67cb302ce24a444d46b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ec34dd62a9f644c1e235bb030bcb312"><td class="memItemLeft" align="right" valign="top">logical function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a7ec34dd62a9f644c1e235bb030bcb312">pahm_vortex::getusequadrantvr</a> ()</td></tr>
+<tr class="separator:a7ec34dd62a9f644c1e235bb030bcb312"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36692ff3ecdbb6e597657d579df88a12"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a36692ff3ecdbb6e597657d579df88a12">pahm_vortex::spinterp</a> (angle, dist, opt)</td></tr>
+<tr class="memdesc:a36692ff3ecdbb6e597657d579df88a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial Interpolation function based on angle and r.  <a href="../../de/d94/namespacepahm__vortex.html#a36692ff3ecdbb6e597657d579df88a12">More...</a><br /></td></tr>
+<tr class="separator:a36692ff3ecdbb6e597657d579df88a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd4f842d9803153921d04e4113b58889"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#abd4f842d9803153921d04e4113b58889">pahm_vortex::interpr</a> (quadVal, quadSel, quadDis)</td></tr>
+<tr class="separator:abd4f842d9803153921d04e4113b58889"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a8918951ce464c2fb1174a44068be5"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a50a8918951ce464c2fb1174a44068be5">pahm_vortex::rmw</a> (angle)</td></tr>
+<tr class="memdesc:a50a8918951ce464c2fb1174a44068be5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the radius of maximum winds.  <a href="../../de/d94/namespacepahm__vortex.html#a50a8918951ce464c2fb1174a44068be5">More...</a><br /></td></tr>
+<tr class="separator:a50a8918951ce464c2fb1174a44068be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab234ce6758e2aa3ce44a3ff0f19c1f6"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aab234ce6758e2aa3ce44a3ff0f19c1f6">pahm_vortex::uvp</a> (lat, lon, uTrans, vTrans, u, v, p)</td></tr>
+<tr class="memdesc:aab234ce6758e2aa3ce44a3ff0f19c1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model.  <a href="../../de/d94/namespacepahm__vortex.html#aab234ce6758e2aa3ce44a3ff0f19c1f6">More...</a><br /></td></tr>
+<tr class="separator:aab234ce6758e2aa3ce44a3ff0f19c1f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa42dc3ab759309e12cbb96f3eb1357c4"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aa42dc3ab759309e12cbb96f3eb1357c4">pahm_vortex::uvpr</a> (iDist, iAngle, iRmx, iRmxTrue, iB, iVm, iPhi, uTrans, vTrans, geof, u, v, p)</td></tr>
+<tr class="memdesc:aa42dc3ab759309e12cbb96f3eb1357c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model.  <a href="../../de/d94/namespacepahm__vortex.html#aa42dc3ab759309e12cbb96f3eb1357c4">More...</a><br /></td></tr>
+<tr class="separator:aa42dc3ab759309e12cbb96f3eb1357c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d3964bc688515cb90cce06075736a3e"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a4d3964bc688515cb90cce06075736a3e">pahm_vortex::fang</a> (r, rmx)</td></tr>
+<tr class="memdesc:a4d3964bc688515cb90cce06075736a3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a wind angle to parameterize frictional inflow across isobars.  <a href="../../de/d94/namespacepahm__vortex.html#a4d3964bc688515cb90cce06075736a3e">More...</a><br /></td></tr>
+<tr class="separator:a4d3964bc688515cb90cce06075736a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fc78bcdd0071e81581505ac558c0e27"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a7fc78bcdd0071e81581505ac558c0e27">pahm_vortex::rotate</a> (x, y, angle, whichWay, xr, yr)</td></tr>
 <tr class="memdesc:a7fc78bcdd0071e81581505ac558c0e27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotate a 2D vector (x, y) by an angle.  <a href="../../de/d94/namespacepahm__vortex.html#a7fc78bcdd0071e81581505ac558c0e27">More...</a><br /></td></tr>
 <tr class="separator:a7fc78bcdd0071e81581505ac558c0e27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac03267d57521ba6131e172157e13012d"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ac03267d57521ba6131e172157e13012d">pahm_vortex::getlatestrmax</a> ()</td></tr>
-<tr class="separator:ac03267d57521ba6131e172157e13012d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a936cc297a827f7c645bc265e4f53f66c"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a936cc297a827f7c645bc265e4f53f66c">pahm_vortex::getlatestangle</a> ()</td></tr>
-<tr class="separator:a936cc297a827f7c645bc265e4f53f66c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98090dcce169d097d6e1ac1fb60517df"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a98090dcce169d097d6e1ac1fb60517df">pahm_vortex::getlatestrmax</a> ()</td></tr>
+<tr class="separator:a98090dcce169d097d6e1ac1fb60517df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0daa576207da1ada8f518014e142749d"><td class="memItemLeft" align="right" valign="top">real(sz) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a0daa576207da1ada8f518014e142749d">pahm_vortex::getlatestangle</a> ()</td></tr>
+<tr class="separator:a0daa576207da1ada8f518014e142749d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01b29cf3c18d04fb55a502f42f51af39"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39">pahm_vortex::vhwithcorifull</a> (testRMax)</td></tr>
 <tr class="memdesc:a01b29cf3c18d04fb55a502f42f51af39"><td class="mdescLeft">&#160;</td><td class="mdescRight">External function f(x) = 0 for which a root is sought using Brent's root-finding method.  <a href="../../de/d94/namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39">More...</a><br /></td></tr>
 <tr class="separator:a01b29cf3c18d04fb55a502f42f51af39"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -215,8 +231,8 @@ Variables</h2></td></tr>
 <tr class="separator:a1fb78b1fa65419a5994ce0f22f42f820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78858c9851bd9cc4d8dc2556c1b0bb64"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a78858c9851bd9cc4d8dc2556c1b0bb64">pahm_vortex::rmaxes</a></td></tr>
 <tr class="separator:a78858c9851bd9cc4d8dc2556c1b0bb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cdb70d18270f8efba2a01244e127dec"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a1cdb70d18270f8efba2a01244e127dec">pahm_vortex::rmaxes4</a></td></tr>
-<tr class="separator:a1cdb70d18270f8efba2a01244e127dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5561cbaca93695cbf8ea10130c2d6bb9"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a5561cbaca93695cbf8ea10130c2d6bb9">pahm_vortex::rmaxes4</a></td></tr>
+<tr class="separator:a5561cbaca93695cbf8ea10130c2d6bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd4aa88d9914f73fa4a6fe17a8f0369b"><td class="memItemLeft" align="right" valign="top">real(sz)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#acd4aa88d9914f73fa4a6fe17a8f0369b">pahm_vortex::pn</a></td></tr>
 <tr class="separator:acd4aa88d9914f73fa4a6fe17a8f0369b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c493b46044a72edec476d28b4d77b67"><td class="memItemLeft" align="right" valign="top">real(sz)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a5c493b46044a72edec476d28b4d77b67">pahm_vortex::pc</a></td></tr>
@@ -241,16 +257,16 @@ Variables</h2></td></tr>
 <tr class="separator:a43f2820ae052c662ea2eb722e31360b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae433c24eb7f394bb8c230b95b3d5b63e"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ae433c24eb7f394bb8c230b95b3d5b63e">pahm_vortex::bs</a></td></tr>
 <tr class="separator:ae433c24eb7f394bb8c230b95b3d5b63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f3d99fff0410bf92c1515f23be415f7"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a6f3d99fff0410bf92c1515f23be415f7">pahm_vortex::bs4</a></td></tr>
-<tr class="separator:a6f3d99fff0410bf92c1515f23be415f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd063dbf8a136ef109ef7b0777f95a61"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#afd063dbf8a136ef109ef7b0777f95a61">pahm_vortex::bs4</a></td></tr>
+<tr class="separator:afd063dbf8a136ef109ef7b0777f95a61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1896e99c9402793d992c9eb4fe9903b"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#ae1896e99c9402793d992c9eb4fe9903b">pahm_vortex::vmbl</a></td></tr>
 <tr class="separator:ae1896e99c9402793d992c9eb4fe9903b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f3013290dc423326dbd152a11a24633"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a1f3013290dc423326dbd152a11a24633">pahm_vortex::vmbl4</a></td></tr>
-<tr class="separator:a1f3013290dc423326dbd152a11a24633"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d8b291552868b360a84dcacab9ef844"><td class="memItemLeft" align="right" valign="top">integer, dimension(npoints, 4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a8d8b291552868b360a84dcacab9ef844">pahm_vortex::quadflag4</a></td></tr>
-<tr class="separator:a8d8b291552868b360a84dcacab9ef844"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ce3bd0c34544557c2820cf6e0f00e53"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a8ce3bd0c34544557c2820cf6e0f00e53">pahm_vortex::quadir4</a></td></tr>
-<tr class="separator:a8ce3bd0c34544557c2820cf6e0f00e53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a311a02e30aa31d3e1098892aa2cb18f9"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a311a02e30aa31d3e1098892aa2cb18f9">pahm_vortex::vmbl4</a></td></tr>
+<tr class="separator:a311a02e30aa31d3e1098892aa2cb18f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeca3937d6ed7d609602c9bc8afed119"><td class="memItemLeft" align="right" valign="top">integer, dimension(npoints, 4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#adeca3937d6ed7d609602c9bc8afed119">pahm_vortex::quadflag4</a></td></tr>
+<tr class="separator:adeca3937d6ed7d609602c9bc8afed119"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd96b6d84d080bb659d98ac1a3c73e4f"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(npoints, 4), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#afd96b6d84d080bb659d98ac1a3c73e4f">pahm_vortex::quadir4</a></td></tr>
+<tr class="separator:afd96b6d84d080bb659d98ac1a3c73e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaedb6a3f66f5a7b1573cda37eda074a3"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(nquads)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#aaedb6a3f66f5a7b1573cda37eda074a3">pahm_vortex::vrquadrant</a></td></tr>
 <tr class="separator:aaedb6a3f66f5a7b1573cda37eda074a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fe6aa4c2d7fbda455bdefdaab3da84a"><td class="memItemLeft" align="right" valign="top">real(sz), dimension(nquads)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d94/namespacepahm__vortex.html#a7fe6aa4c2d7fbda455bdefdaab3da84a">pahm_vortex::radius</a></td></tr>
@@ -277,7 +293,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="../../d8/de7/vortex_8F90.html">vortex.F90</a></li>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

@@ -18,10 +18,20 @@
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="../../search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="../../search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "../../search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="../../menudata.js"></script>
-<script type="text/javascript" src="../../menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('../../',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -208,6 +222,8 @@ Functions/Subroutines</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a4a6517886074070ff9b78d9123fc218b"><td class="memItemLeft" align="right" valign="top">integer, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d96/namespaceutilities.html#a4a6517886074070ff9b78d9123fc218b">numbtfiles</a> = 0</td></tr>
+<tr class="separator:a4a6517886074070ff9b78d9123fc218b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedd7ed542085c635303806fb1a4de353"><td class="memItemLeft" align="right" valign="top">real(sz), parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d96/namespaceutilities.html#aedd7ed542085c635303806fb1a4de353">closetol</a> = 0.001_SZ</td></tr>
 <tr class="separator:aedd7ed542085c635303806fb1a4de353"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -255,14 +271,13 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myRec: The number of the uniques elements in the input array </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02544">2544</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02553">2553</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00723">parwind::processhollanddata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00180">parwind::readbesttrackfile()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00443">parwind::readcsvbesttrackfile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01119">parwind::processasymmetricvortexdata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00895">parwind::processhollanddata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00267">parwind::readbesttrackfile()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00583">parwind::readcsvbesttrackfile()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a241eabd46f9d0e4a26adc221570ad79f_icgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a241eabd46f9d0e4a26adc221570ad79f_icgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -283,22 +298,20 @@ Here is the caller graph for this function:</div>
 <p >The purpose of this subroutine is to process the input parameters and check if the user supplied values in the control file are valid entries. If a value for an input parameter is not supplied, then a default value is assigned to that parameter. If the parameter doesn't have a default value, it is then a mandatory parameter that the user needs to supply a valid value.</p>
 <dl class="section return"><dt>Returns</dt><dd>myStatus: The error status, no error: status = 0 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01140">1140</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01147">1147</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00117">pahm_global::backgroundatmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00167">pahm_global::begsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00165">pahm_global::begsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00108">pahm_global::besttrackfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00106">pahm_global::besttrackfilenamespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00122">pahm_global::bladjustfac</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00024">closetol</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00190">pahm_global::def_ncnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00190">pahm_global::def_ncnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00190">pahm_global::def_ncnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00043">pahm_global::defv_atmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00120">pahm_global::defv_bladjustfac</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00042">pahm_global::defv_gravity</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00045">pahm_global::defv_rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00049">pahm_global::defv_rhowater</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00168">pahm_global::endsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00166">pahm_global::endsimtime</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00044">timedateutils::firstgregdate</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00045">timedateutils::firstgregtime</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01432">timedateutils::gettimeconvsec()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00114">pahm_global::gravity</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01242">timedateutils::joindate()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00178">pahm_global::mdbegsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00179">pahm_global::mdendsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00177">pahm_global::mdoutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00104">pahm_global::meshfileform</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00102">pahm_global::meshfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00101">pahm_global::meshfilenamespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00103">pahm_global::meshfiletype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00198">pahm_global::modeltype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00107">pahm_global::nbtrfiles</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00184">pahm_global::ncdeflate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00185">pahm_global::ncdlevel</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00183">pahm_global::ncshuffle</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00176">pahm_global::noutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00175">pahm_global::outdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00182">pahm_global::outfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00181">pahm_global::outfilenamespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00130">pahm_global::refdate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00129">pahm_global::refdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00131">pahm_global::reftime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00116">pahm_global::rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00115">pahm_global::rhowater</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01721">touppercase()</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00170">pahm_global::unittime</a>.</p>
+<p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00117">pahm_global::backgroundatmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00166">pahm_global::begsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00164">pahm_global::begsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00108">pahm_global::besttrackfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00106">pahm_global::besttrackfilenamespecified</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00024">closetol</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00189">pahm_global::def_ncnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00189">pahm_global::def_ncnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00189">pahm_global::def_ncnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00043">pahm_global::defv_atmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00042">pahm_global::defv_gravity</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00045">pahm_global::defv_rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00049">pahm_global::defv_rhowater</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00120">pahm_global::defv_windreduction</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00167">pahm_global::endsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00165">pahm_global::endsimtime</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00044">timedateutils::firstgregdate</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00045">timedateutils::firstgregtime</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01431">timedateutils::gettimeconvsec()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00114">pahm_global::gravity</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01241">timedateutils::joindate()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00177">pahm_global::mdbegsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00178">pahm_global::mdendsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00176">pahm_global::mdoutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00104">pahm_global::meshfileform</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00102">pahm_global::meshfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00101">pahm_global::meshfilenamespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00103">pahm_global::meshfiletype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00197">pahm_global::modeltype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00107">pahm_global::nbtrfiles</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00183">pahm_global::ncdeflate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00184">pahm_global::ncdlevel</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00182">pahm_global::ncshuffle</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00175">pahm_global::noutdt</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00023">numbtfiles</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00174">pahm_global::outdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00181">pahm_global::outfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00180">pahm_global::outfilenamespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00129">pahm_global::refdate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00128">pahm_global::refdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00130">pahm_global::reftime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00116">pahm_global::rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00115">pahm_global::rhowater</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01728">touppercase()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00169">pahm_global::unittime</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00121">pahm_global::windreduction</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a1e2f2593103f415e1c073284ff95a83f_cgraph.svg" width="526" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a1e2f2593103f415e1c073284ff95a83f_cgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a1e2f2593103f415e1c073284ff95a83f_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a1e2f2593103f415e1c073284ff95a83f_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -328,7 +341,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut: The converted longitude value </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01760">1760</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01767">1767</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -396,7 +409,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01940">1940</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01947">1947</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -464,7 +477,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01893">1893</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01900">1900</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -525,22 +538,20 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02910">2910</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02919">2919</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03064">intscan()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03073">intscan()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02653">dvalstr()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02662">dvalstr()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ac6d4fd461bd13f1ca73e75038fd09fc9_cgraph.svg" width="340" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ac6d4fd461bd13f1ca73e75038fd09fc9_cgraph.svg" width="340" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ac6d4fd461bd13f1ca73e75038fd09fc9_icgraph.svg" width="336" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ac6d4fd461bd13f1ca73e75038fd09fc9_icgraph.svg" width="336" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -573,14 +584,13 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02652">2652</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02661">2661</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02911">drealscan()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02920">drealscan()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_aad75f7f3cadcd2677693859a6d525ba2_cgraph.svg" width="515" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_aad75f7f3cadcd2677693859a6d525ba2_cgraph.svg" width="515" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -649,7 +659,7 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01847">1847</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01854">1854</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -717,7 +727,7 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01800">1800</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01807">1807</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -767,14 +777,13 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myLen: The length of outLine (end blanks removed) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00773">773</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00780">780</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00870">parseline()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00180">parwind::readbesttrackfile()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00443">parwind::readcsvbesttrackfile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00877">parseline()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00267">parwind::readbesttrackfile()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00583">parwind::readcsvbesttrackfile()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a8723656afba63e33ed1c6cc8e5440b63_icgraph.svg" width="100%" height="390"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a8723656afba63e33ed1c6cc8e5440b63_icgraph.svg" width="100%" height="409"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -838,14 +847,13 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02430">2430</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02437">2437</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00949">parwind::gethollandfields()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01955">parwind::gethollandfields()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a35b859c005e3b9cc063bdc46a1675159_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a35b859c005e3b9cc063bdc46a1675159_icgraph.svg" width="100%" height="370"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -910,14 +918,13 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03063">3063</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03072">3072</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02911">drealscan()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02695">intvalstr()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02757">realscan()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02920">drealscan()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02704">intvalstr()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02766">realscan()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a26a70a9de90e0016d323e4c8dbea1a5b_icgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a26a70a9de90e0016d323e4c8dbea1a5b_icgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -950,22 +957,20 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02694">2694</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02703">2703</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03064">intscan()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03073">intscan()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00443">parwind::readcsvbesttrackfile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00583">parwind::readcsvbesttrackfile()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a5c60da3dadf9f6ef913709c07dbee7_cgraph.svg" width="326" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a5c60da3dadf9f6ef913709c07dbee7_cgraph.svg" width="326" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a5c60da3dadf9f6ef913709c07dbee7_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a5c60da3dadf9f6ef913709c07dbee7_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1021,14 +1026,13 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>nValsOut: Number of processed output values</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Adopted from the ROMS source (Utility/inp_par.F, load_i) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01478">1478</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01485">1485</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a062355064a86a716b2ddff1aa0cd3fb4_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a062355064a86a716b2ddff1aa0cd3fb4_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1084,7 +1088,7 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>nValsOut: Number of processed output values</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Adopted from the ROMS source (Utility/inp_par.F, load_l) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01544">1544</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01551">1551</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -1139,14 +1143,13 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>nValsOut: Number of processed output values</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Adopted from the ROMS source (Utility/inp_par.F, load_r) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01622">1622</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01629">1629</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a4a70a4be51dcd79bc46b6cfcb2d2ac0a_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a4a70a4be51dcd79bc46b6cfcb2d2ac0a_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1197,18 +1200,16 @@ Here is the caller graph for this function:</div>
 
 <p class="reference">References <a class="el" href="../../dc/d15/messages_8F90_source.html#l00034">pahm_messages::error</a>, <a class="el" href="../../dc/d15/messages_8F90_source.html#l00032">pahm_messages::info</a>, <a class="el" href="../../dc/d15/messages_8F90_source.html#l00038">pahm_messages::scratchmessage</a>, <a class="el" href="../../dc/d15/messages_8F90_source.html#l00362">pahm_messages::setmessagesource()</a>, and <a class="el" href="../../dc/d15/messages_8F90_source.html#l00389">pahm_messages::unsetmessagesource()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../db/d79/csv__module_8F90_source.html#l00172">csv_module::initialize_csv_file()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00180">parwind::readbesttrackfile()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00443">parwind::readcsvbesttrackfile()</a>, and <a class="el" href="../../d6/d90/mesh_8F90_source.html#l00171">pahm_mesh::readmeshasciifort14()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../db/d79/csv__module_8F90_source.html#l00260">csv_module::read_csv_file()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00267">parwind::readbesttrackfile()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00583">parwind::readcsvbesttrackfile()</a>, and <a class="el" href="../../d6/d90/mesh_8F90_source.html#l00171">pahm_mesh::readmeshasciifort14()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a41067ed5533ec0c36318e8f1e960bf_cgraph.svg" width="550" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a41067ed5533ec0c36318e8f1e960bf_cgraph.svg" width="550" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a41067ed5533ec0c36318e8f1e960bf_icgraph.svg" width="100%" height="462"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a2a41067ed5533ec0c36318e8f1e960bf_icgraph.svg" width="100%" height="447"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1279,22 +1280,20 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>myStatus: The error status, no error: status = 0</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Adopted from the ROMS source (Utility/inp_par.F, decode_line) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00869">869</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00876">876</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00774">getlinerecord()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01721">touppercase()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00781">getlinerecord()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01728">touppercase()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab30d13ba0fcebcb933a30be2237ec162_cgraph.svg" width="379" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab30d13ba0fcebcb933a30be2237ec162_cgraph.svg" width="379" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab30d13ba0fcebcb933a30be2237ec162_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab30d13ba0fcebcb933a30be2237ec162_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1313,22 +1312,20 @@ Here is the caller graph for this function:</div>
 
 <p>This subroutine prints on the screen the values of the program's parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00644">644</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00651">651</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00117">pahm_global::backgroundatmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00150">pahm_global::begdatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00141">pahm_global::begdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00146">pahm_global::begday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00147">pahm_global::beghour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00148">pahm_global::begmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00145">pahm_global::begmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00149">pahm_global::begsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00167">pahm_global::begsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00165">pahm_global::begsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00144">pahm_global::begyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00108">pahm_global::besttrackfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00122">pahm_global::bladjustfac</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00162">pahm_global::enddatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00153">pahm_global::enddatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00158">pahm_global::endday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00159">pahm_global::endhour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00160">pahm_global::endmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00157">pahm_global::endmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00161">pahm_global::endsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00168">pahm_global::endsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00166">pahm_global::endsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00156">pahm_global::endyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00114">pahm_global::gravity</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00178">pahm_global::mdbegsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00179">pahm_global::mdendsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00177">pahm_global::mdoutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00104">pahm_global::meshfileform</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00102">pahm_global::meshfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00103">pahm_global::meshfiletype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00198">pahm_global::modeltype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00107">pahm_global::nbtrfiles</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00184">pahm_global::ncdeflate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00185">pahm_global::ncdlevel</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00183">pahm_global::ncshuffle</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00194">pahm_global::ncvarnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00176">pahm_global::noutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00175">pahm_global::outdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00182">pahm_global::outfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00138">pahm_global::refdatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00129">pahm_global::refdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00134">pahm_global::refday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00135">pahm_global::refhour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00136">pahm_global::refmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00133">pahm_global::refmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00137">pahm_global::refsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00132">pahm_global::refyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00116">pahm_global::rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00115">pahm_global::rhowater</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00112">pahm_global::title</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01681">tolowercase()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00170">pahm_global::unittime</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00205">pahm_global::writeparams</a>.</p>
+<p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00117">pahm_global::backgroundatmpress</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00149">pahm_global::begdatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00140">pahm_global::begdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00145">pahm_global::begday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00146">pahm_global::beghour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00147">pahm_global::begmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00144">pahm_global::begmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00148">pahm_global::begsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00166">pahm_global::begsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00164">pahm_global::begsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00143">pahm_global::begyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00108">pahm_global::besttrackfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00161">pahm_global::enddatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00152">pahm_global::enddatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00157">pahm_global::endday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00158">pahm_global::endhour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00159">pahm_global::endmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00156">pahm_global::endmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00160">pahm_global::endsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00167">pahm_global::endsimspecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00165">pahm_global::endsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00155">pahm_global::endyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00114">pahm_global::gravity</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00177">pahm_global::mdbegsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00178">pahm_global::mdendsimtime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00176">pahm_global::mdoutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00104">pahm_global::meshfileform</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00102">pahm_global::meshfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00103">pahm_global::meshfiletype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00197">pahm_global::modeltype</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00107">pahm_global::nbtrfiles</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00183">pahm_global::ncdeflate</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00184">pahm_global::ncdlevel</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00182">pahm_global::ncshuffle</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_pres</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_wndx</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00193">pahm_global::ncvarnam_wndy</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00175">pahm_global::noutdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00174">pahm_global::outdt</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00181">pahm_global::outfilename</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00137">pahm_global::refdatespecified</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00128">pahm_global::refdatetime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00133">pahm_global::refday</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00134">pahm_global::refhour</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00135">pahm_global::refmin</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00132">pahm_global::refmonth</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00136">pahm_global::refsec</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00131">pahm_global::refyear</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00116">pahm_global::rhoair</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00115">pahm_global::rhowater</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00112">pahm_global::title</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01688">tolowercase()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00169">pahm_global::unittime</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00121">pahm_global::windreduction</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00204">pahm_global::writeparams</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a57953a3306e17ea2e28254e3d2091516_cgraph.svg" width="432" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a57953a3306e17ea2e28254e3d2091516_cgraph.svg" width="432" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a57953a3306e17ea2e28254e3d2091516_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a57953a3306e17ea2e28254e3d2091516_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1361,20 +1358,18 @@ Here is the caller graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00153">153</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d93/sizes_8F90_source.html#l00066">pahm_sizes::blank</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">checkcontrolfileinputs()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00024">closetol</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01337">timedateutils::datetime2string()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01432">timedateutils::gettimeconvsec()</a>, <a class="el" href="../../d3/d93/sizes_8F90_source.html#l00064">pahm_sizes::imissv</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01242">timedateutils::joindate()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00900">timedateutils::juldaytogreg()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01479">loadintvar()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01623">loadrealvar()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00026">pahm_global::lun_ctrl</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00025">pahm_global::lun_screen</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00870">parseline()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00645">printmodelparams()</a>, <a class="el" href="../../dc/d15/messages_8F90_source.html#l00362">pahm_messages::setmessagesource()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01721">touppercase()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d93/sizes_8F90_source.html#l00066">pahm_sizes::blank</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">checkcontrolfileinputs()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00024">closetol</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01336">timedateutils::datetime2string()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01431">timedateutils::gettimeconvsec()</a>, <a class="el" href="../../d3/d93/sizes_8F90_source.html#l00064">pahm_sizes::imissv</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01241">timedateutils::joindate()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">timedateutils::juldaytogreg()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01486">loadintvar()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01630">loadrealvar()</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00026">pahm_global::lun_ctrl</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00025">pahm_global::lun_screen</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00023">numbtfiles</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00877">parseline()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00652">printmodelparams()</a>, <a class="el" href="../../dc/d15/messages_8F90_source.html#l00362">pahm_messages::setmessagesource()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01728">touppercase()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../d8/d93/driver__mod_8F90_source.html#l00041">pahm_drivermod::getprogramcmdlargs()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab095172ef12ae151ab5c9aacf82f4dc6_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab095172ef12ae151ab5c9aacf82f4dc6_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab095172ef12ae151ab5c9aacf82f4dc6_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_ab095172ef12ae151ab5c9aacf82f4dc6_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1436,22 +1431,20 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02756">2756</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02765">2765</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03064">intscan()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l03073">intscan()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02611">valstr()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02620">valstr()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a3101905bb797cb61841b9a73bbc419bb_cgraph.svg" width="331" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a3101905bb797cb61841b9a73bbc419bb_cgraph.svg" width="331" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a3101905bb797cb61841b9a73bbc419bb_icgraph.svg" width="319" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a3101905bb797cb61841b9a73bbc419bb_icgraph.svg" width="319" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1517,7 +1510,7 @@ Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal p
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut: The great-circle distance in meters, 1D array </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02061">2061</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02068">2068</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -1582,7 +1575,7 @@ Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal p
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut: The great-circle distance in meters, 2D array </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02160">2160</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02167">2167</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -1647,7 +1640,7 @@ Vincenty, Thaddeus (August 1975b). Geodetic inverse solution between antipodal p
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut: The great-circle distance in meters </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01993">1993</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02000">2000</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 </div>
 </div>
@@ -1708,7 +1701,7 @@ van Brummelen, Glen Robert (2013). Heavenly Mathematics: The Forgotten Art <br  
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut: The great-circle distance in meters </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02261">2261</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02268">2268</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 <p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00076">pahm_global::deg2rad</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00080">pahm_global::rearth</a>.</p>
 
@@ -1803,16 +1796,15 @@ van Brummelen, Glen Robert (2013). Heavenly Mathematics: The Forgotten Art <br  
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02332">2332</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02339">2339</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
 <p class="reference">References <a class="el" href="../../d2/d2d/global_8F90_source.html#l00076">pahm_global::deg2rad</a>, <a class="el" href="../../d2/d2d/global_8F90_source.html#l00077">pahm_global::rad2deg</a>, and <a class="el" href="../../d2/d2d/global_8F90_source.html#l00080">pahm_global::rearth</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00949">parwind::gethollandfields()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, and <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01955">parwind::gethollandfields()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a0ef8b9a5f7a0aac72618c3e7b05adf44_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a0ef8b9a5f7a0aac72618c3e7b05adf44_icgraph.svg" width="100%" height="370"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1842,14 +1834,13 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>outString: The ouput string in lower case </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01680">1680</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01687">1687</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../db/d79/csv__module_8F90_source.html#l00172">csv_module::initialize_csv_file()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00645">printmodelparams()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00652">printmodelparams()</a>, and <a class="el" href="../../db/d79/csv__module_8F90_source.html#l01029">csv_module::to_logical()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a376978b945cbdf5d33ff8bf905d19866_icgraph.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a376978b945cbdf5d33ff8bf905d19866_icgraph.svg" width="100%" height="431"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1879,14 +1870,13 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>outString: The ouput string in upper case </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01720">1720</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01727">1727</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">checkcontrolfileinputs()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00870">parseline()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00723">parwind::processhollanddata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00180">parwind::readbesttrackfile()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00443">parwind::readcsvbesttrackfile()</a>, <a class="el" href="../../d6/d90/mesh_8F90_source.html#l00070">pahm_mesh::readmesh()</a>, and <a class="el" href="../../dc/d4a/sortutils_8F90_source.html#l01441">sortutils::stringlexcomp()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">checkcontrolfileinputs()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00877">parseline()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01119">parwind::processasymmetricvortexdata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00895">parwind::processhollanddata()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00267">parwind::readbesttrackfile()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00583">parwind::readcsvbesttrackfile()</a>, <a class="el" href="../../d6/d90/mesh_8F90_source.html#l00070">pahm_mesh::readmesh()</a>, and <a class="el" href="../../dc/d4a/sortutils_8F90_source.html#l01441">sortutils::stringlexcomp()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a8dff395c74e87d059dadcf8bacdbfedd_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_a8dff395c74e87d059dadcf8bacdbfedd_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1919,14 +1909,13 @@ Here is the caller graph for this function:</div>
  NSDFLIB, FORTRAN UTILITY SUBROUTINE PACKAGE </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html">https://www-nds.iaea.org/workshops/smr1939/Codes/ENSDF_Codes/mswindows/nsdflib/nsdflib95/nsdflib95_win.html</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02610">2610</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02619">2619</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02757">realscan()</a>.</p>
+<p class="reference">References <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l02766">realscan()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_af02043c76be30cc5e092ffaf0e28fb6d_cgraph.svg" width="498" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d2/d96/namespaceutilities_af02043c76be30cc5e092ffaf0e28fb6d_cgraph.svg" width="498" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1946,7 +1935,33 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00024">24</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">checkcontrolfileinputs()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">checkcontrolfileinputs()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
+
+</div>
+</div>
+<a id="a4a6517886074070ff9b78d9123fc218b" name="a4a6517886074070ff9b78d9123fc218b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a6517886074070ff9b78d9123fc218b">&#9670;&nbsp;</a></span>numbtfiles</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, private utilities::numbtfiles = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00023">23</a> of file <a class="el" href="../../d3/d2c/utilities_8F90_source.html">utilities.F90</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">checkcontrolfileinputs()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">readcontrolfile()</a>.</p>
 
 </div>
 </div>
@@ -1956,7 +1971,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d2/d96/namespaceutilities.html">utilities</a></li>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

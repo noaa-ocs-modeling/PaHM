@@ -32,5 +32,6 @@ var utilities_8F90 =
     [ "tolowercase", "d3/d2c/utilities_8F90.html#a376978b945cbdf5d33ff8bf905d19866", null ],
     [ "touppercase", "d3/d2c/utilities_8F90.html#a8dff395c74e87d059dadcf8bacdbfedd", null ],
     [ "valstr", "d3/d2c/utilities_8F90.html#af02043c76be30cc5e092ffaf0e28fb6d", null ],
-    [ "closetol", "d3/d2c/utilities_8F90.html#aedd7ed542085c635303806fb1a4de353", null ]
+    [ "closetol", "d3/d2c/utilities_8F90.html#aedd7ed542085c635303806fb1a4de353", null ],
+    [ "numbtfiles", "d3/d2c/utilities_8F90.html#a4a6517886074070ff9b78d9123fc218b", null ]
 ];

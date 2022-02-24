@@ -18,10 +18,20 @@
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="../../search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="../../search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "../../search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="../../menudata.js"></script>
-<script type="text/javascript" src="../../menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('../../',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -175,6 +189,9 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a109255326a7eb93c3ccdb4b543c26385"><td class="memItemLeft" align="right" valign="top">real(sz) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d19/namespacetimedateutils.html#a109255326a7eb93c3ccdb4b543c26385">elapsedsecs</a> (inTime1, inTime2, inUnits)</td></tr>
 <tr class="memdesc:a109255326a7eb93c3ccdb4b543c26385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the elapsed time in seconds.  <a href="../../d4/d19/namespacetimedateutils.html#a109255326a7eb93c3ccdb4b543c26385">More...</a><br /></td></tr>
 <tr class="separator:a109255326a7eb93c3ccdb4b543c26385"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09a914846a02d3d430348f83c67d58b5"><td class="memItemLeft" align="right" valign="top">character(len(inpstring)) function, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d19/namespacetimedateutils.html#a09a914846a02d3d430348f83c67d58b5">upp</a> (inpString)</td></tr>
+<tr class="memdesc:a09a914846a02d3d430348f83c67d58b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a string to upper-case.  <a href="../../d4/d19/namespacetimedateutils.html#a09a914846a02d3d430348f83c67d58b5">More...</a><br /></td></tr>
+<tr class="separator:a09a914846a02d3d430348f83c67d58b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -305,14 +322,20 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut The datetime string ([&lt;units&gt; since ]YYYY-MM-DD hh:mm:ss) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01336">1336</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01335">1335</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00949">parwind::gethollandfields()</a>, <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00124">pahm_netcdfio::initadcircnetcdfoutfile()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>.</p>
+<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01567">upp()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01955">parwind::gethollandfields()</a>, <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00124">pahm_netcdfio::initadcircnetcdfoutfile()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a565d549493d69e2c9ea5b7af18247df5_cgraph.svg" width="435" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a565d549493d69e2c9ea5b7af18247df5_icgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a565d549493d69e2c9ea5b7af18247df5_icgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -424,14 +447,13 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01011">1011</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01010">1010</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00900">juldaytogreg()</a>.</p>
+<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">juldaytogreg()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a86f68bd48786e32c535b0564f3bdea5c_cgraph.svg" width="502" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a86f68bd48786e32c535b0564f3bdea5c_cgraph.svg" width="502" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -485,22 +507,20 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myVal The elapsed time in seconds (real). If this value is very close, within a tolerance, to the nearest whole number, it is set equal to that number. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01517">1517</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01516">1516</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01432">gettimeconvsec()</a>.</p>
+<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01431">gettimeconvsec()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00126">timedateutils::timeconv::timeconvisec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00203">timedateutils::timeconv::timeconvrsec()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a109255326a7eb93c3ccdb4b543c26385_cgraph.svg" width="502" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a109255326a7eb93c3ccdb4b543c26385_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a109255326a7eb93c3ccdb4b543c26385_icgraph.svg" width="454" height="128"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a109255326a7eb93c3ccdb4b543c26385_icgraph.svg" width="454" height="128"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -543,14 +563,20 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut The conversion factor </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01431">1431</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01430">1430</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01518">elapsedsecs()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00949">parwind::gethollandfields()</a>, <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00124">pahm_netcdfio::initadcircnetcdfoutfile()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>, and <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00776">pahm_netcdfio::writenetcdfrecord()</a>.</p>
+<p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01567">upp()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01517">elapsedsecs()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01955">parwind::gethollandfields()</a>, <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00124">pahm_netcdfio::initadcircnetcdfoutfile()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>, and <a class="el" href="../../dd/dd8/netcdfio_8F90_source.html#l00776">pahm_netcdfio::writenetcdfrecord()</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a6c7acacb9981bb9182378a449e45715b_cgraph.svg" width="438" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a6c7acacb9981bb9182378a449e45715b_icgraph.svg" width="100%" height="528"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a6c7acacb9981bb9182378a449e45715b_icgraph.svg" width="100%" height="568"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -615,7 +641,7 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>myVal The julian day number (days) since January 1, 4713 BC at 12h00</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The code was adopted from the D-Flow FM source (time_module.f90/JULIAN) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">776</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00775">775</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
 </div>
 </div>
@@ -790,7 +816,7 @@ Here is the caller graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>myVal The julian day number (days) since January 1, 4713 BC at 12h00</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The code was adopted from the D-Flow FM source (time_module.f90/JULIAN) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">655</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00654">654</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
 </div>
 </div>
@@ -838,14 +864,13 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut The integer date (YYYYMMDD) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01241">1241</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01240">1240</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00656">timedateutils::gregtojulday::gregtojuldayrsec()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01142">timedateutils::splitdatetimestring::splitdatetimestring2()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">timedateutils::gregtojulday::gregtojuldayrsec()</a>, <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01141">timedateutils::splitdatetimestring::splitdatetimestring2()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a393203cc78370648d0dd392fe96d66ff_icgraph.svg" width="100%" height="528"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a393203cc78370648d0dd392fe96d66ff_icgraph.svg" width="100%" height="528"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -939,16 +964,15 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The code was adopted from the D-Flow FM source (time_module.f90/JULIAN) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">899</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00898">898</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
 <p class="reference">References <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00082">mdjoffset</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00046">offfirstgregday</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00072">usemodjulday</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01012">dayofyeartogreg()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l00949">parwind::gethollandfields()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01011">dayofyeartogreg()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l02357">parwind::getgahmfields()</a>, <a class="el" href="../../d7/d96/parwind_8F90_source.html#l01955">parwind::gethollandfields()</a>, and <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l00154">utilities::readcontrolfile()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_abc63ac16baec18b6c9bb2ee6e0400a63_icgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_abc63ac16baec18b6c9bb2ee6e0400a63_icgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -981,12 +1005,11 @@ Here is the caller graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00315">315</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00777">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00656">timedateutils::gregtojulday::gregtojuldayrsec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00404">monthdays()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00367">yeardays()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">timedateutils::gregtojulday::gregtojuldayrsec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00404">monthdays()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00367">yeardays()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_ac0661d72fdf8161ad7d0b30d0dc57bd6_icgraph.svg" width="100%" height="530"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_ac0661d72fdf8161ad7d0b30d0dc57bd6_icgraph.svg" width="100%" height="530"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1032,18 +1055,16 @@ Here is the caller graph for this function:</div>
 
 <p class="reference">References <a class="el" href="../../d3/d93/sizes_8F90_source.html#l00064">pahm_sizes::imissv</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00316">leapyear()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01074">timedateutils::splitdatetimestring::splitdatetimestring()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01073">timedateutils::splitdatetimestring::splitdatetimestring()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a101cf9ce5907971b096d77575d8d249d_cgraph.svg" width="439" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a101cf9ce5907971b096d77575d8d249d_cgraph.svg" width="439" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a101cf9ce5907971b096d77575d8d249d_icgraph.svg" width="506" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a101cf9ce5907971b096d77575d8d249d_icgraph.svg" width="506" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1074,14 +1095,13 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>myValOut The string datetime as an integer in the form: YYYYMMDDhhmmss </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01186">1186</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01185">1185</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01074">timedateutils::splitdatetimestring::splitdatetimestring()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01073">timedateutils::splitdatetimestring::splitdatetimestring()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a2561d57f398381d56d2fa94f5f9a1147_icgraph.svg" width="607" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a2561d57f398381d56d2fa94f5f9a1147_icgraph.svg" width="607" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1137,14 +1157,13 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The code was adopted from the D-Flow FM source (time_module.f90/splitDate) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01281">1281</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01280">1280</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00777">timedateutils::gregtojulday::gregtojulday2()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">timedateutils::gregtojulday::gregtojulday2()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a6954898ee8b7d8be2df0b30c0c167c87_icgraph.svg" width="446" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a6954898ee8b7d8be2df0b30c0c167c87_icgraph.svg" width="446" height="58"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1220,7 +1239,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01073">1073</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01072">1072</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
 </div>
 </div>
@@ -1267,7 +1286,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01141">1141</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01140">1140</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
 </div>
 </div>
@@ -1421,6 +1440,50 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="a09a914846a02d3d430348f83c67d58b5" name="a09a914846a02d3d430348f83c67d58b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09a914846a02d3d430348f83c67d58b5">&#9670;&nbsp;</a></span>upp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">character(len(inpstring)) function, private timedateutils::upp </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)&#160;</td>
+          <td class="paramname"><em>inpString</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Convert a string to upper-case. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inpString</td><td>The input string</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>outString The input string converted to upper case string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01566">1566</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01336">datetime2string()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l01431">gettimeconvsec()</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_a09a914846a02d3d430348f83c67d58b5_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
 <a id="aca37b13adf7e4d6eba9469a5f47b0df5" name="aca37b13adf7e4d6eba9469a5f47b0df5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aca37b13adf7e4d6eba9469a5f47b0df5">&#9670;&nbsp;</a></span>yeardays()</h2>
 
@@ -1453,8 +1516,7 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_aca37b13adf7e4d6eba9469a5f47b0df5_cgraph.svg" width="426" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d4/d19/namespacetimedateutils_aca37b13adf7e4d6eba9469a5f47b0df5_cgraph.svg" width="426" height="40"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1474,7 +1536,7 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00044">44</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00777">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00656">timedateutils::gregtojulday::gregtojuldayrsec()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">utilities::checkcontrolfileinputs()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">timedateutils::gregtojulday::gregtojuldayrsec()</a>.</p>
 
 </div>
 </div>
@@ -1492,7 +1554,7 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00045">45</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01141">utilities::checkcontrolfileinputs()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../d3/d2c/utilities_8F90_source.html#l01148">utilities::checkcontrolfileinputs()</a>.</p>
 
 </div>
 </div>
@@ -1526,7 +1588,7 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00082">82</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00777">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00656">timedateutils::gregtojulday::gregtojuldayrsec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00900">juldaytogreg()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">timedateutils::gregtojulday::gregtojuldayrsec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">juldaytogreg()</a>.</p>
 
 </div>
 </div>
@@ -1624,7 +1686,7 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00046">46</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00900">juldaytogreg()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">juldaytogreg()</a>.</p>
 
 </div>
 </div>
@@ -1722,7 +1784,7 @@ Here is the call graph for this function:</div>
 
 <p class="definition">Definition at line <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00072">72</a> of file <a class="el" href="../../df/d29/timedateutils_8F90_source.html">timedateutils.F90</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00777">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00656">timedateutils::gregtojulday::gregtojuldayrsec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00900">juldaytogreg()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00776">timedateutils::gregtojulday::gregtojulday2()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00537">timedateutils::gregtojulday::gregtojuldayisec()</a>, <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00655">timedateutils::gregtojulday::gregtojuldayrsec()</a>, and <a class="el" href="../../df/d29/timedateutils_8F90_source.html#l00899">juldaytogreg()</a>.</p>
 
 </div>
 </div>
@@ -1732,7 +1794,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d4/d19/namespacetimedateutils.html">timedateutils</a></li>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

@@ -10,6 +10,9 @@ var annotated_dup =
       [ "screenmessage", "db/d81/interfacepahm__messages_1_1screenmessage.html", "db/d81/interfacepahm__messages_1_1screenmessage" ]
     ] ],
     [ "pahm_netcdfio", "da/dd1/namespacepahm__netcdfio.html", [
+      [ "adcirccoorddata_t", "d2/dfd/structpahm__netcdfio_1_1adcirccoorddata__t.html", "d2/dfd/structpahm__netcdfio_1_1adcirccoorddata__t" ],
+      [ "adcircvardata3d_t", "d0/da8/structpahm__netcdfio_1_1adcircvardata3d__t.html", "d0/da8/structpahm__netcdfio_1_1adcircvardata3d__t" ],
+      [ "adcircvardata_t", "d5/d53/structpahm__netcdfio_1_1adcircvardata__t.html", "d5/d53/structpahm__netcdfio_1_1adcircvardata__t" ],
       [ "filedata_t", "d4/d0e/structpahm__netcdfio_1_1filedata__t.html", "d4/d0e/structpahm__netcdfio_1_1filedata__t" ],
       [ "timedata_t", "d8/dfa/structpahm__netcdfio_1_1timedata__t.html", "d8/dfa/structpahm__netcdfio_1_1timedata__t" ]
     ] ],
@@ -18,6 +21,7 @@ var annotated_dup =
       [ "fixnearwholereal", "d4/dc3/interfacepahm__sizes_1_1fixnearwholereal.html", "d4/dc3/interfacepahm__sizes_1_1fixnearwholereal" ]
     ] ],
     [ "parwind", "d9/d41/namespaceparwind.html", [
+      [ "asymetricvortexdata_t", "de/d79/structparwind_1_1asymetricvortexdata__t.html", "de/d79/structparwind_1_1asymetricvortexdata__t" ],
       [ "besttrackdata_t", "d2/d89/structparwind_1_1besttrackdata__t.html", "d2/d89/structparwind_1_1besttrackdata__t" ],
       [ "hollanddata_t", "d0/da3/structparwind_1_1hollanddata__t.html", "d0/da3/structparwind_1_1hollanddata__t" ]
     ] ],

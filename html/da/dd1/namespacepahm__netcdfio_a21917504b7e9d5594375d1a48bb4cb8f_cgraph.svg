@@ -54,13 +54,13 @@ var sectionId = 'dynsection-1';
 <svg id="graph" class="graph">
 <g id="viewport">
 <title>pahm_netcdfio::initadcircnetcdfoutfile</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-222.68 958,-222.68 958,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-222.96 958,-222.96 958,4 -4,4"/>
 <!-- Node1 -->
 <g id="node1" class="node">
 <title>Node1</title>
 <g id="a_node1"><a xlink:title="Initializes a new NetCDF data file and puts it in define mode.">
-<polygon fill="#bfbfbf" stroke="black" points="0,-118.18 0,-139.18 214,-139.18 214,-118.18 0,-118.18"/>
-<text text-anchor="middle" x="107" y="-125.58" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::initadcircnetcdfoutfile</text>
+<polygon fill="#bfbfbf" stroke="black" points="0,-118.46 0,-139.46 214,-139.46 214,-118.46 0,-118.46"/>
+<text text-anchor="middle" x="107" y="-125.86" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::initadcircnetcdfoutfile</text>
 </a>
 </g>
 </g>
@@ -68,115 +68,136 @@ var sectionId = 'dynsection-1';
 <g id="node2" class="node">
 <title>Node2</title>
 <g id="a_node2"><a xlink:href="../../d4/d19/namespacetimedateutils.html#a565d549493d69e2c9ea5b7af18247df5" target="_top" xlink:title="Constructs a NetCDF time string.">
-<polygon fill="white" stroke="black" points="274,-197.18 274,-218.18 446,-218.18 446,-197.18 274,-197.18"/>
-<text text-anchor="middle" x="360" y="-204.58" font-family="Helvetica,sans-Serif" font-size="12.00">timedateutils::datetime2string</text>
+<polygon fill="white" stroke="black" points="274,-157.46 274,-178.46 446,-178.46 446,-157.46 274,-157.46"/>
+<text text-anchor="middle" x="360" y="-164.86" font-family="Helvetica,sans-Serif" font-size="12.00">timedateutils::datetime2string</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node2 -->
 <g id="edge1" class="edge">
 <title>Node1&#45;&gt;Node2</title>
-<path fill="none" stroke="midnightblue" d="M129.61,-139.36C157,-152.5 205.97,-174.66 250,-187.68 259.41,-190.47 269.4,-192.94 279.36,-195.1"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="278.78,-198.56 289.28,-197.17 280.21,-191.71 278.78,-198.56"/>
-</g>
-<!-- Node3 -->
-<g id="node3" class="node">
-<title>Node3</title>
-<g id="a_node3"><a xlink:href="../../d4/d19/namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b" target="_top" xlink:title="Calculates the conversion factor between time units and seconds.">
-<polygon fill="white" stroke="black" points="273,-157.18 273,-178.18 447,-178.18 447,-157.18 273,-157.18"/>
-<text text-anchor="middle" x="360" y="-164.58" font-family="Helvetica,sans-Serif" font-size="12.00">timedateutils::gettimeconvsec</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node3 -->
-<g id="edge2" class="edge">
-<title>Node1&#45;&gt;Node3</title>
-<path fill="none" stroke="midnightblue" d="M175.59,-139.19C208.1,-144.24 247.23,-150.32 280.99,-155.56"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="280.87,-159.09 291.29,-157.16 281.94,-152.17 280.87,-159.09"/>
+<path fill="none" stroke="midnightblue" d="M175.59,-139.46C208.1,-144.51 247.23,-150.6 280.99,-155.84"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="280.87,-159.36 291.29,-157.44 281.94,-152.45 280.87,-159.36"/>
 </g>
 <!-- Node4 -->
 <g id="node4" class="node">
 <title>Node4</title>
-<g id="a_node4"><a xlink:href="../../da/dd1/namespacepahm__netcdfio.html#a850b1df36d9d2d229b8b03f0558c3703" target="_top" xlink:title="Creates a new NetCDF data file and puts it in define mode.">
-<polygon fill="white" stroke="black" points="250,-60.18 250,-81.18 470,-81.18 470,-60.18 250,-60.18"/>
-<text text-anchor="middle" x="360" y="-67.58" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::newadcircnetcdfoutfile</text>
+<g id="a_node4"><a xlink:href="../../d4/d19/namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b" target="_top" xlink:title="Calculates the conversion factor between time units and seconds.">
+<polygon fill="white" stroke="black" points="273,-197.46 273,-218.46 447,-218.46 447,-197.46 273,-197.46"/>
+<text text-anchor="middle" x="360" y="-204.86" font-family="Helvetica,sans-Serif" font-size="12.00">timedateutils::gettimeconvsec</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node4 -->
 <g id="edge3" class="edge">
 <title>Node1&#45;&gt;Node4</title>
-<path fill="none" stroke="midnightblue" d="M153.45,-118.18C195.61,-108.44 258.46,-93.92 303.55,-83.5"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="304.51,-86.87 313.46,-81.21 302.93,-80.05 304.51,-86.87"/>
-</g>
-<!-- Node6 -->
-<g id="node6" class="node">
-<title>Node6</title>
-<g id="a_node6"><a xlink:href="../../d4/d3b/namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" target="_top" xlink:title="Sets the name of the subroutine that is writing log and/or screen messages.">
-<polygon fill="white" stroke="black" points="732.5,-2.18 732.5,-23.18 947.5,-23.18 947.5,-2.18 732.5,-2.18"/>
-<text text-anchor="middle" x="840" y="-9.58" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_messages::setmessagesource</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node6 -->
-<g id="edge9" class="edge">
-<title>Node1&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M122.93,-118.14C147.94,-101.04 200.45,-67.48 250,-50.68 407.05,2.54 600.91,3.66 722.28,-2.72"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="722.16,-6.22 732.34,-3.28 722.55,0.77 722.16,-6.22"/>
-</g>
-<!-- Node7 -->
-<g id="node7" class="node">
-<title>Node7</title>
-<g id="a_node7"><a xlink:href="../../d4/d3b/namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" target="_top" xlink:title="Removes the name of the subroutine that is no longer active.">
-<polygon fill="white" stroke="black" points="726,-80.18 726,-101.18 954,-101.18 954,-80.18 726,-80.18"/>
-<text text-anchor="middle" x="840" y="-87.58" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_messages::unsetmessagesource</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node7 -->
-<g id="edge10" class="edge">
-<title>Node1&#45;&gt;Node7</title>
-<path fill="none" stroke="midnightblue" d="M214.29,-123.16C347.38,-116.24 574.92,-104.41 715.57,-97.1"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="716.16,-100.57 725.97,-96.56 715.8,-93.58 716.16,-100.57"/>
+<path fill="none" stroke="midnightblue" d="M129.61,-139.64C157,-152.78 205.97,-174.94 250,-187.96 259.41,-190.75 269.4,-193.21 279.36,-195.38"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="278.78,-198.84 289.28,-197.45 280.21,-191.98 278.78,-198.84"/>
 </g>
 <!-- Node5 -->
 <g id="node5" class="node">
 <title>Node5</title>
-<g id="a_node5"><a xlink:href="../../da/dd1/namespacepahm__netcdfio.html#aa0987122588b6ef883046848cfcefe0b" target="_top" xlink:title="Terminates the program on NetCDF error.">
-<polygon fill="white" stroke="black" points="506,-41.18 506,-62.18 690,-62.18 690,-41.18 506,-41.18"/>
-<text text-anchor="middle" x="598" y="-48.58" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::netcdfterminate</text>
+<g id="a_node5"><a xlink:href="../../da/dd1/namespacepahm__netcdfio.html#a850b1df36d9d2d229b8b03f0558c3703" target="_top" xlink:title="Creates a new NetCDF data file and puts it in define mode.">
+<polygon fill="white" stroke="black" points="250,-60.46 250,-81.46 470,-81.46 470,-60.46 250,-60.46"/>
+<text text-anchor="middle" x="360" y="-67.86" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::newadcircnetcdfoutfile</text>
 </a>
 </g>
 </g>
-<!-- Node4&#45;&gt;Node5 -->
+<!-- Node1&#45;&gt;Node5 -->
+<g id="edge5" class="edge">
+<title>Node1&#45;&gt;Node5</title>
+<path fill="none" stroke="midnightblue" d="M153.45,-118.46C195.61,-108.72 258.46,-94.19 303.55,-83.77"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="304.51,-87.15 313.46,-81.48 302.93,-80.33 304.51,-87.15"/>
+</g>
+<!-- Node7 -->
+<g id="node7" class="node">
+<title>Node7</title>
+<g id="a_node7"><a xlink:href="../../d4/d3b/namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" target="_top" xlink:title="Sets the name of the subroutine that is writing log and/or screen messages.">
+<polygon fill="white" stroke="black" points="732.5,-80.46 732.5,-101.46 947.5,-101.46 947.5,-80.46 732.5,-80.46"/>
+<text text-anchor="middle" x="840" y="-87.86" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_messages::setmessagesource</text>
+</a>
+</g>
+</g>
+<!-- Node1&#45;&gt;Node7 -->
+<g id="edge11" class="edge">
+<title>Node1&#45;&gt;Node7</title>
+<path fill="none" stroke="midnightblue" d="M214.29,-123.44C349.41,-116.41 581.88,-104.33 721.94,-97.05"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="722.48,-100.52 732.28,-96.51 722.11,-93.53 722.48,-100.52"/>
+</g>
+<!-- Node8 -->
+<g id="node8" class="node">
+<title>Node8</title>
+<g id="a_node8"><a xlink:href="../../d4/d3b/namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" target="_top" xlink:title="Removes the name of the subroutine that is no longer active.">
+<polygon fill="white" stroke="black" points="726,-2.46 726,-23.46 954,-23.46 954,-2.46 726,-2.46"/>
+<text text-anchor="middle" x="840" y="-9.86" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_messages::unsetmessagesource</text>
+</a>
+</g>
+</g>
+<!-- Node1&#45;&gt;Node8 -->
+<g id="edge12" class="edge">
+<title>Node1&#45;&gt;Node8</title>
+<path fill="none" stroke="midnightblue" d="M122.94,-118.44C147.96,-101.37 200.48,-67.85 250,-50.96 404.23,1.64 594.14,3.55 715.88,-2.55"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="715.81,-6.05 725.98,-3.08 716.18,0.94 715.81,-6.05"/>
+</g>
+<!-- Node3 -->
+<g id="node3" class="node">
+<title>Node3</title>
+<g id="a_node3"><a xlink:href="../../d4/d19/namespacetimedateutils.html#a09a914846a02d3d430348f83c67d58b5" target="_top" xlink:title="Convert a string to upper&#45;case.">
+<polygon fill="white" stroke="black" points="543,-177.46 543,-198.46 653,-198.46 653,-177.46 543,-177.46"/>
+<text text-anchor="middle" x="598" y="-184.86" font-family="Helvetica,sans-Serif" font-size="12.00">timedateutils::upp</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node3 -->
+<g id="edge2" class="edge">
+<title>Node2&#45;&gt;Node3</title>
+<path fill="none" stroke="midnightblue" d="M446.2,-175.18C474.77,-177.6 506.12,-180.26 532.8,-182.52"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="532.52,-186.01 542.78,-183.37 533.11,-179.03 532.52,-186.01"/>
+</g>
+<!-- Node4&#45;&gt;Node3 -->
 <g id="edge4" class="edge">
-<title>Node4&#45;&gt;Node5</title>
-<path fill="none" stroke="midnightblue" d="M470.02,-61.91C478.52,-61.22 487.08,-60.53 495.53,-59.85"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="496.08,-63.32 505.77,-59.03 495.52,-56.34 496.08,-63.32"/>
+<title>Node4&#45;&gt;Node3</title>
+<path fill="none" stroke="midnightblue" d="M447.2,-200.66C475.45,-198.26 506.32,-195.65 532.66,-193.41"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="533.23,-196.88 542.9,-192.55 532.64,-189.9 533.23,-196.88"/>
 </g>
-<!-- Node4&#45;&gt;Node6 -->
-<g id="edge7" class="edge">
-<title>Node4&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M392.56,-60.18C421.66,-50.97 466.24,-38.1 506,-31.68 577.22,-20.2 657.99,-15.39 722.14,-13.48"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="722.39,-16.98 732.29,-13.2 722.2,-9.98 722.39,-16.98"/>
+<!-- Node6 -->
+<g id="node6" class="node">
+<title>Node6</title>
+<g id="a_node6"><a xlink:href="../../da/dd1/namespacepahm__netcdfio.html#aa0987122588b6ef883046848cfcefe0b" target="_top" xlink:title="Terminates the program on NetCDF error.">
+<polygon fill="white" stroke="black" points="506,-41.46 506,-62.46 690,-62.46 690,-41.46 506,-41.46"/>
+<text text-anchor="middle" x="598" y="-48.86" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_netcdfio::netcdfterminate</text>
+</a>
 </g>
-<!-- Node4&#45;&gt;Node7 -->
-<g id="edge8" class="edge">
-<title>Node4&#45;&gt;Node7</title>
-<path fill="none" stroke="midnightblue" d="M470.06,-75.25C543.24,-78.31 639.77,-82.35 715.73,-85.53"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="715.7,-89.03 725.83,-85.95 715.99,-82.03 715.7,-89.03"/>
 </g>
 <!-- Node5&#45;&gt;Node6 -->
-<g id="edge5" class="edge">
+<g id="edge6" class="edge">
 <title>Node5&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M663.63,-41.18C694.58,-36.15 731.81,-30.1 764,-24.87"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="764.94,-28.26 774.25,-23.21 763.82,-21.35 764.94,-28.26"/>
+<path fill="none" stroke="midnightblue" d="M470.02,-62.18C478.52,-61.5 487.08,-60.81 495.53,-60.13"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="496.08,-63.6 505.77,-59.31 495.52,-56.62 496.08,-63.6"/>
 </g>
 <!-- Node5&#45;&gt;Node7 -->
-<g id="edge6" class="edge">
+<g id="edge9" class="edge">
 <title>Node5&#45;&gt;Node7</title>
-<path fill="none" stroke="midnightblue" d="M663.63,-62.19C694.58,-67.21 731.81,-73.27 764,-78.5"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="763.82,-82.01 774.25,-80.16 764.94,-75.1 763.82,-82.01"/>
+<path fill="none" stroke="midnightblue" d="M470.06,-75.52C545.35,-78.67 645.35,-82.86 722.25,-86.08"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="722.32,-89.58 732.46,-86.5 722.62,-82.59 722.32,-89.58"/>
+</g>
+<!-- Node5&#45;&gt;Node8 -->
+<g id="edge10" class="edge">
+<title>Node5&#45;&gt;Node8</title>
+<path fill="none" stroke="midnightblue" d="M392.56,-60.45C421.66,-51.25 466.24,-38.37 506,-31.96 574.77,-20.87 652.45,-16.01 715.47,-13.97"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="715.97,-17.46 725.86,-13.65 715.75,-10.46 715.97,-17.46"/>
+</g>
+<!-- Node6&#45;&gt;Node7 -->
+<g id="edge7" class="edge">
+<title>Node6&#45;&gt;Node7</title>
+<path fill="none" stroke="midnightblue" d="M663.63,-62.46C694.58,-67.49 731.81,-73.54 764,-78.77"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="763.82,-82.29 774.25,-80.44 764.94,-75.38 763.82,-82.29"/>
+</g>
+<!-- Node6&#45;&gt;Node8 -->
+<g id="edge8" class="edge">
+<title>Node6&#45;&gt;Node8</title>
+<path fill="none" stroke="midnightblue" d="M663.63,-41.46C694.58,-36.43 731.81,-30.38 764,-25.15"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="764.94,-28.54 774.25,-23.48 763.82,-21.63 764.94,-28.54"/>
 </g>
 </g>
 </svg>

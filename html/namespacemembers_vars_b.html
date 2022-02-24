@@ -18,10 +18,20 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -120,17 +134,16 @@ $(document).ready(function(){initNavTree('namespacemembers_vars_b.html',''); ini
 <li>besttrackdata&#160;:&#160;<a class="el" href="d9/d41/namespaceparwind.html#afc296d5f5c2c76c31bd1cc0002029901">parwind</a></li>
 <li>besttrackfilename&#160;:&#160;<a class="el" href="d0/dda/namespacepahm__global.html#a15f59c65b7e1ab134c4949faea236cd6">pahm_global</a></li>
 <li>besttrackfilenamespecified&#160;:&#160;<a class="el" href="d0/dda/namespacepahm__global.html#a881d459172ccb696dad4c55a78d36d72">pahm_global</a></li>
-<li>bladjustfac&#160;:&#160;<a class="el" href="d0/dda/namespacepahm__global.html#acd988786676e5d71161db23c57454b9c">pahm_global</a></li>
 <li>blank&#160;:&#160;<a class="el" href="d0/dee/namespacepahm__sizes.html#a5f4ce60aa12dcfee3641351c8fbaea60">pahm_sizes</a></li>
 <li>bs&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#ae433c24eb7f394bb8c230b95b3d5b63e">pahm_vortex</a></li>
-<li>bs4&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#a6f3d99fff0410bf92c1515f23be415f7">pahm_vortex</a></li>
+<li>bs4&#160;:&#160;<a class="el" href="de/d94/namespacepahm__vortex.html#afd063dbf8a136ef109ef7b0777f95a61">pahm_vortex</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

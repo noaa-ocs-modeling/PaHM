@@ -17,8 +17,9 @@ var searchData=
   ['rhoair_14',['rhoair',['../d0/dda/namespacepahm__global.html#ac2f4438de3c2005f7018ad4514145988',1,'pahm_global']]],
   ['rhowater_15',['rhowater',['../d0/dda/namespacepahm__global.html#ad646fe8c70d6cb736292ec024cdf83cd',1,'pahm_global']]],
   ['rmaxes_16',['rmaxes',['../de/d94/namespacepahm__vortex.html#a78858c9851bd9cc4d8dc2556c1b0bb64',1,'pahm_vortex']]],
-  ['rmaxes4_17',['rmaxes4',['../de/d94/namespacepahm__vortex.html#a1cdb70d18270f8efba2a01244e127dec',1,'pahm_vortex']]],
-  ['rmissv_18',['rmissv',['../d0/dee/namespacepahm__sizes.html#ace8d5a1f1488191db4e76d9084143953',1,'pahm_sizes']]],
-  ['rmw_19',['rmw',['../d0/da3/structparwind_1_1hollanddata__t.html#ab3f201f1028975d2672bae29b0d5a671',1,'parwind::hollanddata_t']]],
-  ['rrp_20',['rrp',['../d0/da3/structparwind_1_1hollanddata__t.html#a0b9278fcd7958702380e6a6843407ac5',1,'parwind::hollanddata_t']]]
+  ['rmaxes4_17',['rmaxes4',['../de/d94/namespacepahm__vortex.html#a5561cbaca93695cbf8ea10130c2d6bb9',1,'pahm_vortex']]],
+  ['rmaxw_18',['rmaxw',['../de/d79/structparwind_1_1asymetricvortexdata__t.html#aa95aefc964a8b203b77bb647598fcdeb',1,'parwind::asymetricvortexdata_t']]],
+  ['rmissv_19',['rmissv',['../d0/dee/namespacepahm__sizes.html#ace8d5a1f1488191db4e76d9084143953',1,'pahm_sizes']]],
+  ['rmw_20',['rmw',['../de/d79/structparwind_1_1asymetricvortexdata__t.html#a8fbfa0f08078bb1a90d2acc5a10d3684',1,'parwind::asymetricvortexdata_t::rmw()'],['../d0/da3/structparwind_1_1hollanddata__t.html#ab3f201f1028975d2672bae29b0d5a671',1,'parwind::hollanddata_t::rmw()']]],
+  ['rrp_21',['rrp',['../de/d79/structparwind_1_1asymetricvortexdata__t.html#a6760abbfb1b4b18ed9e0f83195b9a31c',1,'parwind::asymetricvortexdata_t::rrp()'],['../d0/da3/structparwind_1_1hollanddata__t.html#a0b9278fcd7958702380e6a6843407ac5',1,'parwind::hollanddata_t::rrp()']]]
 ];

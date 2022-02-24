@@ -4,7 +4,7 @@ var searchData=
   ['backgroundatmpress_1',['backgroundatmpress',['../d0/dda/namespacepahm__global.html#adf51d50844bd7fafd7f0a7f3b424eeef',1,'pahm_global']]],
   ['base_5fnetcdfcheckerr_2',['base_netcdfcheckerr',['../da/dd1/namespacepahm__netcdfio.html#aa686f5f58121595cbd368f0f0b12bfba',1,'pahm_netcdfio']]],
   ['basee_3',['basee',['../d0/dda/namespacepahm__global.html#aba5897303d0e0cc952c09d297d2f8542',1,'pahm_global']]],
-  ['basin_4',['basin',['../d2/d89/structparwind_1_1besttrackdata__t.html#ab78b0e152552e924836b3900bef4fcee',1,'parwind::besttrackdata_t::basin()'],['../d0/da3/structparwind_1_1hollanddata__t.html#a5e0c95434bab57cefdb0d23b84b6f720',1,'parwind::hollanddata_t::basin()']]],
+  ['basin_4',['basin',['../d2/d89/structparwind_1_1besttrackdata__t.html#ab78b0e152552e924836b3900bef4fcee',1,'parwind::besttrackdata_t::basin()'],['../d0/da3/structparwind_1_1hollanddata__t.html#a5e0c95434bab57cefdb0d23b84b6f720',1,'parwind::hollanddata_t::basin()'],['../de/d79/structparwind_1_1asymetricvortexdata__t.html#a69c8d7de5ff699f448409446d2d2ce9a',1,'parwind::asymetricvortexdata_t::basin()']]],
   ['begdate_5',['begdate',['../d0/dda/namespacepahm__global.html#ac21b3b9ba73caa44d25379fca1c549c9',1,'pahm_global']]],
   ['begdatespecified_6',['begdatespecified',['../d0/dda/namespacepahm__global.html#a4b9c7176babb3d8edd9f15159e2ebaaf',1,'pahm_global']]],
   ['begdatetime_7',['begdatetime',['../d0/dda/namespacepahm__global.html#a7096a707407e38cb7f0c2540eaf37868',1,'pahm_global']]],
@@ -21,8 +21,7 @@ var searchData=
   ['besttrackdata_5ft_18',['besttrackdata_t',['../d2/d89/structparwind_1_1besttrackdata__t.html',1,'parwind']]],
   ['besttrackfilename_19',['besttrackfilename',['../d0/dda/namespacepahm__global.html#a15f59c65b7e1ab134c4949faea236cd6',1,'pahm_global']]],
   ['besttrackfilenamespecified_20',['besttrackfilenamespecified',['../d0/dda/namespacepahm__global.html#a881d459172ccb696dad4c55a78d36d72',1,'pahm_global']]],
-  ['bladjustfac_21',['bladjustfac',['../d0/dda/namespacepahm__global.html#acd988786676e5d71161db23c57454b9c',1,'pahm_global']]],
-  ['blank_22',['blank',['../d0/dee/namespacepahm__sizes.html#a5f4ce60aa12dcfee3641351c8fbaea60',1,'pahm_sizes']]],
-  ['bs_23',['bs',['../de/d94/namespacepahm__vortex.html#ae433c24eb7f394bb8c230b95b3d5b63e',1,'pahm_vortex']]],
-  ['bs4_24',['bs4',['../de/d94/namespacepahm__vortex.html#a6f3d99fff0410bf92c1515f23be415f7',1,'pahm_vortex']]]
+  ['blank_21',['blank',['../d0/dee/namespacepahm__sizes.html#a5f4ce60aa12dcfee3641351c8fbaea60',1,'pahm_sizes']]],
+  ['bs_22',['bs',['../de/d94/namespacepahm__vortex.html#ae433c24eb7f394bb8c230b95b3d5b63e',1,'pahm_vortex']]],
+  ['bs4_23',['bs4',['../de/d94/namespacepahm__vortex.html#afd063dbf8a136ef109ef7b0777f95a61',1,'pahm_vortex']]]
 ];

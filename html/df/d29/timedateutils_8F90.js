@@ -21,6 +21,7 @@ var timedateutils_8F90 =
     [ "splitdatetimestring2", "df/d29/timedateutils_8F90.html#aefc8d34ba419aa2d839266b9ccb355b7", null ],
     [ "timeconvisec", "df/d29/timedateutils_8F90.html#aecff7363d62093ca61c250308c44d81f", null ],
     [ "timeconvrsec", "df/d29/timedateutils_8F90.html#a06ba200273d53bc52c89a983537e00df", null ],
+    [ "upp", "df/d29/timedateutils_8F90.html#a09a914846a02d3d430348f83c67d58b5", null ],
     [ "yeardays", "df/d29/timedateutils_8F90.html#aca37b13adf7e4d6eba9469a5f47b0df5", null ],
     [ "firstgregdate", "df/d29/timedateutils_8F90.html#ab8cb2b65a03be16286279b3dec918f1a", null ],
     [ "firstgregtime", "df/d29/timedateutils_8F90.html#a1a64948ed9bac5a8a8bafd90d27d6d7c", null ],

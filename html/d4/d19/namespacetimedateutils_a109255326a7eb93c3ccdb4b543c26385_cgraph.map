@@ -1,4 +1,5 @@
 <map id="timedateutils::elapsedsecs" name="timedateutils::elapsedsecs">
 <area shape="rect" id="node1" title="Calculates the elapsed time in seconds." alt="" coords="5,5,216,35"/>
 <area shape="rect" id="node2" href="$d4/d19/namespacetimedateutils.html#a6c7acacb9981bb9182378a449e45715b" title="Calculates the conversion factor between time units and seconds." alt="" coords="264,5,496,35"/>
+<area shape="rect" id="node3" href="$d4/d19/namespacetimedateutils.html#a09a914846a02d3d430348f83c67d58b5" title="Convert a string to upper&#45;case." alt="" coords="544,5,691,35"/>
 </map>

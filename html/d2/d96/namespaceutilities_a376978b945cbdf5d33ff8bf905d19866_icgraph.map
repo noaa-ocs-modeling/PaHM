@@ -1,9 +1,13 @@
 <map id="utilities::tolowercase" name="utilities::tolowercase">
-<area shape="rect" id="node1" title="Convert a string to lower&#45;case." alt="" coords="1213,46,1379,75"/>
-<area shape="rect" id="node2" href="$d3/d46/namespacecsv__module.html#a9813e1ff838ed6024c464bb5c443bada" title="Initialize a [[csv_file(type)]]." alt="" coords="974,5,1149,52"/>
-<area shape="rect" id="node3" href="$d2/d96/namespaceutilities.html#a57953a3306e17ea2e28254e3d2091516" title="This subroutine prints on the screen the values of the program&#39;s parameters." alt="" coords="957,77,1165,106"/>
-<area shape="rect" id="node4" href="$d2/d96/namespaceutilities.html#ab095172ef12ae151ab5c9aacf82f4dc6" title="This subroutine reads the program&#39;s main control file." alt="" coords="728,77,909,106"/>
-<area shape="rect" id="node5" href="$de/d07/namespacepahm__drivermod.html#a3294ddc68b72ff9220010a8764a8afe3" title="Prints on the screen the help system of the PaHM program." alt="" coords="384,77,680,106"/>
-<area shape="rect" id="node6" href="$de/d07/namespacepahm__drivermod.html#ae0d4b223a96ba116b38152caf6b0768c" title="Subroutine to initialize a PaHM run." alt="" coords="116,77,336,106"/>
-<area shape="rect" id="node7" href="$d9/d8a/pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,77,68,106"/>
+<area shape="rect" id="node1" title="Convert a string to lower&#45;case." alt="" coords="1285,41,1451,71"/>
+<area shape="rect" id="node2" href="$d2/d96/namespaceutilities.html#a57953a3306e17ea2e28254e3d2091516" title="This subroutine prints on the screen the values of the program&#39;s parameters." alt="" coords="1029,11,1237,40"/>
+<area shape="rect" id="node7" href="$d3/d46/namespacecsv__module.html#afdb32ff9495b79418037e3fae406e67f" title="Converts a string to a &#39;logical&#39;." alt="" coords="1041,68,1226,97"/>
+<area shape="rect" id="node3" href="$d2/d96/namespaceutilities.html#ab095172ef12ae151ab5c9aacf82f4dc6" title="This subroutine reads the program&#39;s main control file." alt="" coords="764,5,945,35"/>
+<area shape="rect" id="node4" href="$de/d07/namespacepahm__drivermod.html#a3294ddc68b72ff9220010a8764a8afe3" title="Prints on the screen the help system of the PaHM program." alt="" coords="384,5,680,35"/>
+<area shape="rect" id="node5" href="$de/d07/namespacepahm__drivermod.html#ae0d4b223a96ba116b38152caf6b0768c" title="Subroutine to initialize a PaHM run." alt="" coords="116,5,336,35"/>
+<area shape="rect" id="node6" href="$d9/d8a/pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,5,68,35"/>
+<area shape="rect" id="node8" href="$d3/d46/namespacecsv__module.html#a650414ac2ed01f87425f588c2daba839" title="Get an individual value from the &#39;csv_data&#39; structure in the CSV class." alt="" coords="769,59,940,106"/>
+<area shape="rect" id="node10" href="$d3/d46/namespacecsv__module.html#ab0bfadc5d97513c62e333b32957398fb" title="Infers the variable type." alt="" coords="728,131,981,160"/>
+<area shape="rect" id="node9" href="$d9/db8/structcsv__module_1_1csv__file.html#ab5a9ad6066ebf388d15c234e5f0b928a" title=" " alt="" coords="432,68,632,97"/>
+<area shape="rect" id="node11" href="$d3/d46/namespacecsv__module.html#ace66eaa8da32c4eadee2b6bac017bdc9" title="Returns an array indicating the variable type of each columns." alt="" coords="445,122,619,169"/>
 </map>

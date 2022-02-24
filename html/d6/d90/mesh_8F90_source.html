@@ -18,10 +18,20 @@
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"],
+   TeX: { Macros: {
+    ilogo: ["{\\mathrm{\\textit{#1}}}",1],
+    blogo: ["{\\mathrm{\\textbf{#1}}}",1],
+    logo: ["{\\ilogo{#1}}",1],
+  } }
 });
 </script>
 <script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
@@ -45,6 +55,21 @@ MathJax.Hub.Config({
    </div>
    <div id="projectbrief">Parametric Hurricane Modeling System</div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="../../search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="../../search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -56,17 +81,6 @@ MathJax.Hub.Config({
 var searchBox = new SearchBox("searchBox", "../../search",'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="../../menudata.js"></script>
-<script type="text/javascript" src="../../menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('../../',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -428,14 +442,14 @@ $(document).ready(function(){initNavTree('d6/d90/mesh_8F90_source.html','../../'
 <div class="ttc" id="anamespacepahm__sizes_html_ad960943e22c3587b8edefde221a11a64"><div class="ttname"><a href="../../d0/dee/namespacepahm__sizes.html#ad960943e22c3587b8edefde221a11a64">pahm_sizes::sz</a></div><div class="ttdeci">integer, parameter sz</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d93/sizes_8F90_source.html#l00056">sizes.F90:56</a></div></div>
 <div class="ttc" id="anamespaceutilities_html"><div class="ttname"><a href="../../d2/d96/namespaceutilities.html">utilities</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d2c/utilities_8F90_source.html#l00016">utilities.F90:16</a></div></div>
 <div class="ttc" id="anamespaceutilities_html_a2a41067ed5533ec0c36318e8f1e960bf"><div class="ttname"><a href="../../d2/d96/namespaceutilities.html#a2a41067ed5533ec0c36318e8f1e960bf">utilities::openfileforread</a></div><div class="ttdeci">subroutine openfileforread(lun, fileName, errorIO)</div><div class="ttdoc">This subroutine opens an existing file for reading.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d2c/utilities_8F90_source.html#l00068">utilities.F90:69</a></div></div>
-<div class="ttc" id="anamespaceutilities_html_a8dff395c74e87d059dadcf8bacdbfedd"><div class="ttname"><a href="../../d2/d96/namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd">utilities::touppercase</a></div><div class="ttdeci">pure character(len(inpstring)) function touppercase(inpString)</div><div class="ttdoc">Convert a string to upper-case.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d2c/utilities_8F90_source.html#l01720">utilities.F90:1721</a></div></div>
+<div class="ttc" id="anamespaceutilities_html_a8dff395c74e87d059dadcf8bacdbfedd"><div class="ttname"><a href="../../d2/d96/namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd">utilities::touppercase</a></div><div class="ttdeci">pure character(len(inpstring)) function touppercase(inpString)</div><div class="ttdoc">Convert a string to upper-case.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d2c/utilities_8F90_source.html#l01727">utilities.F90:1728</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="../../d6/d90/mesh_8F90.html">mesh.F90</a></li>
-    <li class="footer">Generated on Fri Jan 7 2022 08:04:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

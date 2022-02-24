@@ -12,7 +12,7 @@
 <!-- Node1 -->
 <g id="node1" class="node">
 <title>Node1</title>
-<g id="a_node1"><a xlink:title="Subroutine to support the Holland model (GetHolland).">
+<g id="a_node1"><a xlink:title="Subroutine to support the Holland model(s) (GetHollandFields).">
 <polygon fill="#bfbfbf" stroke="black" points="0,-80.5 0,-101.5 171,-101.5 171,-80.5 0,-80.5"/>
 <text text-anchor="middle" x="85.5" y="-87.9" font-family="Helvetica,sans-Serif" font-size="12.00">parwind::processhollanddata</text>
 </a>
@@ -36,7 +36,7 @@
 <!-- Node3 -->
 <g id="node3" class="node">
 <title>Node3</title>
-<g id="a_node3"><a xlink:href="../../de/d94/namespacepahm__vortex.html#a2c7cf08c2619746ea1c60556b6487b35" target="_top" xlink:title="This subroutine calculates the intensity time change of a variable using second order mumerical accur...">
+<g id="a_node3"><a xlink:href="../../de/d94/namespacepahm__vortex.html#a9bcc2778159c3bcce3d559c793cf1fcf" target="_top" xlink:title="This subroutine calculates the intensity time change of a variable using second order mumerical accur...">
 <polygon fill="white" stroke="black" points="207,-80.5 207,-101.5 405,-101.5 405,-80.5 207,-80.5"/>
 <text text-anchor="middle" x="306" y="-87.9" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_vortex::calcintensitychange</text>
 </a>
@@ -81,7 +81,7 @@
 <!-- Node8 -->
 <g id="node8" class="node">
 <title>Node8</title>
-<g id="a_node8"><a xlink:href="../../de/d94/namespacepahm__vortex.html#a68cd3f6ceb40446c3c0c6d192f8b61bb" target="_top" xlink:title="This subroutine calculates the translational velocity of a moving hurricane using second order mumeri...">
+<g id="a_node8"><a xlink:href="../../de/d94/namespacepahm__vortex.html#ac9c0f4fcac5fb2067133acb366bae984" target="_top" xlink:title="This subroutine calculates the translational velocity of a moving hurricane using second order mumeri...">
 <polygon fill="white" stroke="black" points="240.5,-120.5 240.5,-141.5 371.5,-141.5 371.5,-120.5 240.5,-120.5"/>
 <text text-anchor="middle" x="306" y="-127.9" font-family="Helvetica,sans-Serif" font-size="12.00">pahm_vortex::uvtrans</text>
 </a>
