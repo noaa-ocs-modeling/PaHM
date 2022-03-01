@@ -46,9 +46,9 @@
     <filename>da/d72/glossary_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>introduction.md</name>
+    <name>intro.md</name>
     <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
-    <filename>d5/d76/introduction_8md.html</filename>
+    <filename>d7/d3e/intro_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>models.md</name>
@@ -61,9 +61,9 @@
     <filename>da/d2a/pahm__manual_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>references.md</name>
+    <name>references-dox.md</name>
     <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
-    <filename>d6/d05/references_8md.html</filename>
+    <filename>df/db8/references-dox_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>tables.md</name>
@@ -7998,53 +7998,52 @@
     <name>abstract</name>
     <title>Abstract</title>
     <filename>d7/dfb/abstract.html</filename>
-    <docanchor file="d7/dfb/abstract.html">md_doc_user_guide_abstract</docanchor>
+    <docanchor file="d7/dfb/abstract.html">md_user_guide_abstract</docanchor>
   </compound>
   <compound kind="page">
     <name>ltables</name>
     <title>List of Tables</title>
     <filename>d7/d60/ltables.html</filename>
-    <docanchor file="d7/d60/ltables.html">md_doc_user_guide_tables</docanchor>
+    <docanchor file="d7/d60/ltables.html">md_user_guide_tables</docanchor>
   </compound>
   <compound kind="page">
     <name>lfigures</name>
     <title>List of Figures</title>
     <filename>d2/df6/lfigures.html</filename>
-    <docanchor file="d2/df6/lfigures.html">md_doc_user_guide_figures</docanchor>
+    <docanchor file="d2/df6/lfigures.html">md_user_guide_figures</docanchor>
   </compound>
   <compound kind="page">
     <name>intro</name>
     <title>Introduction</title>
     <filename>d1/dfb/intro.html</filename>
-    <docanchor file="d1/dfb/intro.html">md_doc_user_guide_introduction</docanchor>
-    <docanchor file="d1/dfb/intro.html" title="The Parametric Hurricane Modeling System (PaHM)">intro_pahm</docanchor>
-    <docanchor file="d1/dfb/intro.html" title="Downloading PaHM">intro_down</docanchor>
-    <docanchor file="d1/dfb/intro.html" title="Unpacking the Download">intro_down_upack</docanchor>
+    <docanchor file="d1/dfb/intro.html">md_user_guide_intro</docanchor>
+    <docanchor file="d1/dfb/intro.html" title="The Parametric Hurricane Modeling System (&lt;em&gt;PaHM&lt;/em&gt;)">intro_pahm</docanchor>
+    <docanchor file="d1/dfb/intro.html" title="Downloading &lt;em&gt;PaHM&lt;/em&gt;">intro_down</docanchor>
     <docanchor file="d1/dfb/intro.html" title="Directory Structure">intro_down_tree</docanchor>
-    <docanchor file="d1/dfb/intro.html" title="Building PaHM">intro_build</docanchor>
+    <docanchor file="d1/dfb/intro.html" title="Building &lt;em&gt;PaHM&lt;/em&gt;">intro_build</docanchor>
     <docanchor file="d1/dfb/intro.html" title="System Requirements">intro_build_require</docanchor>
     <docanchor file="d1/dfb/intro.html" title="The Build System">intro_build_build</docanchor>
     <docanchor file="d1/dfb/intro.html" title="CMake Configuration Files and Modules">intro_build_cmake</docanchor>
     <docanchor file="d1/dfb/intro.html" title="Installation">intro_build_install</docanchor>
-    <docanchor file="d1/dfb/intro.html" title="Using PaHM">intro_conf</docanchor>
+    <docanchor file="d1/dfb/intro.html" title="Using &lt;em&gt;PaHM&lt;/em&gt;">intro_conf</docanchor>
     <docanchor file="d1/dfb/intro.html" title="Standalone Configuration">intro_conf_alone</docanchor>
     <docanchor file="d1/dfb/intro.html" title="Coupling Configuration">intro_conf_coupled</docanchor>
   </compound>
   <compound kind="page">
     <name>models</name>
-    <title>Parametric Models in PaHM</title>
+    <title>Parametric Models in &lt;em&gt;PaHM&lt;/em&gt;</title>
     <filename>d3/d7d/models.html</filename>
-    <docanchor file="d3/d7d/models.html">md_doc_user_guide_models</docanchor>
+    <docanchor file="d3/d7d/models.html">md_user_guide_models</docanchor>
     <docanchor file="d3/d7d/models.html" title="Rankine Vortex Model">mod_rank</docanchor>
     <docanchor file="d3/d7d/models.html" title="Holland Symmetric Vortex Models">mod_holl</docanchor>
     <docanchor file="d3/d7d/models.html" title="Willoughby Symmetric Vortex Model">mod_will</docanchor>
-    <docanchor file="d3/d7d/models.html" title="Generalized Asymmetric Vortex Holland model (GAHM)">mod_gahm</docanchor>
+    <docanchor file="d3/d7d/models.html" title="Generalized Asymmetric Vortex Holland model (&lt;em&gt;GAHM&lt;/em&gt;)">mod_gahm</docanchor>
   </compound>
   <compound kind="page">
     <name>features</name>
-    <title>PaHM Features and Capabilities</title>
+    <title>&lt;em&gt;PaHM&lt;/em&gt; Features and Capabilities</title>
     <filename>d3/dde/features.html</filename>
-    <docanchor file="d3/dde/features.html">md_doc_user_guide_features</docanchor>
+    <docanchor file="d3/dde/features.html">md_user_guide_features</docanchor>
     <docanchor file="d3/dde/features.html" title="Data Input Interfaces">data_api</docanchor>
     <docanchor file="d3/dde/features.html" title="Model Grids">grids</docanchor>
     <docanchor file="d3/dde/features.html" title="Modeling Multiple Interacting Storms">multi_storms</docanchor>
@@ -8054,7 +8053,7 @@
     <name>tech</name>
     <title>Model Application and Implementation Technology</title>
     <filename>d0/d5b/tech.html</filename>
-    <docanchor file="d0/d5b/tech.html">md_doc_user_guide_application</docanchor>
+    <docanchor file="d0/d5b/tech.html">md_user_guide_application</docanchor>
     <docanchor file="d0/d5b/tech.html" title="Standalone Model Application">tech_alone</docanchor>
     <docanchor file="d0/d5b/tech.html" title="Coupled Model Application">tech_coupled</docanchor>
   </compound>
@@ -8062,7 +8061,7 @@
     <name>eval</name>
     <title>Model Evaluation - Hurricane Florence (2018) Study</title>
     <filename>d4/d6e/eval.html</filename>
-    <docanchor file="d4/d6e/eval.html">md_doc_user_guide_evaluation</docanchor>
+    <docanchor file="d4/d6e/eval.html">md_user_guide_evaluation</docanchor>
     <docanchor file="d4/d6e/eval.html" title="Statistical Performance Measures">eval_stats</docanchor>
     <docanchor file="d4/d6e/eval.html" title="Standalone Model Evaluation">eval_alone</docanchor>
     <docanchor file="d4/d6e/eval.html" title="Model Results and Discussion">eval_alone_res</docanchor>
@@ -8074,35 +8073,42 @@
     <name>deliverables</name>
     <title>List of Deliverables</title>
     <filename>db/d81/deliverables.html</filename>
-    <docanchor file="db/d81/deliverables.html">md_doc_user_guide_deliverables</docanchor>
+    <docanchor file="db/d81/deliverables.html">md_user_guide_deliverables</docanchor>
   </compound>
   <compound kind="page">
     <name>glossary</name>
     <title>Glossary</title>
     <filename>d1/d5d/glossary.html</filename>
-    <docanchor file="d1/d5d/glossary.html">md_doc_user_guide_glossary</docanchor>
+    <docanchor file="d1/d5d/glossary.html">md_user_guide_glossary</docanchor>
   </compound>
   <compound kind="page">
     <name>credits</name>
     <title>Credits</title>
     <filename>df/d55/credits.html</filename>
-    <docanchor file="df/d55/credits.html">md_doc_user_guide_credits</docanchor>
+    <docanchor file="df/d55/credits.html">md_user_guide_credits</docanchor>
   </compound>
   <compound kind="page">
     <name>biblio</name>
     <title>References</title>
     <filename>df/de0/biblio.html</filename>
-    <docanchor file="df/de0/biblio.html">md_doc_user_guide_references</docanchor>
+    <docanchor file="df/de0/biblio.html">md_user_guide_references_dox</docanchor>
+    <docanchor file="df/de0/biblio.html">gao1</docanchor>
+    <docanchor file="df/de0/biblio.html">gao2</docanchor>
+    <docanchor file="df/de0/biblio.html">holland1</docanchor>
+    <docanchor file="df/de0/biblio.html">holland2</docanchor>
+    <docanchor file="df/de0/biblio.html">vickery1</docanchor>
+    <docanchor file="df/de0/biblio.html">willoughby1</docanchor>
+    <docanchor file="df/de0/biblio.html">willoughby2</docanchor>
   </compound>
   <compound kind="page">
     <name>code</name>
     <title>PaHM Code</title>
     <filename>d7/dab/code.html</filename>
-    <docanchor file="d7/dab/code.html">md_doc_user_guide_code</docanchor>
+    <docanchor file="d7/dab/code.html">md_user_guide_code</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>
-    <title>PaHM Manual</title>
+    <title>&lt;em&gt;PaHM&lt;/em&gt; Manual</title>
     <filename>index.html</filename>
     <docanchor file="index.html">mainpage</docanchor>
   </compound>

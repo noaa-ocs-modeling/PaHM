@@ -116,25 +116,23 @@ $(document).ready(function(){initNavTree('d1/dfb/intro.html','../../'); initResi
   <div class="headertitle"><div class="title">Introduction </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md_doc_user_guide_introduction"></a></p>
-<div class="image">
-<img src="../../pahm_logo-text.png" alt="" width="90%"/>
-</div>
-   <p >Over the years, various parametric wind models have been developed to estimate the surface winds within a tropical cyclone given the track of the storm. Such models can be very useful on forcing ocean and wave models in storm surge simulations, as they are lightweight and they do not require much time or computational resources to produce the wind fields on the fly for the duration of the storm. The Parametric Modeling System (<em>PaHM</em> <a href="https://github.com/noaa-ocs-modeling/PaHM">https://github.com/noaa-ocs-modeling/PaHM</a>) is developed to be used as a general atmospheric modeling system for coastal applications.</p>
-<p ><em>PaHM</em> is not only an atmospheric model but rather a modeling system that contains multiple parametric models (i.e., Rankine Vortex Model, Holland Models (1980, 2010), Willoughby Model and the Generalized Asymmetric Vortex Model GAHM), and it is left to the user to activate any of these models to generate the wind fields at run time. In the case of the presence of multiple storms in the basin, <em>PaHM</em> has the capability to integrate all the storms when generating the wind fields. <em>PaHM</em> can be used either as a standalone atmospheric model, or can be coupled with ocean and wave models via NOAA's Environmental Modeling System (NEMS), a common modeling coupling framework that implements the National Unified Operational Prediction Capability (NUOPC).</p>
+<div class="textblock"><p ><a class="anchor" id="md_user_guide_intro"></a></p>
+<p >Over the years, various parametric wind models have been developed to estimate the surface winds within a tropical cyclone given the track of the storm. Such models can be very useful on forcing ocean and wave models in storm surge simulations, as they are lightweight and they do not require much time or computational resources to produce the wind fields on the fly for the duration of the storm. The Parametric Modeling System <em>PaHM</em> (<a href="https://github.com/noaa-ocs-modeling/PaHM">https://github.com/noaa-ocs-modeling/PaHM</a>) is developed to be used as a general atmospheric modeling system to support coastal applications.</p>
+<p ><em>PaHM</em> is not an atmospheric model but rather a modeling system that contains multiple parametric tropical cyclone (TC) models that can be activated during run time to generate the required atmospheric wind fields. The functional parametric models are the <a class="el" href="../../d3/d7d/models.html#mod_holl">Holland models (1980, 2010)</a> and the <a class="el" href="../../d3/d7d/models.html#mod_gahm">Generalized Asymmetric Vortex Model (GAHM)</a>. Two additional parametric modeling components are in development that is, the <a class="el" href="../../d3/d7d/models.html#mod_rank">Rankine Vortex Model</a> and the <a class="el" href="../../d3/d7d/models.html#mod_will">Willoughby Model</a>.</p>
 <h1><a class="anchor" id="intro_pahm"></a>
-The Parametric Hurricane Modeling System (PaHM)</h1>
+The Parametric Hurricane Modeling System (<em>PaHM</em>)</h1>
+<p ><em>PaHM</em> is a modeling system that reads "best track" type of files (e.g., those produced by the <a href="https://www.nhc.noaa.gov/">National Hurricane Center</a>) to generate gridded atmospheric fields (usually, 10-m wind velocities and atmospheric pressures converted to mean sea level). The file formats currently recognized by <em>PaHM</em> are: (a) <a href="https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt">a/b-deck</a>, (b) <a href="https://www.nhc.noaa.gov/data/hurdat/hurdat2-format-atlantic.pdf">HurDat2</a>, (c) <a href="https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf">IBTrACS</a> and (d) <a href="https://www.emc.ncep.noaa.gov/HWRF/tcvitals-draft.html">TCVitals</a>. <em>PaHM</em> has a built-in CSV I/O interface therefore, it can read and write any of these files in ASCII format.</p>
 <h1><a class="anchor" id="intro_down"></a>
-Downloading PaHM</h1>
-<h2><a class="anchor" id="intro_down_upack"></a>
-Unpacking the Download</h2>
-<h2><a class="anchor" id="intro_down_tree"></a>
+Downloading <em>PaHM</em></h1>
+<p >The latest source code of <em>PaHM</em> can be downloaded from its GitHub repository at: <a href="https://github.com/noaa-ocs-modeling/PaHM">https://github.com/noaa-ocs-modeling/PaHM</a>. Binary distributions of <em>PaHM</em> are not available currently. The full online documentation of the modeling system can be accessed at: <a href="https://noaa-ocs-modeling.github.io/PaHM/html/index.html">https://noaa-ocs-modeling.github.io/PaHM/html/index.html</a>.</p>
+<div class="fragment"><div class="line">git clone https://github.com/noaa-ocs-modeling/PaHM PaHM</div>
+</div><!-- fragment --><h2><a class="anchor" id="intro_down_tree"></a>
 Directory Structure</h2>
 <div class="image">
 <img src="../../PaHM-dir-tree.png" alt="" width="90%"/>
 </div>
    <h1><a class="anchor" id="intro_build"></a>
-Building PaHM</h1>
+Building <em>PaHM</em></h1>
 <h2><a class="anchor" id="intro_build_require"></a>
 System Requirements</h2>
 <h2><a class="anchor" id="intro_build_build"></a>
@@ -148,7 +146,7 @@ CMake Configuration Files and Modules</h2>
 Installation</h2>
 <p >Installation and developement of <em>PaHM</em> is done through the distributed version control system Git. Even if a tarball could be sufficient, we advise to use Git system to follow <em>PaHM</em> development and merge easily to new versions. Building <em>PaHM</em> from sources requires to compile third party libraries and the use of CMake. These points are detailed below.</p>
 <h1><a class="anchor" id="intro_conf"></a>
-Using PaHM</h1>
+Using <em>PaHM</em></h1>
 <div class="image">
 <img src="../../Butterfly-PaHM.png" alt=""/>
 </div>
@@ -171,7 +169,7 @@ Coupling Configuration</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Feb 24 2022 00:52:32 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Tue Mar 1 2022 12:11:10 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

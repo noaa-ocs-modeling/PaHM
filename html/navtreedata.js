@@ -32,7 +32,6 @@ var NAVTREE =
     [ "Introduction", "d1/dfb/intro.html", [
       [ "Parametric Hurricane Modeling System", "d1/dfb/intro.html#intro_pahm", null ],
       [ "Downloading PaHM", "d1/dfb/intro.html#intro_down", [
-        [ "Unpacking the Download", "d1/dfb/intro.html#intro_down_upack", null ],
         [ "Directory Structure", "d1/dfb/intro.html#intro_down_tree", null ]
       ] ],
       [ "Building PaHM", "d1/dfb/intro.html#intro_build", [
@@ -98,11 +97,11 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "d1/daf/interfacetimedateutils_1_1splitdatetimestring.html#ab470f2a5a3e605e3a3d8f359154b3c29",
-"d2/dd9/namespacepahm__mesh.html#a47b691e347dec0b33bfffcff4583ea55",
-"d5/d53/structpahm__netcdfio_1_1adcircvardata__t.html#ad38dc7b685577f8e76ad979af1dca5fb",
-"d9/db8/structcsv__module_1_1csv__file.html#aaff6b4d3c3b9b4c5a52490dd7c4c6456",
-"de/d72/csv__utilities_8F90.html#a6c1f008f2a5f0ec6727aa9627a9e7bc4",
-"namespacemembers_s.html"
+"d2/dd9/namespacepahm__mesh.html#a54538ee2eee5701129a8eec5c841b196",
+"d5/d53/structpahm__netcdfio_1_1adcircvardata__t.html#ae1c3593d8717615c049296fdace27dd6",
+"d9/db8/structcsv__module_1_1csv__file.html#ab5a9ad6066ebf388d15c234e5f0b928a",
+"de/d72/csv__utilities_8F90.html#a6e82721fc2fc96ab10ca4a32547e1c88",
+"namespacemembers_u.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -36,19 +36,23 @@ span.pahmkeyword {
    font-family: "Niconne", cursive;
    font-size: 0.7em;
 }
+
+
 /** Auto numbering **/
 body {
    counter-reset: section;
 }
-.contents h1,
-h2 {
+.contents h1, h2, h3
+{
    border-bottom: 1px solid #fff;
    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
    border-radius: 0 5px 0 5px;
    padding: 5px 5px 5px 5px;
 }
 .contents > h1,
-.contents > h2 {
+.contents > h2,
+.contents > h3
+{
    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 .contents h1 {
@@ -60,10 +64,26 @@ h2 {
    counter-increment: section;
    content: counter(section) ". ";
 }
-.contents > .textblock > h2::before {
-   content: counter(section) "." counter(subsection) ". ";
-   counter-increment: subsection;
+.contents h2 {
+   counter-reset: subsubsection;
+   color: #182238;
+   background-color: #f8f8ff;
 }
+.contents h2:before {
+counter-increment:subsection;
+content:counter(section) "." counter(subsection) " ";
+}
+.contents h3 {
+   counter-reset: subsubsubsection;
+   color: #182238;
+   background-color: #f8f8ff;
+}
+.contents h3:before {
+counter-increment:subsubsection;
+content:counter(section) "." counter(subsection) "." counter(subsubsection) " ";
+}
+
+
 /* Separation bar repeated in case of large screens */
 .ui-resizable-e {
    background-repeat: repeat-y;

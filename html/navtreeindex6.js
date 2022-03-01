@@ -1,7 +1,5 @@
 var NAVTREEINDEX6 =
 {
-"namespacemembers_s.html":[13,0,1,0,18],
-"namespacemembers_t.html":[13,0,1,0,19],
 "namespacemembers_u.html":[13,0,1,0,20],
 "namespacemembers_v.html":[13,0,1,0,21],
 "namespacemembers_vars.html":[13,0,1,2],
