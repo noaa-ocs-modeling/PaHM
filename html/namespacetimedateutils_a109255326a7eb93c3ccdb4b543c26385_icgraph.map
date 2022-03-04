@@ -1,0 +1,5 @@
+<map id="timedateutils::elapsedsecs" name="timedateutils::elapsedsecs">
+<area shape="rect" id="node1" title="Calculates the elapsed time in seconds." alt="" coords="237,50,448,79"/>
+<area shape="rect" id="node2" href="$interfacetimedateutils_1_1timeconv.html#a2f5f511b312d9f4b1bed33ecb8567b86" title="Convert time from year, month, day, hour, min, sec into seconds since the reference date of the simul..." alt="" coords="5,5,189,52"/>
+<area shape="rect" id="node3" href="$interfacetimedateutils_1_1timeconv.html#a03e2abbe51f02a02624986a3d49ec192" title="Convert time from year, month, day, hour, min, sec into seconds since the reference date of the simul..." alt="" coords="5,76,189,123"/>
+</map>

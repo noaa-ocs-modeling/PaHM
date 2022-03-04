@@ -1,7 +1,0 @@
-<map id="csv_module::csv_file::get_header" name="csv_module::csv_file::get_header">
-<area shape="rect" id="node1" title=" " alt="" coords="5,37,176,84"/>
-<area shape="rect" id="node2" href="$d3/d46/namespacecsv__module.html#a0218de64ca7fa8dc49fae600c20139eb" title="Returns the header as a &#39;type(csv_string)&#39; array (&#39;read&#39; must have already been called to read the fi..." alt="" coords="237,5,434,52"/>
-<area shape="rect" id="node5" href="$d3/d46/namespacecsv__module.html#aa05825295e68549013e1583d97322663" title="Returns the header as a &#39;character(len=*)&#39; array." alt="" coords="224,77,447,106"/>
-<area shape="rect" id="node3" href="$d4/d3b/namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="503,17,790,46"/>
-<area shape="rect" id="node4" href="$d4/d3b/namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="495,73,799,102"/>
-</map>

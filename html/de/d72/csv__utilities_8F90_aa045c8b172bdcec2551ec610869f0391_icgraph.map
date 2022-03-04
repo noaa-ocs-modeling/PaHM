@@ -1,7 +1,0 @@
-<map id="partition" name="partition">
-<area shape="rect" id="node1" title=" " alt="" coords="797,29,877,59"/>
-<area shape="rect" id="node2" href="$de/d72/csv__utilities_8F90.html#a8022107c14c4c90ad3e149f4d52aedb0" title=" " alt="" coords="663,29,749,59"/>
-<area shape="rect" id="node3" href="$dc/d33/namespacecsv__utilities.html#a07f2d0f6e53440f20e140a6c90f8ab2f" title="Sorts an integer array ivec in increasing order." alt="" coords="475,21,615,67"/>
-<area shape="rect" id="node4" href="$dc/d33/namespacecsv__utilities.html#a6c1f008f2a5f0ec6727aa9627a9e7bc4" title="Finds the unique elements in a vector of integers." alt="" coords="264,29,427,59"/>
-<area shape="rect" id="node5" href="$d3/d46/namespacecsv__module.html#a95642923259cb41370798af573c1babc" title="Reads a CSV file." alt="" coords="5,29,216,59"/>
-</map>

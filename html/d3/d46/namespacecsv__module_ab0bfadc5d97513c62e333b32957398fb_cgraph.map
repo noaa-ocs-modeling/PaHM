@@ -1,7 +1,0 @@
-<map id="csv_module::infer_variable_type" name="csv_module::infer_variable_type">
-<area shape="rect" id="node1" title="Infers the variable type." alt="" coords="5,59,259,88"/>
-<area shape="rect" id="node2" href="$d3/d46/namespacecsv__module.html#a6be3694bd93818db748eba1dfbedbbc8" title="Converts a string to a &#39;integer(ip)&#39;." alt="" coords="307,5,493,35"/>
-<area shape="rect" id="node3" href="$d3/d46/namespacecsv__module.html#afdb32ff9495b79418037e3fae406e67f" title="Converts a string to a &#39;logical&#39;." alt="" coords="307,59,493,88"/>
-<area shape="rect" id="node5" href="$d3/d46/namespacecsv__module.html#afa16fb149f3106c9326e9c31a8bb083f" title="Converts a string to a &#39;real(wp)&#39;." alt="" coords="317,112,483,141"/>
-<area shape="rect" id="node4" href="$d2/d96/namespaceutilities.html#a376978b945cbdf5d33ff8bf905d19866" title="Convert a string to lower&#45;case." alt="" coords="541,59,707,88"/>
-</map>

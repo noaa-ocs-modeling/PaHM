@@ -1,0 +1,10 @@
+<map id="csv_module::variable_types" name="csv_module::variable_types">
+<area shape="rect" id="node1" title="Returns an array indicating the variable type of each columns." alt="" coords="5,103,179,150"/>
+<area shape="rect" id="node2" href="$namespacecsv__module.html#ab0bfadc5d97513c62e333b32957398fb" title="Infers the variable type." alt="" coords="252,59,505,88"/>
+<area shape="rect" id="node7" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="235,112,522,141"/>
+<area shape="rect" id="node8" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="227,165,531,195"/>
+<area shape="rect" id="node3" href="$namespacecsv__module.html#a6be3694bd93818db748eba1dfbedbbc8" title="Converts a string to a &#39;integer(ip)&#39;." alt="" coords="579,5,765,35"/>
+<area shape="rect" id="node4" href="$namespacecsv__module.html#afdb32ff9495b79418037e3fae406e67f" title="Converts a string to a &#39;logical&#39;." alt="" coords="579,59,765,88"/>
+<area shape="rect" id="node6" href="$namespacecsv__module.html#afa16fb149f3106c9326e9c31a8bb083f" title="Converts a string to a &#39;real(wp)&#39;." alt="" coords="589,112,755,141"/>
+<area shape="rect" id="node5" href="$namespaceutilities.html#a376978b945cbdf5d33ff8bf905d19866" title="Convert a string to lower&#45;case." alt="" coords="813,59,979,88"/>
+</map>

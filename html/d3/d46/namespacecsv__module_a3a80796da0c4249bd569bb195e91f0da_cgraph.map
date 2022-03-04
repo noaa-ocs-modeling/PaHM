@@ -1,5 +1,0 @@
-<map id="csv_module::get_csv_data_as_str" name="csv_module::get_csv_data_as_str">
-<area shape="rect" id="node1" title="Returns a &#39;character(len=*)&#39; array containing the csv data (&#39;read&#39; must have already been called to r..." alt="" coords="5,23,176,70"/>
-<area shape="rect" id="node2" href="$d4/d3b/namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="233,5,519,35"/>
-<area shape="rect" id="node3" href="$d4/d3b/namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="224,59,528,88"/>
-</map>

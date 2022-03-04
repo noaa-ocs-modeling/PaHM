@@ -1,7 +1,0 @@
-<map id="csv_module::to_logical" name="csv_module::to_logical">
-<area shape="rect" id="node1" title="Converts a string to a &#39;logical&#39;." alt="" coords="555,46,740,75"/>
-<area shape="rect" id="node2" href="$d3/d46/namespacecsv__module.html#a650414ac2ed01f87425f588c2daba839" title="Get an individual value from the &#39;csv_data&#39; structure in the CSV class." alt="" coords="295,5,465,52"/>
-<area shape="rect" id="node4" href="$d3/d46/namespacecsv__module.html#ab0bfadc5d97513c62e333b32957398fb" title="Infers the variable type." alt="" coords="253,77,507,106"/>
-<area shape="rect" id="node3" href="$d9/db8/structcsv__module_1_1csv__file.html#ab5a9ad6066ebf388d15c234e5f0b928a" title=" " alt="" coords="5,14,205,43"/>
-<area shape="rect" id="node5" href="$d3/d46/namespacecsv__module.html#ace66eaa8da32c4eadee2b6bac017bdc9" title="Returns an array indicating the variable type of each columns." alt="" coords="19,68,192,115"/>
-</map>

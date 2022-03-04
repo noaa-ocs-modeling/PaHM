@@ -78,7 +78,7 @@ content:counter(section) "." counter(subsection) " ";
    color: #182238;
    background-color: #f8f8ff;
 }
-.contents h3:before {
+.contents > .textblock > h3:before {
 counter-increment:subsubsection;
 content:counter(section) "." counter(subsection) "." counter(subsubsection) " ";
 }

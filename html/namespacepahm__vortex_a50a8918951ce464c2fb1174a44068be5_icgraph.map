@@ -1,0 +1,4 @@
+<map id="pahm_vortex::rmw" name="pahm_vortex::rmw">
+<area shape="rect" id="node1" title="Calculate the radius of maximum winds." alt="" coords="201,5,353,35"/>
+<area shape="rect" id="node2" href="$namespacepahm__vortex.html#aab234ce6758e2aa3ce44a3ff0f19c1f6" title="Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="5,5,153,35"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="csv_module::get_csv_data_as_str" name="csv_module::get_csv_data_as_str">
+<area shape="rect" id="node1" title="Returns a &#39;character(len=*)&#39; array containing the csv data (&#39;read&#39; must have already been called to r..." alt="" coords="253,5,424,52"/>
+<area shape="rect" id="node2" href="$structcsv__module_1_1csv__file.html#ab5a9ad6066ebf388d15c234e5f0b928a" title=" " alt="" coords="5,14,205,43"/>
+</map>
