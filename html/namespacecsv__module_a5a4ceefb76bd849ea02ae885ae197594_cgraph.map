@@ -1,5 +1,0 @@
-<map id="csv_module::get_csv_string_column" name="csv_module::get_csv_string_column">
-<area shape="rect" id="node1" title="Convert a column from a &#39;csv_string&#39; matrix to a &#39;type(csv_string)&#39; vector." alt="" coords="5,23,176,70"/>
-<area shape="rect" id="node2" href="$namespacepahm__messages.html#acf0c696cc1604842ee84a5df6d81179c" title="Sets the name of the subroutine that is writing log and/or screen messages." alt="" coords="233,5,519,35"/>
-<area shape="rect" id="node3" href="$namespacepahm__messages.html#ad35e9f2327aad65d4c669e3d886f54dc" title="Removes the name of the subroutine that is no longer active." alt="" coords="224,59,528,88"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="utilities::getlocandratio" name="utilities::getlocandratio">
-<area shape="rect" id="node1" title="Calculates the location of a value in an 1D array of values." alt="" coords="636,32,817,61"/>
-<area shape="rect" id="node2" href="$namespaceparwind.html#ad79f0c20f27839cc6d7f50d7d1698b7c" title="Calculates wind velocities and MSL pressures at the mesh nodes from the GAHM Wind model." alt="" coords="393,5,581,35"/>
-<area shape="rect" id="node5" href="$namespaceparwind.html#ad2cf2a3c40591a24959e6dd126066294" title="Calculates wind velocities and MSL pressures at the mesh nodes from the P&#45;W Holland Wind model." alt="" coords="387,59,588,88"/>
-<area shape="rect" id="node3" href="$namespacepahm__drivermod.html#a7ae4571521a5bb4eb55990dd7fb76237" title="Subroutine to run PaHM (timestepping)." alt="" coords="116,32,339,61"/>
-<area shape="rect" id="node4" href="$pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,32,68,61"/>
-</map>

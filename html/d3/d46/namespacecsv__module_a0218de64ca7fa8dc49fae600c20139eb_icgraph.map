@@ -1,0 +1,4 @@
+<map id="csv_module::get_header_csv_str" name="csv_module::get_header_csv_str">
+<area shape="rect" id="node1" title="Returns the header as a &#39;type(csv_string)&#39; array (&#39;read&#39; must have already been called to read the fi..." alt="" coords="224,5,421,52"/>
+<area shape="rect" id="node2" href="$d9/db8/structcsv__module_1_1csv__file.html#a0be9b204582c9f2006306bdad0642939" title=" " alt="" coords="5,5,176,52"/>
+</map>

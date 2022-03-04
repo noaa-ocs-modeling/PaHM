@@ -1,4 +1,0 @@
-<map id="csv_module::split" name="csv_module::split">
-<area shape="rect" id="node1" title="Splits a character string using a token." alt="" coords="5,14,151,43"/>
-<area shape="rect" id="node2" href="$namespacecsv__utilities.html#a6e82721fc2fc96ab10ca4a32547e1c88" title="Add elements to the integer vector in chunks." alt="" coords="199,5,364,52"/>
-</map>

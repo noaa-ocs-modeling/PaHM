@@ -1,4 +1,0 @@
-<map id="csv_module::split" name="csv_module::split">
-<area shape="rect" id="node1" title="Splits a character string using a token." alt="" coords="228,14,373,43"/>
-<area shape="rect" id="node2" href="$namespacecsv__module.html#a72b45c18168ec635068da3c5e6241288" title="Tokenize a line from a CSV file." alt="" coords="5,5,180,52"/>
-</map>

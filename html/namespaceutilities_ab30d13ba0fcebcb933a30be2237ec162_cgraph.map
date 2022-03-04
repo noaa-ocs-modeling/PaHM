@@ -1,5 +1,0 @@
-<map id="utilities::parseline" name="utilities::parseline">
-<area shape="rect" id="node1" title="This function parses lines of text from input script/control files." alt="" coords="5,32,152,61"/>
-<area shape="rect" id="node2" href="$namespaceutilities.html#a8723656afba63e33ed1c6cc8e5440b63" title="Gets a line from a file." alt="" coords="200,5,373,35"/>
-<area shape="rect" id="node3" href="$namespaceutilities.html#a8dff395c74e87d059dadcf8bacdbfedd" title="Convert a string to upper&#45;case." alt="" coords="203,59,371,88"/>
-</map>

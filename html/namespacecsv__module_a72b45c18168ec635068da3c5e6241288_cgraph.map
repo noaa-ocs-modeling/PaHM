@@ -1,5 +1,0 @@
-<map id="csv_module::tokenize_csv_line" name="csv_module::tokenize_csv_line">
-<area shape="rect" id="node1" title="Tokenize a line from a CSV file." alt="" coords="5,5,180,52"/>
-<area shape="rect" id="node2" href="$namespacecsv__module.html#a93688c838159ffaf313d24b71dff1c2b" title="Splits a character string using a token." alt="" coords="228,14,373,43"/>
-<area shape="rect" id="node3" href="$namespacecsv__utilities.html#a6e82721fc2fc96ab10ca4a32547e1c88" title="Add elements to the integer vector in chunks." alt="" coords="421,5,587,52"/>
-</map>

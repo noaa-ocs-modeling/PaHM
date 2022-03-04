@@ -1,0 +1,12 @@
+<map id="pahm_vortex::getusequadrantvr" name="pahm_vortex::getusequadrantvr">
+<area shape="rect" id="node1" title=" " alt="" coords="1504,59,1751,88"/>
+<area shape="rect" id="node2" href="$de/d94/namespacepahm__vortex.html#a758504d51e519dac32d8146e79fccd2c" title=" " alt="" coords="1257,5,1440,35"/>
+<area shape="rect" id="node8" href="$de/d94/namespacepahm__vortex.html#a1e9c82cf5fb1c37ebd0629060e93d5fa" title="External function f(x) = 0 for which a root is sought using Brent&#39;s root&#45;finding method." alt="" coords="1251,59,1446,88"/>
+<area shape="rect" id="node9" href="$de/d94/namespacepahm__vortex.html#a01b29cf3c18d04fb55a502f42f51af39" title="External function f(x) = 0 for which a root is sought using Brent&#39;s root&#45;finding method." alt="" coords="1241,112,1456,141"/>
+<area shape="rect" id="node3" href="$de/d94/namespacepahm__vortex.html#a8b8e9e59c6d25c54f87fbd516c0d6ee0" title="Calculates the radius of maximum winds for all storm quadrants." alt="" coords="980,59,1183,88"/>
+<area shape="rect" id="node4" href="$d9/d41/namespaceparwind.html#ac27ad597b28ef7e2b0f2eba529c0c3a2" title="Subroutine to support the asymetric vortex model(s) (Holland or otherwise)." alt="" coords="623,85,921,115"/>
+<area shape="rect" id="node5" href="$d9/d41/namespaceparwind.html#ad79f0c20f27839cc6d7f50d7d1698b7c" title="Calculates wind velocities and MSL pressures at the mesh nodes from the GAHM Wind model." alt="" coords="387,85,575,115"/>
+<area shape="rect" id="node6" href="$de/d07/namespacepahm__drivermod.html#a7ae4571521a5bb4eb55990dd7fb76237" title="Subroutine to run PaHM (timestepping)." alt="" coords="116,85,339,115"/>
+<area shape="rect" id="node7" href="$d9/d8a/pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,85,68,115"/>
+<area shape="rect" id="node10" href="$de/d94/namespacepahm__vortex.html#a4aa80220bd5616d4d2f267e48bfe3861" title="Calculates the radius of maximum winds for all storm quadrants." alt="" coords="969,112,1193,141"/>
+</map>
