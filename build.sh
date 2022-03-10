@@ -1,1 +1,1 @@
-scripts/build_cmake.sh
+scripts/build.sh

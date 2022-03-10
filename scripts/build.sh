@@ -14,16 +14,16 @@
 
 # Get the directory where the script is located
 if [[ $(uname -s) == Darwin ]]; then
-#  readonly scrDIR="$(cd "$(dirname "$(greadlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)"
-  readonly scrNAME="$( grealpath -s "${BASH_SOURCE[0]}" )"
+#  readonly scrDIR="$(cd "$(dirname "$(greadlink -f -n "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}" )" )" && pwd -P)"
+  readonly scrNAME="$( grealpath -s "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}" )"
   readonly scrDIR="$(cd "$(dirname "${scrNAME}" )" && pwd -P)"
 else
-#  readonly scrDIR="$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)"
-  readonly scrNAME="$( realpath -s "${BASH_SOURCE[0]}" )"
-  readonly scrDIR="$(cd "$(dirname "$(realpath -s "${BASH_SOURCE[0]}")" )" && pwd -P)"
+#  readonly scrDIR="$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}" )" )" && pwd -P)"
+  readonly scrNAME="$( realpath -s "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}" )"
+  readonly scrDIR="$(cd "$(dirname "${scrNAME}" )" && pwd -P)"
 fi
 
-lst="${scrDIR}/functions_build ${scrDIR}/scripts/functions_build functions_build "
+lst="${scrDIR:+${scrDIR}/}functions_build ${scrDIR:+${scrDIR}/}scripts/functions_build functions_build"
 funcs=
 for ilst in ${lst}
 do
@@ -35,6 +35,7 @@ done
 
 if [ -n "${funcs:+1}" ]; then
   source "${funcs}"
+  [ $? -ne 0 ] && exit 1
 else
   echo " ### ERROR :: in ${scrNAME}"
   echo "     Cannot load the required file: functions_build"
@@ -47,7 +48,10 @@ unset ilst funcs
 ###====================
 
 
-#########
+############################################################
+### BEG:: SYSTEM CONFIGURATION
+############################################################
+
 # Call ParseArgs to get the user input.
 ParseArgs "${@}"
 
@@ -141,53 +145,7 @@ fi
 
 ##########
 # Get the compilers to use for this project compilation
-case "${COMPILER}" in
-  gnu)
-     CC=gcc
-     CXX=g++
-     FC=gfortran
-     F90=gfortran
-     PCC=mpicc
-     PCXX=mpicxx
-     PFC=mpif90
-     PF90=mpif90
-     ;;
-  intel)
-     CC=icc
-     CXX=icpc
-     FC=ifort
-     F90=ifort
-     PCC=mpiicc
-     PCXX=mpiicpc
-     PFC=mpiifort
-     PF90=mpiifort
-     ;;
-  pgi)
-     CC=pgcc
-     CXX=pgc++
-     FC=pgfortran
-     F90=pgfortran
-     PCC=pgcc
-     PCXX=pgc++
-     PFC=pgfortran
-     PF90=pgfortran
-     ;;
-  *) # No defaults. Give the user the option to define the environment variables
-     # CC, CXX, FC, F90 before running this script.
-     #echo "WARNING: The supplied compiling system \"${COMPILER}\", is not suported."
-     #echo "         Supported systems are anyone of: compiling_system=[${MY_COMPILING_SYTEMS}]"
-     #echo "         Use: --comp=compiling_system."
-     #echo "         Will continue with OS defaults."
-     CC=${CC:-}
-     CXX=${CXX:-}
-     FC=${FC:-}
-     F90=${F90:-}
-     PCC=${CC:-}
-     PCXX=${CXX:-}
-     PFC=${FC:-}
-     PF90=${F90:-}
-     ;;
-esac
+getCompilerNames "${COMPILER}"
 ##########
 
 
