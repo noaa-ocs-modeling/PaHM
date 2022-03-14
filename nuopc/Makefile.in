@@ -101,7 +101,7 @@ install: $(LIBRARY)
 pahm_cap.o:   pahm_mod.o 
 
 # -----------------------------------------------------------------------------
-.PHONY: clean distclean 
+.PHONY: clean distclean
 
 clean:
 	@echo ""
