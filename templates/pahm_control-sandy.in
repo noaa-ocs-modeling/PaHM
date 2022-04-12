@@ -59,7 +59,10 @@ bestTrackFileName        = inputs/sandy2012-bdeck.dat
 meshFileType             = ADCIRC
 
 !### The mesh file to be read to create the gridded wind data
-meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+meshFileName             = inputs/adcirc_mesh-estofs120m.dat
+!meshFileName             = inputs/adcirc_mesh-estofs.dat
+!meshFileName             = inputs/adcirc_mesh-estofs120m_subsetted.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
@@ -98,13 +101,16 @@ ncDLevel                 = 2
 ! Time-Stepping parameters
 !----------
 refDateTime              = 1990-01-01 00:00:00
-                                              
+
 unitTime                 = D
 outDT                    = 0.041666667
 
-begDateTime              = 2012-10-19 00:00:00
-endDateTime              = 2012-11-03 00:00:00
+begDateTime              = 2012-10-21 18:00:00
+endDateTime              = 2012-10-31 12:00:00
 
+!begSimTime              = 719690400.0d0
+!endSimTime              = 720532800.0d0
+                                        
 !----------
 ! Model parameters
 !----------

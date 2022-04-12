@@ -27,10 +27,10 @@
 !=== General parameters               ===
 !========================================
 !### Application title.
-Title                    = PaHM Winds for TC Sandy
+Title                    = PaHM Winds for TC Ike
 
 !### The log file name where all messages are written.
-logFileName              = pahm_sandy.log
+logFileName              = pahm_ike.log
 
 !### Print all model parameters on the screen for the current model run (writeParams > 0).
 writeParams              = 0
@@ -47,10 +47,10 @@ writeParams              = 0
 NBTRFILES                = 1
 
 !### The best track filename(s) (max NBTRFILES)
-bestTrackFileName        = inputs/sandy2012-bdeck.dat
-!bestTrackFileName        = inputs/sandy2012-hurdat2.dat
-!bestTrackFileName        = inputs/sandy2012-ibtracs.dat
-!bestTrackFileName        = inputs/sandy2012-tcvitals.dat
+bestTrackFileName        = inputs/ike2008-bdeck.dat
+!bestTrackFileName        = inputs/ike2008-hurdat2.dat
+!bestTrackFileName        = inputs/ike2008-ibtracs.dat
+!bestTrackFileName        = inputs/ike2008-tcvitals.dat
 
 !----------
 ! Mesh file name and format
@@ -59,7 +59,10 @@ bestTrackFileName        = inputs/sandy2012-bdeck.dat
 meshFileType             = ADCIRC
 
 !### The mesh file to be read to create the gridded wind data
-meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+meshFileName             = inputs/adcirc_mesh-estofs120m.dat
+!meshFileName             = inputs/adcirc_mesh-estofs.dat
+!meshFileName             = inputs/adcirc_mesh-estofs120m_subsetted.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
@@ -67,7 +70,9 @@ meshFileForm             = ASCII
 !----------
 ! Output files and NetCDF-4 parameters
 !----------
-outFileName              = pahm_windout-sandy
+!### Output filename (no extension). If there is an extension (e.g., .ext)
+!### it will be removed. The final extension to this filename will be either .nc or .nc4
+outFileName              = pahm_windout-ike
 
 !### For NetCDF-4: turn on the shuffle filter (ncShuffle > 0),
 !###               turn on the deflate filter (ncDeflate > 0),
@@ -98,12 +103,12 @@ ncDLevel                 = 2
 ! Time-Stepping parameters
 !----------
 refDateTime              = 1990-01-01 00:00:00
-                                              
+
 unitTime                 = D
 outDT                    = 0.041666667
 
-begDateTime              = 2012-10-19 00:00:00
-endDateTime              = 2012-11-03 00:00:00
+begDateTime              = 2008-09-01 06:00:00
+endDateTime              = 2008-09-15 12:00:00
 
 !----------
 ! Model parameters

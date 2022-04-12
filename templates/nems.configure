@@ -1,0 +1,29 @@
+# `nems.configure` generated with NEMSpy unknown
+# EARTH #
+EARTH_component_list: ATM OCN
+EARTH_attributes::
+  Verbosity = off
+::
+
+# ATM #
+ATM_model:                      pahm (or atmesh)
+ATM_petlist_bounds:             0 0
+ATM_attributes::
+  Verbosity = off
+::
+
+# OCN #
+OCN_model:                      adcirc
+OCN_petlist_bounds:             1 513
+OCN_attributes::
+  Verbosity = off
+::
+
+# Run Sequence #
+runSeq::
+  @3600
+    ATM -> OCN   :remapMethod=redist
+    ATM
+    OCN
+  @
+::

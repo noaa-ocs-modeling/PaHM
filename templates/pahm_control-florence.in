@@ -47,8 +47,10 @@ writeParams              = 0
 NBTRFILES                = 1
 
 !### The best track filename(s) (max NBTRFILES)
-bestTrackFileName        = inputs/ike2008-bdeck.dat
-!bestTrackFileName        = inputs/ike2008-adeck.dat
+bestTrackFileName        = inputs/florence2018-bdeck.dat
+!bestTrackFileName        = inputs/florence2018-hurdat2.dat
+!bestTrackFileName        = inputs/florence2018-ibtracs.dat
+!bestTrackFileName        = inputs/florence2018-tcvitals.dat
 
 !----------
 ! Mesh file name and format
@@ -57,9 +59,10 @@ bestTrackFileName        = inputs/ike2008-bdeck.dat
 meshFileType             = ADCIRC
 
 !### The mesh file to be read to create the gridded wind data
-!meshFileName             = inputs/adcirc_mesh-estofs-hres.dat
+meshFileName             = inputs/adcirc_mesh-estofs120m.dat
 !meshFileName             = inputs/adcirc_mesh-estofs.dat
-meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+!meshFileName             = inputs/adcirc_mesh-shinnecock.dat
+!meshFileName             = inputs/adcirc_mesh-estofs120m_subsetted.dat
 
 !### The mesh file format (ASCII, NETCDF)
 meshFileForm             = ASCII
@@ -67,10 +70,7 @@ meshFileForm             = ASCII
 !----------
 ! Output files and NetCDF-4 parameters
 !----------
-!### Output filename (no extension). If there is an extension (e.g., .ext)
-!### it will be removed. The final extension to this filename will be either .nc or .nc4
-!outFileName              = pahm_windout-ike
-outFileName              = pahm_windout-ike
+outFileName              = pahm_windout-florence
 
 !### For NetCDF-4: turn on the shuffle filter (ncShuffle > 0),
 !###               turn on the deflate filter (ncDeflate > 0),
@@ -79,9 +79,9 @@ ncShuffle                = 0
 ncDeflate                = 1
 ncDLevel                 = 2
 
-!ncVarNam_Pres            = P                                ! Name of the pressure variable in the output NetCDF file
-!ncVarNam_WndX            = uwnd                             ! Name of the wind-x component variable in the output NetCDF file
-!ncVarNam_WndY            = vwnd                             ! Name of the wind-x component variable in the output NetCDF file
+!ncVarNam_Pres            = P
+!ncVarNam_WndX            = uwnd
+!ncVarNam_WndY            = vwnd
 
 
 !========================================
@@ -91,38 +91,27 @@ ncDLevel                 = 2
 !----------
 ! Physical parameters
 !----------
-gravity                  = 9.80665d0                        ! m/s^2   Gravitational acceleration
-rhoWater                 = 1000.0d0                         ! kg/m^3  Mean water density (fresh water, 4 deg C)
-rhoAir                   = 1.1478d0                         ! kg/m^3  Mean air density (1013.25 mb, Rel. Hum  90%, 30 deg C)
-backgroundAtmPress       = 1013.25d0                        ! mb      Background atmospheric pressure
-windReduction            = 0.9d0                            ! Boundary layer reduction factor used in the Holland models
+!gravity                  = 9.80665d0
+!rhoWater                 = 1000.0d0
+!rhoAir                   = 1.1478d0
+!backgroundAtmPress       = 1013.25d0
+!windReduction            = 0.9d0
 
 !----------
 ! Time-Stepping parameters
 !----------
-refDateTime              = 1990-01-01 00:00:00              ! Any sequence that includes numeric values such that
-                                                            ! it results to a string YYYYMMDD[hhmmss] after processing
-!unitTime                 = S                                ! Time units to be used (S=seconds, M=minutes, H=hours,
-                                                            ! D=days, W=weeks)
-!outDT                    = 3600                             ! Frequency of output data (units = unitTime)
+refDateTime              = 1990-01-01 00:00:00
+
 unitTime                 = D
 outDT                    = 0.041666667
 
-! Extra days before and after
-begDateTime              = 2008-08-30 00:00:00 
-endDateTime              = 2008-09-18 00:00:00 
+begDateTime              = 2018-09-07 00:00:00
+endDateTime              = 2018-09-19 00:00:00
 
-! True start and end times
-!begDateTime              = 2008-09-01 06:00:00              ! Start date and time of the simulation (format: refDateTime)
-!endDateTime              = 2008-09-15 12:00:00              ! Stop date and time of the simulation (format: refDateTime)
+!begSimTime              = 905320800.0d0
+!endSimTime              = 906012000.0d0
 
 !----------
 ! Model parameters
 !----------
-modelType                = 1                                ! The parametric model to use
-                                                            !  0: Rankin Vortex - NOT IMPLEMENTED YET
-                                                            !  1: Holland B (1998)
-                                                            !  2: Holland B (2010)
-                                                            !  3: Willoughby model - NOT IMPLEMENTED YET
-                                                            !  9: Asymmetric vortex model (Mattocks) - NOT IMPLEMENTED
-                                                            ! 10: Generalized asymmetric vortex Holland model (GAHM)
+modelType                = 1
