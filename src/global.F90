@@ -199,8 +199,8 @@ MODULE PaHM_Global
                                                    !  1: Holland B (1998)
                                                    !  2: Holland B (2010)
                                                    !  3: Willoughby model
-                                                   !  9: Assymetric vortex model (Mattocks)
-                                                   ! 10: Generalized assymetric vortex Holland model (GAHM)
+                                                   !  9: Asymmetric vortex model (Mattocks)
+                                                   ! 10: Generalized asymmetric vortex Holland model (GAHM)
   LOGICAL                 :: writeParams = .FALSE.
 !################################################################
 !###   END :: VARIABLES RELATED TO THE CONTROL FILE

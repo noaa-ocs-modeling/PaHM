@@ -131,5 +131,5 @@ modelType                = 1                                ! The parametric mod
                                                             !  1: Holland B (1980)
                                                             !  2: Holland B (2010)
                                                             !  3: Willoughby model - NOT IMPLEMENTED YET
-                                                            !  9: Assymetric vortex model (Mattocks) - NOT IMPLEMENTED
-                                                            ! 10: Generalized assymetric vortex Holland model (GAHM)
+                                                            !  9: Asymmetric vortex model (Mattocks) - NOT IMPLEMENTED
+                                                            ! 10: Generalized asymmetric vortex Holland model (GAHM)
