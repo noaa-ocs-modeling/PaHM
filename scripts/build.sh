@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 ###########################################################################
 ### Author:  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
@@ -58,6 +58,8 @@ ParseArgs "${@}"
 
 ##########
 # Set the variables for this script
+ACCEPT_ALL=${MY_ACCEPT_ALL:-0}
+
 CLEAN=${MY_CLEAN:-0}
 
 ADD_CMAKE_FLAGS="${MY_ADD_CMAKE_FLAGS}"
@@ -103,19 +105,24 @@ if [ ${CLEAN:-0} -ge 1 ]; then
     exit 0
   else
     if [ "${projDIR}" != "${buildDIR}" ]; then
-      echo_response=
-      while [ -z "${echo_response}" ] ; do
-        echo -n "Ready to clean ${buildDIR}? [y/n]: "
-        read echo_response
-        echo_response="$( getYesNo "${echo_response}" )"
-      done
+      if [ ${ACCEPT_ALL:-0} -le 0 ]; then
+        echo_response=
+        while [ -z "${echo_response}" ] ; do
+          echo -n "Ready to clean ${buildDIR}? [y/n]: "
+          read echo_response
+          echo_response="$( getYesNo "${echo_response}" )"
+        done
 
-      if [ "${echo_response:-no}" = "no" ]; then
-        echo
-        echo "User responded: ${echo_response}"
-        echo "Exiting now ..."
-        echo
-        exit 0
+        if [ "${echo_response:-no}" = "no" ]; then
+          echo
+          echo "User responded: ${echo_response}"
+          echo "Exiting now ..."
+          echo
+          exit 0
+        fi
+      else
+        echo "User accepted all settings."
+        sleep 2
       fi
 
       if [ ${CLEAN:-0} -eq 1 ]; then
@@ -200,6 +207,7 @@ CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${OPT_TYPE}"
 # Get a final user response for the variables
 echo
 echo "The following variables are defined:"
+echo "    ACCEPT_ALL         = ${ACCEPT_ALL}"
 echo "    PROJECT_SOURCE_DIR = ${projDIR}"
 echo "    PROJECT_BINARY_DIR = ${buildDIR}"
 echo "    CMAKE_SOURCE_DIR   = ${projDIR}"
@@ -216,22 +224,27 @@ echo "    F90                = ${F90:-Will use the OS default compiler}"
 echo "    VERBOSE            = ${VERBOSE:-0}"
 echo
 
-echo_response=
-while [ -z "${echo_response}" ] ; do
-  echo -n "Are these values correct? [y/n]: "
-  read echo_response
-  echo_response="$( getYesNo "${echo_response}" )"
-done
+if [ ${ACCEPT_ALL:-0} -le 0 ]; then
+  echo_response=
+  while [ -z "${echo_response}" ] ; do
+    echo -n "Are these values correct? [y/n]: "
+    read echo_response
+    echo_response="$( getYesNo "${echo_response}" )"
+  done
 
-if [ "${echo_response:-no}" = "no" ]; then
-  echo
-  echo "User responded: ${echo_response}"
-  echo "Exiting now ..."
-  echo
-  exit 1
+  if [ "${echo_response:-no}" = "no" ]; then
+    echo
+    echo "User responded: ${echo_response}"
+    echo "Exiting now ..."
+    echo
+    exit 1
+  fi
+
+  unset echo_response
+else
+  echo "User accepted all settings."
+  sleep 2
 fi
-
-unset echo_response
 ##########
 
 
