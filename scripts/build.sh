@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -eo pipefail
 
 ###########################################################################
 ### Author:  Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
