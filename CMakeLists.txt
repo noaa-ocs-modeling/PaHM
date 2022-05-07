@@ -239,28 +239,28 @@ include(check_netcdf)
 
 ### For CSV read/write capability in PaHM we use fortran-csv-module.
 ### This capability is now compiled from the main src directory.
-### We keep third_party_open/fortran-csv-module for reference only.
-#add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/fortran-csv-module)
+### We keep thirdparty_open/fortran-csv-module for reference only.
+#add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/fortran-csv-module)
 
 ### From ADCIRC v55 source code
 ### This should be default - Future updates
 if(ENABLE_GRIB2)
   set(JAS_ENABLE_SHARED FALSE CACHE BOOL "Enable shared JAS")
-#  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/wgrib2 EXCLUDE_FROM_ALL)
-  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/wgrib2)
+#  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/wgrib2 EXCLUDE_FROM_ALL)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/wgrib2)
 endif(ENABLE_GRIB2)
 
 ### From ADCIRC v55 source code
 ### This should be default - Future updates
 if(ENABLE_DATETIME)
-#  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/datetime_fortran EXCLUDE_FROM_ALL)
-  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/datetime_fortran)
+#  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/datetime_fortran EXCLUDE_FROM_ALL)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/datetime_fortran)
 endif(ENABLE_DATETIME)
 
 ### Enable NetCDF95 wrappers to NetCDF calls - Do we need this?
 if(ENABLE_NETCDF95)
-#  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/NetCDF95 EXCLUDE_FROM_ALL)
-  add_subdirectory(${CMAKE_SOURCE_DIR}/third_party_open/NetCDF95)
+#  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/NetCDF95 EXCLUDE_FROM_ALL)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty_open/NetCDF95)
 endif(ENABLE_NETCDF95)
 
 ### Build PaHM and its libraries
