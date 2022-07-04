@@ -83,7 +83,7 @@ PROJECT_DIR=${MY_PROJECT_DIR:-}
 
 [ -n "${MY_INSTALL_DIR:+1}" ] && INSTALL_DIR=${MY_INSTALL_DIR:-}
 
-[ ${MY_VERBOSE:-0} -ge 1 ] && VERBOSE=${MY_VERBOSE}
+[ -n "${MY_VERBOSE:+1}" ] && VERBOSE=${MY_VERBOSE}
 ##########
 
 
@@ -191,7 +191,7 @@ else
   unset INSTALL_DIR
 fi
 
-if [ ${VERBOSE:-0} -ge 1 ]; then
+if [ -n "${VERBOSE:+1}" ]; then
   export VERBOSE=${VERBOSE}
 else
   unset VERBOSE
