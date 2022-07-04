@@ -891,7 +891,7 @@ MODULE Utilities
     INTEGER                                           :: lEnd, lEns, lStr, lVal, nMul, sChar
     INTEGER                                           :: copies, i, ic, ie, ierr, is, j, status
     INTEGER, DIMENSION(20)                            :: iMul
-    CHARACTER(LEN=256)                                :: vString, string
+    CHARACTER(LEN=512)                                :: vString, string
     CHARACTER(LEN=LEN(inpLine))                       :: line
     INTEGER                                           :: lenLine
 
