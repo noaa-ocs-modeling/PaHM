@@ -47,9 +47,9 @@ MODULE ParWind
     INTEGER, ALLOCATABLE             :: tau(:)           ! forecast period: -24 through 240 hours, 0 for best-track,
                                                          ! negative taus used for CARQ and WRNG records.
     INTEGER, ALLOCATABLE             :: intLat(:)        ! latitude for the DTG: 0 - 900 tenths of degrees
-    INTEGER, ALLOCATABLE             :: intLon(:)        ! latitude for the DTG: 0 - 900 tenths of degrees
-    CHARACTER(LEN=1), ALLOCATABLE    :: ew(:)            ! E/W
-    CHARACTER(LEN=1), ALLOCATABLE    :: ns(:)            ! N/S
+    INTEGER, ALLOCATABLE             :: intLon(:)        ! latitude for the DTG: 0 - 1800 tenths of degrees
+    CHARACTER(LEN=1), ALLOCATABLE    :: ew(:)            ! E/W: E/W is the hemispheric index
+    CHARACTER(LEN=1), ALLOCATABLE    :: ns(:)            ! N/S: N/S is the hemispheric index
 
     INTEGER, ALLOCATABLE             :: intVMax(:)       ! maximum sustained wind speed in knots: 0 - 300 kts
     INTEGER, ALLOCATABLE             :: intMslp(:)       ! minimum sea level pressure, 850 - 1050 mb
@@ -650,30 +650,27 @@ MODULE ParWind
           tmpStr = TRIM(ADJUSTL(sval2D(iCnt, 1)))
           READ(tmpStr, '(a2)') &
                bestTrackData(iFile)%basin(iCnt)
-          !PV bestTrackData(iFile)%basin(iCnt)     = TRIM(ADJUSTL(sval2D(iCnt, 1)))
           !--- col:  2
           bestTrackData(iFile)%cyNum(iCnt)     = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 2))))
           !--- col:  3
           tmpStr = TRIM(ADJUSTL(sval2D(iCnt, 3)))
           READ(tmpStr, '(a10)') &
                bestTrackData(iFile)%dtg(iCnt)
-          !PV bestTrackData(iFile)%dtg(iCnt)       = TRIM(ADJUSTL(sval2D(iCnt, 3)))
           !--- col:  4
           bestTrackData(iFile)%techNum(iCnt)   = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 4))))
           !--- col:  5
           tmpStr = TRIM(ADJUSTL(sval2D(iCnt, 5)))
           READ(tmpStr, '(a4)') &
                bestTrackData(iFile)%tech(iCnt)
-          !PV bestTrackData(iFile)%tech(iCnt)      = TRIM(ADJUSTL(sval2D(iCnt, 5)))
           !--- col:  6
           bestTrackData(iFile)%tau(iCnt)       = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 6))))
           !--- col:  7
-          tmpStr = TRIM(ADJUSTL(sval2D(iCnt, 7)))
+          tmpStr = TRIM(sval2D(iCnt, 7))
           READ(tmpStr, '(i3, a1)') &
                bestTrackData(iFile)%intLat(iCnt), bestTrackData(iFile)%ns(iCnt)
           !--- col:  8
-          tmpStr = TRIM(ADJUSTL(sval2D(iCnt, 8)))
-          READ(tmpStr, '(i3, a1)') &
+          tmpStr = TRIM(sval2D(iCnt, 8))
+          READ(tmpStr, '(i4, a1)') &
                bestTrackData(iFile)%intLon(iCnt), bestTrackData(iFile)%ew(iCnt)
           !--- col:  9
           bestTrackData(iFile)%intVMax(iCnt)   = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 9))))
