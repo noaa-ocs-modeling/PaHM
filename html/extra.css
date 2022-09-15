@@ -60,7 +60,7 @@ body {
    color: #182238;
    background-color: #f8f8ff;
 }
-.contents h1:before {
+h1:before {
    counter-increment: section;
    content: counter(section) ". ";
 }
@@ -69,9 +69,9 @@ body {
    color: #182238;
    background-color: #f8f8ff;
 }
-.contents h2:before {
-counter-increment:subsection;
-content:counter(section) "." counter(subsection) " ";
+h2:before {
+   counter-increment:subsection;
+   content:counter(section) "." counter(subsection) " ";
 }
 .contents h3 {
    counter-reset: subsubsubsection;

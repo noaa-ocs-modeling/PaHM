@@ -1,8 +1,0 @@
-<map id="pahm_vortex::rotate" name="pahm_vortex::rotate">
-<area shape="rect" id="node1" title="Rotate a 2D vector (x, y) by an angle." alt="" coords="824,32,987,61"/>
-<area shape="rect" id="node2" href="$de/d94/namespacepahm__vortex.html#aab234ce6758e2aa3ce44a3ff0f19c1f6" title="Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="625,5,773,35"/>
-<area shape="rect" id="node3" href="$de/d94/namespacepahm__vortex.html#aa42dc3ab759309e12cbb96f3eb1357c4" title="Calculates (u, v) wind components and surface pressure from an asymmetric hurricane wind model." alt="" coords="623,59,776,88"/>
-<area shape="rect" id="node4" href="$d9/d41/namespaceparwind.html#ad79f0c20f27839cc6d7f50d7d1698b7c" title="Calculates wind velocities and MSL pressures at the mesh nodes from the GAHM Wind model." alt="" coords="387,59,575,88"/>
-<area shape="rect" id="node5" href="$de/d07/namespacepahm__drivermod.html#a7ae4571521a5bb4eb55990dd7fb76237" title="Subroutine to run PaHM (timestepping)." alt="" coords="116,59,339,88"/>
-<area shape="rect" id="node6" href="$d9/d8a/pahm_8F90.html#a3d3918f5c5f1ac0a7991a7a78f530f30" title=" " alt="" coords="5,59,68,88"/>
-</map>

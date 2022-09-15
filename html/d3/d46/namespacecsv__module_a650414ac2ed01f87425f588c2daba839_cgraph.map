@@ -1,7 +1,0 @@
-<map id="csv_module::csv_get_value" name="csv_module::csv_get_value">
-<area shape="rect" id="node1" title="Get an individual value from the &#39;csv_data&#39; structure in the CSV class." alt="" coords="5,50,176,97"/>
-<area shape="rect" id="node2" href="$d3/d46/namespacecsv__module.html#a6be3694bd93818db748eba1dfbedbbc8" title="Converts a string to a &#39;integer(ip)&#39;." alt="" coords="224,5,411,35"/>
-<area shape="rect" id="node3" href="$d3/d46/namespacecsv__module.html#afdb32ff9495b79418037e3fae406e67f" title="Converts a string to a &#39;logical&#39;." alt="" coords="225,59,410,88"/>
-<area shape="rect" id="node5" href="$d3/d46/namespacecsv__module.html#afa16fb149f3106c9326e9c31a8bb083f" title="Converts a string to a &#39;real(wp)&#39;." alt="" coords="235,112,400,141"/>
-<area shape="rect" id="node4" href="$d2/d96/namespaceutilities.html#a376978b945cbdf5d33ff8bf905d19866" title="Convert a string to lower&#45;case." alt="" coords="459,59,624,88"/>
-</map>
