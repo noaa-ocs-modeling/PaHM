@@ -40,7 +40,7 @@ MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
 </script>
-<script type="text/javascript" async="async" src="../mathjax/MathJax.js"></script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen_manual.css" rel="stylesheet" type="text/css" />
 <link href="extra.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -127,16 +127,16 @@ $(document).ready(function(){initNavTree('abstract.html',''); initResizable(); }
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md_user_guide_abstract"></a></p>
-<p >Over the years, various parametric wind models have been developed to estimate the surface winds within a tropical cyclone given the track of the storm. Such models can be very useful on forcing ocean and wave models in storm surge simulations, as they are lightweight and they do not require much time or computational resources to produce the wind fields on the fly for the duration of the storm. The Parametric Modeling System <em>PaHM</em> (<a href="https://github.com/noaa-ocs-modeling/PaHM">https://github.com/noaa-ocs-modeling/PaHM</a>) is developed to be used as a general atmospheric modeling system to support coastal applications.</p>
-<p ><em>PaHM</em> is an <a href="https://earthsystemmodeling.org">ESMF/NUOPC</a> compatible modeling system that can be used either as a standalone atmospheric model, or as an atmospheric modeling component coupled with ocean and wave models via NOAA's Environmental Modeling System (<a href="https://www.emc.ncep.noaa.gov/emc/pages/infrastructure/nems.php">NEMS</a>), a common modeling coupling framework that implements the National Unified Operational Prediction Capability (<a href="https://earthsystemmodeling.org/nuopc/">NUOPC</a>). The core modeling components of the system are the Holland Models ([<a class="el" href="biblio.html#holland1">1980</a>], [<a class="el" href="biblio.html#holland2">2010</a>]) and the Generalized Holland Parametric Tropical Cyclone Model (Gao et al. [<a class="el" href="biblio.html#gao1">2015</a>], [<a class="el" href="biblio.html#gao2">2018</a>]).</p>
-<p ><em>PaHM</em> is developed at the Coastal Marine Modeling Branch under the office of Coastal of Coast Survey at NOAA's National Ocean Service. In a "standalone" configuration it ouputs gridded atmospheric fields to force any ocean/wave model while, in its "coupling" configuration, it feeds the atmospheric fields to the couple ocean/wave model via its own NUOPC Cap. The source code of <em>PaHM</em> can be accessed at: <a href="https://github.com/noaa-ocs-modeling/PaHM">https://github.com/noaa-ocs-modeling/PaHM</a>. </p>
+<p >Over the years, various parametric wind models have been developed to estimate the surface winds within a tropical cyclone given the track of the storm. Such models can be very useful on forcing ocean and wave models in storm surge simulations, as they are lightweight and they do not require much time or computational resources to produce the wind fields on the fly for the duration of the storm. The Parametric Modeling System <a href="https://github.com/noaa-ocs-modeling/PaHM" target="_BLANK" rel="NOREFERRER"><em>PaHM</em></a> is developed to be used as a general atmospheric modeling system to support coastal applications.</p>
+<p ><em>PaHM</em> is an <a href="https://earthsystemmodeling.org" target="_BLANK" rel="NOREFERRER">ESMF/NUOPC</a> compatible modeling system that can be used either as a standalone atmospheric model, or as an atmospheric modeling component coupled with ocean and wave models via NOAA's Environmental Modeling System (<a href="https://www.emc.ncep.noaa.gov/emc/pages/infrastructure/nems.php" target="_BLANK" rel="NOREFERRER">NEMS</a>), a common modeling coupling framework that implements the National Unified Operational Prediction Capability (<a href="https://earthsystemmodeling.org/nuopc/" target="_BLANK" rel="NOREFERRER">NUOPC</a>). The core modeling components of the system are the Holland Model (<a class="el" href="biblio.html#ref_holl1980">Holland 1980</a>) and the Generalized Holland Parametric Tropical Cyclone Model (<a class="el" href="biblio.html#ref_gao2015">Gao et al. 2015</a>, <a class="el" href="biblio.html#ref_gao2018">Gao 2018</a>).</p>
+<p ><em>PaHM</em> is developed at the Coastal Marine Modeling Branch under the office of Coastal of Coast Survey at NOAA's National Ocean Service. In a "standalone" configuration it ouputs gridded atmospheric fields to force any ocean/wave model while, in its "coupling" configuration, it feeds the atmospheric fields to the couple ocean/wave model via its own NUOPC Cap. The source code of <em>PaHM</em> can be accessed at: <a href="https://github.com/noaa-ocs-modeling/PaHM" target="_BLANK" rel="NOREFERRER">https://github.com/noaa-ocs-modeling/PaHM</a>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Sep 14 2022 22:50:29 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Mon Sep 26 2022 00:46:24 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>
