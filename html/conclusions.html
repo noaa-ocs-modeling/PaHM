@@ -134,8 +134,8 @@ $(document).ready(function(){initNavTree('conclusions.html',''); initResizable()
 <p ><b>(2) Implementation of extended NetCDF and GRIB capabilities</b></p>
 <p >The GRIB 1/2 and NetCDF interfaces already built into <em>PaHM</em> need to be extended to allow the I/O operations in these formats to manipulate external atmospheric data as required by item (3) below. Furthermore, depending on how the TC track data were generated, the storm track data may come in different formats like NetCDF and/or GRIB.</p>
 <p ><b>(3) Implementation of a blending algorithm to couple background winds with <em>PaHM</em></b></p>
-<p ><em>PaHM</em>, as all TC parametric models, generates its fields at the gradient level such that the wind speeds outside the last closed isobar are set to zero while, the atmospheric pressure is set equal to some background pressure value (e.g., \(1013.25 \, mb\)) as shown in Figure [<a class="el" href="conclusions.html#concl_fig02">2</a>]. In coastal and storm surge applications it is important to have a full forcing atmospheric field across the computational domain so "far-field" physical properties are accounted for.</p>
-<p ><a class="anchor" id="concl_fig02"></a></p><table width="95%" align="center" cellspacing="5" border="0">
+<p ><em>PaHM</em>, as all TC parametric models, generates its fields at the gradient level such that the wind speeds outside the last closed isobar are set to zero while, the atmospheric pressure is set equal to some background pressure value (e.g., \(1013.25 \, mb\)) as shown in Figure [<a class="el" href="conclusions.html#concl_fig01">23</a>]. In coastal and storm surge applications it is important to have a full forcing atmospheric field across the computational domain so "far-field" physical properties are accounted for.</p>
+<p ><a class="anchor" id="concl_fig01"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" valign="top"><p class="starttd"><img src="Blending.png" alt="" width="100%" class="inline"/>    </p>
 <p class="endtd"></p>
@@ -157,7 +157,7 @@ $(document).ready(function(){initNavTree('conclusions.html',''); initResizable()
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 00:46:24 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>

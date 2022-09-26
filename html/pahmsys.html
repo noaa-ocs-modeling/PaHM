@@ -315,7 +315,7 @@ CMake Configuration Files and Modules</h2>
 Using <em>PaHM</em></h1>
 <p >Before you can use <em>PaHM</em>, you must have a working <em>PaHM</em> installation as described in section [<a class="el" href="pahmsys.html#pahmsys_build_bld">The Build System</a>]. Assuming that <em>PaHM</em> is installed in the "PaHM/bin" folder (default), the model may be run as: <code>bin/pahm --help</code> to print the list of the available command line arguments to the model. By default, running <em>PaHM</em> without arguments as the model tries to find its default control file (pahm_control.in) located in the current working directory. The user may supply another control file by running <em>PaHM</em> as:</p>
 <div class="fragment"><div class="line">pahm LOCATION_OF_CONTROL_FILE/custom_control_file.in</div>
-</div><!-- fragment --><p >A typical control file looks like the one shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig05">5</a>]. It is the user's responsibility to create the proper control file to be used by <em>PaHM</em> for the particular application.</p>
+</div><!-- fragment --><p >A typical control file looks like the one shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig05">5</a>]. It is the user's responsibility to create the proper control file to be used by <em>PaHM</em> for the particular application. The easiest way to create the control file is to copy one from the "PaHM/templates" folder and modify it accordingly.</p>
 <p ><a class="anchor" id="pahmsys_fig05"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="pahm_control.png" alt="" width="75%" class="inline"/>    </p>
@@ -327,14 +327,25 @@ Using <em>PaHM</em></h1>
 <p >The control file is required either running <em>PaHM</em> as a standalone model or as a coupled modeling component.</p>
 <h2><a class="anchor" id="pahmsys_use_coupled"></a>
 Coupled Model Configuration</h2>
-<p >This section is dedicated to the NEMS/NUOPC coupling onfiguration </p>
+<p ><em>PaHM</em> is coupled with other models via its own NUOPC Cap (section [<a class="el" href="features.html#ftr_coupling_env">Coupling Environment</a>]). To build the coupled <em>PaHM</em> / ADCIRC "NEMS.x" executable the "build.sh" script of CoastalApp (see CoastalApp's <a href="https://github.com/noaa-ocs-modeling/CoastalApp/blob/develop/README.md" target="_BLANK" rel="NOREFERRER">README.md</a>) is run as:</p>
+<div class="fragment"><div class="line">./build.sh --compiler intel --platform orion --component &quot;PAHM ADCIRC&quot; </div>
+</div><!-- fragment --><p >"NEMS.x" uses the two configuration files shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig06">6</a>] to define the coupled simulation parameters. The "model_configure" file defines the simulation period for the model while, in the file "nems.configure" are defined the coupling parameters of the simulation (e.g., number of cores, the data exchange sequence, rtc).</p>
+<p ><a class="anchor" id="pahmsys_fig06"></a></p><table width="100%" align="center" cellspacing="0" border="0">
+<tr>
+<td align="center" valign="top"><p class="starttd"><img src="nems_pahm.png" alt="" width="70%" class="inline"/>    </p>
+<p class="endtd"></p>
+</td></tr>
+<tr>
+<td align="left" valign="top"><b>Figure 6:</b> Sample configuration files of a NEMS/NUOPC coupled <em>PaHM</em> / ADCIRC simulation for Hurricane Florence (2018).   </td></tr>
+</table>
+<p >When "NEMS.x" is run, it is searching for its two configuration files (should be located in the same directory as the NEMS.x executable) and the configuration and the required input data of its modeling component mentioned in "nems.configure" (right panel of Figure [<a class="el" href="pahmsys.html#pahmsys_fig06">6</a>]). It is the user's responsibility to create the data for all the coupled modeling components and copy them into the same directory where "NEMS.x" is located. To this end, <em>PaHM</em>'s control file (Figure [<a class="el" href="pahmsys.html#pahmsys_fig05">5</a>]) should also be located in the "NEMS.x" directory. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 00:46:24 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>

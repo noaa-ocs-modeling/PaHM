@@ -219,12 +219,12 @@ Statistical Performance Measures</h1>
 <h1><a class="anchor" id="eval_florence"></a>
 Hurricane Florence (2018) Case Study</h1>
 <p ><em>PaHM</em> was thoroughly evaluated through standalone and coupled model configurations for Hurricane Florence (2018) on the Eastern Coast of the United States. In the coupled configuration, <em>PaHM</em> was used within the <a href="https://github.com/noaa-ocs-modeling/CoastalApp/tree/develop_build" target="_BLANK" rel="NOREFERRER">CoastalApp</a> modeling framework to supply its forcing wind fields to the ocean model <a href="https://adcirc.org" target="_BLANK" rel="NOREFERRER">ADCIRC</a> and the wave model <a href="https://github.com/NOAA-EMC/WW3/wiki/WAVEWATCH-III-User-Guide" target="_BLANK" rel="NOREFERRER">WaveWatch III</a>. The standard statistical measures described in section [<a class="el" href="eval.html#eval_stats">Statistical Performance Measures</a>] were used to (a) validate the performance of the standalone and coupled system and (b) to identify spatial and temporal system limitations.</p>
-<p >The simulation period for hurricane Florence was from 2018-09-07 00 UTC to 2018-09-19 00 UTC (based on the best track file for Florence from the NHC). Simulations were performed using the high resolution Surge and Tide Operational Forecast System (STOFS) mesh (Figure [<a class="el" href="eval.html#eval_fig01">1</a>]) with a fine resolution of about \(120\, m\) near the coastal areas. The wind fields were exchanged with the ocean and the wave model via <em>PaHM</em>'s NUOPC Cap. For evaluation purposes, three series of simulations were performed, namely (a) ADCIRC tide only simulations to verify that the model performs as expected, (b) 1-way coupled PaHM + ADCIRC simulations using wind reduction factors of 0.65, 0.70, 0.75, 0.80, 0.85, 0.90 and 0.95 to determine the optimal wind reduction factor for the particular storm and the particular geographical region and (c) 1-way coupled PaHM + ADCIRC simulation using the results from (a) and (b).</p>
+<p >The simulation period for hurricane Florence was from 2018-09-07 00 UTC to 2018-09-19 00 UTC (based on the best track file for Florence from the NHC). Simulations were performed using the high resolution Surge and Tide Operational Forecast System (STOFS) mesh (Figure [<a class="el" href="eval.html#eval_fig01">14</a>]) with a fine resolution of about \(120\, m\) near the coastal areas. The wind fields were exchanged with the ocean and the wave model via <em>PaHM</em>'s NUOPC Cap. For evaluation purposes, three series of simulations were performed, namely (a) ADCIRC tide only simulations to verify that the model performs as expected, (b) 1-way coupled PaHM + ADCIRC simulations using wind reduction factors of 0.65, 0.70, 0.75, 0.80, 0.85, 0.90 and 0.95 to determine the optimal wind reduction factor for the particular storm and the particular geographical region and (c) 1-way coupled PaHM + ADCIRC simulation using the results from (a) and (b).</p>
 <p ><a class="anchor" id="eval_fig01"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td width="47%" valign="top"><img src="STOFS-triangulation_all.png" alt="" width="100%" class="inline"/>      </td><td width="1%"></td><td width="47%" valign="top"><img src="STOFS_all.png" alt="" width="100%" class="inline"/>       </td></tr>
 </table>
-<p> <b>Figure 1:</b> STOFS computational Domain. The left panel shows the triangular mesh with coarse resolution of about \(3\, km\) and a fine resolution near all coastal areas of about \(120\, m\). The right panel shows the topo-bathymetry used in the simulations.</p>
+<p> <b>Figure 14:</b> STOFS computational Domain. The left panel shows the triangular mesh with coarse resolution of about \(3\, km\) and a fine resolution near all coastal areas of about \(120\, m\). The right panel shows the topo-bathymetry used in the simulations.</p>
 <p >The STOFS triangular mesh contains 9,997,402 elements and 5,131,901 nodes with 35 boundary segments defined. The topo-bathymetry data are composed from a variety of data sources and they are referenced to the MSL vertical datum. The resulting ADCIRC mesh/topo-bathymetry file size is about \(800\, MB\). The boundary conditions for all the simulations are tidal.</p>
 <p ><a class="anchor" id="eval_fig02"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
@@ -232,9 +232,9 @@ Hurricane Florence (2018) Case Study</h1>
 <p class="endtd"></p>
 </td></tr>
 <tr>
-<td align="left" valign="top"><b>Figure 2:</b> CO-OPS wind and water level observation locations.   </td></tr>
+<td align="left" valign="top"><b>Figure 15:</b> CO-OPS wind and water level observation locations.   </td></tr>
 </table>
-<p >All model results in both standalone and coupled configurations were compared against NOAA's <a href="https://tidesandcurrents.noaa.gov/" target="_blank">CO-OPS</a> wind and water level observations at selected locations as shown in Figure [<a class="el" href="eval.html#eval_fig02">2</a>].</p>
+<p >All model results in both standalone and coupled configurations were compared against NOAA's <a href="https://tidesandcurrents.noaa.gov/" target="_blank">CO-OPS</a> wind and water level observations at selected locations as shown in Figure [<a class="el" href="eval.html#eval_fig02">15</a>].</p>
 <h2><a class="anchor" id="eval_alone"></a>
 Standalone Model Evaluation</h2>
 <p >The analysis in the following sections focuses in two important aspects in parametric TC modeling: (a) the determination of a proper wind reduction factor \((w_{rf})\) and b) the choice of the choice of the parametric model to use for the particular simulation.</p>
@@ -242,7 +242,7 @@ Standalone Model Evaluation</h2>
 <p >The developed <em>PaHM</em> system and its associated parametric modeling components need to be applied and tested to determine what parametric TC formulation is suitable for this evaluation study. As indicated in sections <a class="el" href="models.html#mod_holl1980">Holland 1980</a> and <a class="el" href="models.html#mod_gahm">Generalized Asymmetric Vortex Holland</a>, the TC models solve the same wind gradient equation  \(\ref{eqn_holl80_grad_wind}\) using different assumptions and possibly slightly different parameterizations of the independent or random variables of the equation. Depending on the TC characteristics and the geographical location of the storm event, some TC models perform better than others. <a class="el" href="biblio.html#ref_vick2007">Vickery et al. 2007</a>, presents an excellent review of the TC models pointing out the limitations and advantages of each TC modeling approach. The argument that none of the TC models "fits" all the TC modeling senarios, requires an analysis for the determination of the "optimal" TC model to be used in each case. Using data from past TC events (possibly grouped seasonally) for a specific region, the modeler and/or forecaster could obtain a very good guess of the "optimal" TC model for the region.</p>
 <h3><a class="anchor" id="eval_alone_factor"></a>
 Wind Reduction Factor Considerations</h3>
-<p >To determine the appropriate value for \(w_{rf}\) to be used for the <em>PaHM</em> generated wind fields for Hurricane Florence (2018) a series of simulations were performed using different values for \(w_{rf}\). The values of wind reduction factor used were: 0.65, 0.70, 0.75, 0.80, 0.85, 0.90 and 0.95. The <em>PaHM</em> generated 10-m wind speeds were compared against wind observations at all the selected CO-OPS locations (Figure [<a class="el" href="eval.html#eval_fig02">2</a>]). Figure [<a class="el" href="eval.html#eval_fig03">3</a>] shows the comparison at three radomnly selected locations for \(w_{rf}\) values of 0.65 (left panel) and 0.9 (right panel) clearly indicating that the value of 0.9 for \(w_{rf}\) improves all the statistical measures significantly.</p>
+<p >To determine the appropriate value for \(w_{rf}\) to be used for the <em>PaHM</em> generated wind fields for Hurricane Florence (2018) a series of simulations were performed using different values for \(w_{rf}\). The values of wind reduction factor used were: 0.65, 0.70, 0.75, 0.80, 0.85, 0.90 and 0.95. The <em>PaHM</em> generated 10-m wind speeds were compared against wind observations at all the selected CO-OPS locations (Figure [<a class="el" href="eval.html#eval_fig02">15</a>]). Figure [<a class="el" href="eval.html#eval_fig03">16</a>] shows the comparison at three radomnly selected locations for \(w_{rf}\) values of 0.65 (left panel) and 0.9 (right panel) clearly indicating that the value of 0.9 for \(w_{rf}\) improves all the statistical measures significantly.</p>
 <p ><a class="anchor" id="eval_fig03"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b><em>GAHM</em> Wind Reduction Factor: 0.65</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b><em>GAHM</em> Wind Reduction Factor: 0.90</b>   </td></tr>
@@ -265,8 +265,8 @@ Wind Reduction Factor Considerations</h3>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 3:</b> Effect of the wind reduction factor \(w_{rf}\) on <em>PaHM</em> predicted wind fields using the asymmetric vortex model <em>GAHM</em>.</p>
-<p >The \(w_{rf} = 0.65\) case produces the worst statistics in all observation stations while, the case The \(w_{rf} = 0.90\) seems to produce the best results in all locations as shown in Figure [<a class="el" href="eval.html#eval_fig04">4</a>], indicating that for Hurricane Florence, the optimal value of the wind reduction factor is 0.9. The googness of the results using the other values of \(w_{rf}\) (not presented here) falls between the ones for cases 0.65 and 0.90. Figure [<a class="el" href="eval.html#eval_fig04">4</a>] shows the profile of the three statistical measures \((R^{2}, \, \text{RMSE and Willmott SKILL})\) for all sorted CO-OPS stations shown in Figure [<a class="el" href="eval.html#eval_fig02">2</a>].</p>
+<p> <b>Figure 16:</b> Effect of the wind reduction factor \(w_{rf}\) on <em>PaHM</em> predicted wind fields using the asymmetric vortex model <em>GAHM</em>.</p>
+<p >The \(w_{rf} = 0.65\) case produces the worst statistics in all observation stations while, the case The \(w_{rf} = 0.90\) seems to produce the best results in all locations as shown in Figure [<a class="el" href="eval.html#eval_fig04">17</a>], indicating that for Hurricane Florence, the optimal value of the wind reduction factor is 0.9. The googness of the results using the other values of \(w_{rf}\) (not presented here) falls between the ones for cases 0.65 and 0.90. Figure [<a class="el" href="eval.html#eval_fig04">17</a>] shows the profile of the three statistical measures \((R^{2}, \, \text{RMSE and Willmott SKILL})\) for all sorted CO-OPS stations shown in Figure [<a class="el" href="eval.html#eval_fig02">15</a>].</p>
 <p ><a class="anchor" id="eval_fig04"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b><em>GAHM</em> Wind Reduction Factor: 0.65</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b><em>GAHM</em> Wind Reduction Factor: 0.90</b>   </td></tr>
@@ -277,11 +277,11 @@ Wind Reduction Factor Considerations</h3>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 4:</b> Spatial distribution of the wind reduction factor \(w_{rf}\) statistics along the Eastern U.S coastline. The <em>PaHM</em> wind fields were produced using the asymmetric vortex model <em>GAHM</em>.</p>
+<p> <b>Figure 17:</b> Spatial distribution of the wind reduction factor \(w_{rf}\) statistics along the Eastern U.S coastline. The <em>PaHM</em> wind fields were produced using the asymmetric vortex model <em>GAHM</em>.</p>
 <p >Similar conclusions were obtained using the HM80 parametric TC model in <em>PaHM</em>, indicating that \(w_{rf} = 0.9\) is the optimal value for the wind reduction factor for the Hurricane Florence case, and this is the value used in all subsequent analyses.</p>
 <h3><a class="anchor" id="eval_alone_model"></a>
 Parametric Model Type Considerations</h3>
-<p >This section is dedicated to the determination of the best TC model to be used for the current simulations. Figure [<a class="el" href="eval.html#eval_fig05">5</a>] shows the results at selected CO-OPS locations using the <em>Holland 1980</em> (left panel) and <em>GAHM</em> (right panel) TC parametric models. The three CO-OPS locations were chosen as the nearest ones to the path of Hurricane Florence. As mentioned in section [<a class="el" href="models.html">Parametric Models in PaHM</a>], TC parametric models produce their best results in the region of the tropical storm's path. It is noted here that for most of the \(w_{rf}\) cases <em>GAHM</em> produces the best results. There are a few cases where <em>Holland 1980</em> produced better results and others where the results were inconclusive.</p>
+<p >This section is dedicated to the determination of the best TC model to be used for the current simulations. Figure [<a class="el" href="eval.html#eval_fig05">18</a>] shows the results at selected CO-OPS locations using the <em>Holland 1980</em> (left panel) and <em>GAHM</em> (right panel) TC parametric models. The three CO-OPS locations were chosen as the nearest ones to the path of Hurricane Florence. As mentioned in section [<a class="el" href="models.html">Parametric Models in PaHM</a>], TC parametric models produce their best results in the region of the tropical storm's path. It is noted here that for most of the \(w_{rf}\) cases <em>GAHM</em> produces the best results. There are a few cases where <em>Holland 1980</em> produced better results and others where the results were inconclusive.</p>
 <p ><a class="anchor" id="eval_fig05"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b>Symmetric Vortex Formulation (<em>Holland 1980</em>)</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b>Asymmetric Vortex Formulation (<em>GAHM</em>)</b>   </td></tr>
@@ -304,7 +304,7 @@ Parametric Model Type Considerations</h3>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 5:</b> Comparison between Symmetric and Asymmetric Vortex Formulations (<em>Holland 1980</em> and <em>GAHM</em> respectively) of the <em>PaHM</em> predicted wind fields.</p>
+<p> <b>Figure 18:</b> Comparison between Symmetric and Asymmetric Vortex Formulations (<em>Holland 1980</em> and <em>GAHM</em> respectively) of the <em>PaHM</em> predicted wind fields.</p>
 <p ><a class="anchor" id="eval_fig06"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b>Symmetric Vortex Formulation (<em>Holland 1980</em>)</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b>Asymmetric Vortex Formulation (<em>GAHM</em>)</b>   </td></tr>
@@ -315,11 +315,11 @@ Parametric Model Type Considerations</h3>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 6:</b> Spatial distribution of the model statistics along the Eastern U.S coast. The <em>PaHM</em> wind fields were produced using the traditional Holland 1980 model (left panel) and generalized asymmetric holland model <em>GAHM</em> (right panel).</p>
-<p >As shown in Figure [<a class="el" href="eval.html#eval_fig06">6</a>], <em>GAHM</em> produces results with much improved statistical measures (RMSE and Willmott SKILL) for all sorted CO-OPS stations indicating that <em>GAHM</em> is the best TC model to be used for the Hurricane Florence case study.</p>
+<p> <b>Figure 19:</b> Spatial distribution of the model statistics along the Eastern U.S coast. The <em>PaHM</em> wind fields were produced using the traditional Holland 1980 model (left panel) and generalized asymmetric holland model <em>GAHM</em> (right panel).</p>
+<p >As shown in Figure [<a class="el" href="eval.html#eval_fig06">19</a>], <em>GAHM</em> produces results with much improved statistical measures (RMSE and Willmott SKILL) for all sorted CO-OPS stations indicating that <em>GAHM</em> is the best TC model to be used for the Hurricane Florence case study.</p>
 <h2><a class="anchor" id="eval_coupled"></a>
 Coupled Model Evaluation</h2>
-<p >The coupled modeling approach to address the impacts of TC events such as hurricanes on coastal areas. <em>PAHM</em> is coupled (one way) with ADCIRC within CoastalApp using the NUOPC capability in both models. The NUOPC Caps share the <em>PaHM</em> data with ADCIRC on the common STOFS computational mesh shown in Figure [<a class="el" href="eval.html#eval_fig01">1</a>]. <em>PaHM</em> is configured to use <em>GAHM</em> as its parametric model with \(w_{rf} = 0.9\). The ADCIRC produced water levels were compared with the CO-OPS observations as shown in Figure [<a class="el" href="eval.html#eval_fig07">7</a>]. The landfall of Hurricane Florence occured Shouthern of Wrightsville Beach, NC (CO-OPS station 8) during the morning of September 14, 2018. It is clear from Figures [<a class="el" href="eval.html#eval_fig05">5</a>] and [<a class="el" href="eval.html#eval_fig07">7</a>] that the best results for both the wind speed and the water levels are obtained near the landfall region and around the landfall time.</p>
+<p >The coupled modeling approach to address the impacts of TC events such as hurricanes on coastal areas. <em>PAHM</em> is coupled (one way) with ADCIRC within CoastalApp using the NUOPC capability in both models. The NUOPC Caps share the <em>PaHM</em> data with ADCIRC on the common STOFS computational mesh shown in Figure [<a class="el" href="eval.html#eval_fig01">14</a>]. <em>PaHM</em> is configured to use <em>GAHM</em> as its parametric model with \(w_{rf} = 0.9\). The ADCIRC produced water levels were compared with the CO-OPS observations as shown in Figure [<a class="el" href="eval.html#eval_fig07">20</a>]. The landfall of Hurricane Florence occured Shouthern of Wrightsville Beach, NC (CO-OPS station 8) during the morning of September 14, 2018. It is clear from Figures [<a class="el" href="eval.html#eval_fig05">18</a>] and [<a class="el" href="eval.html#eval_fig07">20</a>] that the best results for both the wind speed and the water levels are obtained near the landfall region and around the landfall time.</p>
 <p ><a class="anchor" id="eval_fig07"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b>Away from Storm's Path</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b>Region of Storm's Path</b>   </td></tr>
@@ -342,7 +342,7 @@ Coupled Model Evaluation</h2>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 7:</b> Comparison of ADCIRC generated water levels with CO-OPS observations.</p>
+<p> <b>Figure 20:</b> Comparison of ADCIRC generated water levels with CO-OPS observations.</p>
 <p ><a class="anchor" id="eval_fig08"></a></p><table width="95%" align="center" cellspacing="5" border="0">
 <tr>
 <td width="47%" align="center" valign="top"><b>Statistics Profile for Wind Speed</b>  </td><td width="1%"></td><td width="47%" align="center" valign="top"><b>Statistics Profile for Water Levels</b>   </td></tr>
@@ -353,23 +353,23 @@ Coupled Model Evaluation</h2>
 <p class="endtd"></p>
 </td></tr>
 </table>
-<p> <b>Figure 8:</b> Spatial distribution of the statistics for the <em>PaHM</em> winds and the ADCIRC generated water levels along the Eastern U.S coast.</p>
+<p> <b>Figure 21:</b> Spatial distribution of the statistics for the <em>PaHM</em> winds and the ADCIRC generated water levels along the Eastern U.S coast.</p>
 <p ><a class="anchor" id="eval_fig09"></a></p><table width="95%" align="center" cellspacing="5">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="sym90_landfall_maxelev-cropped.png" alt="" width="50%" class="inline"/>    </p>
 <p class="endtd"></p>
 </td></tr>
 <tr>
-<td align="left" valign="top"><b>Figure 9:</b> Distribution of the coupled <em>PaHM</em>/ADCIRC produced maximum water levels at the landfall area of Hurricane Florence.   </td></tr>
+<td align="left" valign="top"><b>Figure 22:</b> Distribution of the coupled <em>PaHM</em>/ADCIRC produced maximum water levels at the landfall area of Hurricane Florence.   </td></tr>
 </table>
-<p >Moving away from the landfall region, the <em>PaHM</em> winds are gradually reduced to zero thus, in those areas the ADCIRC generates tidal type water elevations (zero atmospheric forcing). Apparently the <em>PaHM</em> winds need to to be coupled with external wind products to produce proper atmospheric forcings across the whole computational domain. Figure [<a class="el" href="eval.html#eval_fig09">9</a>] shows the storm surge innundation at the impacted areas by Hurricane Florence. </p>
+<p >Moving away from the landfall region, the <em>PaHM</em> winds are gradually reduced to zero thus, in those areas the ADCIRC generates tidal type water elevations (zero atmospheric forcing). Apparently the <em>PaHM</em> winds need to to be coupled with external wind products to produce proper atmospheric forcings across the whole computational domain. Figure [<a class="el" href="eval.html#eval_fig09">22</a>] shows the storm surge innundation at the impacted areas by Hurricane Florence. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 00:46:24 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>

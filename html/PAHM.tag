@@ -21,16 +21,6 @@
     <filename>features_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>figures.md</name>
-    <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
-    <filename>figures_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>glossary.md</name>
-    <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
-    <filename>glossary_8md.html</filename>
-  </compound>
-  <compound kind="file">
     <name>intro.md</name>
     <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
     <filename>intro_8md.html</filename>
@@ -62,12 +52,6 @@
     <docanchor file="abstract.html">md_user_guide_abstract</docanchor>
   </compound>
   <compound kind="page">
-    <name>lfigures</name>
-    <title>List of Figures</title>
-    <filename>lfigures.html</filename>
-    <docanchor file="lfigures.html">md_user_guide_figures</docanchor>
-  </compound>
-  <compound kind="page">
     <name>intro</name>
     <title>Introduction</title>
     <filename>intro.html</filename>
@@ -91,6 +75,7 @@
     <docanchor file="pahmsys.html" title="Using &lt;em&gt;PaHM&lt;/em&gt;">pahmsys_use</docanchor>
     <docanchor file="pahmsys.html">pahmsys_fig05</docanchor>
     <docanchor file="pahmsys.html" title="Coupled Model Configuration">pahmsys_use_coupled</docanchor>
+    <docanchor file="pahmsys.html">pahmsys_fig06</docanchor>
   </compound>
   <compound kind="page">
     <name>models</name>
@@ -142,13 +127,7 @@
     <title>Conclusions and Future Considerations</title>
     <filename>conclusions.html</filename>
     <docanchor file="conclusions.html">md_user_guide_conclusions</docanchor>
-    <docanchor file="conclusions.html">concl_fig02</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>glossary</name>
-    <title>Glossary</title>
-    <filename>glossary.html</filename>
-    <docanchor file="glossary.html">md_user_guide_glossary</docanchor>
+    <docanchor file="conclusions.html">concl_fig01</docanchor>
   </compound>
   <compound kind="page">
     <name>biblio</name>

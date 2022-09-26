@@ -27,7 +27,6 @@ var NAVTREE =
   [ "PaHM", "index.html", [
     [ "PaHM Manual", "index.html", null ],
     [ "Abstract", "abstract.html", null ],
-    [ "List of Figures", "lfigures.html", null ],
     [ "Introduction", "intro.html", null ],
     [ "Parametric Hurricane Modeling System (PaHM)", "pahmsys.html", [
       [ "Downloading PaHM", "pahmsys.html#pahmsys_down", [
@@ -61,7 +60,6 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Conclusions and Future Considerations", "conclusions.html", null ],
-    [ "Glossary", "glossary.html", null ],
     [ "References", "biblio.html", null ]
   ] ]
 ];
