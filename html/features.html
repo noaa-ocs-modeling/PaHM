@@ -136,16 +136,15 @@ $(document).ready(function(){initNavTree('features.html',''); initResizable(); }
 <h1><a class="anchor" id="ftr_multi_storms"></a>
 Modeling Multiple Interacting Storms</h1>
 <p >The presence of multiple TC storms in an oceanic basin is not a rare phenomenon as one could expect but it happens frequently. Some of the most recent examples of such storms are: (a) Hurricane Laura and Tropical Storm Marco (Gulf of Mexico, 2020), (b) Hurricane Irwin and Hurricane Hilary (East Pacific basin, 2017), shown in Figure [<a class="el" href="features.html#ftr_fig01">11</a>], (c) Hurricane Madeline and Hurricane Lester (Central Pacific basin, 2016), (d) Hurricane Iselle and Hurricane Julio (Eastern Pacific basin, 2014) and (e) Tropical Storm Bonnie and Hurricane Charley (Gulf of Mexico, 2004). During the active TC periods, \(\sim 10\% - 57\%\) of TCs form in the presence of at least one other pre-existing TC in the same basin (<a class="el" href="biblio.html#ref_schenkel2017">Schenkel 2017</a>). It is therefore important to account for the effects of multiple storms in the same basin and their interaction.</p>
+<p >As shown in Figure [<a class="el" href="features.html#ftr_fig01">11</a>], both the two storms modulate the wind field therefore, this effect needs to be taken into consideration when generating the wind fields. <em>PaHM</em> uses a simple inverse distance weighted interpolation (IDW) to determine the final wind field in the area affected by both storms. The weights in the IDW interpolation are calculated in respect of the location of the "eye" of the storms.</p>
+<p >When the cyclones are close to each other, there is the possibility that their centers will circle each other cyclonically about a point between the two systems due to their cyclonic wind circulations. The two vortices will be attracted to each other, and eventually spiral into the center point and merge. When the two vortices are of unequal size, the larger vortex will tend to dominate the interaction, and the smaller vortex will circle around it. This effect is known as the Fujiwhara effect. <em>PaHM</em> is not designed to deal with this type of situations and assumes that the wind fields are just modulated without considering the detailed physical interactions between the storms.</p>
 <p ><a class="anchor" id="ftr_fig01"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="Interacting_Hurricanes.png" alt="" width="60%" class="inline"/>    </p>
 <p class="endtd"></p>
 </td></tr>
-<tr>
-<td align="left" valign="top"><b>Figure 11:</b> CO-OPS wind and water level observation locations.   </td></tr>
 </table>
-<p >As shown in Figure [<a class="el" href="features.html#ftr_fig01">11</a>], both the two storms modulate the wind field therefore, this effect needs to be taken into consideration when generating the wind fields. <em>PaHM</em> uses a simple inverse distance weighted interpolation (IDW) to determine the final wind field in the area affected by both storms. The weights in the IDW interpolation are calculated in respect of the location of the "eye" of the storms.</p>
-<p >When the cyclones are close to each other, there is the possibility that their centers will circle each other cyclonically about a point between the two systems due to their cyclonic wind circulations. The two vortices will be attracted to each other, and eventually spiral into the center point and merge. When the two vortices are of unequal size, the larger vortex will tend to dominate the interaction, and the smaller vortex will circle around it. This effect is known as the Fujiwhara effect. <em>PaHM</em> is not designed to deal with this type of situations and assumes that the wind fields are just modulated without considering the detailed physical interactions between the storms.</p>
+<p> <b>Figure 11:</b> CO-OPS wind and water level observation locations.</p>
 <h1><a class="anchor" id="ftr_coupling_env"></a>
 Coupling Environment</h1>
 <p ><em>PaHM</em> for its coupling configuration uses the National Unified Operational Prediction Capability (<a href="https://earthsystemmodeling.org/nuopc/" target="_BLANK" rel="NOREFERRER">NUOPC</a>) layer framework to exchange the generated wind fields with the other models via its own NUOPC Cap. The NUOPC Cap is a Fortran module that is used to interface to a model in a NUOPC based coupled system that comprises from NUOPC subroutines that are called during the three model phases: <b>Init Phase</b> (model initialization), <b>Run Phase</b> (model run) and <b>Finalize Phase</b> (model finalize part). Each model that uses the NUOPC layer should have these three subroutines available in their codebase.</p>
@@ -173,7 +172,7 @@ Coupling Environment</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Tue Sep 27 2022 15:26:03 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>

@@ -35,7 +35,7 @@ var NAVTREE =
       [ "Building PaHM", "pahmsys.html#pahmsys_build", [
         [ "System Requirements", "pahmsys.html#pahmsys_build_req", null ],
         [ "The Build System", "pahmsys.html#pahmsys_build_bld", null ],
-        [ "CMake Configuration", "pahmsys.html#pahmsys_build_cmake", null ]
+        [ "CMake Configuration Files and Modules", "pahmsys.html#pahmsys_build_cmake", null ]
       ] ],
       [ "Using PaHM", "pahmsys.html#pahmsys_use", [
         [ "Coupled Model Configuration", "pahmsys.html#pahmsys_use_coupled", null ]

@@ -139,24 +139,22 @@ $(document).ready(function(){initNavTree('models.html',''); initResizable(); });
 <td align="center" valign="top"><p class="starttd"><img src="pahm-pbl-border.png" alt="" width="50%" class="inline"/>    </p>
 <p class="endtd"></p>
 </td></tr>
-<tr>
-<td align="left" valign="top"><b>Figure 7:</b> Schematic representation of the atmospheric boundary layer (ABL), its thickness variation over time and the definition of the gradient level. The conversion between the gradient level and the 10-m winds is denoted by the green arrow. This conversion can be achieved using the wind reduction factor \((w_{rf})\) or, an ABL model formulation (future capability in <em>PaHM</em>).   </td></tr>
 </table>
-<p >The 10-m wind may be estimated by decreasing the gradient level wind speed by approximately 10-20% over the ocean and up to 40% over land (wind reduction factor \(w_{rf}\) of 0.9-0.8 to 0.6 respectively). The use of a fixed and empiracally determined \(w_{rf}\) to convert the gradient winds to 10-m winds is a limitation of these models as \(w_{rf}\) is a function of location, time (ABL thickness is a function of time) and of course the characteristics of the particular TC.</p>
+<p> <b>Figure 7:</b> Schematic representation of the atmospheric boundary layer (ABL), its thickness variation over time and the definition of the gradient level. The conversion between the gradient level and the 10-m winds is denoted by the green arrow. This conversion can be achieved using the wind reduction factor \((w_{rf})\) or, an ABL model formulation.</p>
 <p ><a class="anchor" id="mod_fig02"></a></p><table width="100%" align="center" cellspacing="5" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="florence_track_pahm.png" alt="" width="50%" class="inline"/>    </p>
 <p class="endtd"></p>
 </td></tr>
-<tr>
-<td align="left" valign="top"><b>Figure 8:</b> Calculation procedure of <em>PaHM</em> wind fields for Hurricane Florence (2018). Source of background images and track data: <a href="https://www.coast.noaa.gov/hurricanes/" target="_blank">https://www.coast.noaa.gov/hurricanes/</a>.   </td></tr>
 </table>
+<p> <b>Figure 8:</b> Calculation procedure of <em>PaHM</em> wind fields for Hurricane Florence (2018). Source of background images and track data: <a href="https://www.coast.noaa.gov/hurricanes/" target="_blank">https://www.coast.noaa.gov/hurricanes/</a>.</p>
+<p >The 10-m wind may be estimated by decreasing the gradient level wind speed by approximately 10-20% over the ocean and up to 40% over land (wind reduction factor \(w_{rf}\) of 0.9-0.8 to 0.6 respectively). The use of a fixed and empiracally determined \(w_{rf}\) to convert the gradient winds to 10-m winds is a limitation of these models as \(w_{rf}\) is a function of location, time (ABL thickness is a function of time) and of course the characteristics of the particular TC.</p>
 <h1><a class="anchor" id="mod_holl1980"></a>
 Holland 1980</h1>
 <p >The traditional Holland Model (<a class="el" href="biblio.html#ref_holl1980">Holland 1980</a>), thereafter HM80, is one of most widely used tropical cyclone (TC) analytical vortex models to generate meteorological forcings near the path of the storm. HM80 solves the reduced physics gradient wind equation \(\ref{eqn_holl80_grad_wind}\). Gradient winds are those theoretical winds that blow parallel to curved isobar lines or height-contour lines in the absence of turbulent drag (gradient level winds). The gradient level is roughly 1 km above the surface of the earth, and is the level most representative of the air flow in the lower atmosphere immediately above the layer affected by surface friction. This level is free of local wind and topographic effects (such as sea breezes, downslope winds etc) and it is commonly defined atop the atmospheric boundary layer (ABL).</p>
 <p >For the gradient winds there is no balance between the Coriolis force and the Pressure gradient force (as this is the case for geostrophic winds), resulting in a non-zero net force \(F_{net}\) known as the Centripetal force. This \(F_{net}\) is what causes the wind to continually change direction as it goes around a circle (<a class="el" href="biblio.html#ref_stul2017">Stull 2017</a>) as shown in Figures [<a class="el" href="models.html#mod_fig03">9</a>] and [<a class="el" href="models.html#mod_fig04">10</a>].</p>
 <p >By describing this change in direction as causing an apparent force (Centrifugal), we can find the equation for the gradient wind. Equation \(\ref{eqn_holl80_grad_wind}\) defines the steady-state gradient wind and represents the balance of the Pressure Gradient Force \((F_{PG})\), Centrifugal \((F_{CN} = - F_{net})\) and Coriolis \((F_{CF})\) forces at the gradient level (Figures [<a class="el" href="models.html#mod_fig03">9</a>] and [<a class="el" href="models.html#mod_fig04">10</a>]):</p>
-<p class="formulaDsp">
+  <p class="formulaDsp">
 \begin{equation}
   \underbrace{\vphantom{\frac{r}{\rho_{air}}\frac{\partial P(r)}{\partial r}} V^{2}_{g}(r)}_{F_{CN} \, \text{term}} +
   \underbrace{\vphantom{\frac{r}{\rho_{air}}\frac{\partial P(r)}{\partial r}} f r V_{g}(r)}_{F_{CF} \, \text{term}} -
@@ -165,7 +163,7 @@ Holland 1980</h1>
 \end{equation}
 </p>
 <p >where: \(V_{g}(r)\) is the gradient level wind speed at radius \(r\), \(P(r)\) is the pressure at radius \(r\), \(r\) is the radial distance, \(f = 2 \Omega \sin\phi\) is the Coriolis parameter, \(\Omega = 7.27221\cdot 10^{-5} s^{-1}\) is the rotational speed of the earth, \(\phi\) is the latitude in radians and \(\rho_{air}\) is the air density (assumed constant: \(1.15 \, kg / m^3\)). The quadratic equation \(\ref{eqn_holl80_grad_wind}\) has two roots:</p>
-<p class="formulaDsp">
+  <p class="formulaDsp">
 \begin{align}
    \label{eqn_holl80_grad_wind_rootsa}
   &amp;V_{g}(r) = \sqrt{ \frac{r}{\rho_{air}}\frac{\partial P(r)}{\partial r} + \big(\frac{r f}{2}\big)^2} - \frac{r f}{2}
@@ -283,7 +281,7 @@ Generalized Asymmetric Vortex Holland model (<em>GAHM</em>)</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Tue Sep 27 2022 15:26:03 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>

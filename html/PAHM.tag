@@ -21,6 +21,11 @@
     <filename>features_8md.html</filename>
   </compound>
   <compound kind="file">
+    <name>index.md</name>
+    <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
+    <filename>index_8md.html</filename>
+  </compound>
+  <compound kind="file">
     <name>intro.md</name>
     <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
     <filename>intro_8md.html</filename>
@@ -29,11 +34,6 @@
     <name>models.md</name>
     <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
     <filename>models_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>pahm_manual.md</name>
-    <path>/home/takis/CSDL/parwinds-doc/doc/user-guide/</path>
-    <filename>pahm__manual_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>pahm_system.md</name>

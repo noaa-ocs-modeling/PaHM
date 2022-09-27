@@ -152,19 +152,13 @@ Downloading <em>PaHM</em></h1>
 </ul>
 <p ><em>PaHM</em> can be downloaded using one of the following methods:</p>
 <ol type="1">
-<li><p class="startli">Clone the source code from GitHub using the command:</p>
-<div class="fragment"><div class="line">git clone https://github.com/noaa-ocs-modeling/PaHM PaHM</div>
-</div><!-- fragment --><p class="startli">The source will be downloaded into the target directory PaHM.</p>
-</li>
-<li><p class="startli">Download the source archive using the command:</p>
-<div class="fragment"><div class="line">wget https://github.com/noaa-ocs-modeling/PaHM/archive/refs/heads/main.zip</div>
-</div><!-- fragment --><p class="startli">and extract the sources in the PaHM directory by issuing the following commands:</p>
-<div class="fragment"><div class="line">unzip -o main.zip  (the data will be extracted into the PaHM-main directory)</div>
-<div class="line"> </div>
-<div class="line">mv PaHM-main PaHM  (move the extracted files to the PaHM directory)</div>
-</div><!-- fragment --></li>
+<li>Clone the source code from GitHub using the command: <pre class="fragment"> git clone https://github.com/noaa-ocs-modeling/PaHM PaHM
+</pre> The source will be downloaded into the target directory PaHM.</li>
+<li>Download the source archive using the command: <pre class="fragment"> wget https://github.com/noaa-ocs-modeling/PaHM/archive/refs/heads/main.zip
+</pre> and extract the sources in the PaHM directory by issuing the following commands: <pre class="fragment"> unzip -o main.zip  (the data will be extracted into the PaHM-main directory)
+ mv PaHM-main PaHM  (move the extracted files to the PaHM directory)
+</pre> Even if an archive is sufficient, it is advisable to use the distributed version control system Git to follow the <em>PaHM</em> development to merge easily to new versions. New Git users are invited to read some of the online guides to get familiar with vanilla Git concepts and commands:</li>
 </ol>
-<p >Even if an archive is sufficient, it is advisable to use the distributed version control system Git to follow the <em>PaHM</em> development to merge easily to new versions. New Git users are invited to read some of the online guides to get familiar with vanilla Git concepts and commands:</p>
 <ul>
 <li>Basic and advanced guide with the <a href="https://git-scm.com/book/en/v2/" target="_BLANK" rel="NOREFERRER">Git Book</a>.</li>
 <li>Reference guides with the <a href="https://git-scm.com/docs/" target="_BLANK" rel="NOREFERRER">Git Reference</a>.</li>
@@ -210,34 +204,33 @@ The Build System</h2>
 <p >To build <em>PaHM</em> the user should run the build.sh bash script located (a link to the scripts/build.sh) in the root directory of the downloaded source code (Figure [<a class="el" href="pahmsys.html#pahmsys_fig01">1</a>]). The following steps will help you to build <em>PaHM</em> on your local machine or your cluster of choice.</p>
 <ol type="1">
 <li>Make sure that CMake and the NetCDF/HDF5 libraries are in the user's PATH environment (in a Cluster/HPC system that uses the environment module system, the user should load the modules for cmake and netcdf, hdf5 before building <em>PaHM</em>).</li>
-<li><p class="startli">Change the working directory to the <em>PaHM</em> root:</p>
-<div class="fragment"><div class="line">cd /INSTALL_PATH/PaHM</div>
-</div><!-- fragment --></li>
-<li><p class="startli">Run the build script as:</p>
-<div class="fragment"><div class="line">./build.sh</div>
-</div><!-- fragment --><p class="startli">to get the following screen output: <br  />
- </p><div class="fragment"><div class="line">The following variables are defined:</div>
-<div class="line">    ACCEPT_ALL         = 0</div>
-<div class="line">    PROJECT_SOURCE_DIR = /INSTALL_PATH/PaHM</div>
-<div class="line">    PROJECT_BINARY_DIR = /INSTALL_PATH/PaHM/build</div>
-<div class="line">    CMAKE_SOURCE_DIR   = /INSTALL_PATH/PaHM</div>
-<div class="line">    CMAKE_BINARY_DIR   = /INSTALL_PATH/PaHM/build</div>
-<div class="line">    INSTALL_DIR        = /INSTALL_PATH/PaHM</div>
-<div class="line">    CMAKE_BUILD_TYPE   = Release</div>
-<div class="line">    CMAKE_FLAGS        = -DCMAKE_BUILD_TYPE=Release -DCMAKE_Platform=linux -DCMAKE_VERBOSE_MAKEFILE=TRUE</div>
-<div class="line">    PLATFORM           = linux</div>
-<div class="line">    COMPILER           = Undefined, Supported values are: [gnu, intel, pgi]</div>
-<div class="line">    CC                 = Will use the OS default compiler</div>
-<div class="line">    CXX                = Will use the OS default compiler</div>
-<div class="line">    FC                 = Will use the OS default compiler</div>
-<div class="line">    F90                = Will use the OS default compiler</div>
-<div class="line">    VERBOSE            = 0</div>
-<div class="line"> </div>
-<div class="line">Are these values correct? [y/n]:</div>
-</div><!-- fragment --><p class="startli">if the above settings are correct, type "y + &lt;ENTER&gt;" to continue with the compilation. Upon successful compilation the <em>PaHM</em> executable will be placed into the "bin" directory at the <em>PaHM</em> root.</p>
-</li>
+<li>Change the working directory to the <em>PaHM</em> root: <pre class="fragment"> cd /INSTALL_PATH/PaHM
+</pre></li>
+<li>Run the build script as: <pre class="fragment"> ./build.sh
+</pre> to get the following screen output: <pre class="fragment"> The following variables are defined:
+     ACCEPT_ALL         = 0
+     PROJECT_SOURCE_DIR = /INSTALL_PATH/PaHM
+     PROJECT_BINARY_DIR = /INSTALL_PATH/PaHM/build
+     CMAKE_SOURCE_DIR   = /INSTALL_PATH/PaHM
+     CMAKE_BINARY_DIR   = /INSTALL_PATH/PaHM/build
+     INSTALL_DIR        = /INSTALL_PATH/PaHM
+     CMAKE_BUILD_TYPE   = Release
+     CMAKE_FLAGS        = -DCMAKE_BUILD_TYPE=Release -DCMAKE_Platform=linux
+                          -DCMAKE_VERBOSE_MAKEFILE=TRUE
+     PLATFORM           = linux
+     COMPILER           = Undefined, Supported values are: [gnu, intel, pgi]
+     CC                 = Will use the OS default compiler
+     CXX                = Will use the OS default compiler
+     FC                 = Will use the OS default compiler
+     F90                = Will use the OS default compiler
+     VERBOSE            = 0
+
+ Are these values correct? [y/n]:
+</pre> if the above settings are correct, type "y + &lt;ENTER&gt;" to continue with the compilation. Upon successful compilation the <em>PaHM</em> executable will be placed into the "bin" directory at the <em>PaHM</em> root.</li>
 </ol>
 <p >The build script tries to determine the host OS, either Linux or, MacOSX (in Windows the user should try to compile <em>PaHM</em> inside a Windows Subsystem for Linux - WSL, or another Linux setup). By default, the build script will use the native Fortran and C compilers (usually gcc and gfortran) for the compilation stage. The script accepts options to further customize the compilation process and it is suggested that the user should at first run the script as: <code>./build.sh --help</code> to see all available options as shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig02">2</a>].</p>
+<p >The two influential options of the script are <code>--compiler</code> and <code>--platform</code> where the user can supply what compiler family to use and what platform to compile <em>PaHM</em> for (in the cmake folder there are customized platform cmake modules that the script loads per user's request). For example, to compile <em>PaHM</em> using the Intel compilers on the Orion HPC cluster of <a href="https://www.hpc.msstate.edu/computing/hpc.php" target="_BLANK" rel="NOREFERRER">Mississippi State University</a>, the user should run the script as: </p><pre class="fragment">    ./build.sh --compiler intel --platform orion
+</pre><p> Figure [<a class="el" href="pahmsys.html#pahmsys_fig02">2</a>], shows all currently available options in "build.sh" accompanied by the detailed explanation for each option.</p>
 <p ><a class="anchor" id="pahmsys_fig02"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="pahm-usage.png" alt="" width="90%" class="inline"/>    </p>
@@ -246,9 +239,6 @@ The Build System</h2>
 <tr>
 <td align="left" valign="top"><b>Figure 2:</b> Build script (build.sh) options.   </td></tr>
 </table>
-<p >The two influential options of the script are <code>--compiler</code> and <code>--platform</code> where the user can supply what compiler family to use and what platform to compile <em>PaHM</em> for (in the cmake folder there are customized platform cmake modules that the script loads per user's request). For example, to compile <em>PaHM</em> using the Intel compilers on the Orion HPC cluster of <a href="https://www.hpc.msstate.edu/computing/hpc.php" target="_BLANK" rel="NOREFERRER">Mississippi State University</a>, the user should run the script as:</p>
-<div class="fragment"><div class="line">./build.sh --compiler intel --platform orion</div>
-</div><!-- fragment --><p >Figure [<a class="el" href="pahmsys.html#pahmsys_fig02">2</a>], shows all currently available options in "build.sh" accompanied by the detailed explanation for each option.</p>
 <h2><a class="anchor" id="pahmsys_build_cmake"></a>
 CMake Configuration Files and Modules</h2>
 <p >The directory "PaHM/cmake" contains the CMake modules and auxiliary files used for the configuration of the CMake based build system used by <em>PaHM</em>, so that many setup and com[ilation steps can be automated. The most common steps to build, and install software based on CMake, like <em>PaHM</em> are:</p>
@@ -258,18 +248,17 @@ CMake Configuration Files and Modules</h2>
 <li>Build the software using the generated Makefile (run: <code>make</code>).</li>
 <li>Install the built files (run: <code>make install</code>).</li>
 </ol>
-<p >In the parent directory of the "build" folder (PaHM/) it should be located a file called "CMakeLists.txt" that CMake requires for its configuration. This "CMakeLists.txt" in addition of calling CMake modules from the PaHM/cmake folder, it also contains CMake directives that modify the behavior of the configuration process. In step (2) above the user can supply additional flags defined in "CMakeLists.txt" and in PaHM/cmake modules or global CMake flags that might influence the compilation stage as shown in the following example:</p>
-<div class="fragment"><div class="line">cmake ../ -DENABLE_DATETIME=TRUE -DF90=ifort -DINSTALL_DIR=&quot;some installation location&quot;</div>
-</div><!-- fragment --><p >The <em>PaHM</em> CMake system will pick-up the values of these variables if set in the user's environment, and continue with the configuration with these variable definitions, for example:</p>
-<div class="fragment"><div class="line">In Bash use:</div>
-<div class="line"> </div>
-<div class="line">export F90=ifort</div>
-<div class="line">export INSTALL_DIR=&quot;some installation location&quot;</div>
-<div class="line"> </div>
-<div class="line">and run cmake as:</div>
-<div class="line"> </div>
-<div class="line">cmake ../ -DENABLE_DATETIME=TRUE</div>
-</div><!-- fragment --><p >The user is encouraged to take a look of the "CMakeLists.txt" and the PaHM/cmake modules to gain an understanding on how the CMake build system in <em>PaHM</em> works. By design, the CMake build system in <em>PaHM</em> uses the user's environment as well as the command line interchangeably to pick-up the values of any user supplied variables related to <em>PaHM</em>. The main CMake module groups in <em>PaHM</em> are (a) the System group, (b) the Compiler group and (c) the Platform group (see Figure [<a class="el" href="pahmsys.html#pahmsys_fig01">1</a>]).</p>
+<p >In the parent directory of the "build" folder (PaHM/) it should be located a file called "CMakeLists.txt" that CMake requires for its configuration. This "CMakeLists.txt" in addition of calling CMake modules from the PaHM/cmake folder, it also contains CMake directives that modify the behavior of the configuration process. In step (2) above the user can supply additional flags defined in "CMakeLists.txt" and in PaHM/cmake modules or global CMake flags that might influence the compilation stage as shown in the following example: </p><pre class="fragment">    cmake ../ -DENABLE_DATETIME=TRUE -DF90=ifort
+              -DINSTALL_DIR="some installation location"
+</pre><p> The <em>PaHM</em> CMake system will pick-up the values of these variables if set in the user's environment, and continue with the configuration with these variable definitions, for example: </p><pre class="fragment">    In Bash use:
+
+    export F90=ifort
+    export INSTALL_DIR="some installation location"
+
+    and run cmake as:
+
+    cmake ../ -DENABLE_DATETIME=TRUE
+</pre><p> The user is encouraged to take a look of the "CMakeLists.txt" and the PaHM/cmake modules to gain an understanding on how the CMake build system in <em>PaHM</em> works. By design, the CMake build system in <em>PaHM</em> uses the user's environment as well as the command line interchangeably to pick-up the values of any user supplied variables related to <em>PaHM</em>. The main CMake module groups in <em>PaHM</em> are (a) the System group, (b) the Compiler group and (c) the Platform group (see Figure [<a class="el" href="pahmsys.html#pahmsys_fig01">1</a>]).</p>
 <p ><b>(a) System group :</b> Consists of the core CMake modules required to configure and compile <em>PaHM</em>:</p>
 <table width="80%" align="center" cellspacing="5" border="0">
 <tr>
@@ -287,19 +276,18 @@ CMake Configuration Files and Modules</h2>
 <tr>
 <td align="right" valign="middle" width="25%">Modules :  </td><td width="2%"></td><td align="left" valign="middle">In this folder are contained the utility and "find" modules for CMake (e.g., FindNetCDF.cmake) required to set depended variable for the configuration and compilation statges   </td></tr>
 </table>
-<p ><b>(b) Compiler group :</b> The modules in the compiler group define the compiler flags for the three compiler families supported by <em>PaHM</em> (GNU, Intel and PGI). Supplying the compiler option to the "build.sh", as discussed discussed in section [<a class="el" href="pahmsys.html#pahmsys_build_bld">The Build System</a>], the script loads the proper compiler module: "configure_COMPILER.cmake", where: COMPILER = [one of gnu, intel, pgi] In the right panel of Figure [<a class="el" href="pahmsys.html#pahmsys_fig03">3</a>], are shown the contents of the module file for "intel" that is, the definitions of the flags passed to the compiler during the compilation and link stages. The user may modify the file directly to fit particular project's needs or, to pass the relevant compiler flags via the "build.sh", for example:</p>
-<div class="fragment"><div class="line">./build.sh --compiler intel --cmake_flags &quot;-DCMAKE_Fortran_FLAGS=\&quot;-g -O2\&quot; -DDEBUG=TRUE&quot;</div>
-</div><!-- fragment --><p ><a class="anchor" id="pahmsys_fig03"></a></p><table width="100%" align="center" cellspacing="0" border="0">
+<p ><b>(b) Compiler group :</b> The modules in the compiler group define the compiler flags for the three compiler families supported by <em>PaHM</em> (GNU, Intel and PGI). Supplying the compiler option to the "build.sh", as discussed discussed in section [<a class="el" href="pahmsys.html#pahmsys_build_bld">The Build System</a>], the script loads the proper compiler module: "configure_COMPILER.cmake", where: COMPILER = [one of gnu, intel, pgi] In the right panel of Figure [<a class="el" href="pahmsys.html#pahmsys_fig03">3</a>], are shown the contents of the module file for "intel" that is, the definitions of the flags passed to the compiler during the compilation and link stages. The user may modify the file directly to fit particular project's needs or, to pass the relevant compiler flags via the "build.sh", for example: </p><pre class="fragment">    ./build.sh --compiler intel
+               --cmake_flags "-DCMAKE_Fortran_FLAGS=\"-g -O2\" -DDEBUG=TRUE"
+</pre><p> <a class="anchor" id="pahmsys_fig03"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
-<td align="center" valign="top"><p class="starttd"><img src="PaHM-cmake-intel-combined.png" alt="" width="80%" class="inline"/>    </p>
+<td align="center" valign="top"><p class="starttd"><img src="PaHM-cmake-intel-combined.png" alt="" width="90%" class="inline"/>    </p>
 <p class="endtd"></p>
 </td></tr>
 <tr>
 <td align="left" valign="top"><b>Figure 3:</b> CMake modules for the <em>PaHM</em> supported compilers.   </td></tr>
 </table>
-<p ><b>(c) Platform group :</b> The folder "PaHM/cmake/Platforms" contains the CMake modules for the <em>PaHM</em> supported computing platforms (HPC clusters or local desktops). The list of predefined platform modules are shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig04">4</a>] (left panel) where in the right panel are shown the contents of the platform file for "orion" using the "intel" compiler. This file is loaded by CMake when the build script is run as:</p>
-<div class="fragment"><div class="line">./build.sh --compiler intel --platform orion ... other options</div>
-</div><!-- fragment --><p >When any of these modules is loaded, it sets the environment variables for the loaded libraries (currently NetCDF and HDF5) in an HPC cluster or a local desktop. Computing system configurations change from time to time and the user might need to directly modify the module file to reflect the OS changes or, to use the "custom" platform (e.g., configure_intel.custom.cmake) and incorporate the changes there.</p>
+<p ><b>(c) Platform group :</b> The folder "PaHM/cmake/Platforms" contains the CMake modules for the <em>PaHM</em> supported computing platforms (HPC clusters or local desktops). The list of predefined platform modules are shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig04">4</a>] (left panel) where in the right panel are shown the contents of the platform file for "orion" using the "intel" compiler. This file is loaded by CMake when the build script is run as: </p><pre class="fragment">    ./build.sh --compiler intel --platform orion ... other options
+</pre><p> When any of these modules is loaded, it sets the environment variables for the loaded libraries (currently NetCDF and HDF5) in an HPC cluster or a local desktop. Computing system configurations change from time to time and the user might need to directly modify the module file to reflect the OS changes or, to use the "custom" platform (e.g., configure_intel.custom.cmake) and incorporate the changes there.</p>
 <p ><a class="anchor" id="pahmsys_fig04"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="PaHM-cmake-intel-orion-combined.png" alt="" width="85%" class="inline"/>    </p>
@@ -308,14 +296,12 @@ CMake Configuration Files and Modules</h2>
 <tr>
 <td align="left" valign="top"><b>Figure 4:</b> CMake modules for the <em>PaHM</em> supported computing platforms.   </td></tr>
 </table>
-<p >Additional platform modules can be added with ease, by copying one of the existing module files in "PaHM/cmake/Platforms" to say: PaHM/cmake/Platforms/configure_intel.my_own.cmake. This new module file should first be modified to reflect the settings of the host platform and then run the build script as:</p>
-<div class="fragment"><div class="line">./build.sh --compiler intel --platform my_own ... other options</div>
-</div><!-- fragment --><p >to use the newly developed platform module file.</p>
+<p >Additional platform modules can be added with ease, by copying one of the existing module files in "PaHM/cmake/Platforms" to say: PaHM/cmake/Platforms/configure_intel.my_own.cmake. This new module file should first be modified to reflect the settings of the host platform and then run the build script as: </p><pre class="fragment">    ./build.sh --compiler intel --platform my_own ... other options
+</pre><p> to use the newly developed platform module file.</p>
 <h1><a class="anchor" id="pahmsys_use"></a>
 Using <em>PaHM</em></h1>
-<p >Before you can use <em>PaHM</em>, you must have a working <em>PaHM</em> installation as described in section [<a class="el" href="pahmsys.html#pahmsys_build_bld">The Build System</a>]. Assuming that <em>PaHM</em> is installed in the "PaHM/bin" folder (default), the model may be run as: <code>bin/pahm --help</code> to print the list of the available command line arguments to the model. By default, running <em>PaHM</em> without arguments as the model tries to find its default control file (pahm_control.in) located in the current working directory. The user may supply another control file by running <em>PaHM</em> as:</p>
-<div class="fragment"><div class="line">pahm LOCATION_OF_CONTROL_FILE/custom_control_file.in</div>
-</div><!-- fragment --><p >A typical control file looks like the one shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig05">5</a>]. It is the user's responsibility to create the proper control file to be used by <em>PaHM</em> for the particular application. The easiest way to create the control file is to copy one from the "PaHM/templates" folder and modify it accordingly.</p>
+<p >Before you can use <em>PaHM</em>, you must have a working <em>PaHM</em> installation as described in section [<a class="el" href="pahmsys.html#pahmsys_build_bld">The Build System</a>]. Assuming that <em>PaHM</em> is installed in the "PaHM/bin" folder (default), the model may be run as: <code>bin/pahm --help</code> to print the list of the available command line arguments to the model. By default, running <em>PaHM</em> without arguments the model tries to find its default control file (pahm_control.in) located in the current working directory. The user may supply another control file by running <em>PaHM</em> as: </p><pre class="fragment">    pahm LOCATION_OF_CONTROL_FILE/custom_control_file.in
+</pre><p> A typical control file looks like the one shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig05">5</a>]. It is the user's responsibility to create the proper control file to be used by <em>PaHM</em> for the particular application. The easiest way to create the control file is to copy one from the "PaHM/templates" folder and modify it accordingly.</p>
 <p ><a class="anchor" id="pahmsys_fig05"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="pahm_control.png" alt="" width="75%" class="inline"/>    </p>
@@ -327,9 +313,8 @@ Using <em>PaHM</em></h1>
 <p >The control file is required either running <em>PaHM</em> as a standalone model or as a coupled modeling component.</p>
 <h2><a class="anchor" id="pahmsys_use_coupled"></a>
 Coupled Model Configuration</h2>
-<p ><em>PaHM</em> is coupled with other models via its own NUOPC Cap (section [<a class="el" href="features.html#ftr_coupling_env">Coupling Environment</a>]). To build the coupled <em>PaHM</em> / ADCIRC "NEMS.x" executable the "build.sh" script of CoastalApp (see CoastalApp's <a href="https://github.com/noaa-ocs-modeling/CoastalApp/blob/develop/README.md" target="_BLANK" rel="NOREFERRER">README.md</a>) is run as:</p>
-<div class="fragment"><div class="line">./build.sh --compiler intel --platform orion --component &quot;PAHM ADCIRC&quot; </div>
-</div><!-- fragment --><p >"NEMS.x" uses the two configuration files shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig06">6</a>] to define the coupled simulation parameters. The "model_configure" file defines the simulation period for the model while, in the file "nems.configure" are defined the coupling parameters of the simulation (e.g., number of cores, the data exchange sequence, rtc).</p>
+<p ><em>PaHM</em> is coupled with other models via its own NUOPC Cap (section [<a class="el" href="features.html#ftr_coupling_env">Coupling Environment</a>]). To build the coupled <em>PaHM</em> / ADCIRC "NEMS.x" executable the "build.sh" script of CoastalApp (see CoastalApp's <a href="https://github.com/noaa-ocs-modeling/CoastalApp/blob/develop/README.md" target="_BLANK" rel="NOREFERRER">README.md</a>) is run as: </p><pre class="fragment">    ./build.sh --compiler intel --platform orion --component "PAHM ADCIRC" 
+</pre><p> "NEMS.x" uses the two configuration files shown in Figure [<a class="el" href="pahmsys.html#pahmsys_fig06">6</a>] to define the coupled simulation parameters. The "model_configure" file defines the simulation period for the model while, in the file "nems.configure" are defined the coupling parameters of the simulation (e.g., number of cores, the data exchange sequence, rtc).</p>
 <p ><a class="anchor" id="pahmsys_fig06"></a></p><table width="100%" align="center" cellspacing="0" border="0">
 <tr>
 <td align="center" valign="top"><p class="starttd"><img src="nems_pahm.png" alt="" width="70%" class="inline"/>    </p>
@@ -345,7 +330,7 @@ Coupled Model Configuration</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 26 2022 12:03:54 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
+    <li class="footer">Generated on Tue Sep 27 2022 15:26:03 for PaHM by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
 </body>
