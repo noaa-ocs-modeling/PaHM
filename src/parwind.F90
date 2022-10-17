@@ -2267,7 +2267,7 @@ MODULE ParWind
         sfPress = cPress + cPressDef * EXP(-(rmw / rad(i))**hlB)
 
         ! Compute wind speed (speed - trSPD) at gradient level (m/s) and at a distance rad(i);
-        ! all distances are in meters. Using absolute value for coriolis for Southern Hempisphere
+        ! all distances are in meters. Using absolute value for coriolis for Southern Hemisphere
         grVel = SQRT(speed**2 * (rmw / rad(i))**hlB * EXP(1.0_SZ - (rmw / rad(i))**hlB) +   &
                      (rad(i) * ABS(coriolis) / 2.0_SZ)**2) -                                &
                 rad(i) * ABS(coriolis) / 2.0_SZ
@@ -2281,9 +2281,14 @@ MODULE ParWind
         ! Apply mutliplier for Storm #2 in LPFS ensemble.
         grVel = grVel * windMultiplier
 
-        ! Find the wind velocity components.
-        sfVelX = -grVel * SIN(theta)
-        sfVelY =  grVel * COS(theta)
+        ! Find the wind velocity components (caution to SH/NH)
+        if(lat.lt.0.d0) then ! SH
+          sfVelX = grVel * SIN(theta)
+          sfVelY = -grVel * COS(theta)
+        else ! NH
+          sfVelX = -grVel * SIN(theta)
+          sfVelY =  grVel * COS(theta)
+        endif
 
         ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
         ! which, is what the Holland curve fit produces, to 10-m wind velocity.
@@ -2301,9 +2306,10 @@ MODULE ParWind
         !PV Need to account for multiple storms in the basin
         !   Need to interpolate between storms if this nodal point
         !   is affected by more than on storm
-        wPress(i) = sfPress
-        wVelX(i)  = sfVelX
-        wVelY(i)  = sfVelY
+        wPress(i)  = max(0.85d5,min(1.1e5,sfPress)) !Typhoon Tip 870 hPa ... 12-oct-1979
+        wVelX(i)  = max(-200.d0,min(200.d0,sfVelX))
+        wVelY(i)  = max(-200.d0,min(200.d0,sfVelY))
+
       END DO ! npCnt = 1, maxRadIDX
     END DO ! stCnt = 1, nBTrFiles
 
@@ -2830,7 +2836,8 @@ MODULE ParWind
                               wtratio * (cHollBs2(:) - cHollBs1(:))
       cVmwBL     =  cVmwBL1(:) + &
                               wtratio * (cVmwBL2(:) - cVmwBL1(:))
-      coriolis   = 2.0_SZ * OMEGA * SIN(DEG2RAD * cLat)
+      !Using absolute value for coriolis for Southern Hemisphere                
+      coriolis   = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
 
       DO i = 1, np
         cPhiFactor(i) =  1 + cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * coriolis /  &
@@ -2868,6 +2875,11 @@ MODULE ParWind
         CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
              cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
+        wPress(i) = max(0.85d5,min(1.1e5,wPress(i)))  ! Typhoon Tip 870 hPa ... 12-oct-1979
+        wVelX(i)  = max(-200.d0,min(200.d0,wVelX(i)))
+        wVelY(i)  = max(-200.d0,min(200.d0,wVelY(i)))
+
+
       END DO
 
     END DO ! stCnt = 1, nBTrFiles
