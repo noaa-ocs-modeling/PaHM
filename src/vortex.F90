@@ -1533,11 +1533,11 @@ MODULE PaHM_Vortex
 
     ! Caution with SH/NH
     if(cLat.lt.0.0_SZ) then
-    u =  speed * COS(DEG2RAD * angle)
-    v = -speed * SIN(DEG2RAD * angle)
+      u =  speed * COS(DEG2RAD * angle)
+      v = -speed * SIN(DEG2RAD * angle)
     else
-    u = -speed * COS(DEG2RAD * angle)
-    v =  speed * SIN(DEG2RAD * angle)
+      u = -speed * COS(DEG2RAD * angle)
+      v =  speed * SIN(DEG2RAD * angle)
     endif
 
     ! Alter wind direction by adding a frictional inflow angle
@@ -1690,11 +1690,11 @@ MODULE PaHM_Vortex
 
     ! Caution with SH/NH
     if(cLat.lt.0.0_SZ) then
-    u =  speed * COS(DEG2RAD * angle)
-    v = -speed * SIN(DEG2RAD * angle)
+      u =  speed * COS(DEG2RAD * iAngle)
+      v = -speed * SIN(DEG2RAD * iAngle)
     else
-    u = -speed * COS(DEG2RAD * angle)
-    v =  speed * SIN(DEG2RAD * angle)
+      u = -speed * COS(DEG2RAD * iAngle)
+      v =  speed * SIN(DEG2RAD * iAngle)
     endif
 
     ! Alter wind direction by adding a frictional inflow angle
