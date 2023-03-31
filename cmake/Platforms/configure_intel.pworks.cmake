@@ -3,10 +3,16 @@
 ###
 ### Author: Panagiotis Velissariou <panagiotis.velissariou@noaa.gov>
 ###
-### DEFINITIONS FOR THE "hera" HPC ENVIRONMENT THAT USES THE GNU COMPILERS
+### DEFINITIONS FOR THE "hera" HPC ENVIRONMENT THAT USES THE INTEL COMPILERS
 ###########################################################################
 
-#message(FATAL_ERROR "The GNU family of compilers are not supported on this platform.")
+# Check if the intel module is loaded so we have access to the Intel compilers.
+#if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
+#  message(FATAL_ERROR "The intel module is not loaded. Load the module before running this cmake")
+#endif()
+if("$ENV{INTEL_LICENSE_FILE}" STREQUAL "")
+  message(WARNING "The INTEL_LICENSE_FILE variable is not set. Is the intel module loaded? If not, load the module before running this cmake")
+endif()
 
 ###========================================
 ### Check the environment and set required variables
