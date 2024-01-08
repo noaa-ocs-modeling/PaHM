@@ -109,7 +109,10 @@ MODULE ParWind
                                                          !   x  = Subregion code: W,A,B,S,P,C,E,L,Q.
     INTEGER, ALLOCATABLE             :: cycleNum(:)      ! the cycle number
 
-!    !----- converted data from the above values (if needed)
+    !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
+    INTEGER, ALLOCATABLE             :: intEROuter(:)    ! estimated radius of the last closed isobar, 0 - 999 n mi
+
+    !----- converted data from the above values (if needed)
     INTEGER, DIMENSION(:), ALLOCATABLE  :: year, month, day, hour
     REAL(SZ), DIMENSION(:), ALLOCATABLE :: lat, lon
   END TYPE BestTrackData_T
@@ -146,6 +149,9 @@ MODULE ParWind
 
     INTEGER,                ALLOCATABLE :: iRrp(:)          ! radius of the last closed isobar, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rrp(:)           ! converted from nm to m
+
+    INTEGER,                ALLOCATABLE :: iERrp(:)         ! estimated radius of the last closed isobar, 0 - 999 n mi
+    REAL(SZ),               ALLOCATABLE :: errp(:)          ! converted from nm to m
 
     INTEGER,                ALLOCATABLE :: iRmw(:)          ! radius of max winds, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rmw(:)           ! converted from nm to m
@@ -198,6 +204,9 @@ MODULE ParWind
 
     INTEGER,                ALLOCATABLE :: iRrp(:)          ! radius of the last closed isobar, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rrp(:)           ! converted from nm to m
+
+    INTEGER,                ALLOCATABLE :: iERrp(:)         ! estimated radius of the last closed isobar, 0 - 999 n mi
+    REAL(SZ),               ALLOCATABLE :: errp(:)          ! converted from nm to m
 
     INTEGER,                ALLOCATABLE :: iRmw(:)          ! radius of max winds, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rmw(:)           ! converted from nm to m
@@ -265,8 +274,8 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ReadBestTrackFile()
 
-    USE PaHM_Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName
-    USE Utilities, ONLY : GetLineRecord, OpenFileForRead, ToUpperCase, CharUnique
+    USE PaHM_Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName, useMaxR34
+    USE Utilities, ONLY : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY : Arth, Indexx, ArrayEqual
 
@@ -289,6 +298,7 @@ MODULE ParWind
 
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
+    INTEGER, DIMENSION(4)          :: radii34
 
     !---------- Initialize variables
     iUnit = LUN_BTRK
@@ -399,6 +409,12 @@ MODULE ParWind
           ELSE
             bestTrackData(iFile)%lon(iCnt) = 0.1_SZ * bestTrackData(iFile)%intLon(iCnt)
           END IF
+          !----------
+
+          !---------- Estimate a ROCI (radius of outer closed isobar)
+          radii34 = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
+                       bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+          bestTrackData(iFile)%intEROuter(iCnt) = EstimateROCI(radii34, bestTrackData(iFile)%lat(iCnt), useMaxR34)
           !----------
 
           !---------- Get the year, month, day, hour from the DGT string
@@ -581,8 +597,8 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ReadCsvBestTrackFile()
 
-    USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName
-    USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, ToUpperCase, CharUnique, &
+    USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName, useMaxR34
+    USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique, &
                               IntValStr
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY     : Arth, Indexx, ArrayEqual
@@ -610,6 +626,7 @@ MODULE ParWind
 
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
+    INTEGER, DIMENSION(4)          :: radii34
 
     CALL SetMessageSource("ReadCsvBestTrackFile")
     
@@ -712,7 +729,7 @@ MODULE ParWind
           bestTrackData(iFile)%intSpeed(iCnt)  = IntValStr(TRIM(ADJUSTL(sval2D(iCnt, 27))))
           !--- col: 28
           WRITE(bestTrackData(iFile)%stormName(iCnt), '(a10)') TRIM(ADJUSTL(sval2D(iCnt, 28)))
-                   
+
           !---------- Convert lat/lon values to S/N and W/E notations
           IF (ToUpperCase(bestTrackData(iFile)%ns(iCnt)) == 'S') THEN
             bestTrackData(iFile)%lat(iCnt) = -0.1_SZ * bestTrackData(iFile)%intLat(iCnt)
@@ -725,6 +742,12 @@ MODULE ParWind
           ELSE
             bestTrackData(iFile)%lon(iCnt) = 0.1_SZ * bestTrackData(iFile)%intLon(iCnt)
           END IF
+          !----------
+
+          !---------- Estimate a ROCI (radius of outer closed isobar)
+          radii34 = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
+                       bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+          bestTrackData(iFile)%intEROuter(iCnt) = EstimateROCI(radii34, bestTrackData(iFile)%lat(iCnt), useMaxR34)
           !----------
 
           !---------- Get the year, month, day, hour from the DGT string
@@ -912,7 +935,7 @@ MODULE ParWind
     CHARACTER(LEN=4)                 :: castType         !hindcast,forecast
     REAL(SZ), ALLOCATABLE            :: castTime(:)      ! seconds since start of year
 
-    REAL(SZ)                         :: spdVal, pressVal, rrpVal, rmwVal
+    REAL(SZ)                         :: spdVal, pressVal, rrpVal, errpVal, rmwVal
 
     status = 0  ! no error
 
@@ -986,8 +1009,9 @@ MODULE ParWind
       pressVal = 100.0_SZ * bestTrackData(idTrFile)%intMslp(plIdx)
 
       ! Convert all distances from nm to km/m
-      rrpVal = NM2M * bestTrackData(idTrFile)%intROuter(plIdx) ! in m
-      rmwVal = NM2M * bestTrackData(idTrFile)%intRmw(plIdx)    ! in m
+      rrpVal  = NM2M * bestTrackData(idTrFile)%intROuter(plIdx)  ! in m
+      errpVal = NM2M * bestTrackData(idTrFile)%intEROuter(plIdx) ! in m
+      rmwVal  = NM2M * bestTrackData(idTrFile)%intRmw(plIdx)     ! in m
 
       strOut%basin(iCnt)       = bestTrackData(idTrFile)%basin(plIdx)
       strOut%stormNumber(iCnt) = bestTrackData(idTrFile)%cyNum(plIdx)
@@ -1009,6 +1033,8 @@ MODULE ParWind
       strOut%cPress(iCnt)      = pressVal
       strOut%iRrp(iCnt)        = bestTrackData(idTrFile)%intROuter(plIdx)
       strOut%rrp(iCnt)         = rrpVal
+      strOut%iERrp(iCnt)       = bestTrackData(idTrFile)%intEROuter(plIdx)
+      strOut%errp(iCnt)        = errpVal
       strOut%iRmw(iCnt)        = bestTrackData(idTrFile)%intRmw(plIdx)
       strOut%rmw(iCnt)         = rmwVal
 
@@ -1266,6 +1292,8 @@ MODULE ParWind
       strOut%prp(iCnt)         = 100.0_SZ * strOut%iPrp(iCnt)           ! Convert pressure(s) from mbar to Pa
       strOut%iRrp(iCnt)        = bestTrackData(idTrFile)%intROuter(iCnt)
       strOut%rrp(iCnt)         = NM2M * strOut%iRrp(iCnt)               ! Convert all distances from nm to m
+      strOut%iERrp(iCnt)       = bestTrackData(idTrFile)%intEROuter(iCnt)
+      strOut%errp(iCnt)        = NM2M * strOut%iERrp(iCnt)               ! Convert all distances from nm to m
       strOut%iRmw(iCnt)        = bestTrackData(idTrFile)%intRmw(iCnt)
       strOut%rmw(iCnt)         = NM2M * strOut%iRmw(iCnt)
       strOut%gusts(iCnt)       = bestTrackData(idTrFile)%gusts(iCnt)
@@ -1410,7 +1438,7 @@ MODULE ParWind
     irad(:, :) = strOut%ir(:, :)
 
     DO iCyc = 1, nCycles
-      lastEntry = sum(totRecPerCycle(1:iCyc))
+      lastEntry = SUM(totRecPerCycle(1:iCyc))
 
        DO k = 1, totRecPerCycle(iCyc)
          iCnt = lastEntry + 1 - k
@@ -1968,7 +1996,7 @@ MODULE ParWind
 
     INTEGER                              :: stormNumber         ! storm identification number
     REAL(SZ)                             :: hlB                 ! Holland B parameter
-    REAL(SZ)                             :: rrp                 ! radius of the last closed isobar (m)
+    REAL(SZ)                             :: rrp, errp, rrpval   ! radius of the last closed isobar (m)
     REAL(SZ)                             :: rmw                 ! radius of max winds (m)
     REAL(SZ)                             :: speed               ! maximum sustained wind speed (m/s)
     REAL(SZ)                             :: cPress              ! central pressure (Pa)
@@ -2179,19 +2207,32 @@ MODULE ParWind
       rrp = holStru(stCnt)%rrp(jl1) + &
               wtRatio * (holStru(stCnt)%rrp(jl2) - holStru(stCnt)%rrp(jl1))
 
+      ! Estimated radius of the last closed isobar
+      ! We use the estimated ERRP in case the RRP value is missing from the data file
+      errp = holStru(stCnt)%errp(jl1) + &
+              wtRatio * (holStru(stCnt)%errp(jl2) - holStru(stCnt)%errp(jl1))
+
+      ! This is used below for determining all nodal points inside RRP
+      ! Always use the max value here to get some extra real estate when calculating the fields
+      rrpval = MAX(rrp, errp)
+
       ! Radius of maximum winds
       rmw = holStru(stCnt)%rmw(jl1) + &
               wtRatio * (holStru(stCnt)%rmw(jl2) - holStru(stCnt)%rmw(jl1))
 
       ! Get all the distances of the mesh nodes from (lat, lon)
       rad    = SphericalDistance(sfea, slam, lat, lon)
-      ! ... and the indices of the nodal points where rad <= rrp
-      radIDX = PACK([(i, i = 1, np)], rad <= rrp)
+      ! ... and the indices of the nodal points where rad <= rrpval
+      IF (rrpval > 0) THEN
+        radIDX = PACK([(i, i = 1, np)], rad <= rrpval)
+      ELSE
+        radIDX = PACK([(i, i = 1, np)], .TRUE.)
+      END IF
       maxRadIDX = SIZE(radIDX)
 
-      ! If the condition rad <= rrp is not satisfied anywhere then exit this loop
+      ! If the condition rad <= rrpval or rad >= 0.0 is not satisfied anywhere then exit this loop
       IF (maxRadIDX == 0) THEN
-        WRITE(tmpStr1, '(f20.3)') rrp
+        WRITE(tmpStr1, '(f20.3)') rrpval
           tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
         WRITE(scratchMessage, '(a)') 'No nodal points found inside the radius of the last closed isobar ' // &
                                      TRIM(ADJUSTL(tmpStr1)) // ' for storm: ' // &
@@ -2377,7 +2418,7 @@ MODULE ParWind
 
     REAL(SZ)                             :: coriolis ! Coriolis force (1/s)
 
-    INTEGER                              :: iCnt, kCnt, stCnt
+    INTEGER                              :: iCnt, kCnt, stCnt, npCnt
     INTEGER                              :: i, jl1, jl2
     INTEGER                              :: status
 
@@ -2385,6 +2426,11 @@ MODULE ParWind
     INTEGER                              :: iYear, iMonth, iDay, iHour, iMin, iSec
 
     CHARACTER(LEN=64)                    :: tmpTimeStr, tmpStr1, tmpStr2
+
+    REAL(SZ), ALLOCATABLE                :: rad(:)              ! distance of nodal points from the eye location
+    INTEGER, ALLOCATABLE                 :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
+    INTEGER                              :: maxRadIDX           ! total number of radIDX elements
+    REAL(SZ)                             :: rrp, errp, rrpval   ! radius of the last closed isobar (m)
 
 
     INTEGER                                                 :: maxTrackRecords
@@ -2870,17 +2916,50 @@ MODULE ParWind
       stormMotionV = COS(dirNow / RAD2DEG) * stormMotion
       CALL setVortex(pn, pc, cLat, cLon)
 
+      ! Radius of the last closed isobar
+      rrp = asyVortStru(stCnt)%rrp(jl1) + &
+              wtRatio * (asyVortStru(stCnt)%rrp(jl2) - asyVortStru(stCnt)%rrp(jl1))
+
+      ! Estimated radius of the last closed isobar
+      ! We use the estimated ERRP in case the RRP value is missing from the data file
+      errp = asyVortStru(stCnt)%errp(jl1) + &
+              wtRatio * (asyVortStru(stCnt)%errp(jl2) - asyVortStru(stCnt)%errp(jl1))
+
+      ! This is used below for determining all nodal points inside RRP
+      ! Always use the max value here to get some extra real estate when calculating the fields
+      rrpval = MAX(rrp, errp)
+
+      ! Get all the distances of the mesh nodes from (lat, lon)
+      rad    = SphericalDistance(sfea, slam, cLat, cLon)
+      ! ... and the indices of the nodal points where rad <= rrpval
+      IF (rrpval > 0) THEN
+        radIDX = PACK([(i, i = 1, np)], rad <= rrpval)
+      ELSE
+        radIDX = PACK([(i, i = 1, np)], .TRUE.)
+      END IF
+      maxRadIDX = SIZE(radIDX)
+
+      ! If the condition rad <= rrpval or rad >= 0.0 is not satisfied anywhere then exit this loop
+      IF (maxRadIDX == 0) THEN
+        WRITE(tmpStr1, '(f20.3)') rrpval
+          tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
+        WRITE(scratchMessage, '(a)') 'No nodal points found inside the radius of the last closed isobar ' // &
+                                     TRIM(ADJUSTL(tmpStr1)) // ' for storm: ' // &
+                                     TRIM(ADJUSTL(asyVortStru(stCnt)%thisStorm))
+        CALL LogMessage(INFO, scratchMessage)
+
+        EXIT
+      END IF
+
       !PV Need to account for multiple storms in the basin
-      DO i = 1, np
+      DO npCnt = 1, maxRadIDX
         CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
              cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
         wPress(i) = max(0.85d5,min(1.1e5,wPress(i)))  ! Typhoon Tip 870 hPa ... 12-oct-1979
         wVelX(i)  = max(-200.d0,min(200.d0,wVelX(i)))
         wVelY(i)  = max(-200.d0,min(200.d0,wVelY(i)))
-
-
-      END DO
+      END DO ! npCnt = 1, maxRadIDX
 
     END DO ! stCnt = 1, nBTrFiles
 
@@ -3141,45 +3220,48 @@ MODULE ParWind
     str%loaded = .FALSE.
 
     !----- Input parameters
-    IF (.NOT. ALLOCATED(str%basin))     ALLOCATE(str%basin(nRec))
-    IF (.NOT. ALLOCATED(str%cyNum))     ALLOCATE(str%cyNum(nRec))
-    IF (.NOT. ALLOCATED(str%dtg))       ALLOCATE(str%dtg(nRec))
-    IF (.NOT. ALLOCATED(str%techNum))   ALLOCATE(str%techNum(nRec))
-    IF (.NOT. ALLOCATED(str%tech))      ALLOCATE(str%tech(nRec))
-    IF (.NOT. ALLOCATED(str%tau))       ALLOCATE(str%tau(nRec))
-    IF (.NOT. ALLOCATED(str%intLat))    ALLOCATE(str%intLat(nRec))
-    IF (.NOT. ALLOCATED(str%intLon))    ALLOCATE(str%intLon(nRec))
-    IF (.NOT. ALLOCATED(str%ew))        ALLOCATE(str%ew(nRec))
-    IF (.NOT. ALLOCATED(str%ns))        ALLOCATE(str%ns(nRec))
-    IF (.NOT. ALLOCATED(str%intVMax))   ALLOCATE(str%intVMax(nRec))
-    IF (.NOT. ALLOCATED(str%intMslp))   ALLOCATE(str%intMslp(nRec))
-    IF (.NOT. ALLOCATED(str%ty))        ALLOCATE(str%ty(nRec))
-    IF (.NOT. ALLOCATED(str%rad))       ALLOCATE(str%rad(nRec))
-    IF (.NOT. ALLOCATED(str%windCode))  ALLOCATE(str%windCode(nRec))
-    IF (.NOT. ALLOCATED(str%intRad1))   ALLOCATE(str%intRad1(nRec))
-    IF (.NOT. ALLOCATED(str%intRad2))   ALLOCATE(str%intRad2(nRec))
-    IF (.NOT. ALLOCATED(str%intRad3))   ALLOCATE(str%intRad3(nRec))
-    IF (.NOT. ALLOCATED(str%intRad4))   ALLOCATE(str%intRad4(nRec))
-    IF (.NOT. ALLOCATED(str%intPOuter)) ALLOCATE(str%intPOuter(nRec))
-    IF (.NOT. ALLOCATED(str%intROuter)) ALLOCATE(str%intROuter(nRec))
-    IF (.NOT. ALLOCATED(str%intRmw))    ALLOCATE(str%intRmw(nRec))     
-    IF (.NOT. ALLOCATED(str%gusts))     ALLOCATE(str%gusts(nRec))
-    IF (.NOT. ALLOCATED(str%eye))       ALLOCATE(str%eye(nRec))
-    IF (.NOT. ALLOCATED(str%subregion)) ALLOCATE(str%subregion(nRec))
-    IF (.NOT. ALLOCATED(str%maxseas))   ALLOCATE(str%maxseas(nRec))
-    IF (.NOT. ALLOCATED(str%initials))  ALLOCATE(str%initials(nRec))
-    IF (.NOT. ALLOCATED(str%dir))       ALLOCATE(str%dir(nRec))
-    IF (.NOT. ALLOCATED(str%intSpeed))  ALLOCATE(str%intSpeed(nRec))
-    IF (.NOT. ALLOCATED(str%stormName)) ALLOCATE(str%stormName(nRec))
-    IF (.NOT. ALLOCATED(str%cycleNum))  ALLOCATE(str%cycleNum(nRec))
+    IF (.NOT. ALLOCATED(str%basin))      ALLOCATE(str%basin(nRec))
+    IF (.NOT. ALLOCATED(str%cyNum))      ALLOCATE(str%cyNum(nRec))
+    IF (.NOT. ALLOCATED(str%dtg))        ALLOCATE(str%dtg(nRec))
+    IF (.NOT. ALLOCATED(str%techNum))    ALLOCATE(str%techNum(nRec))
+    IF (.NOT. ALLOCATED(str%tech))       ALLOCATE(str%tech(nRec))
+    IF (.NOT. ALLOCATED(str%tau))        ALLOCATE(str%tau(nRec))
+    IF (.NOT. ALLOCATED(str%intLat))     ALLOCATE(str%intLat(nRec))
+    IF (.NOT. ALLOCATED(str%intLon))     ALLOCATE(str%intLon(nRec))
+    IF (.NOT. ALLOCATED(str%ew))         ALLOCATE(str%ew(nRec))
+    IF (.NOT. ALLOCATED(str%ns))         ALLOCATE(str%ns(nRec))
+    IF (.NOT. ALLOCATED(str%intVMax))    ALLOCATE(str%intVMax(nRec))
+    IF (.NOT. ALLOCATED(str%intMslp))    ALLOCATE(str%intMslp(nRec))
+    IF (.NOT. ALLOCATED(str%ty))         ALLOCATE(str%ty(nRec))
+    IF (.NOT. ALLOCATED(str%rad))        ALLOCATE(str%rad(nRec))
+    IF (.NOT. ALLOCATED(str%windCode))   ALLOCATE(str%windCode(nRec))
+    IF (.NOT. ALLOCATED(str%intRad1))    ALLOCATE(str%intRad1(nRec))
+    IF (.NOT. ALLOCATED(str%intRad2))    ALLOCATE(str%intRad2(nRec))
+    IF (.NOT. ALLOCATED(str%intRad3))    ALLOCATE(str%intRad3(nRec))
+    IF (.NOT. ALLOCATED(str%intRad4))    ALLOCATE(str%intRad4(nRec))
+    IF (.NOT. ALLOCATED(str%intPOuter))  ALLOCATE(str%intPOuter(nRec))
+    IF (.NOT. ALLOCATED(str%intROuter))  ALLOCATE(str%intROuter(nRec))
+    IF (.NOT. ALLOCATED(str%intRmw))     ALLOCATE(str%intRmw(nRec))     
+    IF (.NOT. ALLOCATED(str%gusts))      ALLOCATE(str%gusts(nRec))
+    IF (.NOT. ALLOCATED(str%eye))        ALLOCATE(str%eye(nRec))
+    IF (.NOT. ALLOCATED(str%subregion))  ALLOCATE(str%subregion(nRec))
+    IF (.NOT. ALLOCATED(str%maxseas))    ALLOCATE(str%maxseas(nRec))
+    IF (.NOT. ALLOCATED(str%initials))   ALLOCATE(str%initials(nRec))
+    IF (.NOT. ALLOCATED(str%dir))        ALLOCATE(str%dir(nRec))
+    IF (.NOT. ALLOCATED(str%intSpeed))   ALLOCATE(str%intSpeed(nRec))
+    IF (.NOT. ALLOCATED(str%stormName))  ALLOCATE(str%stormName(nRec))
+    IF (.NOT. ALLOCATED(str%cycleNum))   ALLOCATE(str%cycleNum(nRec))
+
+    !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
+    IF (.NOT. ALLOCATED(str%intEROuter)) ALLOCATE(str%intEROuter(nRec))
 
     !----- Converted parameters
-    IF (.NOT. ALLOCATED(str%year))      ALLOCATE(str%year(nRec))
-    IF (.NOT. ALLOCATED(str%month))     ALLOCATE(str%month(nRec))
-    IF (.NOT. ALLOCATED(str%day))       ALLOCATE(str%day(nRec))
-    IF (.NOT. ALLOCATED(str%hour))      ALLOCATE(str%hour(nRec))
-    IF (.NOT. ALLOCATED(str%lat))       ALLOCATE(str%lat(nRec))
-    IF (.NOT. ALLOCATED(str%lon))       ALLOCATE(str%lon(nRec))
+    IF (.NOT. ALLOCATED(str%year))       ALLOCATE(str%year(nRec))
+    IF (.NOT. ALLOCATED(str%month))      ALLOCATE(str%month(nRec))
+    IF (.NOT. ALLOCATED(str%day))        ALLOCATE(str%day(nRec))
+    IF (.NOT. ALLOCATED(str%hour))       ALLOCATE(str%hour(nRec))
+    IF (.NOT. ALLOCATED(str%lat))        ALLOCATE(str%lat(nRec))
+    IF (.NOT. ALLOCATED(str%lon))        ALLOCATE(str%lon(nRec))
 
   END SUBROUTINE AllocBTrStruct
 
@@ -3209,45 +3291,48 @@ MODULE ParWind
     str%loaded = .FALSE.
 
     !----- Input parameters
-    IF (ALLOCATED(str%basin))     DEALLOCATE(str%basin)
-    IF (ALLOCATED(str%cyNum))     DEALLOCATE(str%cyNum)
-    IF (ALLOCATED(str%dtg))       DEALLOCATE(str%dtg)
-    IF (ALLOCATED(str%techNum))   DEALLOCATE(str%techNum)
-    IF (ALLOCATED(str%tech))      DEALLOCATE(str%tech)
-    IF (ALLOCATED(str%tau))       DEALLOCATE(str%tau)
-    IF (ALLOCATED(str%intLat))    DEALLOCATE(str%intLat)
-    IF (ALLOCATED(str%intLon))    DEALLOCATE(str%intLon)
-    IF (ALLOCATED(str%ew))        DEALLOCATE(str%ew)
-    IF (ALLOCATED(str%ns))        DEALLOCATE(str%ns)
-    IF (ALLOCATED(str%intVMax))   DEALLOCATE(str%intVMax)
-    IF (ALLOCATED(str%intMslp))   DEALLOCATE(str%intMslp)
-    IF (ALLOCATED(str%ty))        DEALLOCATE(str%ty)
-    IF (ALLOCATED(str%rad))       DEALLOCATE(str%rad)
-    IF (ALLOCATED(str%windCode))  DEALLOCATE(str%windCode)
-    IF (ALLOCATED(str%intRad1))   DEALLOCATE(str%intRad1)
-    IF (ALLOCATED(str%intRad2))   DEALLOCATE(str%intRad2)
-    IF (ALLOCATED(str%intRad3))   DEALLOCATE(str%intRad3)
-    IF (ALLOCATED(str%intRad4))   DEALLOCATE(str%intRad4)
-    IF (ALLOCATED(str%intPOuter)) DEALLOCATE(str%intPOuter)
-    IF (ALLOCATED(str%intROuter)) DEALLOCATE(str%intROuter)
-    IF (ALLOCATED(str%intRmw))    DEALLOCATE(str%intRmw)     
-    IF (ALLOCATED(str%gusts))     DEALLOCATE(str%gusts)
-    IF (ALLOCATED(str%eye))       DEALLOCATE(str%eye)
-    IF (ALLOCATED(str%subregion)) DEALLOCATE(str%subregion)
-    IF (ALLOCATED(str%maxseas))   DEALLOCATE(str%maxseas)
-    IF (ALLOCATED(str%initials))  DEALLOCATE(str%initials)
-    IF (ALLOCATED(str%dir))       DEALLOCATE(str%dir)
-    IF (ALLOCATED(str%intSpeed))  DEALLOCATE(str%intSpeed)
-    IF (ALLOCATED(str%stormName)) DEALLOCATE(str%stormName)
-    IF (ALLOCATED(str%cycleNum))  DEALLOCATE(str%cycleNum)
+    IF (ALLOCATED(str%basin))      DEALLOCATE(str%basin)
+    IF (ALLOCATED(str%cyNum))      DEALLOCATE(str%cyNum)
+    IF (ALLOCATED(str%dtg))        DEALLOCATE(str%dtg)
+    IF (ALLOCATED(str%techNum))    DEALLOCATE(str%techNum)
+    IF (ALLOCATED(str%tech))       DEALLOCATE(str%tech)
+    IF (ALLOCATED(str%tau))        DEALLOCATE(str%tau)
+    IF (ALLOCATED(str%intLat))     DEALLOCATE(str%intLat)
+    IF (ALLOCATED(str%intLon))     DEALLOCATE(str%intLon)
+    IF (ALLOCATED(str%ew))         DEALLOCATE(str%ew)
+    IF (ALLOCATED(str%ns))         DEALLOCATE(str%ns)
+    IF (ALLOCATED(str%intVMax))    DEALLOCATE(str%intVMax)
+    IF (ALLOCATED(str%intMslp))    DEALLOCATE(str%intMslp)
+    IF (ALLOCATED(str%ty))         DEALLOCATE(str%ty)
+    IF (ALLOCATED(str%rad))        DEALLOCATE(str%rad)
+    IF (ALLOCATED(str%windCode))   DEALLOCATE(str%windCode)
+    IF (ALLOCATED(str%intRad1))    DEALLOCATE(str%intRad1)
+    IF (ALLOCATED(str%intRad2))    DEALLOCATE(str%intRad2)
+    IF (ALLOCATED(str%intRad3))    DEALLOCATE(str%intRad3)
+    IF (ALLOCATED(str%intRad4))    DEALLOCATE(str%intRad4)
+    IF (ALLOCATED(str%intPOuter))  DEALLOCATE(str%intPOuter)
+    IF (ALLOCATED(str%intROuter))  DEALLOCATE(str%intROuter)
+    IF (ALLOCATED(str%intRmw))     DEALLOCATE(str%intRmw)     
+    IF (ALLOCATED(str%gusts))      DEALLOCATE(str%gusts)
+    IF (ALLOCATED(str%eye))        DEALLOCATE(str%eye)
+    IF (ALLOCATED(str%subregion))  DEALLOCATE(str%subregion)
+    IF (ALLOCATED(str%maxseas))    DEALLOCATE(str%maxseas)
+    IF (ALLOCATED(str%initials))   DEALLOCATE(str%initials)
+    IF (ALLOCATED(str%dir))        DEALLOCATE(str%dir)
+    IF (ALLOCATED(str%intSpeed))   DEALLOCATE(str%intSpeed)
+    IF (ALLOCATED(str%stormName))  DEALLOCATE(str%stormName)
+    IF (ALLOCATED(str%cycleNum))   DEALLOCATE(str%cycleNum)
 
-     !----- Converted parameters
-    IF (ALLOCATED(str%year))      DEALLOCATE(str%year)
-    IF (ALLOCATED(str%month))     DEALLOCATE(str%month)
-    IF (ALLOCATED(str%day))       DEALLOCATE(str%day)
-    IF (ALLOCATED(str%hour))      DEALLOCATE(str%hour)
-    IF (ALLOCATED(str%lat))       DEALLOCATE(str%lat)
-    IF (ALLOCATED(str%lon))       DEALLOCATE(str%lon)
+    !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
+    IF (ALLOCATED(str%intEROuter)) DEALLOCATE(str%intEROuter)
+
+    !----- Converted parameters
+    IF (ALLOCATED(str%year))       DEALLOCATE(str%year)
+    IF (ALLOCATED(str%month))      DEALLOCATE(str%month)
+    IF (ALLOCATED(str%day))        DEALLOCATE(str%day)
+    IF (ALLOCATED(str%hour))       DEALLOCATE(str%hour)
+    IF (ALLOCATED(str%lat))        DEALLOCATE(str%lat)
+    IF (ALLOCATED(str%lon))        DEALLOCATE(str%lon)
 
   END SUBROUTINE DeAllocBTrStruct
 
@@ -3306,6 +3391,9 @@ MODULE ParWind
 
     IF (.NOT. ALLOCATED(str%iRrp))        ALLOCATE(str%iRrp(nRec))
     IF (.NOT. ALLOCATED(str%rrp))         ALLOCATE(str%rrp(nRec))
+
+    IF (.NOT. ALLOCATED(str%iERrp))       ALLOCATE(str%iERrp(nRec))
+    IF (.NOT. ALLOCATED(str%errp))        ALLOCATE(str%errp(nRec))
 
     IF (.NOT. ALLOCATED(str%iRmw))        ALLOCATE(str%iRmw(nRec))
     IF (.NOT. ALLOCATED(str%rmw))         ALLOCATE(str%rmw(nRec))
@@ -3369,6 +3457,9 @@ MODULE ParWind
 
     IF (ALLOCATED(str%iRrp))         DEALLOCATE(str%iRrp)
     IF (ALLOCATED(str%rrp))          DEALLOCATE(str%rrp)
+
+    IF (ALLOCATED(str%iERrp))        DEALLOCATE(str%iERrp)
+    IF (ALLOCATED(str%errp))         DEALLOCATE(str%errp)
 
     IF (ALLOCATED(str%iRmw))         DEALLOCATE(str%iRmw)
     IF (ALLOCATED(str%rmw))          DEALLOCATE(str%rmw)
@@ -3446,6 +3537,9 @@ MODULE ParWind
     IF (.NOT. ALLOCATED(str%prp))                ALLOCATE(str%prp(nRec))
     IF (.NOT. ALLOCATED(str%iRrp))               ALLOCATE(str%iRrp(nRec))
     IF (.NOT. ALLOCATED(str%rrp))                ALLOCATE(str%rrp(nRec))
+
+    IF (.NOT. ALLOCATED(str%iERrp))              ALLOCATE(str%iERrp(nRec))
+    IF (.NOT. ALLOCATED(str%errp))               ALLOCATE(str%errp(nRec))
 
     IF (.NOT. ALLOCATED(str%iRmw))               ALLOCATE(str%iRmw(nRec))
     IF (.NOT. ALLOCATED(str%rmw))                ALLOCATE(str%rmw(nRec))
@@ -3539,6 +3633,9 @@ MODULE ParWind
     IF (ALLOCATED(str%prp))                DEALLOCATE(str%prp)
     IF (ALLOCATED(str%iRrp))               DEALLOCATE(str%iRrp)
     IF (ALLOCATED(str%rrp))                DEALLOCATE(str%rrp)
+
+    IF (ALLOCATED(str%iERrp))              DEALLOCATE(str%iERrp)
+    IF (ALLOCATED(str%errp))               DEALLOCATE(str%errp)
 
     IF (ALLOCATED(str%iRmw))               DEALLOCATE(str%iRmw)
     IF (ALLOCATED(str%rmw))                DEALLOCATE(str%rmw)
