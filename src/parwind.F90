@@ -935,7 +935,7 @@ MODULE ParWind
     CHARACTER(LEN=4)                 :: castType         !hindcast,forecast
     REAL(SZ), ALLOCATABLE            :: castTime(:)      ! seconds since start of year
 
-    REAL(SZ)                         :: spdVal, pressVal, rrpVal, errpVal, rmwVal
+    REAL(SZ)                         :: rrpVal
 
     status = 0  ! no error
 
@@ -1002,17 +1002,6 @@ MODULE ParWind
 
       castType = ToUpperCase(TRIM(ADJUSTL(bestTrackData(idTrFile)%tech(iCnt))))
 
-      ! Convert speeds from knots to m/s
-      spdVal = KT2MS * bestTrackData(idTrFile)%intVMax(plIdx)
-
-      ! Convert pressure(s) from mbar to Pa
-      pressVal = 100.0_SZ * bestTrackData(idTrFile)%intMslp(plIdx)
-
-      ! Convert all distances from nm to km/m
-      rrpVal  = NM2M * bestTrackData(idTrFile)%intROuter(plIdx)  ! in m
-      errpVal = NM2M * bestTrackData(idTrFile)%intEROuter(plIdx) ! in m
-      rmwVal  = NM2M * bestTrackData(idTrFile)%intRmw(plIdx)     ! in m
-
       strOut%basin(iCnt)       = bestTrackData(idTrFile)%basin(plIdx)
       strOut%stormNumber(iCnt) = bestTrackData(idTrFile)%cyNum(plIdx)
       strOut%dtg(iCnt)         = bestTrackData(idTrFile)%dtg(plIdx)
@@ -1028,15 +1017,15 @@ MODULE ParWind
       strOut%lon(iCnt)         = bestTrackData(idTrFile)%lon(plIdx)
 
       strOut%iSpeed(iCnt)      = bestTrackData(idTrFile)%intVMax(plIdx)
-      strOut%speed(iCnt)       = spdVal
+      strOut%speed(iCnt)       = KT2MS * bestTrackData(idTrFile)%intVMax(plIdx)     ! in m/s
       strOut%iCPress(iCnt)     = bestTrackData(idTrFile)%intMslp(plIdx)
-      strOut%cPress(iCnt)      = pressVal
+      strOut%cPress(iCnt)      = 100.0_SZ * bestTrackData(idTrFile)%intMslp(plIdx)  ! in Pa
       strOut%iRrp(iCnt)        = bestTrackData(idTrFile)%intROuter(plIdx)
-      strOut%rrp(iCnt)         = rrpVal
+      strOut%rrp(iCnt)         = NM2M * bestTrackData(idTrFile)%intROuter(plIdx)    ! in m
       strOut%iERrp(iCnt)       = bestTrackData(idTrFile)%intEROuter(plIdx)
-      strOut%errp(iCnt)        = errpVal
+      strOut%errp(iCnt)        = NM2M * bestTrackData(idTrFile)%intEROuter(plIdx)   ! in m
       strOut%iRmw(iCnt)        = bestTrackData(idTrFile)%intRmw(plIdx)
-      strOut%rmw(iCnt)         = rmwVal
+      strOut%rmw(iCnt)         = NM2M * bestTrackData(idTrFile)%intRmw(plIdx)       ! in m
 
       ! PV check if this SELECT code is actually needed. Need to check the different format
       ! of input files.
@@ -2213,7 +2202,6 @@ MODULE ParWind
               wtRatio * (holStru(stCnt)%errp(jl2) - holStru(stCnt)%errp(jl1))
 
       ! This is used below for determining all nodal points inside RRP
-      ! Always use the max value here to get some extra real estate when calculating the fields
       rrpval = MAX(rrp, errp)
 
       ! Radius of maximum winds
@@ -2222,6 +2210,7 @@ MODULE ParWind
 
       ! Get all the distances of the mesh nodes from (lat, lon)
       rad    = SphericalDistance(sfea, slam, lat, lon)
+
       ! ... and the indices of the nodal points where rad <= rrpval
       IF (rrpval > 0) THEN
         radIDX = PACK([(i, i = 1, np)], rad <= rrpval)
@@ -2230,7 +2219,7 @@ MODULE ParWind
       END IF
       maxRadIDX = SIZE(radIDX)
 
-      ! If the condition rad <= rrpval or rad >= 0.0 is not satisfied anywhere then exit this loop
+      ! If the condition rad <= rrpval is not satisfied anywhere then exit this loop
       IF (maxRadIDX == 0) THEN
         WRITE(tmpStr1, '(f20.3)') rrpval
           tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
@@ -2926,7 +2915,6 @@ MODULE ParWind
               wtRatio * (asyVortStru(stCnt)%errp(jl2) - asyVortStru(stCnt)%errp(jl1))
 
       ! This is used below for determining all nodal points inside RRP
-      ! Always use the max value here to get some extra real estate when calculating the fields
       rrpval = MAX(rrp, errp)
 
       ! Get all the distances of the mesh nodes from (lat, lon)
@@ -2939,7 +2927,7 @@ MODULE ParWind
       END IF
       maxRadIDX = SIZE(radIDX)
 
-      ! If the condition rad <= rrpval or rad >= 0.0 is not satisfied anywhere then exit this loop
+      ! If the condition rad <= rrpval is not satisfied anywhere then exit this loop
       IF (maxRadIDX == 0) THEN
         WRITE(tmpStr1, '(f20.3)') rrpval
           tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
