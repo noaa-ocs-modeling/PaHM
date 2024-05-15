@@ -2435,7 +2435,7 @@ MODULE ParWind
     CHARACTER(LEN =  4), DIMENSION(:, :), ALLOCATABLE, SAVE :: castType    ! hindcast/nowcast or forecast?
     INTEGER , DIMENSION(:, :), ALLOCATABLE, SAVE            :: stormNumber ! storm identification number
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: year, month, day, hour
-    INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: iRmw
+    INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: iRmw, iRrp
     REAL(SZ), DIMENSION(:, :), ALLOCATABLE, SAVE            :: lat, lon
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: iSpeed, iCPress
     INTEGER,  DIMENSION(:, :), ALLOCATABLE, SAVE            :: fcstInc ! hours between forecasts
@@ -2612,6 +2612,7 @@ MODULE ParWind
       ALLOCATE(lat(nBTrFiles,              maxTrackRecords))
       ALLOCATE(lon(nBTrFiles,              maxTrackRecords))
       ALLOCATE(iRmw(nBTrFiles,             maxTrackRecords))
+      ALLOCATE(iRrp(nBTrFiles,             maxTrackRecords))
       ALLOCATE(iSpeed(nBTrFiles,           maxTrackRecords))
       ALLOCATE(iCPress(nBTrFiles,          maxTrackRecords))
       ALLOCATE(fcstInc(nBTrFiles,          maxTrackRecords))
@@ -2670,6 +2671,7 @@ MODULE ParWind
             ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
             ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
             iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
+            iRrp(stCnt, iCyc)        = asyVortStru(stCnt)%iRrp(kCnt)
 
             hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
             hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
@@ -2728,6 +2730,7 @@ MODULE ParWind
             ivr(stCnt, iCyc)         = asyVortStru(stCnt)%ivr(kCnt)
             ipn(stCnt, iCyc)         = asyVortStru(stCnt)%iPrp(kCnt)
             iRmw(stCnt, iCyc)        = asyVortStru(stCnt)%iRmw(kCnt)
+            iRrp(stCnt, iCyc)        = asyVortStru(stCnt)%iRrp(kCnt)
             hDir(stCnt, iCyc)        = asyVortStru(stCnt)%iDir(kCnt)
             hSpeed(stCnt, iCyc)      = asyVortStru(stCnt)%iStormSpeed(kCnt)
             stormName(stCnt, iCyc)   = asyVortStru(stCnt)%stormName(kCnt)
@@ -2941,6 +2944,8 @@ MODULE ParWind
 
       !PV Need to account for multiple storms in the basin
       DO npCnt = 1, maxRadIDX
+        i = radIDX(npCnt)
+
         CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
              cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
@@ -2948,7 +2953,6 @@ MODULE ParWind
         wVelX(i)  = max(-200.d0,min(200.d0,wVelX(i)))
         wVelY(i)  = max(-200.d0,min(200.d0,wVelY(i)))
       END DO ! npCnt = 1, maxRadIDX
-
     END DO ! stCnt = 1, nBTrFiles
 
     !------------------------------
