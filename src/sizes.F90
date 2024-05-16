@@ -61,6 +61,7 @@ MODULE PaHM_Sizes
   ! Also used to initialize some input variables to check if these variables
   ! were supplied user defined values.
   REAL(SZ), PARAMETER :: RMISSV = -999999.0_SZ
+  REAL(SP), PARAMETER :: FMISSV = -999999.0_SP
   INTEGER, PARAMETER  :: IMISSV = -999999
 
   CHARACTER(LEN=1), PARAMETER :: BLANK = ' '

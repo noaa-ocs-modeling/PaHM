@@ -139,7 +139,6 @@ MODULE PaHM_NetCDFIO
 
     LOGICAL, SAVE       :: firstCall = .TRUE.
 
-
     IF (firstCall) THEN
       firstCall = .FALSE.
 
@@ -344,7 +343,7 @@ MODULE PaHM_NetCDFIO
         crdXCs%start(1) = 1
         crdXCs%count(1) = crdXCs%varDims
 
-        ierr = NF90_DEF_VAR(ncID, TRIM(crdXCs%varname), NF90_DOUBLE, crdXCs%varDimIDs, crdXCs%varID)
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdXCs%varname), NF90_FLOAT, crdXCs%varDimIDs, crdXCs%varID)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'long_name',     'CPP x coordinate')
           CALL NetCDFCheckErr(ierr)
@@ -352,7 +351,7 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, crdXCs%varID, 'units',         'm')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, '_FillValue',    RMISSV)
+        ierr = NF90_PUT_ATT(ncID, crdXCs%varID, '_FillValue',    FMISSV)
           CALL NetCDFCheckErr(ierr)
 
         ALLOCATE(crdXCs%var(crdXCs%varDims))
@@ -368,7 +367,7 @@ MODULE PaHM_NetCDFIO
         crdYCs%start(1) = 1
         crdYCs%count(1) = crdYCs%varDims
 
-        ierr = NF90_DEF_VAR(ncID, TRIM(crdYCs%varname), NF90_DOUBLE, crdYCs%varDimIDs, crdYCs%varID)
+        ierr = NF90_DEF_VAR(ncID, TRIM(crdYCs%varname), NF90_FLOAT, crdYCs%varDimIDs, crdYCs%varID)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'long_name',     'CPP y coordinate')
           CALL NetCDFCheckErr(ierr)
@@ -376,7 +375,7 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, crdYCs%varID, 'units',         'm')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, '_FillValue',    RMISSV)
+        ierr = NF90_PUT_ATT(ncID, crdYCs%varID, '_FillValue',    FMISSV)
           CALL NetCDFCheckErr(ierr)
 
         ALLOCATE(crdYCs%var(crdYCs%varDims))
@@ -394,7 +393,7 @@ MODULE PaHM_NetCDFIO
         datAtmPres%start(2)     = 1
         datAtmPres%count(2)     = datAtmPres%varDims(2)
 
-        ierr = NF90_DEF_VAR(ncID, TRIM(datAtmPres%varname), NF90_DOUBLE, &
+        ierr = NF90_DEF_VAR(ncID, TRIM(datAtmPres%varname), NF90_FLOAT, &
                             datAtmPres%varDimIDs, datAtmPres%varID)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'long_name',     'air pressure at sea level')
@@ -403,7 +402,7 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'units',         'Pa')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, '_FillValue',    RMISSV)
+        ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, '_FillValue',    FMISSV)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datAtmPres%varID, 'coordinates',   'time lat lon')
           CALL NetCDFCheckErr(ierr)
@@ -425,7 +424,7 @@ MODULE PaHM_NetCDFIO
         datWindX%start(2)     = 1
         datWindX%count(2)     = datWindX%varDims(2)
 
-        ierr = NF90_DEF_VAR(ncID, TRIM(datWindX%varname), NF90_DOUBLE, &
+        ierr = NF90_DEF_VAR(ncID, TRIM(datWindX%varname), NF90_FLOAT, &
                             datWindX%varDimIDs, datWindX%varID)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'long_name',     '10-m eastward wind component')
@@ -434,7 +433,7 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'units',         'm s-1')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, datWindX%varID, '_FillValue',    RMISSV)
+        ierr = NF90_PUT_ATT(ncID, datWindX%varID, '_FillValue',    FMISSV)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindX%varID, 'coordinates',   'time lat lon')
           CALL NetCDFCheckErr(ierr)
@@ -455,7 +454,7 @@ MODULE PaHM_NetCDFIO
         datWindY%start(2)     = 1
         datWindY%count(2)     = datWindY%varDims(2)
 
-        ierr = NF90_DEF_VAR(ncID, TRIM(datWindY%varname), NF90_DOUBLE, &
+        ierr = NF90_DEF_VAR(ncID, TRIM(datWindY%varname), NF90_FLOAT, &
                             datWindY%varDimIDs, datWindY%varID)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'long_name',     '10-m northward wind component')
@@ -464,7 +463,7 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'units',         'm s-1')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, datWindY%varID, '_FillValue',    RMISSV)
+        ierr = NF90_PUT_ATT(ncID, datWindY%varID, '_FillValue',    FMISSV)
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, datWindY%varID, 'coordinates',   'time lat lon')
           CALL NetCDFCheckErr(ierr)

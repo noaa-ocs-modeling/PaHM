@@ -146,6 +146,10 @@ CONTAINS
 
     INTEGER :: iCnt
 
+    CHARACTER(LEN=128) :: tmpStr1, tmpStr2
+    INTEGER            :: timvals1(8), timvals2(8)
+    INTEGER(KIND=8)    :: elap_time    ! In seconds
+
     CALL SetMessageSource("PaHM_Run")
 
     IF (PRESENT(nTimeSTP)) THEN
@@ -153,7 +157,11 @@ CONTAINS
     ENDIF
 
     SELECT CASE (modelType)
-      CASE (1)
+      CASE (1)  ! --- Holland model
+
+        ! Calculations: initial time
+        CALL DATE_AND_TIME(VALUES = timvals1)
+
         DO iCnt = cntTimeBegin, cntTimeEnd
           CALL GetHollandFields(iCnt)
 
@@ -166,7 +174,27 @@ CONTAINS
           END IF
         END DO
 
-      CASE (10)
+        ! Calculations: finish time
+        CALL DATE_AND_TIME(VALUES = timvals2)
+
+        ! Calculate the elapsed time (seconds)
+        elap_time = (timvals2(3) - timvals1(3)) * 86400 + (timvals2(5) - timvals1(5)) * 3600 + &
+                    (timvals2(6) - timvals1(6)) * 60 + (timvals2(7) - timvals1(7))
+
+        CALL LogMessage(' ')
+        CALL LogMessage('------------------------------------------------------------')
+        WRITE(tmpStr1, '(i20)') elap_time
+          tmpStr1 = 'Elapsed Time = ' // TRIM(ADJUSTL(tmpStr1))
+        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // ' sec'
+        CALL LogMessage(scratchMessage)
+        CALL LogMessage('------------------------------------------------------------')
+        CALL LogMessage(' ')
+
+      CASE (10)  ! --- GAHM model
+
+        ! Calculations: initial time
+        CALL DATE_AND_TIME(VALUES = timvals1)
+
         DO iCnt = cntTimeBegin, cntTimeEnd
           CALL GetGAHMFields(iCnt)
 
@@ -178,6 +206,22 @@ CONTAINS
             CALL WriteNetCDFRecord(outFileName, iCnt)
           END IF
         END DO
+
+        ! Calculations: finish time
+        CALL DATE_AND_TIME(VALUES = timvals2)
+
+        ! Calculate the elapsed time (seconds)
+        elap_time = (timvals2(3) - timvals1(3)) * 86400 + (timvals2(5) - timvals1(5)) * 3600 + &
+                    (timvals2(6) - timvals1(6)) * 60 + (timvals2(7) - timvals1(7))
+
+        CALL LogMessage(' ')
+        CALL LogMessage('------------------------------------------------------------')
+        WRITE(tmpStr1, '(i20)') elap_time
+          tmpStr1 = 'Elapsed Time = ' // TRIM(ADJUSTL(tmpStr1))
+        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // ' sec'
+        CALL LogMessage(scratchMessage)
+        CALL LogMessage('------------------------------------------------------------')
+        CALL LogMessage(' ')
 
       CASE DEFAULT
         WRITE(scratchMessage, '(a, i0)') &
