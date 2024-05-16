@@ -2013,7 +2013,7 @@ MODULE ParWind
     REAL(SZ)                             :: jday
     INTEGER                              :: iYear, iMonth, iDay, iHour, iMin, iSec
 
-    CHARACTER(LEN=64)                    :: tmpTimeStr, tmpStr1, tmpStr2
+    CHARACTER(LEN=128)                   :: tmpTimeStr, tmpStr1, tmpStr2
 
     LOGICAL, SAVE                        :: firstCall = .TRUE.
 
@@ -2229,6 +2229,14 @@ MODULE ParWind
         CALL LogMessage(INFO, scratchMessage)
 
         EXIT
+      ELSE
+        WRITE(tmpStr1, '(i20)') maxRadIDX
+          tmpStr1 = 'Number of nodes = ' // TRIM(ADJUSTL(tmpStr1)) // ', '
+        WRITE(tmpStr2, '(f20.3)') rrpval
+          tmpStr2 = 'inside rrp = ' // TRIM(ADJUSTL(tmpStr2)) // ' m'
+        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // TRIM(ADJUSTL(tmpStr2)) // &
+                                     ' for storm: ' // TRIM(ADJUSTL(holStru(stCnt)%thisStorm))
+        CALL LogMessage(INFO, scratchMessage)
       END IF
 
       speed  = holStru(stCnt)%speed(jl1) + &
@@ -2414,7 +2422,7 @@ MODULE ParWind
     REAL(SZ)                             :: jday
     INTEGER                              :: iYear, iMonth, iDay, iHour, iMin, iSec
 
-    CHARACTER(LEN=64)                    :: tmpTimeStr, tmpStr1, tmpStr2
+    CHARACTER(LEN=128)                   :: tmpTimeStr, tmpStr1, tmpStr2
 
     REAL(SZ), ALLOCATABLE                :: rad(:)              ! distance of nodal points from the eye location
     INTEGER, ALLOCATABLE                 :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
@@ -2940,6 +2948,14 @@ MODULE ParWind
         CALL LogMessage(INFO, scratchMessage)
 
         EXIT
+      ELSE
+        WRITE(tmpStr1, '(i20)') maxRadIDX
+          tmpStr1 = 'Number of nodes = ' // TRIM(ADJUSTL(tmpStr1)) // ', '
+        WRITE(tmpStr2, '(f20.3)') rrpval
+          tmpStr2 = 'inside rrp = ' // TRIM(ADJUSTL(tmpStr2)) // ' m'
+        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // TRIM(ADJUSTL(tmpStr2)) // &
+                                     ' for storm: ' // TRIM(ADJUSTL(asyVortStru(stCnt)%thisStorm))
+        CALL LogMessage(INFO, scratchMessage)
       END IF
 
       !PV Need to account for multiple storms in the basin

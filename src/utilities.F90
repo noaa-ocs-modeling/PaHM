@@ -662,6 +662,7 @@ MODULE Utilities
       WRITE(*, '(a)')    '---------- MODEL PARAMETERS ----------'
 
       WRITE(*, '(a, a)')    '   title                = ', TRIM(ADJUSTL(title))
+      WRITE(*, '(a, a)')    '   logfilename          = ', TRIM(ADJUSTL(logfilename))
 
       DO i = 1, nBTrFiles
         WRITE(*, '(a, "(", i1, ")", a)')  '   bestTrackFileName', i, " = " // TRIM(ADJUSTL(bestTrackFileName(i)))

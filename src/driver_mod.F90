@@ -46,8 +46,6 @@ CONTAINS
     INTEGER         :: argNumb, argCnt      ! number of command line arguments and argument counter
     CHARACTER(1024) :: argCmdLine
 
-    CALL InitLogging()
-
     argNumb = IARGC()
     IF (argNumb > 0) THEN
       argCnt = 0
@@ -97,13 +95,13 @@ CONTAINS
     USE PaHM_Mesh, ONLY   : ReadMesh
     USE ParWind, ONLY     : ReadBestTrackFile, ReadCsvBestTrackFile
 
+    ! Get possible command line arguments. Also initialize the logging system, needs to be called first.
+    CALL GetProgramCmdlArgs()
+
     ! Initialize the logging system, needs to be called first
-    CALL InitLogging()
+    !CALL InitLogging()
 
     CALL SetMessageSource("PaHM_Init")
-
-    ! Get possible command line arguments
-    CALL GetProgramCmdlArgs()
 
     ! Read the mesh/grid of the domain or the generic mesh/grid input file
     CALL ReadMesh()
