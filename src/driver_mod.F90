@@ -91,15 +91,19 @@ CONTAINS
   !-----------------------------------------------------------------------
   SUBROUTINE PaHM_Init()
 
-    USE PaHM_Global, ONLY : nOutDT
+    USE PaHM_Global, ONLY : nOutDT, date_time_str
     USE PaHM_Mesh, ONLY   : ReadMesh
     USE ParWind, ONLY     : ReadBestTrackFile, ReadCsvBestTrackFile
 
+    INTEGER :: tvals(8)
+
+    ! This has to be first
+    ! Set the start date_time string to be used in file renaming schemes
+    CALL DATE_AND_TIME(VALUES = tvals)
+    WRITE(date_time_str, '(i4.4, 5i2.2)') tvals(1:3), tvals(5:7)
+
     ! Get possible command line arguments. Also initialize the logging system, needs to be called first.
     CALL GetProgramCmdlArgs()
-
-    ! Initialize the logging system, needs to be called first
-    !CALL InitLogging()
 
     CALL SetMessageSource("PaHM_Init")
 

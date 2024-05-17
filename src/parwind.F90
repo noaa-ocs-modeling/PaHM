@@ -1021,11 +1021,11 @@ MODULE ParWind
       strOut%iCPress(iCnt)     = bestTrackData(idTrFile)%intMslp(plIdx)
       strOut%cPress(iCnt)      = 100.0_SZ * bestTrackData(idTrFile)%intMslp(plIdx)  ! in Pa
       strOut%iRrp(iCnt)        = bestTrackData(idTrFile)%intROuter(plIdx)
-      strOut%rrp(iCnt)         = NM2M * bestTrackData(idTrFile)%intROuter(plIdx)    ! in m
+      strOut%rrp(iCnt)         = NM2M * strOut%iRrp(iCnt)                           ! in m
       strOut%iERrp(iCnt)       = bestTrackData(idTrFile)%intEROuter(plIdx)
-      strOut%errp(iCnt)        = NM2M * bestTrackData(idTrFile)%intEROuter(plIdx)   ! in m
+      strOut%errp(iCnt)        = NM2M * strOut%iERrp(iCnt)                          ! in m
       strOut%iRmw(iCnt)        = bestTrackData(idTrFile)%intRmw(plIdx)
-      strOut%rmw(iCnt)         = NM2M * bestTrackData(idTrFile)%intRmw(plIdx)       ! in m
+      strOut%rmw(iCnt)         = NM2M * strOut%iRmw(iCnt)                           ! in m
 
       ! PV check if this SELECT code is actually needed. Need to check the different format
       ! of input files.
@@ -1321,10 +1321,6 @@ MODULE ParWind
     ! Calculate the translation velocity in m/s and knots,
     ! Set background pressure
     DO iCnt = 1, numRec
-      ! Set iPrp to background pressure
-      strOut%iPrp(iCnt) = NINT(backgroundAtmPress)     ! in mbar
-      strOut%prp(iCnt)  = 100.0_SZ * strOut%iPrp(iCnt) ! in Pa
-
       ! Check/set central pressure
       IF (strOut%iCPress(iCnt) == 0) THEN
         IF (iCnt == 1) THEN

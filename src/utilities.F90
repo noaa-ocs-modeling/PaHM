@@ -232,13 +232,13 @@ MODULE Utilities
 
       STOP  ! file not found
     ELSE
-      WRITE(LUN_SCREEN, '("The contol file : ", a, " was found and will be opened for reading.")') TRIM(tmpFileName)
+      WRITE(LUN_SCREEN, '("The control file : ", a, " was found and will be opened for reading.")') TRIM(tmpFileName)
     END IF
     
     ! Open existing file
     OPEN(UNIT=iUnit, FILE=TRIM(tmpFileName), STATUS='OLD', ACTION='READ', IOSTAT=errIO)
     IF (errIO /= 0) THEN
-      WRITE(LUN_SCREEN, '("Could not open the contol file: ", a, ".")') TRIM(tmpFileName)
+      WRITE(LUN_SCREEN, '("Could not open the control file: ", a, ".")') TRIM(tmpFileName)
 
       STOP  ! file found but could not be opened
     END IF

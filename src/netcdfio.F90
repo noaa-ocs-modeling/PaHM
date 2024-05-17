@@ -611,7 +611,7 @@ MODULE PaHM_NetCDFIO
 
     LOGICAL                           :: fileFound = .FALSE.
     CHARACTER(LEN=FNAMELEN)           :: outFile, sys_cmd
-    CHARACTER(LEN=14)                 :: fext, date_time
+    CHARACTER(LEN=DATETIMELEN)        :: fext, date_time
     INTEGER                           :: pos, ierr, tvals(8)
 
 
@@ -643,9 +643,14 @@ MODULE PaHM_NetCDFIO
     ! The user can remove these files afterwards.
     INQUIRE(FILE=adcircOutFile, EXIST=fileFound)
     IF (fileFound) THEN
-      CALL DATE_AND_TIME(VALUES = tvals)
-      WRITE(date_time, '(i4.4, 5i2.2)') tvals(1:3), tvals(5:7)
-      outFile = TRIM(adcircOutFile) // "-" // TRIM(date_time)
+      IF (TRIM(ADJUSTL(date_time_str)) == '') THEN
+        CALL DATE_AND_TIME(VALUES = tvals)
+        WRITE(date_time, '(i4.4, 5i2.2)') tvals(1:3), tvals(5:7)
+      ELSE
+        date_time = date_time_str
+      END IF
+
+      outFile = TRIM(adcircOutFile) // "-" // TRIM(ADJUSTL(date_time))
       sys_cmd = "mv " // TRIM(adcircOutFile) // " " // TRIM(outFile)
       ierr = SYSTEM(TRIM(sys_cmd))
       IF (ierr == 0) THEN

@@ -15,7 +15,7 @@
 
 MODULE PaHM_Messages
 
-  USE PaHM_Sizes, ONLY : FNAMELEN
+  USE PaHM_Sizes, ONLY : FNAMELEN, DATETIMELEN
   USE PaHM_Global, ONLY : LUN_SCREEN, LUN_LOG, logFileName
 
 #ifdef __INTEL_COMPILER
@@ -112,14 +112,48 @@ MODULE PaHM_Messages
   !--------------------------------------------------------------------
   SUBROUTINE openLogFile()
 
+    USE PaHM_Global, ONLY : date_time_str
+
     IMPLICIT NONE
 
     INTEGER :: errorIO   ! zero if the file opened successfully
 
+    LOGICAL :: fileFound = .FALSE.
+    CHARACTER(LEN=FNAMELEN)           :: outFile, sys_cmd
+    CHARACTER(LEN=DATETIMELEN)        :: fext, date_time
+    INTEGER                           :: pos, ierr, tvals(8)
+
     logFileOpened = .FALSE.
 
-    OPEN(UNIT=LUN_LOG, FILE=TRIM(ADJUSTL(logFileName)), ACCESS='APPEND', ACTION='WRITE', STATUS='UNKNOWN', IOSTAT=errorIO)
-    !OPEN(UNIT=LUN_LOG, FILE=TRIM(ADJUSTL(logFileName)), ACTION='WRITE', STATUS='REPLACE', IOSTAT=errorIO)
+    !----------
+    ! If the logFileName exists then rename it to:
+    !   logFileName-YYYYMMDDhhmmss.
+    ! The user can remove these files afterwards.
+    INQUIRE(FILE=logFileName, EXIST=fileFound)
+    IF (fileFound) THEN
+      IF (TRIM(ADJUSTL(date_time_str)) == '') THEN
+        CALL DATE_AND_TIME(VALUES = tvals)
+        WRITE(date_time, '(i4.4, 5i2.2)') tvals(1:3), tvals(5:7)
+      ELSE
+        date_time = date_time_str
+      END IF
+
+      outFile = TRIM(logFileName) // "-" // TRIM(date_time)
+      sys_cmd = "mv " // TRIM(logFileName) // " " // TRIM(outFile)
+      ierr = SYSTEM(TRIM(sys_cmd))
+      IF (ierr == 0) THEN
+        WRITE(scratchMessage, '(a)') 'Renamed: ' // TRIM(logFileName) // ' to ' // TRIM(outFile)
+        CALL ScreenMessage(scratchMessage)
+        fileFound = .FALSE.
+      ELSE
+        WRITE(scratchMessage, '(a)')                                                                          &
+                              'Could not rename the file ' // TRIM(logFileName) // ' to ' // TRIM(outFile) // &
+                              '; the ' // TRIM(logFileName) // ' will be replaced'
+        CALL ScreenMessage(scratchMessage)
+      END IF
+    END IF
+
+    OPEN(UNIT=LUN_LOG, FILE=TRIM(ADJUSTL(logFileName)), ACTION='WRITE', STATUS='REPLACE', IOSTAT=errorIO)
 
     IF (errorIO == 0) THEN
       logFileOpened = .TRUE.

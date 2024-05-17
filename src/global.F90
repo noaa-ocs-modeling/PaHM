@@ -93,7 +93,9 @@ MODULE PaHM_Global
 !################################################################
 !###   BEG :: VARIABLES RELATED TO THE CONTROL FILE
 !################################################################
-  CHARACTER(LEN=FNAMELEN) :: logFileName = TRIM(ADJUSTL(PROG_NAME_LOW)) // '_model.log'
+  ! It uses values(1:3) and values(5:7) from the DATE_AND_TIME subroutine
+  CHARACTER(LEN=DATETIMELEN) :: date_time_str = BLANK
+  CHARACTER(LEN=FNAMELEN)    :: logFileName = TRIM(ADJUSTL(PROG_NAME_LOW)) // '_model.log'
 
   !-------------------- Input files
   CHARACTER(FNAMELEN)     :: controlFileName = TRIM(ADJUSTL(PROG_NAME_LOW)) // '_control.in'  ! default value
@@ -121,8 +123,7 @@ MODULE PaHM_Global
   REAL(SZ)                :: windReduction      = DEFV_WINDREDUCTION  ! BL reduction factor used in the Holland model
 
   ! Used when estinating the ROCI
-  INTEGER, PARAMETER      :: DEFV_USEMAXR34 = 1
-  INTEGER                 :: useMaxR34      = DEFV_USEMAXR34
+  INTEGER                 :: useMaxR34 = 1 
 
   !====================
   !=== This block is for the : time/date and time stepping variables

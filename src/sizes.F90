@@ -69,6 +69,8 @@ MODULE PaHM_Sizes
   ! Filename length (considers the presence of the full path in the filename)
   INTEGER, PARAMETER :: FNAMELEN = 1024
 
+  ! For DATE_AND_TIME VALUES string
+  INTEGER, PARAMETER :: DATETIMELEN = 14
 
   CONTAINS
 
