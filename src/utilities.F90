@@ -41,6 +41,12 @@ MODULE Utilities
     MODULE PROCEDURE SphericalDistance_1D
     MODULE PROCEDURE SphericalDistance_2D
   END INTERFACE SphericalDistance
+  
+  INTERFACE GetLocAndRatio
+    MODULE PROCEDURE GetLocAndRatioInteger
+    MODULE PROCEDURE GetLocAndRatioReal
+  END INTERFACE GetLocAndRatio
+
   !-----------------------------------------------------------------------
 
 
@@ -2435,18 +2441,18 @@ MODULE Utilities
   !>            where VAR is the variable to be interpolated
   !>
   !----------------------------------------------------------------
-  SUBROUTINE GetLocAndRatio(val, arrVal, idx1, idx2, wtRatio)
+  SUBROUTINE GetLocAndRatioReal(val, arrVal, idx1, idx2, wtRatio)
 
     IMPLICIT NONE
 
     ! Global variables
-    REAL(SZ), INTENT(IN)  :: val         ! value to search for
-    REAL(SZ), INTENT(IN)  :: arrVal(:)   ! search array (1D)
-    INTEGER, INTENT(OUT)  :: idx1        ! the index of the lowest bound
-    INTEGER, INTENT(OUT)  :: idx2        ! the index of the highest bound
-    REAL(SZ), INTENT(OUT) :: wtRatio     ! the ratio factor that used in the linear interpolation
-                                         ! calculations: F = F(idx1) + wtRatio * (F(idx2) - F(idx1))
-                                         ! 0 <= wtRatio <= 1.0
+    REAL(SZ), INTENT(IN)            :: val         ! value to search for
+    REAL(SZ), INTENT(IN)            :: arrVal(:)   ! search array (1D)
+    INTEGER, INTENT(OUT)            :: idx1        ! the index of the lowest bound
+    INTEGER, INTENT(OUT)            :: idx2        ! the index of the highest bound
+    REAL(SZ), INTENT(OUT), OPTIONAL :: wtRatio ! the ratio factor that used in the linear interpolation
+                                               ! calculations: F = F(idx1) + wtRatio * (F(idx2) - F(idx1))
+                                               ! 0 <= wtRatio <= 1.0
 
     ! Local variables
     INTEGER               :: nn, jl, jl1, jl2
@@ -2455,7 +2461,7 @@ MODULE Utilities
 
     idx1 = -1
     idx2 = -1
-    wtRatio = 0.0_SZ
+    IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
 
     nn = SIZE(arrVal, 1)
     jl = MINLOC(ABS(val - arrVal), 1)
@@ -2464,7 +2470,7 @@ MODULE Utilities
     IF (CompareReals(val - arrVal(jl), 0.0_SZ) == 0) THEN
       idx1 = jl
       idx2 = jl
-      wtRatio = 0.0_SZ
+      IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
 
       RETURN
     END IF
@@ -2485,14 +2491,14 @@ MODULE Utilities
       IF (CompareReals(diffVal, 0.0_SZ) == 0) THEN
         idx1 = jl1
         idx2 = jl1
-        wtRatio = 0.0_SZ
+        IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
 
       ELSE
         IF (CompareReals(val - arrVal(jl1), 0.0_SZ) * &
             CompareReals(val - arrVal(jl2), 0.0_SZ) < 0) THEN
           idx1 = jl1
           idx2 = jl2
-          wtRatio = (val - arrVal(jl1)) / diffVal
+          IF (PRESENT(wtRatio)) wtRatio = (val - arrVal(jl1)) / diffVal
 
         END IF
       END IF
@@ -2510,7 +2516,7 @@ MODULE Utilities
 
       idx1 = jl1
       idx2 = jl2
-      wtRatio = (val - arrVal(jl1)) / diffVal
+      IF (PRESENT(wtRatio)) wtRatio = (val - arrVal(jl1)) / diffVal
     ELSE IF (CompareReals(val - arrVal(jl), 0.0_SZ) * &
              CompareReals(val - arrVal(jl + 1), 0.0_SZ) < 0) THEN
 
@@ -2521,12 +2527,101 @@ MODULE Utilities
 
       idx1 = jl1
       idx2 = jl2
-      wtRatio = (val - arrVal(jl1)) / diffVal
+      IF (PRESENT(wtRatio)) wtRatio = (val - arrVal(jl1)) / diffVal
     END IF
 
     RETURN
 
-  END SUBROUTINE GetLocAndRatio
+  END SUBROUTINE GetLocAndRatioReal
+
+  SUBROUTINE GetLocAndRatioInteger(val, arrVal, idx1, idx2, wtRatio)
+
+    IMPLICIT NONE
+
+    ! Global variables
+    INTEGER, INTENT(IN)             :: val         ! value to search for
+    INTEGER, INTENT(IN)             :: arrVal(:)   ! search array (1D)
+    INTEGER, INTENT(OUT)            :: idx1        ! the index of the lowest bound
+    INTEGER, INTENT(OUT)            :: idx2        ! the index of the highest bound
+    REAL(SZ), INTENT(OUT), OPTIONAL :: wtRatio ! the ratio factor that used in the linear interpolation
+                                               ! calculations: F = F(idx1) + wtRatio * (F(idx2) - F(idx1))
+                                               ! 0 <= wtRatio <= 1.0
+
+    ! Local variables
+    INTEGER              :: nn, jl, jl1, jl2
+    INTEGER              :: diffVal
+
+    idx1 = -1
+    idx2 = -1
+    IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+    nn = SIZE(arrVal, 1)
+    jl = MINLOC(ABS(val - arrVal), 1)
+
+    !---------- Check if we got an exact bin value
+    IF ((val - arrVal(jl)) == 0) THEN
+      idx1 = jl
+      idx2 = jl
+      IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+      RETURN
+    END IF
+    !---------- 
+
+    !---------- Checking the values at the two edges of the arrVal
+    IF ((jl == 1) .OR. (jl == nn)) THEN
+      IF (jl == 1) THEN
+        jl1 = jl
+        jl2 = jl + 1
+      ELSE
+        jl1 = jl - 1
+        jl2 = jl
+      END IF
+
+      diffVal = arrVal(jl2) - arrVal(jl1)
+
+      IF (diffVal == 0) THEN
+        idx1 = jl1
+        idx2 = jl1
+        IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+      ELSE
+        IF ((val - arrVal(jl1)) * (val - arrVal(jl2)) < 0) THEN
+          idx1 = jl1
+          idx2 = jl2
+          IF (PRESENT(wtRatio)) wtRatio = REAL(val - arrVal(jl1), SZ) / diffVal
+
+        END IF
+      END IF
+
+      RETURN
+    END IF
+    !----------
+
+    IF ((val - arrVal(jl - 1)) * (val - arrVal(jl)) < 0) THEN
+      jl1 = jl - 1
+      jl2 = jl
+
+      diffVal = arrVal(jl2) - arrVal(jl1)
+
+      idx1 = jl1
+      idx2 = jl2
+      IF (PRESENT(wtRatio)) wtRatio = REAL(val - arrVal(jl1), SZ) / diffVal
+    ELSE IF ((val - arrVal(jl)) * (val - arrVal(jl + 1)) < 0) THEN
+
+      jl1 = jl
+      jl2 = jl + 1
+
+      diffVal = arrVal(jl2) - arrVal(jl1)
+
+      idx1 = jl1
+      idx2 = jl2
+      IF (PRESENT(wtRatio)) wtRatio = REAL(val - arrVal(jl1), SZ) / diffVal
+    END IF
+
+    RETURN
+
+  END SUBROUTINE GetLocAndRatioInteger
 
 !================================================================================
 
