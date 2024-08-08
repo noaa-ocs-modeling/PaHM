@@ -47,6 +47,13 @@ MODULE Utilities
     MODULE PROCEDURE GetLocAndRatioReal
   END INTERFACE GetLocAndRatio
 
+  INTERFACE ReAllocate
+    MODULE PROCEDURE ReAllocateReal_1D
+    MODULE PROCEDURE ReAllocateInt_1D
+    MODULE PROCEDURE ReAllocateStr_1D
+  END INTERFACE ReAllocate
+
+
   !-----------------------------------------------------------------------
 
 
@@ -2466,6 +2473,23 @@ MODULE Utilities
     nn = SIZE(arrVal, 1)
     jl = MINLOC(ABS(val - arrVal), 1)
 
+    !---------- Check if we need to extrapolate (using nearest neighbor)
+    IF (CompareReals(val - arrVal(1), 0.0_SZ) == -1) THEN
+      idx1 = 1
+      idx2 = 1
+      IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+      RETURN
+    ELSE
+      IF (CompareReals(val - arrVal(nn), 0.0_SZ) == 1) THEN
+        idx1 = nn
+        idx2 = nn
+        IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+        RETURN
+      END IF
+    END IF
+
     !---------- Check if we got an exact bin value
     IF (CompareReals(val - arrVal(jl), 0.0_SZ) == 0) THEN
       idx1 = jl
@@ -2517,6 +2541,7 @@ MODULE Utilities
       idx1 = jl1
       idx2 = jl2
       IF (PRESENT(wtRatio)) wtRatio = (val - arrVal(jl1)) / diffVal
+
     ELSE IF (CompareReals(val - arrVal(jl), 0.0_SZ) * &
              CompareReals(val - arrVal(jl + 1), 0.0_SZ) < 0) THEN
 
@@ -2528,6 +2553,7 @@ MODULE Utilities
       idx1 = jl1
       idx2 = jl2
       IF (PRESENT(wtRatio)) wtRatio = (val - arrVal(jl1)) / diffVal
+
     END IF
 
     RETURN
@@ -2557,6 +2583,23 @@ MODULE Utilities
 
     nn = SIZE(arrVal, 1)
     jl = MINLOC(ABS(val - arrVal), 1)
+
+    !---------- Check if we need to extrapolate (using nearest neighbor)
+    IF (val - arrVal(1) < 0) THEN
+      idx1 = 1
+      idx2 = 1
+      IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+      RETURN
+    ELSE
+      IF (val - arrVal(nn) > 0) THEN
+        idx1 = nn
+        idx2 = nn
+        IF (PRESENT(wtRatio)) wtRatio = 0.0_SZ
+
+        RETURN
+      END IF
+    END IF
 
     !---------- Check if we got an exact bin value
     IF ((val - arrVal(jl)) == 0) THEN
@@ -2770,6 +2813,8 @@ MODULE Utilities
 
 
     jCnt = 1
+    chkSTR = ''
+    chkINT = -1
     DO iCnt = 1, nEls
       IF (TRIM(inpVec(iCnt)) == '')    CYCLE
       IF (ANY(chkSTR == inpVec(iCnt))) CYCLE
@@ -3332,5 +3377,202 @@ MODULE Utilities
 
 !================================================================================
 
-END MODULE Utilities
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   R E A L L O C A T E  R E A L  _  1 D
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Reallocate a vector to a new size, preserving its previous contents.
+  !>
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @param[in]
+  !>   arrIN    Array of values - real, 1D array (array should be allocatable)
+  !> @param[in]
+  !>   N        Size of the reallocated array - integer, N <= SIZE(arrIN)
+  !>
+  !> @return   myValOut: The resized, 1D array
+  !>
+  !----------------------------------------------------------------
+  FUNCTION ReAllocateReal_1D(arrIN, N) RESULT(myValOut)
 
+    IMPLICIT NONE
+
+    ! Global variables
+    REAL(SZ), INTENT(IN) :: arrIN(:) ! 1D vector to resize
+    INTEGER, INTENT(IN)  :: N        ! the size of arrIN to resize to
+
+    REAL(SZ), DIMENSION(:), ALLOCATABLE :: myValOut
+
+    ! Local variables
+    INTEGER :: oldN, minN, status
+
+
+    CALL SetMessageSource("ReAllocateReal_1D")
+
+    IF (SIZE(SHAPE(arrIN)) /= 1) THEN
+      WRITE(scratchMessage, '(a)') 'arrIN should be a vector.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+
+    oldN = SIZE(arrIN, 1)
+    minN = MIN(oldN, N)
+    
+    ALLOCATE(myValOut(minN), STAT = status)
+
+    IF (status /= 0) THEN
+      WRITE(scratchMessage, '(a)') 'Could no allocate memory for the internal arrays.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+    
+    myValOut = arrIN(1:minN)
+
+    CALL UnsetMessageSource()
+   
+    RETURN
+
+  END FUNCTION ReAllocateReal_1D
+
+!================================================================================
+
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   R E A L L O C A T E  I N T  _  1 D
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Reallocate a vector to a new size, preserving its previous contents.
+  !>
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @param[in]
+  !>   arrIN    Array of values - integer, 1D array (array should be allocatable)
+  !> @param[in]
+  !>   N        Size of the reallocated array - integer, N <= SIZE(arrIN)
+  !>
+  !> @return   myValOut: The resized, 1D array
+  !>
+  !----------------------------------------------------------------
+  FUNCTION ReAllocateInt_1D(arrIN, N) RESULT(myValOut)
+
+    IMPLICIT NONE
+
+    ! Global variables
+    INTEGER, INTENT(IN) :: arrIN(:) ! 1D vector to resize
+    INTEGER, INTENT(IN) :: N        ! the size of arrIN to resize to
+
+    INTEGER, DIMENSION(:), ALLOCATABLE :: myValOut
+
+    ! Local variables
+    INTEGER :: oldN, minN, status
+
+
+    CALL SetMessageSource("ReAllocateInt_1D")
+
+    IF (SIZE(SHAPE(arrIN)) /= 1) THEN
+      WRITE(scratchMessage, '(a)') 'arrIN should be a vector.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+
+    oldN = SIZE(arrIN, 1)
+    minN = MIN(oldN, N)
+    
+    ALLOCATE(myValOut(minN), STAT = status)
+
+    IF (status /= 0) THEN
+      WRITE(scratchMessage, '(a)') 'Could no allocate memory for the internal arrays.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+    
+    myValOut = arrIN(1:minN)
+
+    CALL UnsetMessageSource()
+   
+    RETURN
+
+  END FUNCTION ReAllocateInt_1D
+
+!================================================================================
+
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   R E A L L O C A T E  I N T  _  1 D
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Reallocate a vector to a new size, preserving its previous contents.
+  !>
+  !> @details
+  !>   Function to get the great-circle distance along the surface of
+  !>   a sphere (the earth's surface in this case).
+  !>   Compute the great-circle distance using the Vincenty formula for
+  !>   distance along a sphere.
+  !>
+  !> @param[in]
+  !>   arrIN    Array of values - string, 1D array (array should be allocatable)
+  !> @param[in]
+  !>   N        Size of the reallocated array - integer, N <= SIZE(arrIN)
+  !>
+  !> @return   myValOut: The resized, 1D array
+  !>
+  !----------------------------------------------------------------
+  FUNCTION ReAllocateStr_1D(arrIN, N) RESULT(myValOut)
+
+    IMPLICIT NONE
+
+    ! Global variables
+    CHARACTER(LEN=*), INTENT(IN) :: arrIN(:) ! 1D vector to resize
+    INTEGER, INTENT(IN) :: N        ! the size of arrIN to resize to
+
+    CHARACTER(LEN=LEN(arrIN(1))), DIMENSION(:), ALLOCATABLE :: myValOut
+
+    ! Local variables
+    INTEGER :: oldN, minN, status
+
+
+    CALL SetMessageSource("ReAllocateStr_1D")
+
+    IF (SIZE(SHAPE(arrIN)) /= 1) THEN
+      WRITE(scratchMessage, '(a)') 'arrIN should be a vector.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+
+    oldN = SIZE(arrIN, 1)
+    minN = MIN(oldN, N)
+    
+    ALLOCATE(myValOut(minN), STAT = status)
+
+    IF (status /= 0) THEN
+      WRITE(scratchMessage, '(a)') 'Could no allocate memory for the internal arrays.'
+      CALL AllMessage(ERROR, scratchMessage)    
+
+      CALL Terminate()
+    END IF
+    
+    myValOut = arrIN(1:minN)
+
+    CALL UnsetMessageSource()
+   
+    RETURN
+
+  END FUNCTION ReAllocateStr_1D
+
+!================================================================================
+
+END MODULE Utilities

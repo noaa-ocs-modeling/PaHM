@@ -16,7 +16,6 @@ MODULE PaHM_DriverMod
 
   USE PaHM_Messages
   USE Utilities
-  !USE TimeDateUtils
 
   IMPLICIT NONE
 

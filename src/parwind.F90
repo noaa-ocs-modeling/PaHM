@@ -291,8 +291,6 @@ MODULE ParWind
     INTEGER                        :: iFile, iCnt             ! loop counters
     INTEGER                        :: iUnit, errIO, ios, status
 
-    !CHARACTER(LEN=4)               :: castType
-
     CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
     INTEGER, ALLOCATABLE           :: idxArrStr(:)
     INTEGER                        :: nUnique, maxCnt, kCnt, kMax
@@ -537,6 +535,14 @@ MODULE ParWind
       DEALLOCATE(idx1)
       !------------------------------------------------------------
 
+
+      !---------- Here, we check for missing values for specific fields in the best track file.
+      ! Namely: POuter, ROuter, Rmw, others ...?
+      ! Missing data are filled using linear interpolation here
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
       DO iCnt = 1, bestTrackData(iFile)%numRec
@@ -600,7 +606,7 @@ MODULE ParWind
 
     USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName, useMaxR34
     USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique, &
-                              IntValStr
+                              IntValStr, GetLocAndRatio, ReAllocate
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY     : Arth, Indexx, ArrayEqual
     USE Csv_Module
@@ -615,8 +621,6 @@ MODULE ParWind
     CHARACTER(LEN=512)             :: line
     CHARACTER(LEN=64)              :: tmpStr
 
-    !CHARACTER(LEN=4)               :: castType
-
     INTEGER                        :: iFile, nLines, lenLine
     INTEGER                        :: iCnt, jCnt, kCnt, kMax       ! loop counters
     INTEGER                        :: ios, status
@@ -628,6 +632,7 @@ MODULE ParWind
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
     INTEGER, DIMENSION(4)          :: radii34
+
 
     CALL SetMessageSource("ReadCsvBestTrackFile")
     
@@ -846,6 +851,14 @@ MODULE ParWind
 
       CALL f%Destroy()
 
+
+      !---------- Here, we check for missing values for specific fields in the best track file.
+      ! Namely: POuter, ROuter, Rmw, others ...?
+      ! Missing data are filled using linear interpolation here
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
       DO iCnt = 1, bestTrackData(iFile)%numRec
@@ -886,6 +899,102 @@ MODULE ParWind
     CALL UnsetMessageSource()
 
   END SUBROUTINE ReadCsvBestTrackFile
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   F I L L  M I S S  D A T A  B E S T  T R A C K F I L E
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Subroutine to read all a-deck/b-deck best track files (ATCF format).
+  !>
+  !> @details
+  !>   It uses PaHM's CSV functionality (preferred approach) to read the ATCF formatted
+  !>   track files as follows:
+  !>   - a-deck: guidance information
+  !>   - b-deck: best track information
+  !>   - Skips lines that are time repeats. ???PV check
+  !>   - Converts parameter values to the proper units.
+  !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
+  !>
+  !----------------------------------------------------------------
+  SUBROUTINE FillMissDataBestTrackFile(dateSTR, dataARR)
+
+    USE Utilities, ONLY     : CharUnique, GetLocAndRatio, ReAllocate
+    USE TimeDateUtils, ONLY : TimeConv
+
+    IMPLICIT NONE
+
+    CHARACTER(LEN=*), INTENT(IN) :: dateSTR(:)
+    INTEGER, INTENT(INOUT)       :: dataARR(:)
+
+    INTEGER                        :: i, j, k       ! loop counters
+
+    INTEGER                        :: nREC, jl1, jl2, j1, j2
+    INTEGER                        :: ios, year, month, day, hour
+
+    CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
+    INTEGER, ALLOCATABLE           :: idxArrStr(:)
+
+    REAL(SZ), ALLOCATABLE          :: AllTimes(:)
+    INTEGER, ALLOCATABLE           :: missIDX(:), dataIDX(:)
+    INTEGER                        :: maxMissIDX, maxDataIDX
+    REAL(SZ)                       :: wtRatio, tmpFcstTime
+
+
+    CALL SetMessageSource("FillMissDataBestTrackFile")
+
+      nREC = SIZE(dateSTR)
+
+      ALLOCATE(AllTimes(nREC))
+
+      DO i = 1, nREC
+        READ(dateSTR(i)(1:4), FMT='(i4.4)', IOSTAT=ios) year
+          IF (ios /= 0) year = -1
+        READ(dateSTR(i)(5:6), FMT='(i2.2)', IOSTAT=ios) month
+          IF (ios /= 0) month = -1
+        READ(dateSTR(i)(7:8), FMT='(i2.2)', IOSTAT=ios) day
+          IF (ios /= 0) day = -1
+        READ(dateSTR(i)(9:10), FMT='(i2.2)', IOSTAT=ios) hour
+          IF (ios /= 0) hour = -1
+
+        CALL TimeConv(year, month, day, hour, 0, 0.0_SZ, tmpFcstTime)
+        AllTimes(i) = tmpFcstTime
+      END DO
+
+      !---------- Here, we check for missing values for specific fields in the best track file.
+      missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
+      maxMissIDX = SIZE(missIDX)
+
+      IF (maxMissIDX /= 0) THEN
+        dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
+        maxDataIDX = SIZE(dataIDX)
+
+        ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
+          maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
+          dataIDX = ReAllocate(dataIDX(idxArrStr), maxDataIDX)
+        DEALLOCATE(chkArrStr, idxArrStr)
+
+        DO i = 1, maxMissIDX
+          CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, wtRatio)
+
+          IF ((jl1 >= 0) .AND. (jl2 >= 0)) THEN
+            j1 = dataIDX(jl1)
+            j2 = dataIDX(jl2)
+            dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
+          END IF
+        END DO
+
+      END IF
+
+     IF (ALLOCATED(AllTimes))  DEALLOCATE(AllTimes)
+     IF (ALLOCATED(missIDX))   DEALLOCATE(missIDX)
+
+
+    CALL UnsetMessageSource()
+
+  END SUBROUTINE FillMissDataBestTrackFile
 
 !================================================================================
 
