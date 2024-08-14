@@ -1454,7 +1454,7 @@ MODULE Utilities
       backgroundAtmPress = DEFV_ATMPRESS
     END IF    
 
-    IF ((windReduction < 0.65) .OR. (windReduction > 1.0)) THEN
+    IF ((windReduction < 0.50) .OR. (windReduction > 1.0)) THEN
       WRITE(tmpStr1, '(f20.5)') windReduction
       WRITE(tmpStr2, '(f20.5)') DEFV_WINDREDUCTION
       WRITE(scratchMessage, '(a)') 'The value of windReduction = ' // TRIM(ADJUSTL(tmpStr1)) // &
