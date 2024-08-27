@@ -24,7 +24,7 @@ MODULE ParWind
   LOGICAL :: geostrophicSwitch = .TRUE.  !PV shouldn't be a user input?
   INTEGER :: geoFactor = 1               !turn on or off gostrophic balance  !PV shouldn't be a user input?
   INTEGER :: method = 4, approach = 2    !PV shouldn't be a user input?
-  
+
   INTEGER, PARAMETER, PRIVATE :: STORMNAMELEN = 10
 
   !----------------------------------------------------------------
@@ -1431,7 +1431,7 @@ MODULE ParWind
     DO iCnt = 1, nCycles
       strOut%totRecPerCycle(iCnt) = totRecPerCycle(iCnt)
     END DO
-    
+
     ! Calculate the translation velocity in m/s and knots,
     ! Set background pressure
     DO iCnt = 1, numRec
@@ -2543,7 +2543,7 @@ MODULE ParWind
     REAL(SZ), ALLOCATABLE   :: rad(:)              ! distance of nodal points from the eye location
     INTEGER, ALLOCATABLE    :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
     INTEGER                 :: maxRadIDX           ! total number of radIDX elements
-    
+
     INTEGER                 :: totrec1, totrec2    ! total number of records per cycle
                                                    ! radii of the last closed isobar (m)
     REAL(SZ)                :: rrp1, rrp2, errp1, errp2, rrp, errp, rrpval
@@ -2597,11 +2597,15 @@ MODULE ParWind
 
     REAL(SZ) :: wtRatio
 
-
     REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, dist, azimuth
 
     LOGICAL, SAVE                       :: firstCall = .TRUE.
 
+    ! New variables
+    REAL(SZ) :: RossNum
+    REAL(SZ) :: rmw                 ! radius of max winds (m)
+    REAL(SZ) :: vmax                ! max wind at the boundary layer
+    
     CALL SetMessageSource("GetGAHMFields")
 
     ! Check if timeIDX is within bounds (1 <= timeIDX <= nOutDT). If it is not then exit the program.
@@ -2902,6 +2906,7 @@ MODULE ParWind
         wPress(:) = backgroundAtmPress * MB2PA
         wVelX(:)  = 0.0_SZ
         wVelY(:)  = 0.0_SZ
+
         CYCLE
       END IF
 
@@ -2932,7 +2937,7 @@ MODULE ParWind
       rrpval = MAX(rrp, errp)
 
       ! Get all the distances of the mesh nodes from (lat, lon)
-      rad = SphericalDistance(sfea, slam, cLat, cLon)
+      rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
 
       ! ... and the indices of the nodal points where rad <= rrpval
       IF (rrpval > 0) THEN
@@ -2942,6 +2947,7 @@ MODULE ParWind
       END IF
       maxRadIDX = SIZE(radIDX)
 
+      ! If the condition rad <= rrpval is not satisfied anywhere then exit this loop
       IF (maxRadIDX == 0) THEN
         WRITE(tmpStr1, '(f20.3)') rrpval
           tmpStr1 = '(rrp = ' // TRIM(ADJUSTL(tmpStr1)) // ' m)'
@@ -2964,10 +2970,14 @@ MODULE ParWind
       !----- Calculate distance/azimuth of points in CPP plane
       dx      = DEG2RAD * REARTH * (slam - cLon) * COS(DEG2RAD * cLat)
       dy      = DEG2RAD * REARTH * (sfea - cLat)
-      dist    = SQRT(dx * dx + dy * dy) * M2NM
+      dist    = SQRT(dx * dx + dy * dy) * M2NM   ! Convert to NM
       azimuth = 360.0_SZ + RAD2DEG * ATAN2(dx, dy)
-      WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
+      azimuth = (azimuth + 360.0_SZ) % 360.0_SZ
+      !WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
       !-----
+
+      ! Using absolute value for coriolis for Southern Hemisphere
+      coriolis = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
 
       quadFlag4(2:5, 1:4) = quadFlag(stCnt, jl1, 1:4, 1:4)
       quadIr4(2:5, 1:4)   = REAL(ir(stCnt, jl1, 1:4, 1:4))
@@ -2978,13 +2988,14 @@ MODULE ParWind
       CALL FitRMaxes4()
 
       DO i = 1, np
-        crmaxw1(i)     = spInterp(azimuth(i), dist(i), 1)
+!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar !P.V need to check this to restrict calculations
+!        i = radIDX(npCnt)
+        crmaxw1(i)     = spInterp(azimuth(i), dist(i), 1) ! radiusToMaxWinds
         crmaxwTrue1(i) = spInterp(azimuth(i), 1.0_SZ, 1)
 
-        !an artificial number 1.0 is chosen to ensure only
-        !rmax from the highest isotach is picked
-        cHollBs1(i)    = spInterp(azimuth(i), dist(i), 2)
-        cVmwBL1(i)     = spInterp(azimuth(i), dist(i), 3)
+        ! An artificial number 1.0 is chosen to ensure only rmax from the highest isotach is picked
+        cHollBs1(i)    = spInterp(azimuth(i), dist(i), 2) ! Holland B
+        cVmwBL1(i)     = spInterp(azimuth(i), dist(i), 3) ! vmaxBoundaryLayer
       END DO
 
       quadFlag4(2:5, 1:4) = quadFlag(stCnt, jl2, 1:4, 1:4)
@@ -2996,13 +3007,16 @@ MODULE ParWind
       CALL FitRMaxes4()
 
       DO i = 1, np
-        crmaxw2(i)     = spInterp(azimuth(i), dist(i), 1)
+!      JEROME Comment : Restricting the computation to 1-maxRadIDX like in GetHollandFields 
+!      give strange results with zero values in some radial sectors. Need further investigations     
+!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
+!        i = radIDX(npCnt)
+        crmaxw2(i)     = spInterp(azimuth(i), dist(i), 1) ! radiusToMaxWinds
         crmaxwTrue2(i) = spInterp(azimuth(i), 1.0_SZ, 1)
 
-        !an artificial number 1.0 is chosen to ensure only
-        !rmax from the highest isotach is picked
-        cHollBs2(i)    = spInterp(azimuth(i), dist(i), 2)
-        cVmwBL2(i)     = spInterp(azimuth(i), dist(i), 3)
+        ! An artificial number 1.0 is chosen to ensure only rmax from the highest isotach is picked
+        cHollBs2(i)    = spInterp(azimuth(i), dist(i), 2) ! Holland B
+        cVmwBL2(i)     = spInterp(azimuth(i), dist(i), 3) ! vmaxBoundaryLayer
       END DO
 
       pn         =  1.0_SZ * (ipn(stCnt, jl1) + wtratio*(ipn(stCnt, jl2)-ipn(stCnt, jl1)))
@@ -3016,17 +3030,35 @@ MODULE ParWind
                               wtratio * (cHollBs2(:) - cHollBs1(:))
       cVmwBL     =  cVmwBL1(:) + &
                               wtratio * (cVmwBL2(:) - cVmwBL1(:))
-      !Using absolute value for coriolis for Southern Hemisphere                
-      coriolis   = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
 
       DO i = 1, np
+!      JEROME Comment : Restricting the computation to 1-maxRadIDX like in hetHollandFields 
+!      give strange results with zero values in some radial sectors. Need further investigations
+!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
+!        i = radIDX(npCnt)
         cPhiFactor(i) =  1 + cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * coriolis /  &
                             (cHollBs(i)* ((cVmwBL(i) * KT2MS)**2 +              &
                              cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * coriolis))
       END DO
 
+      WRITE(16,*)'min/max cPhiFactor=',minval(cPhiFactor),maxval(cPhiFactor)
+
       uTransNow = uTrans(stCnt, jl1) + wtratio * (uTrans(stCnt, jl2) - utrans(stCnt, jl1))
       vTransNow = vTrans(stCnt, jl1) + wtratio * (vTrans(stCnt, jl2) - vTrans(stCnt, jl1))
+
+      !-------------------------------
+      ! Get the Rossby number (just informative) !JEROME
+      rmw = asyVortStru(stCnt)%rmw(jl1) + &
+              wtRatio * (asyVortStru(stCnt)%rmw(jl2) - asyVortStru(stCnt)%rmw(jl1))
+
+      vmax = asyVortStru(stCnt)%speed(jl1) + &
+               wtRatio * (asyVortStru(stCnt)%speed(jl2) - asyVortStru(stCnt)%speed(jl1))
+      CALL RossbyNumber(vmax*KT2MS, rmw*NM2M, coriolis, RossNum)
+
+      !Check
+      WRITE(16,*)'Rossby Number=',RossNum
+      WRITE(16,*)'rrp,rmw=',rrpval,rmw
+      !-------------------------------
 
       !-------------------------------
       ! Create a new asymmetric hurricane vortex.
@@ -3050,22 +3082,29 @@ MODULE ParWind
       stormMotionV = COS(dirNow / RAD2DEG) * stormMotion
       CALL setVortex(pn, pc, cLat, cLon)
 
-      !PV Need to account for multiple storms in the basin
+      ! PV TODO: Need to account for multiple storms in the basin
+      !          Need to interpolate between storms if the nodal point(s)
+      !          are affected by more than on storm
       DO npCnt = 1, maxRadIDX
         i = radIDX(npCnt)
 
         CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
              cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
-        wPress(i) = max(0.85d5,min(1.1e5,wPress(i)))  ! Typhoon Tip 870 hPa ... 12-oct-1979
-        wVelX(i)  = max(-200.d0,min(200.d0,wVelX(i)))
-        wVelY(i)  = max(-200.d0,min(200.d0,wVelY(i)))
+
+        ! Impose reasonable bounds
+        wPress(i) = MAX(0.85d5,  MIN(1.1e5,  wPress(i)))  ! Typhoon Tip 870 hPa ... 12-oct-1979
+        wVelX(i)  = MAX(-200.d0, MIN(200.d0, wVelX(i)))
+        wVelY(i)  = MAX(-200.d0, MIN(200.d0, wVelY(i)))
       END DO ! npCnt = 1, maxRadIDX
     END DO ! stCnt = 1, nBTrFiles
 
     !------------------------------
     ! Deallocate the arrays
     !------------------------------
+    IF (ALLOCATED(dist)) DEALLOCATE(dist)
+    IF (ALLOCATED(radIDX)) DEALLOCATE(radIDX)
+
     !DO iCnt = 1, nBTrFiles
     !  CALL DeAllocAsymVortStruct(asyVortStru(iCnt))
     !END DO

@@ -79,6 +79,31 @@ MODULE PaHM_Vortex
 
 
   !----------------------------------------------------------------
+  ! S U B R O U T I N E   R O S S B Y  N U M B E R
+  !----------------------------------------------------------------
+  !
+  ! Computes the estimate of the Rossby number in a tropical cyclone
+  ! @param vmaxBoundaryLayer max wind speed for stationary storm at top of
+  ! boundary layer
+  ! @param radiusToMaxWinds radius from storm center to vmaxBoundaryLayer
+  ! @param coriolis Coriolis parameter
+  ! @return estimate to Rossby number
+  !/
+   SUBROUTINE RossbyNumber(vmaxBoundaryLayer, radiusToMaxWinds, coriolis, Rzero)
+
+    USE PaHM_Global, ONLY : DEG2RAD
+    USE PaHM_Utilities, ONLY : SphericalDistance
+
+    IMPLICIT NONE
+
+    REAL(SZ), INTENT(IN)  :: vmaxBoundaryLayer, radiusToMaxWinds
+    REAL(SZ), INTENT(IN)  :: coriolis
+    REAL(SZ), INTENT(OUT) :: Rzero
+
+    Rzero = vmaxBoundaryLayer / (abs(coriolis) * abs(radiusToMaxWinds))
+   END SUBROUTINE RossbyNumber
+
+  !----------------------------------------------------------------
   ! S U B R O U T I N E   C A L C  I N T E N S I T Y  C H A N G E
   !----------------------------------------------------------------
   !>
