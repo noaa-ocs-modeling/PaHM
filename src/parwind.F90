@@ -2106,7 +2106,6 @@ MODULE ParWind
     INTEGER, ALLOCATABLE                 :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
     INTEGER                              :: maxRadIDX           ! total number of radIDX elements
     REAL(SZ)                             :: windMultiplier      ! for storm 2 in lpfs ensemble DO WE NEED THIS?
-    REAL(SZ), ALLOCATABLE                :: dx(:), dy(:), theta(:)
 
     REAL(SZ)                             :: wtRatio
     REAL(SZ)                             :: coriolis
@@ -2123,6 +2122,8 @@ MODULE ParWind
     INTEGER                              :: iYear, iMonth, iDay, iHour, iMin, iSec
 
     CHARACTER(LEN=128)                   :: tmpTimeStr, tmpStr1, tmpStr2
+
+    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, theta
 
     LOGICAL, SAVE                        :: firstCall = .TRUE.
 
