@@ -36,7 +36,8 @@ MODULE PaHM_Vortex
              fitRmaxes4, calcRmaxesFull,              &
              UVPR, newVortexFull,                     &
              rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
-             CalcIntensityChange, UVTransPoint
+             CalcIntensityChange, UVTransPoint,       &
+             RossbyNumber
 
   PRIVATE
 
@@ -92,7 +93,7 @@ MODULE PaHM_Vortex
    SUBROUTINE RossbyNumber(vmaxBoundaryLayer, radiusToMaxWinds, coriolis, Rzero)
 
     USE PaHM_Global, ONLY : DEG2RAD
-    USE PaHM_Utilities, ONLY : SphericalDistance
+    USE Utilities, ONLY : SphericalDistance
 
     IMPLICIT NONE
 
@@ -100,7 +101,14 @@ MODULE PaHM_Vortex
     REAL(SZ), INTENT(IN)  :: coriolis
     REAL(SZ), INTENT(OUT) :: Rzero
 
-    Rzero = vmaxBoundaryLayer / (abs(coriolis) * abs(radiusToMaxWinds))
+    Rzero = 0.0
+
+    IF (radiusToMaxWinds > 0.0_SZ) THEN
+      Rzero = vmaxBoundaryLayer / (abs(coriolis) * radiusToMaxWinds)
+    ELSE
+      PRINT *, 'Found zero Radius of Maximum Winds (RMW)'
+    END IF
+
    END SUBROUTINE RossbyNumber
 
   !----------------------------------------------------------------
@@ -605,7 +613,7 @@ MODULE PaHM_Vortex
     vMax = vm
 !PV Check conversions
     ! evaluate basic physical params
-    corio = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
+    corio = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
     B = (vMax * KT2MS)**2 * rhoAir * EXP(1.0_SZ) / ((pn - pc) * MB2PA)
     B = MAX(MIN(B, 2.0_SZ), 1.0_SZ) ! limit B to range 1.0->2.5
 !PV Data already have been converted
@@ -659,7 +667,7 @@ MODULE PaHM_Vortex
     vMax = vm
  
     ! evaluate basic physical params
-    corio = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
+    corio = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
     B = (vMax * KT2MS)**2 * rhoAir * EXP(1.0_SZ) / ((pn - pc) * MB2PA)
     phi       = 1.0_SZ
     bs(1:6)   = B
@@ -710,7 +718,7 @@ MODULE PaHM_Vortex
     cLon = lon
 
     ! evaluate basic physical params
-    corio = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
+    corio = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
 
   END SUBROUTINE SetVortex
 
@@ -812,7 +820,6 @@ MODULE PaHM_Vortex
       !    0 (if r1 = r2)
       !   +1 (if r1 > r2)
       vicinity = ABS(root - radius(quad)) / root
-      !PV DEL IF ((root < 0.0_SZ) .OR. (vicinity <= 0.1_SZ)) THEN
       IF (CompareReals(root, 0.0_SZ) == -1 .OR. CompareReals(vicinity, 0.1_SZ) /= 1) THEN
         r1 = INNERRADIUS
         r2 = OUTERRADIUS
@@ -1637,7 +1644,7 @@ MODULE PaHM_Vortex
   !>
   !----------------------------------------------------------------
   SUBROUTINE UVPR(iDist, iAngle, iRmx, iRmxTrue, iB, iVm, iPhi, &
-                  uTrans, vTrans, geof, u, v, p)
+                  uTrans, vTrans, geof, u, v, p, CORIN)
 
     USE PaHM_Global, ONLY : windReduction, ONE2TEN, DEG2RAD, MB2PA, KT2MS, NM2M
 
@@ -1658,18 +1665,26 @@ MODULE PaHM_Vortex
     REAL(SZ), INTENT(OUT) :: v
     REAL(SZ), INTENT(OUT) :: p
 
+    REAL(SZ), OPTIONAL :: CORIN
+
     REAL(SZ)              :: transSpdX  !NWS8-style translation speed
     REAL(SZ)              :: transSpdY  !NWS8-style translation speed
     REAL(SZ)              :: rmx
     REAL(SZ)              :: speed
     REAL(SZ)              :: uf
     REAL(SZ)              :: vf
-    REAL(SZ)              :: percentCoriolis
+    REAL(SZ)              :: coriolis, percentCoriolis
       
     rmx  = iRmx
     B    = iB
     vMax = iVm
     phi  = iPhi
+
+    IF (PRESENT(CORIN)) THEN
+      coriolis = CORIN
+    ELSE
+      coriolis = corio
+    END IF
 
     !----------------------------------------
     ! Handle special case at eye of hurricane
@@ -1696,14 +1711,14 @@ MODULE PaHM_Vortex
     percentCoriolis = 1.0_SZ
 
     IF (geof == 1) THEN
-      speed = SQRT(((vMax * KT2MS)**2 + vMax * KT2MS * rmx * NM2M * percentCoriolis * corio) *   &
-                   (rmx / iDist)**B * EXP(phi * (1.0_SZ - (rmx / iDist)**B)) +                   &
-                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -                       &
-                  NM2M * iDist * percentCoriolis * corio / 2.0_SZ 
+      speed = SQRT(((vMax * KT2MS)**2 + vMax * KT2MS * rmx * NM2M * percentCoriolis * coriolis) *  &
+                   (rmx / iDist)**B * EXP(phi * (1.0_SZ - (rmx / iDist)**B)) +                     &
+                   (NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ)**2) -                      &
+                  NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ
     ELSE 
-      speed = SQRT((vMax * KT2MS)**2 * (rmx / iDist)**B * EXP(1.0_SZ - (rmx / iDist)**B) + &
-                   (NM2M * iDist * percentCoriolis * corio / 2.0_SZ)**2) -                 &
-                  NM2M * iDist * percentCoriolis * corio / 2.0_SZ      
+      speed = SQRT((vMax * KT2MS)**2 * (rmx / iDist)**B * EXP(1.0_SZ - (rmx / iDist)**B) +  &
+                   (NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ)**2) -               &
+                  NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ
     ENDIF
 
     ! Calculate NWS8-like translation speed

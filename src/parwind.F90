@@ -22,7 +22,7 @@ MODULE ParWind
   ! on (default): Coriolis term included, phiFactors will be calculated before being used 
   ! off         : parameter is set to 'TRUE', phiFactors will be set to constant 1
   LOGICAL :: geostrophicSwitch = .TRUE.  !PV shouldn't be a user input?
-  INTEGER :: geoFactor = 1               !turn on or off gostrophic balance  !PV shouldn't be a user input?
+  INTEGER :: geoFactor = 1               ! turn on or off geostrophic balance  !PV shouldn't be a user input?
   INTEGER :: method = 4, approach = 2    !PV shouldn't be a user input?
 
   INTEGER, PARAMETER, PRIVATE :: STORMNAMELEN = 10
@@ -539,9 +539,9 @@ MODULE ParWind
       !---------- Here, we check for missing values for specific fields in the best track file.
       ! Namely: POuter, ROuter, Rmw, others ...?
       ! Missing data are filled using linear interpolation here
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
@@ -606,7 +606,7 @@ MODULE ParWind
 
     USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName, useMaxR34
     USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique, &
-                              IntValStr, GetLocAndRatio, ReAllocate
+                              IntValStr, GetLocAndRatio
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY     : Arth, Indexx, ArrayEqual
     USE Csv_Module
@@ -851,13 +851,12 @@ MODULE ParWind
 
       CALL f%Destroy()
 
-
       !---------- Here, we check for missing values for specific fields in the best track file.
       ! Namely: POuter, ROuter, Rmw, others ...?
       ! Missing data are filled using linear interpolation here
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
-      CALL FillMissDataBestTrackFile(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
@@ -903,39 +902,39 @@ MODULE ParWind
 !================================================================================
 
   !----------------------------------------------------------------
-  !  S U B R O U T I N E   F I L L  M I S S  D A T A  B E S T  T R A C K F I L E
+  !  S U B R O U T I N E   F I L L  M I S S  D A T A  B E S T  T R A C K F I L E  L I N I N T E R P
   !----------------------------------------------------------------
   !>
   !> @brief
-  !>   Subroutine to read all a-deck/b-deck best track files (ATCF format).
+  !>   Subroutine to fill missing variable values in best track files
   !>
   !> @details
-  !>   It uses PaHM's CSV functionality (preferred approach) to read the ATCF formatted
-  !>   track files as follows:
-  !>   - a-deck: guidance information
-  !>   - b-deck: best track information
-  !>   - Skips lines that are time repeats. ???PV check
-  !>   - Converts parameter values to the proper units.
-  !>   - Assumes longitude is WEST longitude, latitude is NORTH latitude.
+  !>   Subroutine used to fill missing values in the best track files
+  !>   by using simple linear interpolation.
+  !>
+  !> @param[in]
+  !>   dateSTR   The date string array in the best track file
+  !> @param[inout]
+  !>   dataARR     The data array  in the best track file to be checked for missing values
   !>
   !----------------------------------------------------------------
-  SUBROUTINE FillMissDataBestTrackFile(dateSTR, dataARR)
+  SUBROUTINE FillMissDataTrackFile_LinInterp(dateSTR, dataARR)
 
     USE Utilities, ONLY     : CharUnique, GetLocAndRatio, ReAllocate
     USE TimeDateUtils, ONLY : TimeConv
 
     IMPLICIT NONE
 
-    CHARACTER(LEN=*), INTENT(IN) :: dateSTR(:)
-    INTEGER, INTENT(INOUT)       :: dataARR(:)
+    CHARACTER(LEN=*), INTENT(IN)   :: dateSTR(:)
+    INTEGER, INTENT(INOUT)         :: dataARR(:)
 
     INTEGER                        :: i, j, k       ! loop counters
 
     INTEGER                        :: nREC, jl1, jl2, j1, j2
     INTEGER                        :: ios, year, month, day, hour
 
-    CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
-    INTEGER, ALLOCATABLE           :: idxArrStr(:)
+    CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:), tmpStr(:)
+    INTEGER, ALLOCATABLE           :: idxArrStr(:), tmpIDX(:)
 
     REAL(SZ), ALLOCATABLE          :: AllTimes(:)
     INTEGER, ALLOCATABLE           :: missIDX(:), dataIDX(:)
@@ -943,58 +942,55 @@ MODULE ParWind
     REAL(SZ)                       :: wtRatio, tmpFcstTime
 
 
-    CALL SetMessageSource("FillMissDataBestTrackFile")
+    CALL SetMessageSource("FillMissDataTrackFile_LinInterp")
 
-      nREC = SIZE(dateSTR)
+    nREC = SIZE(dateSTR)
 
-      ALLOCATE(AllTimes(nREC))
+    ALLOCATE(AllTimes(nREC))
+    DO i = 1, nREC
+      READ(dateSTR(i)(1:4), FMT='(i4.4)', IOSTAT=ios) year
+        IF (ios /= 0) year = -1
+      READ(dateSTR(i)(5:6), FMT='(i2.2)', IOSTAT=ios) month
+        IF (ios /= 0) month = -1
+      READ(dateSTR(i)(7:8), FMT='(i2.2)', IOSTAT=ios) day
+        IF (ios /= 0) day = -1
+      READ(dateSTR(i)(9:10), FMT='(i2.2)', IOSTAT=ios) hour
+        IF (ios /= 0) hour = -1
 
-      DO i = 1, nREC
-        READ(dateSTR(i)(1:4), FMT='(i4.4)', IOSTAT=ios) year
-          IF (ios /= 0) year = -1
-        READ(dateSTR(i)(5:6), FMT='(i2.2)', IOSTAT=ios) month
-          IF (ios /= 0) month = -1
-        READ(dateSTR(i)(7:8), FMT='(i2.2)', IOSTAT=ios) day
-          IF (ios /= 0) day = -1
-        READ(dateSTR(i)(9:10), FMT='(i2.2)', IOSTAT=ios) hour
-          IF (ios /= 0) hour = -1
+      CALL TimeConv(year, month, day, hour, 0, 0.0_SZ, tmpFcstTime)
+      AllTimes(i) = tmpFcstTime
+    END DO
 
-        CALL TimeConv(year, month, day, hour, 0, 0.0_SZ, tmpFcstTime)
-        AllTimes(i) = tmpFcstTime
+    !---------- Here, we check for missing values for specific fields in the best track file.
+    missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
+    maxMissIDX = SIZE(missIDX)
+
+    IF (maxMissIDX /= 0) THEN
+      dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
+      maxDataIDX = SIZE(dataIDX)
+
+      ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
+        maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
+        dataIDX = ReAllocate(dataIDX(idxArrStr(1:maxDataIDX)), maxDataIDX)
+      DEALLOCATE(chkArrStr, idxArrStr)
+
+      DO i = 1, maxMissIDX
+        CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, wtRatio)
+
+        IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
+          j1 = dataIDX(jl1)
+          j2 = dataIDX(jl2)
+          dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
+        END IF
       END DO
+    END IF
 
-      !---------- Here, we check for missing values for specific fields in the best track file.
-      missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
-      maxMissIDX = SIZE(missIDX)
-
-      IF (maxMissIDX /= 0) THEN
-        dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
-        maxDataIDX = SIZE(dataIDX)
-
-        ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
-          maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
-          dataIDX = ReAllocate(dataIDX(idxArrStr), maxDataIDX)
-        DEALLOCATE(chkArrStr, idxArrStr)
-
-        DO i = 1, maxMissIDX
-          CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, wtRatio)
-
-          IF ((jl1 >= 0) .AND. (jl2 >= 0)) THEN
-            j1 = dataIDX(jl1)
-            j2 = dataIDX(jl2)
-            dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
-          END IF
-        END DO
-
-      END IF
-
-     IF (ALLOCATED(AllTimes))  DEALLOCATE(AllTimes)
-     IF (ALLOCATED(missIDX))   DEALLOCATE(missIDX)
-
+    IF (ALLOCATED(AllTimes))  DEALLOCATE(AllTimes)
+    IF (ALLOCATED(missIDX))   DEALLOCATE(missIDX)
 
     CALL UnsetMessageSource()
 
-  END SUBROUTINE FillMissDataBestTrackFile
+  END SUBROUTINE FillMissDataTrackFile_LinInterp
 
 !================================================================================
 
@@ -1721,7 +1717,6 @@ MODULE ParWind
              IF (k == 1) THEN
                nQuadRot = 300
                quadRotateAngle(:) = 25.0_SZ ! initial guess of inward rotation angle (degree)
-               rMaxWHighIso(:)    = strOut%rMaxW(iCnt, :)
              ELSE
                DO i = 1, 4
                  quadRotateAngle(i) = FAng(r(i), rMaxWHighIso(i))
@@ -1829,9 +1824,11 @@ MODULE ParWind
                strOut%rMaxW(iCnt, :) = rMaxWTemp(:)
 
                ! add deterministic statement to exit the loop when conditions met
-               !IF (k == 1) rMaxWHighIso(:) = strOut%rMaxW(iCnt, :) !PV This should be at the beginning of the loop
+               IF (k == 1) rMaxWHighIso(:) = strOut%rMaxW(iCnt, :)
+
                DO i = 1, 4
                  quadRotateAngle_new(i) = FAng(r(i), rMaxWHighIso(i))
+
                  IF (abs(quadRotateAngle_new(i) - quadRotateAngle(i)) > 0.2_SZ) THEN
                    vioFlag(i) = .TRUE.
                  END IF
@@ -2086,7 +2083,8 @@ MODULE ParWind
                               refYear, refMonth, refDay, refHour, refMin, refSec, &
                               Times, DatesTimes,                                  &
                               wVelX, wVelY, wPress
-    USE Utilities, ONLY     : SphericalDistance, SphericalFracPoint, GetLocAndRatio
+    USE Utilities, ONLY     : SphericalDistance, SphericalFracPoint, GetLocAndRatio, &
+                              GeoToCPP
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String
 
     IMPLICIT NONE
@@ -2108,7 +2106,8 @@ MODULE ParWind
     INTEGER, ALLOCATABLE                 :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
     INTEGER                              :: maxRadIDX           ! total number of radIDX elements
     REAL(SZ)                             :: windMultiplier      ! for storm 2 in lpfs ensemble DO WE NEED THIS?
-    REAL(SZ)                             :: dx, dy, theta
+    REAL(SZ), ALLOCATABLE                :: dx(:), dy(:), theta(:)
+
     REAL(SZ)                             :: wtRatio
     REAL(SZ)                             :: coriolis
 
@@ -2195,6 +2194,8 @@ MODULE ParWind
       ALLOCATE(wVelX(np))
       ALLOCATE(wVelY(np))
       ALLOCATE(wPress(np))
+
+      ALLOCATE(dx(np), dy(np), theta(np))
       !------------------------------
 
 
@@ -2320,8 +2321,12 @@ MODULE ParWind
       rmw = holStru(stCnt)%rmw(jl1) + &
               wtRatio * (holStru(stCnt)%rmw(jl2) - holStru(stCnt)%rmw(jl1))
 
-      ! Get all the distances of the mesh nodes from (lat, lon)
-      rad    = SphericalDistance(sfea, slam, lat, lon)
+      ! ----- Get all the distances of the mesh nodes from (lat, lon)
+      CALL GeoToCPP(sfea, slam, lat, lon, dx, dy) ! dx,dy in meters
+      theta = ATAN2(dy, dx)
+      rad = SQRT(dx * dx + dy * dy) ! dx,dy in meters
+      WHERE(rad < 1.d-1) rad = 1.d-1
+      ! -----
 
       ! ... and the indices of the nodal points where rad <= rrpval
       IF (rrpval > 0) THEN
@@ -2403,28 +2408,17 @@ MODULE ParWind
       DO npCnt = 1, maxRadIDX
         i = radIDX(npCnt)
 
-        !dx = SphericalDistance(lat, lon, lat, slam(i))
-        !dy = SphericalDistance(lat, lon, sfea(i), lon)
-        !----------
-        dx = DEG2RAD * (slam(i) - lon)
-        dy = DEG2RAD * (sfea(i) - lat)
-        !----- Calculate distance of points in CPP plane
-        !dx = DEG2RAD * REARTH * (slam(i) - lon) * COS(DEG2RAD * lat)
-        !dy = DEG2RAD * REARTH * (sfea(i) - lat)
-
-        theta = ATAN2(dy, dx)
-
-        ! Compute coriolis
-        coriolis = 2.0_SZ * OMEGA * SIN(sfea(i) * DEG2RAD)
+        ! Using absolute value for coriolis for Southern Hemisphere
+        coriolis = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * sfea(i)))
 
         ! Compute the pressure (Pa) at a distance rad(i); all distances are in meters
         sfPress = cPress + cPressDef * EXP(-(rmw / rad(i))**hlB)
 
         ! Compute wind speed (speed - trSPD) at gradient level (m/s) and at a distance rad(i);
-        ! all distances are in meters. Using absolute value for coriolis for Southern Hemisphere
+        ! all distances are in meters.
         grVel = SQRT(speed**2 * (rmw / rad(i))**hlB * EXP(1.0_SZ - (rmw / rad(i))**hlB) +   &
-                     (rad(i) * ABS(coriolis) / 2.0_SZ)**2) -                                &
-                rad(i) * ABS(coriolis) / 2.0_SZ
+                     (rad(i) * coriolis / 2.0_SZ)**2) -                                &
+                rad(i) * coriolis / 2.0_SZ
 
         ! Determine translation speed that should be added to final !PV CHECK ON THIS
         ! storm wind speed. This is tapered to zero as the storm wind tapers
@@ -2437,15 +2431,17 @@ MODULE ParWind
 
         ! Find the wind velocity components (caution to SH/NH)
         if(lat.lt.0.d0) then ! SH
-          sfVelX = grVel * SIN(theta)
-          sfVelY = -grVel * COS(theta)
+          sfVelX = grVel * SIN(theta(i))
+          sfVelY = -grVel * COS(theta(i))
         else ! NH
-          sfVelX = -grVel * SIN(theta)
-          sfVelY =  grVel * COS(theta)
+          sfVelX = -grVel * SIN(theta(i))
+          sfVelY =  grVel * COS(theta(i))
         endif
 
         ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
         ! which, is what the Holland curve fit produces, to 10-m wind velocity.
+        ! P.V Need to incorporate an ABL formulation to get a temporal/spatial dependent
+        ! windReduction - IMPORTANT
         sfVelX = sfVelX * windReduction
         sfVelY = sfVelY * windReduction
 
@@ -2520,10 +2516,11 @@ MODULE ParWind
                               refYear, refMonth, refDay, refHour, refMin, refSec,                       &
                               Times, DatesTimes,                                                        &
                               wVelX, wVelY, wPress
-    USE Utilities, ONLY     : ToUpperCase, SphericalDistance, SphericalFracPoint, GetLocAndRatio
+    USE Utilities, ONLY     : ToUpperCase, SphericalDistance, SphericalFracPoint, GetLocAndRatio, &
+                              GeoToCPP
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String, TimeConv
     USE PaHM_Vortex, ONLY   : spInterp, fitRmaxes4, rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
-                              setVortex, UVPR
+                              setVortex, UVPR, RossbyNumber
 
     IMPLICIT NONE
 
@@ -2597,7 +2594,7 @@ MODULE ParWind
 
     REAL(SZ) :: wtRatio
 
-    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, dist, azimuth
+    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, dist, azimuth, thisCorio
 
     LOGICAL, SAVE                       :: firstCall = .TRUE.
 
@@ -2621,6 +2618,7 @@ MODULE ParWind
         CALL Terminate()
     END IF
 
+#define GAHM_USE_FULL_DOMAIN 1
 
 !################################################################
 !###   BEG:: FIRSTCALL BLOCK
@@ -2687,6 +2685,7 @@ MODULE ParWind
       ALLOCATE(crmaxw(np))
       ALLOCATE(crmaxwTrue(np))
       ALLOCATE(dx(np), dy(np), dist(np), azimuth(np))
+      ALLOCATE(thisCorio(np))
       !------------------------------
 
 
@@ -2864,6 +2863,12 @@ MODULE ParWind
     ! This subroutine is called repeatdly and each time the following
     ! atmospheric fields are recalculated.
     !------------------------------
+    crmaxw = 0.0_SZ ; crmaxw1 = 0.0_SZ ; crmaxw2 = 0.0_SZ
+    crmaxwTrue = 0.0_SZ ; crmaxwTrue1 = 0.0_SZ ; crmaxwTrue2 = 0.0_SZ
+    cHollBs = 0.0_SZ ; cHollBs1 = 0.0_SZ ; cHollBs2 = 0.0_SZ
+    cVmwBL = 0.0_SZ ; cVmwBL1 = 0.0_SZ ; cVmwBL2 = 0.0_SZ
+    cPhiFactor = 0.0_SZ ; thisCorio  = 0.0_SZ
+
     wVelX  = 0.0_SZ
     wVelY  = wVelX
     wPress = backgroundAtmPress * MB2PA
@@ -2937,7 +2942,26 @@ MODULE ParWind
       rrpval = MAX(rrp, errp)
 
       ! Get all the distances of the mesh nodes from (lat, lon)
-      rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
+      !rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
+
+      !----- Calculate radius/distance/azimuth of points in CPP plane
+      !rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
+      CALL GeoToCPP(sfea, slam, cLat, cLon, dx, dy)
+      rad  = SQRT(dx * dx + dy * dy) ! rad is in meters
+      WHERE(rad < 1.d-1) rad = 1.d-1
+      dist = rad * M2NM              ! convert to NM
+      !dx      = DEG2RAD * REARTH * (slam - cLon) * COS(DEG2RAD * cLat)
+      !dy      = DEG2RAD * REARTH * (sfea - cLat)
+      !dist    = SQRT(dx * dx + dy * dy) * M2NM   ! Convert to NM
+
+      azimuth = 360.0_SZ + RAD2DEG * ATAN2(dx, dy)
+      WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
+      !-----
+
+      ! Using absolute value for coriolis for Southern Hemisphere
+      coriolis = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
+      thisCorio = coriolis
+      !thisCorio = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * sfea))
 
       ! ... and the indices of the nodal points where rad <= rrpval
       IF (rrpval > 0) THEN
@@ -2967,18 +2991,6 @@ MODULE ParWind
         CALL LogMessage(INFO, scratchMessage)
       END IF
 
-      !----- Calculate distance/azimuth of points in CPP plane
-      dx      = DEG2RAD * REARTH * (slam - cLon) * COS(DEG2RAD * cLat)
-      dy      = DEG2RAD * REARTH * (sfea - cLat)
-      dist    = SQRT(dx * dx + dy * dy) * M2NM   ! Convert to NM
-      azimuth = 360.0_SZ + RAD2DEG * ATAN2(dx, dy)
-      azimuth = (azimuth + 360.0_SZ) % 360.0_SZ
-      !WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
-      !-----
-
-      ! Using absolute value for coriolis for Southern Hemisphere
-      coriolis = abs(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
-
       quadFlag4(2:5, 1:4) = quadFlag(stCnt, jl1, 1:4, 1:4)
       quadIr4(2:5, 1:4)   = REAL(ir(stCnt, jl1, 1:4, 1:4))
       rMaxes4(2:5, 1:4)   = rMaxw(stCnt, jl1, 1:4, 1:4)
@@ -2987,9 +2999,12 @@ MODULE ParWind
 
       CALL FitRMaxes4()
 
+#if GAHM_USE_FULL_DOMAIN
       DO i = 1, np
-!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar !P.V need to check this to restrict calculations
-!        i = radIDX(npCnt)
+#else
+      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
+        i = radIDX(npCnt)
+#endif
         crmaxw1(i)     = spInterp(azimuth(i), dist(i), 1) ! radiusToMaxWinds
         crmaxwTrue1(i) = spInterp(azimuth(i), 1.0_SZ, 1)
 
@@ -3006,11 +3021,12 @@ MODULE ParWind
 
       CALL FitRMaxes4()
 
+#if GAHM_USE_FULL_DOMAIN
       DO i = 1, np
-!      JEROME Comment : Restricting the computation to 1-maxRadIDX like in GetHollandFields 
-!      give strange results with zero values in some radial sectors. Need further investigations     
-!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
-!        i = radIDX(npCnt)
+#else
+      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
+        i = radIDX(npCnt)
+#endif
         crmaxw2(i)     = spInterp(azimuth(i), dist(i), 1) ! radiusToMaxWinds
         crmaxwTrue2(i) = spInterp(azimuth(i), 1.0_SZ, 1)
 
@@ -3031,34 +3047,65 @@ MODULE ParWind
       cVmwBL     =  cVmwBL1(:) + &
                               wtratio * (cVmwBL2(:) - cVmwBL1(:))
 
+      !-------------------------------
+      ! Get the Rossby number (just informative) !JEROME
+      rmw = asyVortStru(stCnt)%rmw(jl1) + &
+              wtRatio * (asyVortStru(stCnt)%rmw(jl2) - asyVortStru(stCnt)%rmw(jl1)) ! in m
+
+      vmax = asyVortStru(stCnt)%speed(jl1) + &
+               wtRatio * (asyVortStru(stCnt)%speed(jl2) - asyVortStru(stCnt)%speed(jl1)) ! in m/s
+      CALL RossbyNumber(vmax, rmw, coriolis, RossNum)
+      !PRINT *, 'Rossby Number = ', RossNum
+      !-------------------------------
+
+#if GAHM_USE_FULL_DOMAIN
       DO i = 1, np
-!      JEROME Comment : Restricting the computation to 1-maxRadIDX like in hetHollandFields 
-!      give strange results with zero values in some radial sectors. Need further investigations
-!      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
-!        i = radIDX(npCnt)
+#else
+      DO npCnt = 1, maxRadIDX !do for all nodes inside last closed isobar
+        i = radIDX(npCnt)
+#endif
         cPhiFactor(i) =  1 + cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * coriolis /  &
                             (cHollBs(i)* ((cVmwBL(i) * KT2MS)**2 +              &
                              cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * coriolis))
+!        cPhiFactor(i) =  1 + cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * thisCorio(i) /  &
+!                            (cHollBs(i)* ((cVmwBL(i) * KT2MS)**2 +              &
+!                             cVmwBL(i) * KT2MS * crmaxw(i) * NM2M * thisCorio(i)))
       END DO
-
-      WRITE(16,*)'min/max cPhiFactor=',minval(cPhiFactor),maxval(cPhiFactor)
 
       uTransNow = uTrans(stCnt, jl1) + wtratio * (uTrans(stCnt, jl2) - utrans(stCnt, jl1))
       vTransNow = vTrans(stCnt, jl1) + wtratio * (vTrans(stCnt, jl2) - vTrans(stCnt, jl1))
 
-      !-------------------------------
-      ! Get the Rossby number (just informative) !JEROME
-      rmw = asyVortStru(stCnt)%rmw(jl1) + &
-              wtRatio * (asyVortStru(stCnt)%rmw(jl2) - asyVortStru(stCnt)%rmw(jl1))
+!#if GAHM_DEBUG
+#if GAHM_USE_FULL_DOMAIN
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs1= ', &
+            minval(cHollBs1), maxval(cHollBs1), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
+            minval(cVmwBL1), maxval(cVmwBL1), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs2= ', &
+            minval(cHollBs2), maxval(cHollBs2), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
+            minval(cVmwBL2), maxval(cVmwBL2), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cPhiFactor= ', &
+            minval(cPhiFactor), maxval(cPhiFactor), DatesTimes(iCnt)
 
-      vmax = asyVortStru(stCnt)%speed(jl1) + &
-               wtRatio * (asyVortStru(stCnt)%speed(jl2) - asyVortStru(stCnt)%speed(jl1))
-      CALL RossbyNumber(vmax*KT2MS, rmw*NM2M, coriolis, RossNum)
+      WRITE(16,'(A20, 2X, F8.4)') 'Rossby Number= ', RossNum
+      WRITE(16,'(A20, 2(2X, F12.3))') 'rrp, rmw= ', rrpval, rmw
+#else
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs1= ', &
+            minval(cHollBs1(radIDX)), maxval(cHollBs1(radIDX)), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
+            minval(cVmwBL1(radIDX)), maxval(cVmwBL1(radIDX)), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs2= ', &
+            minval(cHollBs2(radIDX)), maxval(cHollBs2(radIDX)), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
+            minval(cVmwBL2(radIDX)), maxval(cVmwBL2(radIDX)), DatesTimes(iCnt)
+      WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cPhiFactor= ', &
+            minval(cPhiFactor(radIDX)), maxval(cPhiFactor(radIDX)), DatesTimes(iCnt)
 
-      !Check
-      WRITE(16,*)'Rossby Number=',RossNum
-      WRITE(16,*)'rrp,rmw=',rrpval,rmw
-      !-------------------------------
+      WRITE(16,'(A20, 2X, F8.4)') 'Rossby Number= ', RossNum
+      WRITE(16,'(A20, 2(2X, F12.3))') 'rrp, rmw= ', rrpval, rmw
+#endif
+!#endif
 
       !-------------------------------
       ! Create a new asymmetric hurricane vortex.
@@ -3088,9 +3135,12 @@ MODULE ParWind
       DO npCnt = 1, maxRadIDX
         i = radIDX(npCnt)
 
-        CALL uvpr(dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i), &
-             cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,  &
+        CALL uvpr( dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i),  &
+             cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,   &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
+        !CALL uvpr( dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i),  &
+        !     cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,   &
+        !     stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i), CORIN = thisCorio(i))
 
         ! Impose reasonable bounds
         wPress(i) = MAX(0.85d5,  MIN(1.1e5,  wPress(i)))  ! Typhoon Tip 870 hPa ... 12-oct-1979

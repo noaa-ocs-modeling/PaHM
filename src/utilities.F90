@@ -1832,7 +1832,7 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT) :: y
 
     x = DEG2RAD * REARTH * (lon - lon0) * COS(DEG2RAD * lat0)
-    y = DEG2RAD * REARTH * lat
+    y = DEG2RAD * REARTH * (lat - lat0)
 
   END SUBROUTINE GeoToCPP_Scalar
 
@@ -1879,7 +1879,7 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT) :: y(:)
 
     x = DEG2RAD * REARTH * (lon - lon0) * COS(DEG2RAD * lat0)
-    y = DEG2RAD * REARTH * lat
+    y = DEG2RAD * REARTH * (lat - lat0)
 
   END SUBROUTINE GeoToCPP_1D
 
@@ -1924,7 +1924,7 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT)  :: lat
     REAL(SZ), INTENT(OUT)  :: lon
 
-    lat = y / (DEG2RAD * REARTH)
+    lat = lat0 + y / (DEG2RAD * REARTH)
     lon = lon0 + x / (DEG2RAD * REARTH * COS(DEG2RAD * lat0))
 
   END SUBROUTINE CPPToGeo_Scalar
@@ -1971,7 +1971,7 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT)  :: lat(:)
     REAL(SZ), INTENT(OUT)  :: lon(:)
 
-    lat = y / (DEG2RAD * REARTH)
+    lat = lat0 + y / (DEG2RAD * REARTH)
     lon = lon0 + x / (DEG2RAD * REARTH * COS(DEG2RAD * lat0))
 
   END SUBROUTINE CPPToGeo_1D
@@ -2559,6 +2559,7 @@ MODULE Utilities
     RETURN
 
   END SUBROUTINE GetLocAndRatioReal
+
 
   SUBROUTINE GetLocAndRatioInteger(val, arrVal, idx1, idx2, wtRatio)
 
