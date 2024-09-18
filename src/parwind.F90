@@ -1637,16 +1637,23 @@ MODULE ParWind
                V_Vr = vr * SIN(quadrantAngles(i) + (DEG2RAD * 90.0_SZ))  
 
                ! eliminate the translational speed based on vortex wind speed
-               ! gamma = |quadrantVr| / |vMaxBL|  
-               gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -            &
-                           SQRT((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
-                                4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                      &
-                                windReduction**2.0_SZ) * vr**2.0_SZ)) / (2.0_SZ *                     &
-                          (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ))
+               ! gamma = |quadrantVr| / |vMaxBL|
+               gamma(i) = (U_Vr * stormMotionU + V_Vr * stormMotionV -                    &
+                           SQRT(ABS((U_Vr * stormMotionU + V_Vr * stormMotionV)**2.0_SZ - &
+                                    (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *               &
+                                     windReduction**2.0_SZ) * vr**2.0_SZ))) /             &
+                          (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ)
+
+!               gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -            &
+!                           SQRT((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
+!                                4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                      &
+!                                windReduction**2.0_SZ) * vr**2.0_SZ)) / (2.0_SZ *                     &
+!                          (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ))
                gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
-               
-               quadrantVr(i) = SQRT((U_Vr - gamma(i) * stormMotionU)**2.0_SZ +                        &
+
+               quadrantVr(i) = SQRT((U_Vr - gamma(i) * stormMotionU)**2.0_SZ +            &
                                     (V_Vr - gamma(i) * stormMotionV)**2.0_SZ) / windReduction
+
              END DO
 
              ! If violation occurs at any quadrant (quadrantVr(i)>vMaxBL),
@@ -1654,7 +1661,7 @@ MODULE ParWind
              DO i = 1, 4
                IF (quadrantVr(i) > vMaxBL) THEN
                  ! Replace vMax with Vr when violation occurs (including 
-                 ! situations when isotach is not reported at thta quadrant: 
+                 ! situations when isotach is not reported at that quadrant: 
                  ! especially at the investment stage or for the highest isotachs
                  ! that is not always available.
                  U_Vr = vr * COS(quadrantAngles(i) + (DEG2RAD * 90.0_SZ))
@@ -1666,34 +1673,47 @@ MODULE ParWind
                                     stormMotionU)**2.0_SZ +                                     &
                                    (vMaxPseudo * SIN(quadrantAngles(i) + (DEG2RAD * 90.0_SZ)) - &
                                     stormMotionV)**2.0_SZ) / windReduction
-                 
-                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -       &
-                               SQRT((2.0_SZ*U_Vr*stormMotionU+2.0_SZ*V_Vr*stormMotionV)**2.0_SZ -    &
-                             4.0_SZ*(stormMotion**2.0_SZ-vmwBL(i)**2.0_SZ * windReduction**2.0_SZ) * &
-                             vr**2.0_SZ)) / (2.0_SZ * (stormMotion**2.0_SZ -                         &
-                                                     vmwBL(i)**2.0_SZ * windReduction**2.0_SZ))
+
+                   gamma(i) = (U_Vr * stormMotionU + V_Vr * stormMotionV -                    &
+                               SQRT(ABS((U_Vr * stormMotionU + V_Vr * stormMotionV)**2.0_SZ - &
+                                        (stormMotion**2.0_SZ - vmwBL(i)**2.0_SZ *             &
+                                         windReduction**2.0_SZ) * vr**2.0_SZ))) /             &
+                              (stormMotion**2.0_SZ - vmwBL(i)**2.0_SZ * windReduction**2.0_SZ)
+
+!                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -       &
+!                               SQRT((2.0_SZ*U_Vr*stormMotionU+2.0_SZ*V_Vr*stormMotionV)**2.0_SZ -    &
+!                             4.0_SZ*(stormMotion**2.0_SZ-vmwBL(i)**2.0_SZ * windReduction**2.0_SZ) * &
+!                             vr**2.0_SZ)) / (2.0_SZ * (stormMotion**2.0_SZ -                         &
+!                                                     vmwBL(i)**2.0_SZ * windReduction**2.0_SZ))
                    !gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
-                   
+
                    quadrantVr(i) = SQRT((U_Vr - gamma(i) * stormMotionU)**2.0_SZ +                &
                                         (V_Vr - gamma(i) * stormMotionV)**2.0_SZ) / windReduction
                  ELSE
                    vmwBL(i) = vMaxBL  
-                   ! gamma = |quadrantVr| / |vMaxBL|  
-                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr * stormMotionV) - &
-                               SQRT((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr *            &
-                                     stormMotionV)**2.0_SZ -                                 &
-                                    4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *         &
-                                             windReduction**2.0_SZ) * vr**2.0_SZ)) /         &
-                              (2.0_SZ * (stormMotion**2.0_SZ-vMaxBL**2.0_SZ * windReduction**2.0_SZ))
+
+                   ! gamma = |quadrantVr| / |vMaxBL|
+                   gamma(i) = (U_Vr * stormMotionU + V_Vr * stormMotionV -                &
+                           SQRT(ABS((U_Vr * stormMotionU + V_Vr * stormMotionV)**2.0_SZ - &
+                                    (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *               &
+                                     windReduction**2.0_SZ) * vr**2.0_SZ))) /             &
+                          (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ)        
+ 
+!                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr * stormMotionV) - &
+!                               SQRT((2.0_SZ * U_Vr * stormMotionU+2.0_SZ * V_Vr *            &
+!                                     stormMotionV)**2.0_SZ -                                 &
+!                                    4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *         &
+!                                             windReduction**2.0_SZ) * vr**2.0_SZ)) /         &
+!                              (2.0_SZ * (stormMotion**2.0_SZ-vMaxBL**2.0_SZ * windReduction**2.0_SZ))
                    gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
-                
+
                    quadrantVr(i) = (vr - gamma(i) * stormMotion) / windReduction !scalar cal.
                  END IF
                ELSE
                  vmwBL(i) = vMaxBL
                END IF
              END DO
-           
+
              CALL SetUsequadrantVR(.TRUE.)
              CALL NewVortexFull(pn, pc, cLat, cLon, vMaxBL)
              strOut%hollB(iCnt) = GetShapeParameter()
@@ -1749,12 +1769,18 @@ MODULE ParWind
                    V_Vr = vr * SIN(epsilonAngle(i) / RAD2DEG)
 
                    ! Eliminate the translational speed based on vortex wind speed
-                   ! gamma = |quadrantVr| / |vMaxBL|  
-                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -              &
-                               SQRT((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
-                                    4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                        &
-                                             windReduction**2.0_SZ) * vr**2.0_SZ)) /                        &
-                               (2.0_SZ * (stormMotion**2.0_SZ-vMaxBL**2.0_SZ * windReduction**2.0_SZ))
+                   ! gamma = |quadrantVr| / |vMaxBL|
+                   gamma(i) = (U_Vr * stormMotionU + V_Vr * stormMotionV -                    &
+                               SQRT(ABS((U_Vr * stormMotionU + V_Vr * stormMotionV)**2.0_SZ - &
+                                        (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *               &
+                                         windReduction**2.0_SZ) * vr**2.0_SZ))) /             &
+                              (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ)
+
+!                   gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -              &
+!                               SQRT((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
+!                                    4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                        &
+!                                             windReduction**2.0_SZ) * vr**2.0_SZ)) /                        &
+!                               (2.0_SZ * (stormMotion**2.0_SZ-vMaxBL**2.0_SZ * windReduction**2.0_SZ))
                    gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
 
                    quadrantVr(i) = SQRT((U_Vr - gamma(i) * stormMotionU)**2.0_SZ + &
@@ -1771,14 +1797,20 @@ MODULE ParWind
                    IF (iQuadRot == 1) vmwBLFlag(i) = 1 ! assign violation flags
 
                    IF (strOut%ir(iCnt,i) > 0) THEN
-                     quadrantVr(i) = (-2.0_SZ * (stormMotionU * COS(quadrantVecAngles(i)) +        &
-                                               stormMotionV * SIN(quadrantVecAngles(i))) +         &
-                                               SQRT(4.0_SZ * (stormMotionU *                       &
-                                                              COS(quadrantVecAngles(i)) +          &
-                                                            stormMotionV *                         &
-                                                              SIN(quadrantVecAngles(i)))**2.0_SZ - &
-                                                    4.0_SZ * (stormMotion**2.0_SZ-vr**2.0_SZ))) / 2.0_SZ
-        
+                     quadrantVr(i) = - (stormMotionU * COS(quadrantVecAngles(i)) +                    &
+                                        stormMotionV * SIN(quadrantVecAngles(i))) +                   &
+                                        SQRT(ABS((stormMotionU * COS(quadrantVecAngles(i)) +          &
+                                                  stormMotionV * SIN(quadrantVecAngles(i)))**2.0_SZ - &
+                                                 (stormMotion**2.0_SZ - vr**2.0_SZ)))
+
+!                     quadrantVr(i) = (-2.0_SZ * (stormMotionU * COS(quadrantVecAngles(i)) +        &
+!                                               stormMotionV * SIN(quadrantVecAngles(i))) +         &
+!                                               SQRT(4.0_SZ * (stormMotionU *                       &
+!                                                              COS(quadrantVecAngles(i)) +          &
+!                                                            stormMotionV *                         &
+!                                                              SIN(quadrantVecAngles(i)))**2.0_SZ - &
+!                                                    4.0_SZ * (stormMotion**2.0_SZ-vr**2.0_SZ))) / 2.0_SZ
+
                       epsilonAngle(i)= 360.0_SZ + RAD2DEG *                                            &
                                        ATAN2(quadrantVr(i) * SIN(quadrantVecAngles(i)) + stormMotionV, &
                                              quadrantVr(i) * COS(quadrantVecAngles(i)) + stormMotionU)
@@ -1794,12 +1826,18 @@ MODULE ParWind
                      U_Vr = vr * SIN(strOut%dir(iCnt) * DEG2RAD)
                      V_Vr = vr * SIN(strOut%dir(iCnt) * DEG2RAD) 
 
-                     ! gamma = |quadrantVr| / |vMaxBL|  
-                     gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -              &
-                                 SQRT((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
-                                      4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                        &
-                                               windReduction**2.0_SZ) * vr**2.0_SZ)) /                        &
-                                 (2.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ))
+                     ! gamma = |quadrantVr| / |vMaxBL|
+                     gamma(i) = (U_Vr * stormMotionU + V_Vr * stormMotionV -                    &
+                                 SQRT(ABS((U_Vr * stormMotionU + V_Vr * stormMotionV)**2.0_SZ - &
+                                          (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *               &
+                                           windReduction**2.0_SZ) * vr**2.0_SZ))) /             &
+                                (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ)
+
+!                     gamma(i) = ((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV) -              &
+!                                 SQRT((2.0_SZ * U_Vr * stormMotionU + 2.0_SZ * V_Vr * stormMotionV)**2.0_SZ - &
+!                                      4.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ *                        &
+!                                               windReduction**2.0_SZ) * vr**2.0_SZ)) /                        &
+!                                 (2.0_SZ * (stormMotion**2.0_SZ - vMaxBL**2.0_SZ * windReduction**2.0_SZ))
                      gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
                    
                      quadrantVr(i) = (vr - gamma(i) * stormMotion) / windReduction !scalar cal.
@@ -1903,7 +1941,7 @@ MODULE ParWind
     !  the isotach radii to use
     !
     !  method 1
-    !  use the 34kt isotach only (like original NWS=9)
+    !  use the 34kt isotach only
     !
     !  method 2
     !  use the fancy way of taking the highest
@@ -1914,9 +1952,8 @@ MODULE ParWind
     !  if not available, use the 34kt one
     ! 
     !  method 4
-    !  use all available isothch for each cycle, 
-    !  linearly weighted-combination will be performed in 
-    !  nws20get module
+    !  use all available isotachs for each cycle, 
+    !  with a linearly weighted-combination is performed
     !  
     !------------------------------------
     SELECT CASE(method)
@@ -2619,7 +2656,13 @@ MODULE ParWind
         CALL Terminate()
     END IF
 
-#define GAHM_USE_FULL_DOMAIN 1
+!PV Tested against "GAHM_USE_FULL_DOMAIN 1" and produces identical wind fields,
+!   test case: Hurricane Florence 2018.
+!   Elapsed time (GAHM_USE_FULL_DOMAIN 1): 703 sec
+!   Elapsed time (GAHM_USE_FULL_DOMAIN 0): 198 sec
+!   Mesh: nodes: 6056968, elements: 11969815
+!   This flag will eventually be removed
+#define GAHM_USE_FULL_DOMAIN 0
 
 !################################################################
 !###   BEG:: FIRSTCALL BLOCK
@@ -2788,18 +2831,18 @@ MODULE ParWind
           IF (kCnt == 1) THEN
             iCyc = 1
             iSot = 1
-          ELSE ! kCnt == 1
+          ELSE ! kCnt /= 1
             IF (asyVortStru(stCnt)%numCycle(kCnt) == asyVortStru(stCnt)%numCycle(kCnt-1)) THEN
                IF (iSot > 4) THEN
                  WRITE(scratchMessage,'(a, i0, a)')                                          &
-                    'The GAHM asymmetric data structure has more than 4 iSotachs in cycle ', &
+                    'The GAHM asymmetric data structure has more than 4 isoTachs in cycle ', &
                     asyVortStru(stCnt)%numCycle(kCnt), '.'
                  CALL AllMessage(ERROR, scratchMessage)
                  CALL Terminate()
                END IF
-               iSot = iSot + 1 ! same iCyc, next iSotach
+               iSot = iSot + 1 ! same iCyc, next isoTach
             ELSE
-              iSot = 1 ! initialize iSotach #
+              iSot = 1 ! initialize isoTach #
               IF (asyVortStru(stCnt)%fcstInc(kCnt) == 0 .AND. asyVortStru(stCnt)%fcstInc(iCyc) == 0) THEN
                  iCyc = iCyc
               ELSE
@@ -2950,18 +2993,17 @@ MODULE ParWind
       CALL GeoToCPP(sfea, slam, cLat, cLon, dx, dy)
       rad  = SQRT(dx * dx + dy * dy) ! rad is in meters
       WHERE(rad < 1.d-1) rad = 1.d-1
-      dist = rad * M2NM              ! convert to NM
-      !dx      = DEG2RAD * REARTH * (slam - cLon) * COS(DEG2RAD * cLat)
-      !dy      = DEG2RAD * REARTH * (sfea - cLat)
-      !dist    = SQRT(dx * dx + dy * dy) * M2NM   ! Convert to NM
 
+      dist = rad * M2NM              ! convert to NM
       azimuth = 360.0_SZ + RAD2DEG * ATAN2(dx, dy)
       WHERE(azimuth > 360.0_SZ) azimuth = azimuth - 360.0_SZ
       !-----
 
       ! Using absolute value for coriolis for Southern Hemisphere
       coriolis = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * cLat))
-      thisCorio = coriolis
+      !PV Need to check if we have to use the fixed coriolis term  above
+      !   when calculating the final wind fields or to use the variable
+      !   coriolis defined next
       !thisCorio = ABS(2.0_SZ * OMEGA * SIN(DEG2RAD * sfea))
 
       ! ... and the indices of the nodal points where rad <= rrpval
@@ -3076,7 +3118,7 @@ MODULE ParWind
       uTransNow = uTrans(stCnt, jl1) + wtratio * (uTrans(stCnt, jl2) - utrans(stCnt, jl1))
       vTransNow = vTrans(stCnt, jl1) + wtratio * (vTrans(stCnt, jl2) - vTrans(stCnt, jl1))
 
-!#if GAHM_DEBUG
+#if GAHM_DEBUG
 #if GAHM_USE_FULL_DOMAIN
       WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs1= ', &
             minval(cHollBs1), maxval(cHollBs1), DatesTimes(iCnt)
@@ -3106,7 +3148,7 @@ MODULE ParWind
       WRITE(16,'(A20, 2X, F8.4)') 'Rossby Number= ', RossNum
       WRITE(16,'(A20, 2(2X, F12.3))') 'rrp, rmw= ', rrpval, rmw
 #endif
-!#endif
+#endif
 
       !-------------------------------
       ! Create a new asymmetric hurricane vortex.
@@ -3136,6 +3178,7 @@ MODULE ParWind
       DO npCnt = 1, maxRadIDX
         i = radIDX(npCnt)
 
+        !PV Need to check here if we need to use coriolis calculated at cLat or not
         CALL uvpr( dist(i), azimuth(i), crmaxw(i), crmaxwTrue(i),  &
              cHollBs(i), cVmwBL(i), cPhiFactor(i), stormMotionU,   &
              stormMotionV, geofactor, wVelX(i), wVelY(i), wPress(i))
