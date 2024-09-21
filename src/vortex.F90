@@ -1644,7 +1644,7 @@ MODULE PaHM_Vortex
   !>
   !----------------------------------------------------------------
   SUBROUTINE UVPR(iDist, iAngle, iRmx, iRmxTrue, iB, iVm, iPhi, &
-                  uTrans, vTrans, geof, u, v, p, CORIN)
+                  uTrans, vTrans, geof, u, v, p, corin)
 
     USE PaHM_Global, ONLY : windReduction, ONE2TEN, DEG2RAD, MB2PA, KT2MS, NM2M
 
@@ -1665,7 +1665,7 @@ MODULE PaHM_Vortex
     REAL(SZ), INTENT(OUT) :: v
     REAL(SZ), INTENT(OUT) :: p
 
-    REAL(SZ), OPTIONAL :: CORIN
+    REAL(SZ), OPTIONAL    :: corin
 
     REAL(SZ)              :: transSpdX  !NWS8-style translation speed
     REAL(SZ)              :: transSpdY  !NWS8-style translation speed
@@ -1680,8 +1680,8 @@ MODULE PaHM_Vortex
     vMax = iVm
     phi  = iPhi
 
-    IF (PRESENT(CORIN)) THEN
-      coriolis = CORIN
+    IF (PRESENT(corin)) THEN
+      coriolis = corin
     ELSE
       coriolis = corio
     END IF

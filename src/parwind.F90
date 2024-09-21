@@ -112,6 +112,9 @@ MODULE ParWind
     !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
     INTEGER, ALLOCATABLE             :: intEROuter(:)    ! estimated radius of the last closed isobar, 0 - 999 n mi
 
+    !----- extra variable the value of which is an estimation of RMW (radius of max winds)
+    INTEGER, ALLOCATABLE             :: intERmw(:)       ! radius of max winds, 0 - 999 n mi
+
     !----- converted data from the above values (if needed)
     INTEGER, DIMENSION(:), ALLOCATABLE  :: year, month, day, hour
     REAL(SZ), DIMENSION(:), ALLOCATABLE :: lat, lon
@@ -155,6 +158,9 @@ MODULE ParWind
 
     INTEGER,                ALLOCATABLE :: iRmw(:)          ! radius of max winds, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rmw(:)           ! converted from nm to m
+
+    INTEGER,                ALLOCATABLE :: iERmw(:)         ! estimated radius of max winds, 0 - 999 n mi
+    REAL(SZ),               ALLOCATABLE :: ermw(:)          ! converted from nm to m
 
     REAL(SZ), DIMENSION(:), ALLOCATABLE :: cPrDt            ! central pressure intensity change (Pa / h)
     REAL(SZ), DIMENSION(:), ALLOCATABLE :: trVx, trVy       ! translational velocity components (x, y) of the
@@ -210,6 +216,9 @@ MODULE ParWind
 
     INTEGER,                ALLOCATABLE :: iRmw(:)          ! radius of max winds, 0 - 999 n mi
     REAL(SZ),               ALLOCATABLE :: rmw(:)           ! converted from nm to m
+
+    INTEGER,                ALLOCATABLE :: iERmw(:)         ! estimated radius of max winds, 0 - 999 n mi
+    REAL(SZ),               ALLOCATABLE :: ermw(:)          ! converted from nm to m
 
     INTEGER, ALLOCATABLE             :: gusts(:)            ! gusts, 0 - 999 kt
     INTEGER, ALLOCATABLE             :: eye(:)              ! eye diameter, 0 - 120 n mi
@@ -275,8 +284,10 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ReadBestTrackFile()
 
-    USE PaHM_Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName, useMaxR34
-    USE Utilities, ONLY : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique
+    USE PaHM_Global, ONLY : LUN_BTRK, LUN_BTRK1, nBTrFiles, bestTrackFileName, &
+                            useMaxR34, useMaxR50, useMaxR64
+    USE Utilities, ONLY : GetLineRecord, OpenFileForRead, EstimateROCI, EstimateRMW, &
+                          ToUpperCase, CharUnique
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY : Arth, Indexx, ArrayEqual
 
@@ -297,7 +308,10 @@ MODULE ParWind
 
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
-    INTEGER, DIMENSION(4)          :: radii34
+    INTEGER, DIMENSION(4)          :: radiiQuad
+
+    INTEGER, ALLOCATABLE           :: idxOut(:)
+    INTEGER                        :: useMaxRad
 
     !---------- Initialize variables
     iUnit = LUN_BTRK
@@ -410,10 +424,40 @@ MODULE ParWind
           END IF
           !----------
 
-          !---------- Estimate a ROCI (radius of outer closed isobar)
-          radii34 = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
-                       bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
-          bestTrackData(iFile)%intEROuter(iCnt) = EstimateROCI(radii34, bestTrackData(iFile)%lat(iCnt), useMaxR34)
+          !---------- Estimated values of ROCI (radius of outer closed isobar)
+          ! Use only this approach when the wind intensity for the radii is 34 kt, everywhere else
+          ! intEROuter is set equal to zero so it can be adjusted later using linear interpolation
+          bestTrackData(iFile)%intEROuter(iCnt) = 0
+          IF (bestTrackData(iFile)%rad(iCnt) == 34) THEN
+            radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
+                           bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+
+            bestTrackData(iFile)%intEROuter(iCnt) = &
+                 EstimateROCI(radiiQuad, bestTrackData(iFile)%lat(iCnt), USEMAXRAD = 1)
+
+            ! Make sure that estimated ROCI is greater or equal to max radiiQuad (sanity check)
+            bestTrackData(iFile)%intEROuter(iCnt) = MAX(bestTrackData(iFile)%intEROuter(iCnt), &
+                                                        MAXVAL(radiiQuad, MASK = radiiQuad >= 0))
+          END IF
+          !----------
+
+          !---------- Estimated values of RMW (radius of max winds)
+          ! Use only this approach when the wind intensity for the radii is 34, 50 or 64 kt,
+          ! everywhere else intERmw is set equal to zero so it can be adjusted later using
+          ! linear interpolation
+          bestTrackData(iFile)%intERmw(iCnt) = 0
+          SELECT CASE(bestTrackData(iFile)%rad(iCnt))
+            CASE(34, 50, 64)
+              IF (bestTrackData(iFile)%rad(iCnt) == 34) useMaxRad = useMaxR34
+              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR50
+              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR64
+              radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt),      &
+                             bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+              bestTrackData(iFile)%intERmw(iCnt) = &
+                   EstimateRMW(radiiQuad, bestTrackData(iFile)%lat(iCnt), bestTrackData(iFile)%intVMax(iCnt), &
+                               bestTrackData(iFile)%rad(iCnt), USEMAXRAD = useMaxRad)
+            CASE DEFAULT
+          END SELECT
           !----------
 
           !---------- Get the year, month, day, hour from the DGT string
@@ -536,12 +580,49 @@ MODULE ParWind
       !------------------------------------------------------------
 
 
-      !---------- Here, we check for missing values for specific fields in the best track file.
+      !------------------------------------------------------------
+      !---------- BEG:: Missing Values
+      !------------------------------------------------------------
+      ! Here, we check for missing values for specific fields in the best track file.
       ! Namely: POuter, ROuter, Rmw, others ...?
-      ! Missing data are filled using linear interpolation here
-      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+
+      ! --- (1) POuter - pressure in millibars of the last closed isobar
+      ! POuter needs a special treatment, sometimes the reported POuter value is less
+      ! than CPress so we need to correct this here before applying the linear interpolation.
+      ! The problematic values are set to zero so they can be adjusted next using the
+      ! linear interpolation approach.
+      CALL CheckPOuter(bestTrackData(iFile)%intMslp, bestTrackData(iFile)%intPOuter, idxOut)
+      
+      IF (SIZE(idxOut) /= 0) THEN
+        CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+
+        ! Check again if the linear interpolation solved the problem
+        CALL CheckPOuter(bestTrackData(iFile)%intMslp, bestTrackData(iFile)%intPOuter, idxOut)
+
+        IF (SIZE(idxOut) /= 0) THEN
+          ! Increase the background pressure POuter by 1 mb so that POuter - PCentral
+          !is always greater than 0
+          bestTrackData(iFile)%intPOuter(idxOut) = bestTrackData(iFile)%intMslp(idxOut) + 1
+        END IF
+      END IF
+
+      ! --- (2) ESTIMATED EROuter (ROCI) - radius of the last closed isobar in nm
+      ! We might need to use this to fill missing values in ROuter below
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intEROuter)
+
+      ! --- (3) ROuter (ROCI) - radius of the last closed isobar in nm
       CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+
+      ! --- (4) ESTIMATED ERmw (RMW) - radius of max winds in nm
+      ! We might need to use this to fill missing values in Rmw below
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intERmw)
+
+      ! --- (5) Rmw (RMW) - radius of max winds in nm
       CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+      !------------------------------------------------------------
+      !---------- END:: Missing Values
+      !------------------------------------------------------------
+
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
@@ -604,9 +685,9 @@ MODULE ParWind
   !----------------------------------------------------------------
   SUBROUTINE ReadCsvBestTrackFile()
 
-    USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName, useMaxR34
-    USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, EstimateROCI, ToUpperCase, CharUnique, &
-                              IntValStr, GetLocAndRatio
+    USE PaHM_Global, ONLY   : nBTrFiles, bestTrackFileName, useMaxR34, useMaxR50, useMaxR64
+    USE Utilities, ONLY     : GetLineRecord, OpenFileForRead, EstimateROCI, EstimateRMW, &
+                              ToUpperCase, CharUnique, IntValStr, GetLocAndRatio
     USE TimeDateUtils, ONLY : TimeConv
     USE SortUtils, ONLY     : Arth, Indexx, ArrayEqual
     USE Csv_Module
@@ -631,7 +712,10 @@ MODULE ParWind
 
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
-    INTEGER, DIMENSION(4)          :: radii34
+    INTEGER, DIMENSION(4)          :: radiiQuad
+    
+    INTEGER, ALLOCATABLE           :: idxOut(:)
+    INTEGER                        :: useMaxRad
 
 
     CALL SetMessageSource("ReadCsvBestTrackFile")
@@ -750,10 +834,40 @@ MODULE ParWind
           END IF
           !----------
 
-          !---------- Estimate a ROCI (radius of outer closed isobar)
-          radii34 = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
-                       bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
-          bestTrackData(iFile)%intEROuter(iCnt) = EstimateROCI(radii34, bestTrackData(iFile)%lat(iCnt), useMaxR34)
+          !---------- Estimated values of ROCI (radius of outer closed isobar)
+          ! Use only this approach when the wind intensity for the radii is 34 kt, everywhere else
+          ! intEROuter is set equal to zero so it can be adjusted later using linear interpolation
+          bestTrackData(iFile)%intEROuter(iCnt) = 0
+          IF (bestTrackData(iFile)%rad(iCnt) == 34) THEN
+            radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt), &
+                           bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+
+            bestTrackData(iFile)%intEROuter(iCnt) = &
+                 EstimateROCI(radiiQuad, bestTrackData(iFile)%lat(iCnt), USEMAXRAD = 1)
+
+            ! Make sure that estimated ROCI is greater or equal to max radiiQuad (sanity check)
+            bestTrackData(iFile)%intEROuter(iCnt) = MAX(bestTrackData(iFile)%intEROuter(iCnt), &
+                                                        MAXVAL(radiiQuad, MASK = radiiQuad >= 0))
+          END IF
+          !----------
+
+          !---------- Estimated values of RMW (radius of max winds)
+          ! Use only this approach when the wind intensity for the radii is 34, 50 or 64 kt,
+          ! everywhere else intERmw is set equal to zero so it can be adjusted later using
+          ! linear interpolation
+          bestTrackData(iFile)%intERmw(iCnt) = 0
+          SELECT CASE(bestTrackData(iFile)%rad(iCnt))
+            CASE(34, 50, 64)
+              IF (bestTrackData(iFile)%rad(iCnt) == 34) useMaxRad = useMaxR34
+              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR50
+              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR64
+              radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt),      &
+                             bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
+              bestTrackData(iFile)%intERmw(iCnt) = &
+                   EstimateRMW(radiiQuad, bestTrackData(iFile)%lat(iCnt), bestTrackData(iFile)%intVMax(iCnt), &
+                               bestTrackData(iFile)%rad(iCnt), USEMAXRAD = useMaxRad)
+            CASE DEFAULT
+          END SELECT
           !----------
 
           !---------- Get the year, month, day, hour from the DGT string
@@ -812,37 +926,39 @@ MODULE ParWind
       idx0 = Arth(1, 1, bestTrackData(iFile)%numRec)
 
       IF (.NOT. ArrayEqual(idx0, idx1)) THEN
-        bestTrackData(iFile)%basin     =  bestTrackData(iFile)%basin(idx1)
-        bestTrackData(iFile)%cyNum     =  bestTrackData(iFile)%cyNum(idx1)
-        bestTrackData(iFile)%dtg       =  bestTrackData(iFile)%dtg(idx1)
-        bestTrackData(iFile)%techNum   =  bestTrackData(iFile)%techNum(idx1)
-        bestTrackData(iFile)%tech      =  bestTrackData(iFile)%tech(idx1)
-        bestTrackData(iFile)%tau       =  bestTrackData(iFile)%tau(idx1)
-        bestTrackData(iFile)%intLat    =  bestTrackData(iFile)%intLat(idx1)
-        bestTrackData(iFile)%ns        =  bestTrackData(iFile)%ns(idx1)
-        bestTrackData(iFile)%intLon    =  bestTrackData(iFile)%intLon(idx1)
-        bestTrackData(iFile)%ew        =  bestTrackData(iFile)%ew(idx1)
-        bestTrackData(iFile)%intVMax   =  bestTrackData(iFile)%intVMax(idx1)
-        bestTrackData(iFile)%intMslp   =  bestTrackData(iFile)%intMslp(idx1)
-        bestTrackData(iFile)%ty        =  bestTrackData(iFile)%ty(idx1)
-        bestTrackData(iFile)%rad       =  bestTrackData(iFile)%rad(idx1)
-        bestTrackData(iFile)%windCode  =  bestTrackData(iFile)%windCode(idx1)
-        bestTrackData(iFile)%intRad1   =  bestTrackData(iFile)%intRad1(idx1)
-        bestTrackData(iFile)%intRad2   =  bestTrackData(iFile)%intRad2(idx1)
-        bestTrackData(iFile)%intRad3   =  bestTrackData(iFile)%intRad3(idx1)
-        bestTrackData(iFile)%intRad4   =  bestTrackData(iFile)%intRad4(idx1)
-        bestTrackData(iFile)%intPOuter =  bestTrackData(iFile)%intPOuter(idx1)
-        bestTrackData(iFile)%intROuter =  bestTrackData(iFile)%intROuter(idx1)
-        bestTrackData(iFile)%intRmw    =  bestTrackData(iFile)%intRmw(idx1)
-        bestTrackData(iFile)%gusts     =  bestTrackData(iFile)%gusts(idx1)
-        bestTrackData(iFile)%eye       =  bestTrackData(iFile)%eye(idx1)
-        bestTrackData(iFile)%subregion =  bestTrackData(iFile)%subregion(idx1)
-        bestTrackData(iFile)%maxseas   =  bestTrackData(iFile)%maxseas(idx1)
-        bestTrackData(iFile)%initials  =  bestTrackData(iFile)%initials(idx1)
-        bestTrackData(iFile)%dir       =  bestTrackData(iFile)%dir(idx1)
-        bestTrackData(iFile)%intSpeed  =  bestTrackData(iFile)%intSpeed(idx1)
-        bestTrackData(iFile)%stormName =  bestTrackData(iFile)%stormName(idx1)
-        bestTrackData(iFile)%cycleNum  =  bestTrackData(iFile)%cycleNum(idx1)
+        bestTrackData(iFile)%basin      =   bestTrackData(iFile)%basin(idx1)
+        bestTrackData(iFile)%cyNum      =   bestTrackData(iFile)%cyNum(idx1)
+        bestTrackData(iFile)%dtg        =   bestTrackData(iFile)%dtg(idx1)
+        bestTrackData(iFile)%techNum    =   bestTrackData(iFile)%techNum(idx1)
+        bestTrackData(iFile)%tech       =   bestTrackData(iFile)%tech(idx1)
+        bestTrackData(iFile)%tau        =   bestTrackData(iFile)%tau(idx1)
+        bestTrackData(iFile)%intLat     =   bestTrackData(iFile)%intLat(idx1)
+        bestTrackData(iFile)%ns         =   bestTrackData(iFile)%ns(idx1)
+        bestTrackData(iFile)%intLon     =   bestTrackData(iFile)%intLon(idx1)
+        bestTrackData(iFile)%ew         =   bestTrackData(iFile)%ew(idx1)
+        bestTrackData(iFile)%intVMax    =   bestTrackData(iFile)%intVMax(idx1)
+        bestTrackData(iFile)%intMslp    =   bestTrackData(iFile)%intMslp(idx1)
+        bestTrackData(iFile)%ty         =   bestTrackData(iFile)%ty(idx1)
+        bestTrackData(iFile)%rad        =   bestTrackData(iFile)%rad(idx1)
+        bestTrackData(iFile)%windCode   =   bestTrackData(iFile)%windCode(idx1)
+        bestTrackData(iFile)%intRad1    =   bestTrackData(iFile)%intRad1(idx1)
+        bestTrackData(iFile)%intRad2    =   bestTrackData(iFile)%intRad2(idx1)
+        bestTrackData(iFile)%intRad3    =   bestTrackData(iFile)%intRad3(idx1)
+        bestTrackData(iFile)%intRad4    =   bestTrackData(iFile)%intRad4(idx1)
+        bestTrackData(iFile)%intPOuter  =   bestTrackData(iFile)%intPOuter(idx1)
+        bestTrackData(iFile)%intROuter  =   bestTrackData(iFile)%intROuter(idx1)
+        bestTrackData(iFile)%intEROuter =  bestTrackData(iFile)%intEROuter(idx1)
+        bestTrackData(iFile)%intRmw     =   bestTrackData(iFile)%intRmw(idx1)
+        bestTrackData(iFile)%intERmw    =   bestTrackData(iFile)%intERmw(idx1)
+        bestTrackData(iFile)%gusts      =   bestTrackData(iFile)%gusts(idx1)
+        bestTrackData(iFile)%eye        =   bestTrackData(iFile)%eye(idx1)
+        bestTrackData(iFile)%subregion  =   bestTrackData(iFile)%subregion(idx1)
+        bestTrackData(iFile)%maxseas    =   bestTrackData(iFile)%maxseas(idx1)
+        bestTrackData(iFile)%initials   =   bestTrackData(iFile)%initials(idx1)
+        bestTrackData(iFile)%dir        =   bestTrackData(iFile)%dir(idx1)
+        bestTrackData(iFile)%intSpeed   =   bestTrackData(iFile)%intSpeed(idx1)
+        bestTrackData(iFile)%stormName  =   bestTrackData(iFile)%stormName(idx1)
+        bestTrackData(iFile)%cycleNum   =   bestTrackData(iFile)%cycleNum(idx1)
       END IF
 
       DEALLOCATE(idx0)
@@ -851,12 +967,50 @@ MODULE ParWind
 
       CALL f%Destroy()
 
-      !---------- Here, we check for missing values for specific fields in the best track file.
+
+      !------------------------------------------------------------
+      !---------- BEG:: Missing Values
+      !------------------------------------------------------------
+      ! Here, we check for missing values for specific fields in the best track file.
       ! Namely: POuter, ROuter, Rmw, others ...?
-      ! Missing data are filled using linear interpolation here
-      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+
+      ! --- (1) POuter - pressure in millibars of the last closed isobar
+      ! POuter needs a special treatment, sometimes the reported POuter value is less
+      ! than CPress so we need to correct this here before applying the linear interpolation.
+      ! The problematic values are set to zero so they can be adjusted next using the
+      ! linear interpolation approach.
+      CALL CheckPOuter(bestTrackData(iFile)%intMslp, bestTrackData(iFile)%intPOuter, idxOut)
+      
+      IF (SIZE(idxOut) /= 0) THEN
+        CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intPOuter)
+
+        ! Check again if the linear interpolation solved the problem
+        CALL CheckPOuter(bestTrackData(iFile)%intMslp, bestTrackData(iFile)%intPOuter, idxOut)
+
+        IF (SIZE(idxOut) /= 0) THEN
+          ! Increase the background pressure POuter by 1 mb so that POuter - PCentral
+          !is always greater than 0
+          bestTrackData(iFile)%intPOuter(idxOut) = bestTrackData(iFile)%intMslp(idxOut) + 1
+        END IF
+      END IF
+
+      ! --- (2) ESTIMATED EROuter (ROCI) - radius of the last closed isobar in nm
+      ! We might need to use this to fill missing values in ROuter below
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intEROuter)
+
+      ! --- (3) ROuter (ROCI) - radius of the last closed isobar in nm
       CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intROuter)
+
+      ! --- (4) ESTIMATED ERmw (RMW) - radius of max winds in nm
+      ! We might need to use this to fill missing values in Rmw below
+      CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intERmw)
+
+      ! --- (5) Rmw (RMW) - radius of max winds in nm
       CALL FillMissDataTrackFile_LinInterp(bestTrackData(iFile)%dtg, bestTrackData(iFile)%intRmw)
+      !------------------------------------------------------------
+      !---------- END:: Missing Values
+      !------------------------------------------------------------
+
 
       !---------- This should be last after the fields are indexed in ascending order.
       !           It set the cycle number array in the data structure
@@ -898,6 +1052,60 @@ MODULE ParWind
     CALL UnsetMessageSource()
 
   END SUBROUTINE ReadCsvBestTrackFile
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  !  S U B R O U T I N E   C H E C K  P O U T E R
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Subroutine to check for erroneous POuter values in best track files
+  !>
+  !> @details
+  !>   Subroutine to check for erroneous POuter values in best track files
+  !>   and replacing them by zeros. It is assumed that the "zeroed" values
+  !>   are agjusted externally
+  !>
+  !> @param[in]
+  !>   dateSTR   The date string array in the best track file
+  !> @param[inout]
+  !>   dataARR     The data array  in the best track file to be checked for missing values
+  !>
+  !----------------------------------------------------------------
+  SUBROUTINE CheckPOuter(Pcentral, Pouter, idxOut)
+
+    IMPLICIT NONE
+
+    INTEGER, INTENT(IN)                :: Pcentral(:)
+    INTEGER, INTENT(INOUT)             :: Pouter(:)
+    INTEGER, ALLOCATABLE, INTENT(OUT)  :: idxOut(:)
+
+    INTEGER                            :: nREC, i, maxOutIDX
+    INTEGER, ALLOCATABLE               :: outIDX(:)
+
+
+    CALL SetMessageSource("CheckPOuter")
+
+    nREC = SIZE(Pcentral)
+
+    !---------- Here, we check for problematic Pouter values in the best track file.
+    outIDX = PACK([(i, i = 1, nREC)], (Pouter - Pcentral) <= 0)
+    maxOutIDX = SIZE(outIDX)
+
+    IF (maxOutIDX /= 0) THEN
+      ! We set Pouter to zero assumming that it will be adjusted
+      ! outside this subroutine
+      Pouter(outIDX) = 0
+    END IF
+
+    idxOut = outIDX
+
+    IF (ALLOCATED(outIDX))   DEALLOCATE(outIDX)
+
+    CALL UnsetMessageSource()
+
+  END SUBROUTINE CheckPOuter
 
 !================================================================================
 
@@ -975,7 +1183,7 @@ MODULE ParWind
       DEALLOCATE(chkArrStr, idxArrStr)
 
       DO i = 1, maxMissIDX
-        CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, wtRatio)
+        CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, WTRATIO = wtRatio)
 
         IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
           j1 = dataIDX(jl1)
@@ -1123,9 +1331,9 @@ MODULE ParWind
       strOut%lon(iCnt)         = bestTrackData(idTrFile)%lon(plIdx)
 
       strOut%iSpeed(iCnt)      = bestTrackData(idTrFile)%intVMax(plIdx)
-      strOut%speed(iCnt)       = KT2MS * bestTrackData(idTrFile)%intVMax(plIdx)     ! in m/s
+      strOut%speed(iCnt)       = KT2MS * strOut%iSpeed(iCnt)                        ! in m/s
       strOut%iCPress(iCnt)     = bestTrackData(idTrFile)%intMslp(plIdx)
-      strOut%cPress(iCnt)      = 100.0_SZ * bestTrackData(idTrFile)%intMslp(plIdx)  ! in Pa
+      strOut%cPress(iCnt)      = 100.0_SZ * strOut%iCPress(iCnt)                    ! in Pa
       strOut%iRrp(iCnt)        = bestTrackData(idTrFile)%intROuter(plIdx)
       strOut%rrp(iCnt)         = NM2M * strOut%iRrp(iCnt)                           ! in m
       strOut%iERrp(iCnt)       = bestTrackData(idTrFile)%intEROuter(plIdx)
@@ -1192,11 +1400,11 @@ MODULE ParWind
     END DO   ! numUniqRec
 
     ! Calculate the cPress intensity change (dP/dt)
-    CALL CalcIntensityChange(strOut%cPress, castTime, strOut%cPrDt, status, 2)
+    CALL CalcIntensityChange(strOut%cPress, castTime, strOut%cPrDt, status, ORDER = 2)
 
     ! Calculate storm translation velocities based on change in position,
     ! approximate u and v translation velocities
-    CALL UVTrans(strOut%lat, strOut%lon, castTime, strOut%trVx, strOut%trVy, status, 2)
+    CALL UVTrans(strOut%lat, strOut%lon, castTime, strOut%trVx, strOut%trVy, status, ORDER = 2)
 
     DEALLOCATE(castTime)
     !--------------------
@@ -1264,7 +1472,7 @@ MODULE ParWind
     INTEGER                :: numNonZero ! number of nonzero isotach radii
     INTEGER                :: firstEntry    ! first entry in the cycle
     INTEGER                :: lastEntry     ! last entry in the cycle
-    REAL(sz)               :: stormMotion   ! portion of Vmax attributable to storm motio
+    REAL(sz)               :: stormMotion   ! portion of Vmax attributable to storm motion
     REAL(sz)               :: stormMotionU  ! U portion of Vmax attributable to storm motion
     REAL(sz)               :: stormMotionV  ! V portion of Vmax attributable to storm motion
     REAL(sz)               :: U_Vr, V_Vr
@@ -1289,10 +1497,10 @@ MODULE ParWind
     REAL(SZ), DIMENSION(4)  :: epsilonAngle
     INTEGER,  DIMENSION(4)  :: irr
     LOGICAL,  DIMENSION(4)  :: vioFlag
-    REAL(SZ)                :: vMaxBL ! max sustained wind at top of atm. b.l.
+    REAL(SZ)                :: vMaxBL   ! max sustained wind at top of atm. b.l.
     REAL(SZ)                :: azimuth  ! angle of node w.r.t. vortex (radians)
     REAL(SZ), DIMENSION(4)  :: quadrantVr, quadrantAngles, quadrantVecAngles
-    REAL(SZ)                :: vr ! Current velocity @ wind radii (knots)
+    REAL(SZ)                :: vr       ! Current velocity @ wind radii (knots)
   
     
     status = 0  ! no error
@@ -1403,7 +1611,8 @@ MODULE ParWind
       strOut%stormName(iCnt)   = bestTrackData(idTrFile)%stormName(iCnt)
 
 !PV DO WE NEED TO INCLUDE THE SAME CODE FOR CASTTIME AS IN HOLLAND?
-      CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), strOut%hour(iCnt), 0, 0.0_SZ, castTime(iCnt))
+      CALL TimeConv(strOut%year(iCnt), strOut%month(iCnt), strOut%day(iCnt), strOut%hour(iCnt), &
+                    0, 0.0_SZ, castTime(iCnt))
       strOut%castTime(iCnt) = castTime(iCnt)
 
       !---------- Check for a new cycle
@@ -2079,7 +2288,7 @@ MODULE ParWind
     CALL WriteAsymmetricVortexData(bestTrackFileName(idTrFile), strOut)
 
     CALL UnsetMessageSource()
-
+stop !PV
   END SUBROUTINE ProcessAsymmetricVortexData
 
 !================================================================================
@@ -2316,11 +2525,12 @@ MODULE ParWind
 !################################################################
 !###   BEG:: CALCULATION ITERATIONS FOR EACH BEST TRACK FILE
 !################################################################
+
     DO stCnt = 1, nBTrFiles
       ! Get the bin interval where Times(iCnt) is bounded and the corresponding ratio
       ! factor for the subsequent linear interpolation in time. In order for this to
       ! work, the array holStru%castTime should be ordered in ascending order.
-      CALL GetLocAndRatio(Times(iCnt), holStru(stCnt)%castTime, jl1, jl2, wtRatio)
+      CALL GetLocAndRatio(Times(iCnt), holStru(stCnt)%castTime, jl1, jl2, WTRATIO = wtRatio)
 
       ! Skip the subsequent calculations if Times(iCnt) is outside the castTime range
       ! by exiting this loop
@@ -2361,9 +2571,12 @@ MODULE ParWind
 
       ! ----- Get all the distances of the mesh nodes from (lat, lon)
       CALL GeoToCPP(sfea, slam, lat, lon, dx, dy) ! dx,dy in meters
-      theta = ATAN2(dy, dx)
       rad = SQRT(dx * dx + dy * dy) ! dx,dy in meters
       WHERE(rad < 1.d-1) rad = 1.d-1
+
+      !dx = DEG2RAD * (slam(i) - lon)
+      !dy = DEG2RAD * (sfea(i) - lat)
+      theta = ATAN2(dy, dx)
       ! -----
 
       ! ... and the indices of the nodal points where rad <= rrpval
@@ -2383,7 +2596,7 @@ MODULE ParWind
                                      TRIM(ADJUSTL(holStru(stCnt)%thisStorm))
         CALL LogMessage(INFO, scratchMessage)
 
-        CYCLE
+        EXIT
       ELSE
         WRITE(tmpStr1, '(i20)') maxRadIDX
           tmpStr1 = 'Number of nodes = ' // TRIM(ADJUSTL(tmpStr1)) // ', '
@@ -2468,7 +2681,7 @@ MODULE ParWind
         grVel = grVel * windMultiplier
 
         ! Find the wind velocity components (caution to SH/NH)
-        if(lat.lt.0.d0) then ! SH
+        if(lat < 0.d0) then ! SH
           sfVelX = grVel * SIN(theta(i))
           sfVelY = -grVel * COS(theta(i))
         else ! NH
@@ -2938,7 +3151,7 @@ MODULE ParWind
       ! factor for the subsequent linear interpolation in time. In order for this to
       ! work, the array asyVortStru%castTime should be ordered in ascending order.
       !PV (iCyc, iCyc - 1) = (jl2, jl1) jl1: lower limit and jl2: upper limit
-      CALL GetLocAndRatio(Times(iCnt), cycleTime(stCnt, 1:nCycles(stCnt)), jl1, jl2, wtRatio)
+      CALL GetLocAndRatio(Times(iCnt), cycleTime(stCnt, 1:nCycles(stCnt)), jl1, jl2, WTRATIO = wtRatio)
 
       ! Skip the subsequent calculations if Times(iCnt) is outside the castTime range
       ! by exiting this loop
@@ -3474,7 +3687,7 @@ MODULE ParWind
     IF (.NOT. ALLOCATED(str%intRad4))    ALLOCATE(str%intRad4(nRec))
     IF (.NOT. ALLOCATED(str%intPOuter))  ALLOCATE(str%intPOuter(nRec))
     IF (.NOT. ALLOCATED(str%intROuter))  ALLOCATE(str%intROuter(nRec))
-    IF (.NOT. ALLOCATED(str%intRmw))     ALLOCATE(str%intRmw(nRec))     
+    IF (.NOT. ALLOCATED(str%intRmw))     ALLOCATE(str%intRmw(nRec))
     IF (.NOT. ALLOCATED(str%gusts))      ALLOCATE(str%gusts(nRec))
     IF (.NOT. ALLOCATED(str%eye))        ALLOCATE(str%eye(nRec))
     IF (.NOT. ALLOCATED(str%subregion))  ALLOCATE(str%subregion(nRec))
@@ -3487,7 +3700,9 @@ MODULE ParWind
 
     !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
     IF (.NOT. ALLOCATED(str%intEROuter)) ALLOCATE(str%intEROuter(nRec))
-
+    !----- extra variable the value of which is an estimation of RMW (radius of max winds)
+    IF (.NOT. ALLOCATED(str%intERmw))    ALLOCATE(str%intERmw(nRec))
+    
     !----- Converted parameters
     IF (.NOT. ALLOCATED(str%year))       ALLOCATE(str%year(nRec))
     IF (.NOT. ALLOCATED(str%month))      ALLOCATE(str%month(nRec))
@@ -3558,6 +3773,8 @@ MODULE ParWind
 
     !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
     IF (ALLOCATED(str%intEROuter)) DEALLOCATE(str%intEROuter)
+    !----- extra variable the value of which is an estimation of RMW (radius of max winds)
+    IF (ALLOCATED(str%intERmw))    DEALLOCATE(str%intERmw)
 
     !----- Converted parameters
     IF (ALLOCATED(str%year))       DEALLOCATE(str%year)
@@ -3631,6 +3848,9 @@ MODULE ParWind
     IF (.NOT. ALLOCATED(str%iRmw))        ALLOCATE(str%iRmw(nRec))
     IF (.NOT. ALLOCATED(str%rmw))         ALLOCATE(str%rmw(nRec))
 
+    IF (.NOT. ALLOCATED(str%iERmw))       ALLOCATE(str%iERmw(nRec))
+    IF (.NOT. ALLOCATED(str%ermw))        ALLOCATE(str%ermw(nRec))
+
     IF (.NOT. ALLOCATED(str%cPrDt))       ALLOCATE(str%cPrDt(nRec))
 
     IF (.NOT. ALLOCATED(str%trVx))        ALLOCATE(str%trVx(nRec))
@@ -3696,6 +3916,9 @@ MODULE ParWind
 
     IF (ALLOCATED(str%iRmw))         DEALLOCATE(str%iRmw)
     IF (ALLOCATED(str%rmw))          DEALLOCATE(str%rmw)
+
+    IF (ALLOCATED(str%iERmw))        DEALLOCATE(str%iERmw)
+    IF (ALLOCATED(str%ermw))         DEALLOCATE(str%ermw)
 
     IF (ALLOCATED(str%cPrDt))        DEALLOCATE(str%cPrDt)
 
@@ -3776,6 +3999,9 @@ MODULE ParWind
 
     IF (.NOT. ALLOCATED(str%iRmw))               ALLOCATE(str%iRmw(nRec))
     IF (.NOT. ALLOCATED(str%rmw))                ALLOCATE(str%rmw(nRec))
+
+    IF (.NOT. ALLOCATED(str%iERmw))              ALLOCATE(str%iERmw(nRec))
+    IF (.NOT. ALLOCATED(str%ermw))               ALLOCATE(str%ermw(nRec))
 
     IF (.NOT. ALLOCATED(str%gusts))              ALLOCATE(str%gusts(nRec))
     IF (.NOT. ALLOCATED(str%eye))                ALLOCATE(str%eye(nRec))
@@ -3873,6 +4099,9 @@ MODULE ParWind
 
     IF (ALLOCATED(str%iRmw))               DEALLOCATE(str%iRmw)
     IF (ALLOCATED(str%rmw))                DEALLOCATE(str%rmw)
+
+    IF (ALLOCATED(str%iERmw))              DEALLOCATE(str%iERmw)
+    IF (ALLOCATED(str%ermw))               DEALLOCATE(str%ermw)
 
     IF (ALLOCATED(str%gusts))              DEALLOCATE(str%gusts)
     IF (ALLOCATED(str%eye))                DEALLOCATE(str%eye)

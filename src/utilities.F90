@@ -929,7 +929,7 @@ MODULE Utilities
     vString     = BLANK
     string      = BLANK
 
-    lenLine = GetLineRecord(inpLine, line, 1)
+    lenLine = GetLineRecord(inpLine, line, LASTCOMMFLAG = 1)
     outLine = line
 
     ! If not a blank or comment line [CHAR(33)=!], decode and extract input
@@ -1924,8 +1924,8 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT)  :: lat
     REAL(SZ), INTENT(OUT)  :: lon
 
-    lat = lat0 + y / (DEG2RAD * REARTH)
     lon = lon0 + x / (DEG2RAD * REARTH * COS(DEG2RAD * lat0))
+    lat = lat0 + y / (DEG2RAD * REARTH)
 
   END SUBROUTINE CPPToGeo_Scalar
 
@@ -1971,8 +1971,8 @@ MODULE Utilities
     REAL(SZ), INTENT(OUT)  :: lat(:)
     REAL(SZ), INTENT(OUT)  :: lon(:)
 
-    lat = lat0 + y / (DEG2RAD * REARTH)
     lon = lon0 + x / (DEG2RAD * REARTH * COS(DEG2RAD * lat0))
+    lat = lat0 + y / (DEG2RAD * REARTH)
 
   END SUBROUTINE CPPToGeo_1D
 
@@ -2693,43 +2693,40 @@ MODULE Utilities
   !>      Weather and Climate Extremes, Volume 33, September 2021, 100366. https://doi.org/10.1016/j.wace.2021.100366.
   !>
   !> @param[in]
-  !>   rad34      34-knot wind radii in the 4 quadrants - real, vector(4), nautical miles (nm)
+  !>   quadRadii  34-knot wind radii in the 4 quadrants - integer, vector(4), nautical miles (nm)
   !> @param[in]
-  !>   lat        Latitude - real, scalar, (degrees)
+  !>   Latitude of the TC storm's eye - real, scalar, (degrees north)
   !> @param[in]
-  !>   useMaxR34  Flag - integer, scalar. (>=1 means to use the max value of rad34, otherwise \n
-  !>                                        use the average value of rad34
+  !>   useMaxRad  Flag - integer, scalar. (>=1 means to use the max value of quadRadii, otherwise \n
+  !>                                        use the average value of quadRadii
   !>
   !> @return      myValOut: The estimated R0 (ROCI) in nautical miles (nm)
   !>
   !----------------------------------------------------------------
-  INTEGER FUNCTION EstimateROCI(rad34, lat, useMaxR34) RESULT(myValOut)
+  INTEGER FUNCTION EstimateROCI(quadRadii, lat, useMaxRad) RESULT(myValOut)
 
-    USE PaHM_Sizes, ONLY : FixNearWholeReal
     USE PaHM_Global, ONLY : OMEGA, KT2MS, NM2M, M2NM, DEG2RAD
 
     IMPLICIT NONE
 
-    INTEGER, DIMENSION(4), INTENT(IN) :: rad34  ! 34-knot radii in the four quadrants (nautical miles)
-    REAL(SZ), INTENT(IN) :: lat                 ! latitude (degrees)
-    INTEGER, OPTIONAL    :: useMaxR34           ! if <=0 use the average value of the R34 raddii
-                                                ! otherwise, use max(R34)
+    INTEGER, DIMENSION(4), INTENT(IN) :: quadRadii
+    REAL(SZ), INTENT(IN)              :: lat
+    INTEGER, OPTIONAL                 :: useMaxRad
 
-    REAL(SZ) :: V34, CD, cori, wrad, term
-    INTEGER  :: R34, numR34, commFlag, i
+    REAL(SZ) :: Rint, Vint, CD, cori, wrad, term
+    INTEGER  :: numRint, commFlag, i
 
-    ! Ro  = estimated radius of the outermost closed isobar
-    ! R34 = radii of the 34-knot winds
-    ! v34 = 34-knot wind speed converted to m/s
-    ! CD  = momentum drag coefficient taken wqual to 10^-3
+    ! Rint = radii of the 34-knot winds
+    ! Vint = 34-knot wind speed converted to m/s
+    ! CD   = momentum drag coefficient taken equal to 10^-3
     ! cori = coriolis parameter, cori = 2 * OMEGA * sin(lat)
     ! lat  = latitude in degrees
     ! wrad = equilibrium subsidence valocity taken to be constant (0.016 m/s)
 
     commFlag = 0
-    IF (PRESENT(useMaxR34)) THEN
-      IF (useMaxR34 <= 0) commFlag = 0
-      IF (useMaxR34 > 0)  commFlag = 1
+    IF (PRESENT(useMaxRad)) THEN
+      IF (useMaxRad <= 0) commFlag = 0
+      IF (useMaxRad > 0)  commFlag = 1
     END IF
 
     ! Compute coriolis.
@@ -2737,30 +2734,30 @@ MODULE Utilities
     cori = ABS(2.0_SZ * OMEGA * SIN(lat * DEG2RAD))
 
     ! Set the values of the constant variables
-    V34  = 34.0_SZ * KT2MS
+    Vint = 34.0_SZ * KT2MS ! convert to m/s
     CD   = 0.001_SZ
     wrad = 0.016_SZ
 
-    ! Here we need only values of rad34 > 0. rad34 = 0 means that this radius is missing
-    ! from the data and of course a rad34 < 0 does not have any physiacal meaning
+    ! Here we need only values of quadRadii > 0. quadRadii = 0 means that this radius is missing
+    ! from the data and of course a quadRadii < 0 does not have any physiacal meaning
     IF (commFlag <= 0) THEN
-      R34   = 0
-      numR34 = 0
+      Rint   = 0
+      numRint = 0
       DO i = 1, 4
-        IF (rad34(i) > 0) THEN
-          R34   = R34 + rad34(i)
-          numR34 = numR34 + 1
+        IF (quadRadii(i) > 0) THEN
+          Rint   = Rint + quadRadii(i)
+          numRint = numRint + 1
         END IF
       END DO
-      IF (numR34 > 0) R34 = R34 / numR34
+      IF (numRint > 0) Rint = Rint / numRint
     ELSE
-      R34 = MAXVAL(rad34, MASK = rad34 >= 0)
+      Rint = MAXVAL(quadRadii, MASK = quadRadii >= 0)
     END IF
-    IF (R34 < 0)   R34 = 0
+    IF (Rint < 0)   Rint = 0
 
-    IF (R34 > 0) THEN
-      term = M2NM * (((2.0_SZ * CD) / (cori * wrad)) * V34 * V34) ! convert to nautical miles
-      myValOut = FixNearWholeReal(SQRT(R34 * R34 + term  * R34))
+    IF (Rint > 0) THEN
+      term = M2NM * ( (2.0_SZ * CD * Vint * Vint) / (cori * wrad) ) ! convert to nautical miles
+      myValOut = NINT( SQRT(Rint * Rint + term  * Rint) )
       IF (myValOut > 999) myValOut = 999
     ELSE
       myValOut = 0
@@ -2769,6 +2766,136 @@ MODULE Utilities
     RETURN
 
   END FUNCTION EstimateROCI
+
+!================================================================================
+
+  ! ----------------------------------------------------------------
+  !  F U N C T I O N   E S T I M A T E  R M W
+  ! ----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Calculates the radius of max winds (RMW)
+  !>
+  !> @details
+  !>   Function to estimate the radius of radius of max winds (RMW) that describes
+  !>   how far the strongest winds are from the storm's center of a Tropical Storm (TC), using the 34, 50 or 60 knot radii.
+  !>
+  !> @see Arthur Avenas, Alexis Mouche, Pierre Tandeo, Jean-Francois Piolle, Dan Chavas, \n
+  !>      Ronan Fablet, John Knaff, and Bertrand Chapron (2023): \n
+  !>      "Reexamining the Estimation of Tropical Cyclone Radius of Maximum Wind from Outer Size \n
+  !>       with an Extensive Synthetic Aperture Radar Dataset", \n
+  !>       Monthly Weather Review, V.151, p. 3169-3189, 2023.
+  !> @see Daniel R. Chavas and John A. Knaff (2022): \n
+  !>      "A simple model for predicting the tropical cyclone radius of maximum wind from outer size", \n
+  !>      Weather and Forecasting, V.37, p. 563-579, 2022.
+  !>
+  !> @param[in]
+  !>   quadRadii  34, 50 or 64 knot wind radii in the 4 quadrants - integer, vector(4), nautical miles (nm)
+  !> @param[in]
+  !>   lat        Latitude of the TC storm's eye - real, scalar, (degrees north)
+  !> @param[in]
+  !>   Vmax       Maximum sustained wind speed - integer, scalar, (knots)
+  !> @param[in]
+  !>   whatRad    Radius to be used (R34, R50, R64) in the calculations - integer, scalar \n
+  !>              (accepted values are: 34, 50, 64)
+  !> @param[in]
+  !>   useMaxRad  Flag - integer, scalar (>=1 means to use the max value of quadRadii, otherwise \n
+  !>                                      use the average value of quadRadii)
+  !>
+  !> @return      myValOut: The estimated RMW in nautical miles (nm)
+  !>
+  !----------------------------------------------------------------
+  INTEGER FUNCTION EstimateRMW(quadRadii, lat, VMax, whatRad, useMaxRad) RESULT(myValOut)
+
+    USE PaHM_Global, ONLY : OMEGA, KT2MS, NM2M, M2NM, DEG2RAD
+
+    IMPLICIT NONE
+
+    INTEGER, DIMENSION(4), INTENT(IN) :: quadRadii
+    REAL(SZ), INTENT(IN)              :: lat
+    INTEGER, INTENT(IN)               :: Vmax, whatRad
+    INTEGER, INTENT(IN), OPTIONAL     :: useMaxRad
+
+    REAL(SZ) :: Rint, Vint, Vreg, myVmax, cori
+    REAL(SZ) :: Mmax, M, MmaxM
+    INTEGER  :: numRint, commFlag, i
+    CHARACTER(LEN=128) :: scratchMsg
+
+    ! myValOut = estimated radius of the maximum winds
+    ! Rint   = radius (average or max) of the 34,50 or 64 knot wind intensity radii (4 quadrants)
+    ! Vint   = 34,50 or 64 knot wind intensity converted to m/s
+    ! myVmax = Vmax converted to m/s
+    ! cori = coriolis parameter, cori = 2 * OMEGA * sin(lat)
+
+
+    ! Determine what radius to use (average or max)
+    commFlag = 0
+    IF (PRESENT(useMaxRad)) THEN
+      IF (useMaxRad <= 0) commFlag = 0
+      IF (useMaxRad > 0)  commFlag = 1
+    END IF
+
+    ! Here we need only values of quadRadii > 0. quadRadii = 0 means that this radius is missing
+    ! from the data and of course a quadRadii < 0 does not have any physiacal meaning
+    IF (commFlag <= 0) THEN
+      Rint   = 0.0_SZ
+      numRint = 0
+      DO i = 1, SIZE(quadRadii)
+        IF (quadRadii(i) > 0) THEN
+          Rint   = Rint + quadRadii(i)
+          numRint = numRint + 1
+        END IF
+      END DO
+      IF (numRint > 0) Rint = Rint / numRint
+    ELSE
+      Rint = MAXVAL(quadRadii, MASK = quadRadii >= 0)
+    END IF
+    IF (Rint < 0)   Rint = 0
+
+
+    ! Conversions of the input data
+    Rint = Rint * NM2M      ! convert from nm to m
+    myVmax = Vmax * KT2MS   ! convert from kt to m/s
+    Vreg = 0.6967_SZ * myVmax + 6.1992_SZ
+
+
+    ! Compute coriolis.
+    ! Using absolute value for coriolis for Southern Hemispher
+    cori = ABS(2.0_SZ * OMEGA * SIN(lat * DEG2RAD))
+
+
+    ! Calculate the intermediate variables
+    SELECT CASE(whatRad)
+      CASE(34)
+        Vint  = 34.0_SZ * KT2MS
+        M = Rint * Vint + 0.5 * cori * Rint * Rint
+        MmaxM = 0.531 * EXP((Vreg - Vint) * (-0.00214 - 0.00314 * 0.5 * cori * Rint))
+        Mmax = M * MmaxM
+      CASE(50)
+        Vint  = 50.0_SZ * KT2MS
+        M = Rint * Vint + 0.5 * cori * Rint * Rint
+        MmaxM = 0.626 * EXP((Vreg - Vint) * (0.00282 - 0.00724 * 0.5 * cori * Rint))
+        Mmax = M * MmaxM
+      CASE(64)
+        Vint  = 64.0_SZ * KT2MS
+        M = Rint * Vint + 0.5 * cori * Rint * Rint
+        MmaxM = 0.612 * EXP((Vreg - Vint) * (0.00946 - 0.01183 * 0.5 * cori * Rint))
+        Mmax = M * MmaxM
+      CASE DEFAULT
+        WRITE(scratchMsg,'(a,i0,a)') 'Wrong value for whatRad = ', whatRad, &
+                                     ' should be one of 34, 50, 64'
+        PRINT *, TRIM(ADJUSTL(scratchMsg))
+        myValOut = 0
+        RETURN 
+    END SELECT
+
+    myValOut = NINT( (myVmax / cori) * &
+                     (SQRT(1.0 + (2.0_SZ * cori * Mmax) / (myVmax * myVmax)) - 1.0) *  M2NM )
+    IF (myValOut > 999) myValOut = 999
+
+    RETURN
+
+  END FUNCTION EstimateRMW
 
 !================================================================================
 
