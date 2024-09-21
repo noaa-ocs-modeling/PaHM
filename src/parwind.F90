@@ -2288,7 +2288,7 @@ MODULE ParWind
     CALL WriteAsymmetricVortexData(bestTrackFileName(idTrFile), strOut)
 
     CALL UnsetMessageSource()
-stop !PV
+
   END SUBROUTINE ProcessAsymmetricVortexData
 
 !================================================================================
