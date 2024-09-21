@@ -1894,7 +1894,7 @@ MODULE ParWind
 !                             4.0_SZ*(stormMotion**2.0_SZ-vmwBL(i)**2.0_SZ * windReduction**2.0_SZ) * &
 !                             vr**2.0_SZ)) / (2.0_SZ * (stormMotion**2.0_SZ -                         &
 !                                                     vmwBL(i)**2.0_SZ * windReduction**2.0_SZ))
-                   !gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
+                   gamma(i) = MAX(MIN(gamma(i), 1.0_SZ), 0.0_SZ)
 
                    quadrantVr(i) = SQRT((U_Vr - gamma(i) * stormMotionU)**2.0_SZ +                &
                                         (V_Vr - gamma(i) * stormMotionV)**2.0_SZ) / windReduction
