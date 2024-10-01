@@ -302,6 +302,7 @@ MODULE ParWind
     INTEGER                        :: iFile, iCnt             ! loop counters
     INTEGER                        :: iUnit, errIO, ios, status
 
+    CHARACTER(LEN=21), ALLOCATABLE :: filterStr(:)
     CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
     INTEGER, ALLOCATABLE           :: idxArrStr(:)
     INTEGER                        :: nUnique, maxCnt, kCnt, kMax
@@ -471,6 +472,13 @@ MODULE ParWind
             IF (ios /= 0) bestTrackData(iFile)%hour(iCnt) = -1
           !----------
         END IF
+
+        ! Used to filter out possible duplicate lines
+        WRITE(filterStr(iCnt), '(a10, i3.3, a1 i4.4, a1, i2.2)')                                 &
+                               bestTrackData(iFile)%dtg(iCnt),                                   &
+                               bestTrackData(iFile)%intLat(iCnt), bestTrackData(iFile)%ns(iCnt), &
+                               bestTrackData(iFile)%intLon(iCnt), bestTrackData(iFile)%ew(iCnt), &
+                               bestTrackData(iFile)%rad(iCnt)
       END DO
 
       10 IF (errIO /= 0) THEN
@@ -499,10 +507,72 @@ MODULE ParWind
 
       20 CLOSE(iUnit)
 
+      !------------------------------------------------------------
+      ! Get the unique lines in the best track file, that is eliminate duplicate lines using
+      ! the filterStr array defined above (e.g., such lines found in the best track file for
+      ! hurricane Ian, maybe others too).
+      ALLOCATE(chkArrStr(nLines))
+      ALLOCATE(idxArrStr(nLines))
+
+      nUnique = CharUnique(filterStr, chkArrStr, idxArrStr)
+
+      IF (nUnique /= nLines) THEN
+        bestTrackData(iFile)%basin      =   bestTrackData(iFile)%basin(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%cyNum      =   bestTrackData(iFile)%cyNum(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%dtg        =   bestTrackData(iFile)%dtg(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%techNum    =   bestTrackData(iFile)%techNum(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%tech       =   bestTrackData(iFile)%tech(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%tau        =   bestTrackData(iFile)%tau(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intLat     =   bestTrackData(iFile)%intLat(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ns         =   bestTrackData(iFile)%ns(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intLon     =   bestTrackData(iFile)%intLon(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ew         =   bestTrackData(iFile)%ew(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intVMax    =   bestTrackData(iFile)%intVMax(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intMslp    =   bestTrackData(iFile)%intMslp(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ty         =   bestTrackData(iFile)%ty(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%rad        =   bestTrackData(iFile)%rad(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%windCode   =   bestTrackData(iFile)%windCode(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad1    =   bestTrackData(iFile)%intRad1(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad2    =   bestTrackData(iFile)%intRad2(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad3    =   bestTrackData(iFile)%intRad3(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad4    =   bestTrackData(iFile)%intRad4(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intPOuter  =   bestTrackData(iFile)%intPOuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intROuter  =   bestTrackData(iFile)%intROuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intEROuter =   bestTrackData(iFile)%intEROuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRmw     =   bestTrackData(iFile)%intRmw(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intERmw    =   bestTrackData(iFile)%intERmw(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%gusts      =   bestTrackData(iFile)%gusts(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%eye        =   bestTrackData(iFile)%eye(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%subregion  =   bestTrackData(iFile)%subregion(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%maxseas    =   bestTrackData(iFile)%maxseas(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%initials   =   bestTrackData(iFile)%initials(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%dir        =   bestTrackData(iFile)%dir(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intSpeed   =   bestTrackData(iFile)%intSpeed(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%stormName  =   bestTrackData(iFile)%stormName(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%cycleNum   =   bestTrackData(iFile)%cycleNum(idxArrStr(1:nUnique))
+
+        !----- Converted parameters
+        bestTrackData(iFile)%year       = bestTrackData(iFile)%year(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%month      = bestTrackData(iFile)%month(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%day        = bestTrackData(iFile)%day(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%hour       = bestTrackData(iFile)%hour(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%lat        = bestTrackData(iFile)%lat(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%lon        = bestTrackData(iFile)%lon(idxArrStr(1:nUnique))
+
+        ! We need to reallocate this best track file structure to reflect the filtering
+        ! of the duplicate lines
+        CALL ReAllocBTrStruct(bestTrackData(iFile), nUnique)
+        nLines = nUnique
+      END IF
+
+      DEALLOCATE(chkArrStr)
+      DEALLOCATE(idxArrStr)
+      DEALLOCATE(filterStr)
+      !------------------------------------------------------------
+
       bestTrackData(iFile)%thisStorm = ''
       bestTrackData(iFile)%loaded    = .TRUE.
       bestTrackData(iFile)%numRec    = nLines
-
 
       !------------------------------------------------------------
       ! Get the unique storm name and store it in the thisStorm string
@@ -542,37 +612,47 @@ MODULE ParWind
       idx0 = Arth(1, 1, bestTrackData(iFile)%numRec)
 
       IF (.NOT. ArrayEqual(idx0, idx1)) THEN
-        bestTrackData(iFile)%basin     =  bestTrackData(iFile)%basin(idx1)
-        bestTrackData(iFile)%cyNum     =  bestTrackData(iFile)%cyNum(idx1)
-        bestTrackData(iFile)%dtg       =  bestTrackData(iFile)%dtg(idx1)
-        bestTrackData(iFile)%techNum   =  bestTrackData(iFile)%techNum(idx1)
-        bestTrackData(iFile)%tech      =  bestTrackData(iFile)%tech(idx1)
-        bestTrackData(iFile)%tau       =  bestTrackData(iFile)%tau(idx1)
-        bestTrackData(iFile)%intLat    =  bestTrackData(iFile)%intLat(idx1)
-        bestTrackData(iFile)%ns        =  bestTrackData(iFile)%ns(idx1)
-        bestTrackData(iFile)%intLon    =  bestTrackData(iFile)%intLon(idx1)
-        bestTrackData(iFile)%ew        =  bestTrackData(iFile)%ew(idx1)
-        bestTrackData(iFile)%intVMax   =  bestTrackData(iFile)%intVMax(idx1)
-        bestTrackData(iFile)%intMslp   =  bestTrackData(iFile)%intMslp(idx1)
-        bestTrackData(iFile)%ty        =  bestTrackData(iFile)%ty(idx1)
-        bestTrackData(iFile)%rad       =  bestTrackData(iFile)%rad(idx1)
-        bestTrackData(iFile)%windCode  =  bestTrackData(iFile)%windCode(idx1)
-        bestTrackData(iFile)%intRad1   =  bestTrackData(iFile)%intRad1(idx1)
-        bestTrackData(iFile)%intRad2   =  bestTrackData(iFile)%intRad2(idx1)
-        bestTrackData(iFile)%intRad3   =  bestTrackData(iFile)%intRad3(idx1)
-        bestTrackData(iFile)%intRad4   =  bestTrackData(iFile)%intRad4(idx1)
-        bestTrackData(iFile)%intPOuter =  bestTrackData(iFile)%intPOuter(idx1)
-        bestTrackData(iFile)%intROuter =  bestTrackData(iFile)%intROuter(idx1)
-        bestTrackData(iFile)%intRmw    =  bestTrackData(iFile)%intRmw(idx1)
-        bestTrackData(iFile)%gusts     =  bestTrackData(iFile)%gusts(idx1)
-        bestTrackData(iFile)%eye       =  bestTrackData(iFile)%eye(idx1)
-        bestTrackData(iFile)%subregion =  bestTrackData(iFile)%subregion(idx1)
-        bestTrackData(iFile)%maxseas   =  bestTrackData(iFile)%maxseas(idx1)
-        bestTrackData(iFile)%initials  =  bestTrackData(iFile)%initials(idx1)
-        bestTrackData(iFile)%dir       =  bestTrackData(iFile)%dir(idx1)
-        bestTrackData(iFile)%intSpeed  =  bestTrackData(iFile)%intSpeed(idx1)
-        bestTrackData(iFile)%stormName =  bestTrackData(iFile)%stormName(idx1)
-        bestTrackData(iFile)%cycleNum  =  bestTrackData(iFile)%cycleNum(idx1)
+        bestTrackData(iFile)%basin      =   bestTrackData(iFile)%basin(idx1)
+        bestTrackData(iFile)%cyNum      =   bestTrackData(iFile)%cyNum(idx1)
+        bestTrackData(iFile)%dtg        =   bestTrackData(iFile)%dtg(idx1)
+        bestTrackData(iFile)%techNum    =   bestTrackData(iFile)%techNum(idx1)
+        bestTrackData(iFile)%tech       =   bestTrackData(iFile)%tech(idx1)
+        bestTrackData(iFile)%tau        =   bestTrackData(iFile)%tau(idx1)
+        bestTrackData(iFile)%intLat     =   bestTrackData(iFile)%intLat(idx1)
+        bestTrackData(iFile)%ns         =   bestTrackData(iFile)%ns(idx1)
+        bestTrackData(iFile)%intLon     =   bestTrackData(iFile)%intLon(idx1)
+        bestTrackData(iFile)%ew         =   bestTrackData(iFile)%ew(idx1)
+        bestTrackData(iFile)%intVMax    =   bestTrackData(iFile)%intVMax(idx1)
+        bestTrackData(iFile)%intMslp    =   bestTrackData(iFile)%intMslp(idx1)
+        bestTrackData(iFile)%ty         =   bestTrackData(iFile)%ty(idx1)
+        bestTrackData(iFile)%rad        =   bestTrackData(iFile)%rad(idx1)
+        bestTrackData(iFile)%windCode   =   bestTrackData(iFile)%windCode(idx1)
+        bestTrackData(iFile)%intRad1    =   bestTrackData(iFile)%intRad1(idx1)
+        bestTrackData(iFile)%intRad2    =   bestTrackData(iFile)%intRad2(idx1)
+        bestTrackData(iFile)%intRad3    =   bestTrackData(iFile)%intRad3(idx1)
+        bestTrackData(iFile)%intRad4    =   bestTrackData(iFile)%intRad4(idx1)
+        bestTrackData(iFile)%intPOuter  =   bestTrackData(iFile)%intPOuter(idx1)
+        bestTrackData(iFile)%intROuter  =   bestTrackData(iFile)%intROuter(idx1)
+        bestTrackData(iFile)%intEROuter =   bestTrackData(iFile)%intEROuter(idx1)
+        bestTrackData(iFile)%intRmw     =   bestTrackData(iFile)%intRmw(idx1)
+        bestTrackData(iFile)%intERmw    =   bestTrackData(iFile)%intERmw(idx1)
+        bestTrackData(iFile)%gusts      =   bestTrackData(iFile)%gusts(idx1)
+        bestTrackData(iFile)%eye        =   bestTrackData(iFile)%eye(idx1)
+        bestTrackData(iFile)%subregion  =   bestTrackData(iFile)%subregion(idx1)
+        bestTrackData(iFile)%maxseas    =   bestTrackData(iFile)%maxseas(idx1)
+        bestTrackData(iFile)%initials   =   bestTrackData(iFile)%initials(idx1)
+        bestTrackData(iFile)%dir        =   bestTrackData(iFile)%dir(idx1)
+        bestTrackData(iFile)%intSpeed   =   bestTrackData(iFile)%intSpeed(idx1)
+        bestTrackData(iFile)%stormName  =   bestTrackData(iFile)%stormName(idx1)
+        bestTrackData(iFile)%cycleNum   =   bestTrackData(iFile)%cycleNum(idx1)
+
+        !----- Converted parameters
+        bestTrackData(iFile)%year       =   bestTrackData(iFile)%year(idx1)
+        bestTrackData(iFile)%month      =   bestTrackData(iFile)%month(idx1)
+        bestTrackData(iFile)%day        =   bestTrackData(iFile)%day(idx1)
+        bestTrackData(iFile)%hour       =   bestTrackData(iFile)%hour(idx1)
+        bestTrackData(iFile)%lat        =   bestTrackData(iFile)%lat(idx1)
+        bestTrackData(iFile)%lon        =   bestTrackData(iFile)%lon(idx1)
       END IF
 
       DEALLOCATE(idx0)
@@ -706,6 +786,7 @@ MODULE ParWind
     INTEGER                        :: iCnt, jCnt, kCnt, kMax       ! loop counters
     INTEGER                        :: ios, status
 
+    CHARACTER(LEN=21), ALLOCATABLE :: filterStr(:)
     CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
     INTEGER, ALLOCATABLE           :: idxArrStr(:)
     INTEGER                        :: nUnique, maxCnt
@@ -742,6 +823,8 @@ MODULE ParWind
       ! Array allocation in the structure bestTrackData
       nLines = f%n_rows
       CALL AllocBTrStruct(bestTrackData(iFile), nLines)
+
+      ALLOCATE(filterStr(nLines))
 
       kCnt = 0
       DO iCnt = 1, nLines
@@ -882,11 +965,86 @@ MODULE ParWind
           !----------
 
         END IF
+
+        ! Used to filter out possible duplicate lines
+        WRITE(filterStr(iCnt), '(a10, i3.3, a1 i4.4, a1, i2.2)')                                 &
+                               bestTrackData(iFile)%dtg(iCnt),                                   &
+                               bestTrackData(iFile)%intLat(iCnt), bestTrackData(iFile)%ns(iCnt), &
+                               bestTrackData(iFile)%intLon(iCnt), bestTrackData(iFile)%ew(iCnt), &
+                               bestTrackData(iFile)%rad(iCnt)
       END DO
+
+      CALL f%Destroy()
+
+
+      !------------------------------------------------------------
+      ! Get the unique lines in the best track file, that is eliminate duplicate lines using
+      ! the filterStr array defined above (e.g., such lines found in the best track file for
+      ! hurricane Ian, maybe others too).
+      ALLOCATE(chkArrStr(nLines))
+      ALLOCATE(idxArrStr(nLines))
+
+      nUnique = CharUnique(filterStr, chkArrStr, idxArrStr)
+
+      IF (nUnique /= nLines) THEN
+        bestTrackData(iFile)%basin      =   bestTrackData(iFile)%basin(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%cyNum      =   bestTrackData(iFile)%cyNum(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%dtg        =   bestTrackData(iFile)%dtg(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%techNum    =   bestTrackData(iFile)%techNum(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%tech       =   bestTrackData(iFile)%tech(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%tau        =   bestTrackData(iFile)%tau(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intLat     =   bestTrackData(iFile)%intLat(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ns         =   bestTrackData(iFile)%ns(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intLon     =   bestTrackData(iFile)%intLon(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ew         =   bestTrackData(iFile)%ew(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intVMax    =   bestTrackData(iFile)%intVMax(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intMslp    =   bestTrackData(iFile)%intMslp(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%ty         =   bestTrackData(iFile)%ty(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%rad        =   bestTrackData(iFile)%rad(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%windCode   =   bestTrackData(iFile)%windCode(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad1    =   bestTrackData(iFile)%intRad1(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad2    =   bestTrackData(iFile)%intRad2(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad3    =   bestTrackData(iFile)%intRad3(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRad4    =   bestTrackData(iFile)%intRad4(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intPOuter  =   bestTrackData(iFile)%intPOuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intROuter  =   bestTrackData(iFile)%intROuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intEROuter =   bestTrackData(iFile)%intEROuter(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intRmw     =   bestTrackData(iFile)%intRmw(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intERmw    =   bestTrackData(iFile)%intERmw(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%gusts      =   bestTrackData(iFile)%gusts(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%eye        =   bestTrackData(iFile)%eye(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%subregion  =   bestTrackData(iFile)%subregion(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%maxseas    =   bestTrackData(iFile)%maxseas(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%initials   =   bestTrackData(iFile)%initials(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%dir        =   bestTrackData(iFile)%dir(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%intSpeed   =   bestTrackData(iFile)%intSpeed(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%stormName  =   bestTrackData(iFile)%stormName(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%cycleNum   =   bestTrackData(iFile)%cycleNum(idxArrStr(1:nUnique))
+
+        !----- Converted parameters
+        bestTrackData(iFile)%year       = bestTrackData(iFile)%year(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%month      = bestTrackData(iFile)%month(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%day        = bestTrackData(iFile)%day(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%hour       = bestTrackData(iFile)%hour(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%lat        = bestTrackData(iFile)%lat(idxArrStr(1:nUnique))
+        bestTrackData(iFile)%lon        = bestTrackData(iFile)%lon(idxArrStr(1:nUnique))
+
+        ! We need to reallocate this best track file structure to reflect the filtering
+        ! of the duplicate lines
+        CALL ReAllocBTrStruct(bestTrackData(iFile), nUnique)
+        nLines = nUnique
+      END IF
+
+      DEALLOCATE(chkArrStr)
+      DEALLOCATE(idxArrStr)
+      DEALLOCATE(filterStr)
+      !------------------------------------------------------------
+
 
       bestTrackData(iFile)%thisStorm = ''
       bestTrackData(iFile)%loaded    = .TRUE.
       bestTrackData(iFile)%numRec    = nLines
+
 
       !------------------------------------------------------------
       ! Get the unique storm name and store it in the thisStorm string
@@ -907,6 +1065,7 @@ MODULE ParWind
       DEALLOCATE(chkArrStr)
       DEALLOCATE(idxArrStr)
       !------------------------------------------------------------
+
 
       !------------------------------------------------------------
       ! This is an extra step (paranoid) to ensure that the dates in the bestTrackData are
@@ -947,7 +1106,7 @@ MODULE ParWind
         bestTrackData(iFile)%intRad4    =   bestTrackData(iFile)%intRad4(idx1)
         bestTrackData(iFile)%intPOuter  =   bestTrackData(iFile)%intPOuter(idx1)
         bestTrackData(iFile)%intROuter  =   bestTrackData(iFile)%intROuter(idx1)
-        bestTrackData(iFile)%intEROuter =  bestTrackData(iFile)%intEROuter(idx1)
+        bestTrackData(iFile)%intEROuter =   bestTrackData(iFile)%intEROuter(idx1)
         bestTrackData(iFile)%intRmw     =   bestTrackData(iFile)%intRmw(idx1)
         bestTrackData(iFile)%intERmw    =   bestTrackData(iFile)%intERmw(idx1)
         bestTrackData(iFile)%gusts      =   bestTrackData(iFile)%gusts(idx1)
@@ -959,13 +1118,19 @@ MODULE ParWind
         bestTrackData(iFile)%intSpeed   =   bestTrackData(iFile)%intSpeed(idx1)
         bestTrackData(iFile)%stormName  =   bestTrackData(iFile)%stormName(idx1)
         bestTrackData(iFile)%cycleNum   =   bestTrackData(iFile)%cycleNum(idx1)
+
+        !----- Converted parameters
+        bestTrackData(iFile)%year       =   bestTrackData(iFile)%year(idx1)
+        bestTrackData(iFile)%month      =   bestTrackData(iFile)%month(idx1)
+        bestTrackData(iFile)%day        =   bestTrackData(iFile)%day(idx1)
+        bestTrackData(iFile)%hour       =   bestTrackData(iFile)%hour(idx1)
+        bestTrackData(iFile)%lat        =   bestTrackData(iFile)%lat(idx1)
+        bestTrackData(iFile)%lon        =   bestTrackData(iFile)%lon(idx1)
       END IF
 
       DEALLOCATE(idx0)
       DEALLOCATE(idx1)
       !------------------------------------------------------------
-
-      CALL f%Destroy()
 
 
       !------------------------------------------------------------
@@ -3331,8 +3496,8 @@ MODULE ParWind
       uTransNow = uTrans(stCnt, jl1) + wtratio * (uTrans(stCnt, jl2) - utrans(stCnt, jl1))
       vTransNow = vTrans(stCnt, jl1) + wtratio * (vTrans(stCnt, jl2) - vTrans(stCnt, jl1))
 
-#if GAHM_DEBUG
-#if GAHM_USE_FULL_DOMAIN
+#if defined GAHM_DEBUG
+#  if GAHM_USE_FULL_DOMAIN
       WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs1= ', &
             minval(cHollBs1), maxval(cHollBs1), DatesTimes(iCnt)
       WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
@@ -3346,7 +3511,7 @@ MODULE ParWind
 
       WRITE(16,'(A20, 2X, F8.4)') 'Rossby Number= ', RossNum
       WRITE(16,'(A20, 2(2X, F12.3))') 'rrp, rmw= ', rrpval, rmw
-#else
+#  else
       WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cHollBs1= ', &
             minval(cHollBs1(radIDX)), maxval(cHollBs1(radIDX)), DatesTimes(iCnt)
       WRITE(16,'(A20, 2(2X, F8.4), 2X, A)') 'min/max cVmwBL1= ', &
@@ -3360,7 +3525,8 @@ MODULE ParWind
 
       WRITE(16,'(A20, 2X, F8.4)') 'Rossby Number= ', RossNum
       WRITE(16,'(A20, 2(2X, F12.3))') 'rrp, rmw= ', rrpval, rmw
-#endif
+#  endif
+! defined GAHM_DEBUG
 #endif
 
       !-------------------------------
@@ -3712,6 +3878,84 @@ MODULE ParWind
     IF (.NOT. ALLOCATED(str%lon))        ALLOCATE(str%lon(nRec))
 
   END SUBROUTINE AllocBTrStruct
+
+!================================================================================
+
+  !----------------------------------------------------------------
+  ! S U B R O U T I N E   R E A L L O C  B T R  S T R U C T
+  !----------------------------------------------------------------
+  !>
+  !> @brief
+  !>   Subroutine to allocate memory for a best track structure
+  !>
+  !> @details
+  !>   
+  !>
+  !> @param[in,out]
+  !>   str    The best track structure of type BestTrackData_T
+  !> @param[in]
+  !>   nRec   The number of records in the structure
+  !>
+  !----------------------------------------------------------------
+  SUBROUTINE ReAllocBTrStruct(str, nRec)
+
+    USE Utilities, ONLY : ReAllocate
+
+    IMPLICIT NONE
+
+    TYPE(BestTrackData_T), INTENT(INOUT) :: str
+    INTEGER, INTENT(IN)                  :: nRec
+
+    str%numRec = nRec
+    str%loaded = .FALSE.
+
+    !----- Input parameters
+    IF (ALLOCATED(str%basin))      str%basin     = REALLOCATE(str%basin, nRec)
+    IF (ALLOCATED(str%cyNum))      str%cyNum     = REALLOCATE(str%cyNum, nRec)
+    IF (ALLOCATED(str%dtg))        str%dtg       = REALLOCATE(str%dtg, nRec)
+    IF (ALLOCATED(str%techNum))    str%techNum   = REALLOCATE(str%techNum, nRec)
+    IF (ALLOCATED(str%tech))       str%tech      = REALLOCATE(str%tech, nRec)
+    IF (ALLOCATED(str%tau))        str%tau       = REALLOCATE(str%tau, nRec)
+    IF (ALLOCATED(str%intLat))     str%intLat    = REALLOCATE(str%intLat, nRec)
+    IF (ALLOCATED(str%intLon))     str%intLon    = REALLOCATE(str%intLon, nRec)
+    IF (ALLOCATED(str%ew))         str%ew        = REALLOCATE(str%ew, nRec)
+    IF (ALLOCATED(str%ns))         str%ns        = REALLOCATE(str%ns, nRec)
+    IF (ALLOCATED(str%intVMax))    str%intVMax   = REALLOCATE(str%intVMax, nRec)
+    IF (ALLOCATED(str%intMslp))    str%intMslp   = REALLOCATE(str%intMslp, nRec)
+    IF (ALLOCATED(str%ty))         str%ty        = REALLOCATE(str%ty, nRec)
+    IF (ALLOCATED(str%rad))        str%rad       = REALLOCATE(str%rad, nRec)
+    IF (ALLOCATED(str%windCode))   str%windCode  = REALLOCATE(str%windCode, nRec)
+    IF (ALLOCATED(str%intRad1))    str%intRad1   = REALLOCATE(str%intRad1, nRec)
+    IF (ALLOCATED(str%intRad2))    str%intRad2   = REALLOCATE(str%intRad2, nRec)
+    IF (ALLOCATED(str%intRad3))    str%intRad3   = REALLOCATE(str%intRad3, nRec)
+    IF (ALLOCATED(str%intRad4))    str%intRad4   = REALLOCATE(str%intRad4, nRec)
+    IF (ALLOCATED(str%intPOuter))  str%intPOuter = REALLOCATE(str%intPOuter, nRec)
+    IF (ALLOCATED(str%intROuter))  str%intROuter = REALLOCATE(str%intROuter, nRec)
+    IF (ALLOCATED(str%intRmw))     str%intRmw    = REALLOCATE(str%intRmw, nRec)
+    IF (ALLOCATED(str%gusts))      str%gusts     = REALLOCATE(str%gusts, nRec)
+    IF (ALLOCATED(str%eye))        str%eye       = REALLOCATE(str%eye, nRec)
+    IF (ALLOCATED(str%subregion))  str%subregion = REALLOCATE(str%subregion, nRec)
+    IF (ALLOCATED(str%maxseas))    str%maxseas   = REALLOCATE(str%maxseas, nRec)
+    IF (ALLOCATED(str%initials))   str%initials  = REALLOCATE(str%initials, nRec)
+    IF (ALLOCATED(str%dir))        str%dir       = REALLOCATE(str%dir, nRec)
+    IF (ALLOCATED(str%intSpeed))   str%intSpeed  = REALLOCATE(str%intSpeed, nRec)
+    IF (ALLOCATED(str%stormName))  str%stormName = REALLOCATE(str%stormName, nRec)
+    IF (ALLOCATED(str%cycleNum))   str%cycleNum  = REALLOCATE(str%cycleNum, nRec)
+
+    !----- extra variable the value of which is an estimation of ROCI (radius of the last closed isobar)
+    IF (ALLOCATED(str%intEROuter)) str%intEROuter= REALLOCATE(str%intEROuter, nRec)
+    !----- extra variable the value of which is an estimation of RMW (radius of max winds)
+    IF (ALLOCATED(str%intERmw))    str%intERmw   = REALLOCATE(str%intERmw, nRec)
+    
+    !----- Converted parameters
+    IF (ALLOCATED(str%year))       str%year      = REALLOCATE(str%year, nRec)
+    IF (ALLOCATED(str%month))      str%month     = REALLOCATE(str%month, nRec)
+    IF (ALLOCATED(str%day))        str%day       = REALLOCATE(str%day, nRec)
+    IF (ALLOCATED(str%hour))       str%hour      = REALLOCATE(str%hour, nRec)
+    IF (ALLOCATED(str%lat))        str%lat       = REALLOCATE(str%lat, nRec)
+    IF (ALLOCATED(str%lon))        str%lon       = REALLOCATE(str%lon, nRec)
+
+  END SUBROUTINE ReAllocBTrStruct
 
 !================================================================================
 
