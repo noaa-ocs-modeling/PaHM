@@ -794,7 +794,7 @@ MODULE ParWind
     INTEGER, ALLOCATABLE           :: idx0(:), idx1(:)
     REAL(SZ)                       :: tmpFcstTime, refFcstTime
     INTEGER, DIMENSION(4)          :: radiiQuad
-    
+
     INTEGER, ALLOCATABLE           :: idxOut(:)
     INTEGER                        :: useMaxRad
 
@@ -1306,8 +1306,8 @@ MODULE ParWind
     INTEGER                        :: nREC, jl1, jl2, j1, j2
     INTEGER                        :: ios, year, month, day, hour
 
-    CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:), tmpStr(:)
-    INTEGER, ALLOCATABLE           :: idxArrStr(:), tmpIDX(:)
+    CHARACTER(LEN=10), ALLOCATABLE :: chkArrStr(:)
+    INTEGER, ALLOCATABLE           :: idxArrStr(:)
 
     REAL(SZ), ALLOCATABLE          :: AllTimes(:)
     INTEGER, ALLOCATABLE           :: missIDX(:), dataIDX(:)
@@ -2035,7 +2035,7 @@ MODULE ParWind
              DO i = 1, 4
                IF (quadrantVr(i) > vMaxBL) THEN
                  ! Replace vMax with Vr when violation occurs (including 
-                 ! situations when isotach is not reported at that quadrant: 
+                 ! situations when isotach is not reported at that quadrant:
                  ! especially at the investment stage or for the highest isotachs
                  ! that is not always available.
                  U_Vr = vr * COS(quadrantAngles(i) + (DEG2RAD * 90.0_SZ))
@@ -2513,9 +2513,6 @@ MODULE ParWind
     REAL(SZ)                             :: trSpdX, trSpdY      ! adjusted translation velocities (m/s)
     REAL(SZ)                             :: lon, lat            ! current eye location
 
-    REAL(SZ), ALLOCATABLE                :: rad(:)              ! distance of nodal points from the eye location
-    INTEGER, ALLOCATABLE                 :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
-    INTEGER                              :: maxRadIDX           ! total number of radIDX elements
     REAL(SZ)                             :: windMultiplier      ! for storm 2 in lpfs ensemble DO WE NEED THIS?
 
     REAL(SZ)                             :: wtRatio
@@ -2534,7 +2531,10 @@ MODULE ParWind
 
     CHARACTER(LEN=128)                   :: tmpTimeStr, tmpStr1, tmpStr2
 
-    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, theta
+    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: rad, dx, dy, theta
+                                                        ! distance of nodal points from the eye location
+    INTEGER, ALLOCATABLE                 :: radIDX(:)   ! indices of nodal points duch that rad <= rrp
+    INTEGER                              :: maxRadIDX   ! total number of radIDX elements
 
     LOGICAL, SAVE                        :: firstCall = .TRUE.
 
@@ -2607,7 +2607,7 @@ MODULE ParWind
       ALLOCATE(wVelY(np))
       ALLOCATE(wPress(np))
 
-      ALLOCATE(dx(np), dy(np), theta(np))
+      ALLOCATE(rad(np), dx(np), dy(np), theta(np))
       !------------------------------
 
 
@@ -2739,8 +2739,8 @@ MODULE ParWind
       rad = SQRT(dx * dx + dy * dy) ! dx,dy in meters
       WHERE(rad < 1.d-1) rad = 1.d-1
 
-      !dx = DEG2RAD * (slam(i) - lon)
-      !dy = DEG2RAD * (sfea(i) - lat)
+      !dx = DEG2RAD * (slam - lon)
+      !dy = DEG2RAD * (sfea - lat)
       theta = ATAN2(dy, dx)
       ! -----
 
@@ -2846,13 +2846,13 @@ MODULE ParWind
         grVel = grVel * windMultiplier
 
         ! Find the wind velocity components (caution to SH/NH)
-        if(lat < 0.d0) then ! SH
+        IF (lat < 0.d0) THEN ! SH
           sfVelX = grVel * SIN(theta(i))
           sfVelY = -grVel * COS(theta(i))
-        else ! NH
+        ELSE ! NH
           sfVelX = -grVel * SIN(theta(i))
           sfVelY =  grVel * COS(theta(i))
-        endif
+        END IF
 
         ! Convert wind velocity from the gradient level (top of atmospheric boundary layer)
         ! which, is what the Holland curve fit produces, to 10-m wind velocity.
@@ -2883,8 +2883,8 @@ MODULE ParWind
     !------------------------------
     ! Deallocate the arrays
     !------------------------------
-    IF (ALLOCATED(rad)) DEALLOCATE(rad)
     IF (ALLOCATED(radIDX)) DEALLOCATE(radIDX)
+
     !DO iCnt = 1, nBTrFiles
     !  CALL DeAllocHollStruct(holStru(iCnt))
     !END DO
@@ -2953,10 +2953,6 @@ MODULE ParWind
 
     CHARACTER(LEN=128)      :: tmpTimeStr, tmpStr1, tmpStr2
 
-    REAL(SZ), ALLOCATABLE   :: rad(:)              ! distance of nodal points from the eye location
-    INTEGER, ALLOCATABLE    :: radIDX(:)           ! indices of nodal points duch that rad <= rrp
-    INTEGER                 :: maxRadIDX           ! total number of radIDX elements
-
     INTEGER                 :: totrec1, totrec2    ! total number of records per cycle
                                                    ! radii of the last closed isobar (m)
     REAL(SZ)                :: rrp1, rrp2, errp1, errp2, rrp, errp, rrpval
@@ -3001,23 +2997,26 @@ MODULE ParWind
     REAL(SZ), ALLOCATABLE, SAVE :: crmaxw(:)
     REAL(SZ), ALLOCATABLE, SAVE :: crmaxwTrue(:)
 
-    REAL(SZ), SAVE                      :: uTransNow, vTransNow ! time-interpolated overland speed, kts
-    REAL(SZ), SAVE                      :: dirNow ! Jie
+    REAL(SZ), SAVE              :: uTransNow, vTransNow ! time-interpolated overland speed, kts
+    REAL(SZ), SAVE              :: dirNow ! Jie
 
-    REAL(SZ), SAVE                      :: pn    ! Ambient surface pressure (mb)
-    REAL(SZ), SAVE                      :: pc    ! Surface pressure at center of storm (mb)
-    REAL(SZ), SAVE                      :: cLat, cLon  ! Current eye location (degrees north, degrees east)
+    REAL(SZ), SAVE              :: pn    ! Ambient surface pressure (mb)
+    REAL(SZ), SAVE              :: pc    ! Surface pressure at center of storm (mb)
+    REAL(SZ), SAVE              :: cLat, cLon  ! Current eye location (degrees north, degrees east)
 
-    REAL(SZ) :: wtRatio
+    REAL(SZ)                    :: wtRatio
 
-    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: dx, dy, dist, azimuth, thisCorio
+    REAL(SZ), DIMENSION(:), ALLOCATABLE, SAVE :: rad, dx, dy, dist, azimuth, thisCorio
+                                               ! distance of nodal points from the eye location
+    INTEGER, ALLOCATABLE        :: radIDX(:)   ! indices of nodal points duch that rad <= rrp
+    INTEGER                     :: maxRadIDX   ! total number of radIDX elements
 
-    LOGICAL, SAVE                       :: firstCall = .TRUE.
+    LOGICAL, SAVE               :: firstCall = .TRUE.
 
     ! New variables
-    REAL(SZ) :: RossNum
-    REAL(SZ) :: rmw                 ! radius of max winds (m)
-    REAL(SZ) :: vmax                ! max wind at the boundary layer
+    REAL(SZ)                    :: RossNum
+    REAL(SZ)                    :: rmw              ! radius of max winds (m)
+    REAL(SZ)                    :: vmax             ! max wind at the boundary layer
     
     CALL SetMessageSource("GetGAHMFields")
 
@@ -3106,7 +3105,7 @@ MODULE ParWind
       ALLOCATE(cVmwBL(np))
       ALLOCATE(crmaxw(np))
       ALLOCATE(crmaxwTrue(np))
-      ALLOCATE(dx(np), dy(np), dist(np), azimuth(np))
+      ALLOCATE(rad(np), dx(np), dy(np), dist(np), azimuth(np))
       ALLOCATE(thisCorio(np))
       !------------------------------
 
@@ -3367,7 +3366,6 @@ MODULE ParWind
       !rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
 
       !----- Calculate radius/distance/azimuth of points in CPP plane
-      !rad = SphericalDistance(sfea, slam, cLat, cLon) ! rad is in meters
       CALL GeoToCPP(sfea, slam, cLat, cLon, dx, dy)
       rad  = SQRT(dx * dx + dy * dy) ! rad is in meters
       WHERE(rad < 1.d-1) rad = 1.d-1
@@ -3407,8 +3405,8 @@ MODULE ParWind
           tmpStr1 = 'Number of nodes = ' // TRIM(ADJUSTL(tmpStr1)) // ', '
         WRITE(tmpStr2, '(f20.3)') rrpval
           tmpStr2 = 'inside rrp = ' // TRIM(ADJUSTL(tmpStr2)) // ' m'
-        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // TRIM(ADJUSTL(tmpStr2)) // &
-                                     ' for storm: ' // TRIM(ADJUSTL(asyVortStru(stCnt)%thisStorm))
+        WRITE(scratchMessage, '(a)') TRIM(ADJUSTL(tmpStr1)) // TRIM(ADJUSTL(tmpStr2)) // ' for storm: ' // &
+                                     TRIM(ADJUSTL(asyVortStru(stCnt)%thisStorm))
         CALL LogMessage(INFO, scratchMessage)
       END IF
 
@@ -3886,7 +3884,7 @@ MODULE ParWind
   !----------------------------------------------------------------
   !>
   !> @brief
-  !>   Subroutine to allocate memory for a best track structure
+  !>   Subroutine to reallocate memory for a best track structure
   !>
   !> @details
   !>   

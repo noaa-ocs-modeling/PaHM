@@ -89,8 +89,8 @@ MODULE PaHM_Vortex
   ! @param radiusToMaxWinds radius from storm center to vmaxBoundaryLayer
   ! @param coriolis Coriolis parameter
   ! @return estimate to Rossby number
-  !/
-   SUBROUTINE RossbyNumber(vmaxBoundaryLayer, radiusToMaxWinds, coriolis, Rzero)
+  !
+  SUBROUTINE RossbyNumber(vmaxBoundaryLayer, radiusToMaxWinds, coriolis, Rzero)
 
     USE PaHM_Global, ONLY : DEG2RAD
     USE Utilities, ONLY : SphericalDistance
@@ -104,12 +104,12 @@ MODULE PaHM_Vortex
     Rzero = 0.0
 
     IF (radiusToMaxWinds > 0.0_SZ) THEN
-      Rzero = vmaxBoundaryLayer / (abs(coriolis) * radiusToMaxWinds)
+      Rzero = vmaxBoundaryLayer / (ABS(coriolis) * radiusToMaxWinds)
     ELSE
       PRINT *, 'Found zero Radius of Maximum Winds (RMW)'
     END IF
 
-   END SUBROUTINE RossbyNumber
+  END SUBROUTINE RossbyNumber
 
   !----------------------------------------------------------------
   ! S U B R O U T I N E   C A L C  I N T E N S I T Y  C H A N G E
@@ -1564,13 +1564,13 @@ MODULE PaHM_Vortex
     speed = speed * windReduction
 
     ! Caution with SH/NH
-    if(cLat.lt.0.0_SZ) then
+    IF (cLat < 0.0_SZ) THEN
       u =  speed * COS(DEG2RAD * angle)
       v = -speed * SIN(DEG2RAD * angle)
-    else
+    ELSE
       u = -speed * COS(DEG2RAD * angle)
       v =  speed * SIN(DEG2RAD * angle)
-    endif
+    END IF
 
     ! Alter wind direction by adding a frictional inflow angle
     CALL Rotate(u, v, FAng(dist, rmx), cLat, uf, vf)
@@ -1719,7 +1719,7 @@ MODULE PaHM_Vortex
       speed = SQRT((vMax * KT2MS)**2 * (rmx / iDist)**B * EXP(1.0_SZ - (rmx / iDist)**B) +  &
                    (NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ)**2) -               &
                   NM2M * iDist * percentCoriolis * coriolis / 2.0_SZ
-    ENDIF
+    END IF
 
     ! Calculate NWS8-like translation speed
     transSpdX = (ABS(speed / (vMax * KT2MS))) * uTrans * KT2MS
@@ -1729,13 +1729,13 @@ MODULE PaHM_Vortex
     speed = speed * windReduction
 
     ! Caution with SH/NH
-    if(cLat.lt.0.0_SZ) then
+    IF (cLat < 0.0_SZ) THEN
       u =  speed * COS(DEG2RAD * iAngle)
       v = -speed * SIN(DEG2RAD * iAngle)
-    else
+    ELSE
       u = -speed * COS(DEG2RAD * iAngle)
       v =  speed * SIN(DEG2RAD * iAngle)
-    endif
+    END IF
 
     ! Alter wind direction by adding a frictional inflow angle
     CALL Rotate(u, v, FAng(iDist, iRmxTrue), cLat, uf, vf)
@@ -1756,7 +1756,7 @@ MODULE PaHM_Vortex
       p = MB2PA * (pc + (pn - pc) * EXP( - phi * (rmx / iDist)**B))
     ELSE
       p = MB2PA * (pc + (pn - pc) * EXP(-(rmx / iDist)**B))
-    ENDIF
+    END IF
 
     ! cut off the vortex field after 401nm !PV Attend to this
     ! TODO: 401nm should be replaced with something less

@@ -2695,7 +2695,7 @@ MODULE Utilities
   !> @param[in]
   !>   quadRadii  34-knot wind radii in the 4 quadrants - integer, vector(4), nautical miles (nm)
   !> @param[in]
-  !>   Latitude of the TC storm's eye - real, scalar, (degrees north)
+  !>   lat        Latitude of the TC storm's eye - real, scalar, (degrees north)
   !> @param[in]
   !>   useMaxRad  Flag - integer, scalar. (>=1 means to use the max value of quadRadii, otherwise \n
   !>                                        use the average value of quadRadii

@@ -1204,7 +1204,7 @@ MODULE TimeDateUtils
       IF ((48 <= ichar(c)) .AND. (ichar(c) <= 57)) THEN
         myValOut(iPos:iPos) = c
         iPos = iPos + 1
-      ENDIF
+      END IF
     END DO
 
     RETURN

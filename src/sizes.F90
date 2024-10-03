@@ -119,7 +119,7 @@ MODULE PaHM_Sizes
       epsUsr = ABS(eps)
     ELSE
       epsUsr = epsSys
-    ENDIF
+    END IF
 
     IF ((ABS(rVal1) < 1.0_HP) .OR. (ABS(rVal2) < 1.0_HP)) THEN
       value = rVal1 - rVal2
@@ -186,7 +186,7 @@ MODULE PaHM_Sizes
       epsUsr = ABS(eps)
     ELSE
       epsUsr = epsSys
-    ENDIF
+    END IF
 
     IF ((ABS(rVal1) < 1.0_SP) .OR. (ABS(rVal2) < 1.0_SP)) THEN
       value = rVal1 - rVal2
@@ -253,7 +253,7 @@ MODULE PaHM_Sizes
       epsUsr = ABS(eps)
     ELSE
       epsUsr = epsSys
-    ENDIF
+    END IF
 
     myValOut = rVal
     value    = ANINT(myValOut)
@@ -309,7 +309,7 @@ MODULE PaHM_Sizes
       epsUsr = ABS(eps)
     ELSE
       epsUsr = epsSys
-    ENDIF
+    END IF
 
     myValOut = rVal
     value    = ANINT(myValOut)

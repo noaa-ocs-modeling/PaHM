@@ -69,7 +69,7 @@ CONTAINS
       ! It is assumed that this argument is the filename of the user control file.
       CALL GETARG(1, argCmdLine)
       controlFileName = TRIM(ADJUSTL(argCmdLine))
-    ENDIF
+    END IF
 
     CALL ReadControlFile(TRIM(controlFileName))
 
@@ -157,7 +157,7 @@ CONTAINS
 
     IF (PRESENT(nTimeSTP)) THEN
       cntTimeEnd = cntTimeBegin + nTimeSTP - 1
-    ENDIF
+    END IF
 
     SELECT CASE (modelType)
       CASE (1)  ! --- Holland model
@@ -234,7 +234,7 @@ CONTAINS
 
     IF (PRESENT(nTimeSTP)) THEN
       cntTimeBegin = cntTimeEnd + 1
-    ENDIF
+    END IF
     
     CALL UnsetMessageSource()
 

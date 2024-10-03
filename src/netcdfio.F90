@@ -896,7 +896,7 @@ MODULE PaHM_NetCDFIO
         IF ((t%time(1) < storedTimes(i)) .OR. (abs(t%time(1) - storedTimes(i)) < 1.0d-10)) THEN
           timeFound = .TRUE.
           EXIT
-        ENDIF
+        END IF
       END DO
 
       IF (timeFound .EQV. .FALSE.) THEN
@@ -920,13 +920,13 @@ MODULE PaHM_NetCDFIO
         WRITE(scratchMessage, scratchFormat) trim(f%fileName), t%time(1)
         CALL AllMessage(INFO, scratchMessage)
         f%fileRecCounter = i
-      ENDIF
+      END IF
 
       DEALLOCATE(storedTimes)
     ELSE
       ! set the counter at 1 so we can record our first time value
       f%fileRecCounter = 1
-    ENDIF
+    END IF
 
     ! Store simulation time in netcdf file
     starti(1) = f%fileRecCounter
