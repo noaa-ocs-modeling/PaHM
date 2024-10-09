@@ -222,6 +222,7 @@ MODULE PaHM_Global
   ! Arrays to hold the P-W fields
   !REAL(SZ), DIMENSION(:, :), ALLOCATABLE :: wVelX, wVelY, wPress
   REAL(SZ), DIMENSION(:), ALLOCATABLE :: wVelX, wVelY, wPress
+  REAL(SZ), DIMENSION(:), ALLOCATABLE :: PCLrain
   REAL(SZ), DIMENSION(:), ALLOCATABLE :: Times
   CHARACTER(19), DIMENSION(:), ALLOCATABLE :: DatesTimes
 !################################################################

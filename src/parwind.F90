@@ -2489,14 +2489,15 @@ MODULE ParWind
     USE PaHM_Global, ONLY   : rhoAir,                                             &
                               backgroundAtmPress, windReduction, ONE2TEN,         &
                               DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA,      &
-                              nBTrFiles, bestTrackFileName,                       &
+                              KT2MS, MS2KT, nBTrFiles, bestTrackFileName,         &
                               nOutDT, mdBegSimTime, mdOutDT,                      &
                               refYear, refMonth, refDay, refHour, refMin, refSec, &
                               Times, DatesTimes,                                  &
-                              wVelX, wVelY, wPress
+                              wVelX, wVelY, wPress, PCLrain
     USE Utilities, ONLY     : SphericalDistance, SphericalFracPoint, GetLocAndRatio, &
                               GeoToCPP
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String
+    USE PCliper
 
     IMPLICIT NONE
 
@@ -2606,6 +2607,7 @@ MODULE ParWind
       ALLOCATE(wVelX(np))
       ALLOCATE(wVelY(np))
       ALLOCATE(wPress(np))
+      ALLOCATE(PCLrain(np))
 
       ALLOCATE(rad(np), dx(np), dy(np), theta(np))
       !------------------------------
@@ -2671,6 +2673,7 @@ MODULE ParWind
     !------------------------------
     wVelX  = 0.0_SZ
     wVelY  = wVelX
+    PCLrain = 0.0_SZ
     wPress = backgroundAtmPress * MB2PA
     !------------------------------
 
@@ -2876,9 +2879,10 @@ MODULE ParWind
         wVelX(i)  = max(-200.d0,min(200.d0,sfVelX))
         wVelY(i)  = max(-200.d0,min(200.d0,sfVelY))
 
+        PCLrain(i) = GetAccRainValPCliper(GetStormClass(NINT(speed * MS2KT)), rad(i) / 1000.0_SZ)
+
       END DO ! npCnt = 1, maxRadIDX
     END DO ! stCnt = 1, nBTrFiles
-
 
     !------------------------------
     ! Deallocate the arrays
@@ -2937,6 +2941,7 @@ MODULE ParWind
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String, TimeConv
     USE PaHM_Vortex, ONLY   : spInterp, fitRmaxes4, rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
                               setVortex, UVPR, RossbyNumber
+    USE PCliper
 
     IMPLICIT NONE
 
