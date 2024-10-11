@@ -1319,6 +1319,25 @@ MODULE ParWind
 
     nREC = SIZE(dateSTR)
 
+    !---------- Here, we check for missing values for specific fields in the best track file.
+    !           Check if there are any missing data or
+    !           if there any data at all in the specific field.
+    dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
+    maxDataIDX = SIZE(dataIDX)
+    IF (maxDataIDX == 0) THEN ! No available data at all - it may happen
+      WRITE(scratchMessage, '(a)') 'No data found for this field: no interpolation will be performed'
+      CALL LogMessage(INFO, scratchMessage)
+
+      RETURN
+    END IF
+
+    missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
+    maxMissIDX = SIZE(missIDX)
+    IF (maxMissIDX == 0) THEN ! Great no missing data found
+      RETURN
+    END IF
+    !----------
+
     ALLOCATE(AllTimes(nREC))
     DO i = 1, nREC
       READ(dateSTR(i)(1:4), FMT='(i4.4)', IOSTAT=ios) year
@@ -1334,29 +1353,21 @@ MODULE ParWind
       AllTimes(i) = tmpFcstTime
     END DO
 
-    !---------- Here, we check for missing values for specific fields in the best track file.
-    missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
-    maxMissIDX = SIZE(missIDX)
+    ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
+      maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
+      dataIDX = ReAllocate(dataIDX(idxArrStr(1:maxDataIDX)), maxDataIDX)
+    DEALLOCATE(chkArrStr, idxArrStr)
 
-    IF (maxMissIDX /= 0) THEN
-      dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
-      maxDataIDX = SIZE(dataIDX)
+    DO i = 1, maxMissIDX
+      CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, WTRATIO = wtRatio)
 
-      ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
-        maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
-        dataIDX = ReAllocate(dataIDX(idxArrStr(1:maxDataIDX)), maxDataIDX)
-      DEALLOCATE(chkArrStr, idxArrStr)
+      IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
+        j1 = dataIDX(jl1)
+        j2 = dataIDX(jl2)
+        dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
+      END IF
+    END DO
 
-      DO i = 1, maxMissIDX
-        CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, WTRATIO = wtRatio)
-
-        IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
-          j1 = dataIDX(jl1)
-          j2 = dataIDX(jl2)
-          dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
-        END IF
-      END DO
-    END IF
 
     IF (ALLOCATED(AllTimes))  DEALLOCATE(AllTimes)
     IF (ALLOCATED(missIDX))   DEALLOCATE(missIDX)
