@@ -1319,6 +1319,25 @@ MODULE ParWind
 
     nREC = SIZE(dateSTR)
 
+    !---------- Here, we check for missing values for specific fields in the best track file.
+    !           Check if there are any missing data or
+    !           if there any data at all in the specific field.
+    dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
+    maxDataIDX = SIZE(dataIDX)
+    IF (maxDataIDX == 0) THEN ! No available data at all - it may happen
+      WRITE(scratchMessage, '(a)') 'No data found for this field: no interpolation will be performed'
+      CALL LogMessage(INFO, scratchMessage)
+
+      RETURN
+    END IF
+
+    missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
+    maxMissIDX = SIZE(missIDX)
+    IF (maxMissIDX == 0) THEN ! Great no missing data found
+      RETURN
+    END IF
+    !----------
+
     ALLOCATE(AllTimes(nREC))
     DO i = 1, nREC
       READ(dateSTR(i)(1:4), FMT='(i4.4)', IOSTAT=ios) year
@@ -1334,29 +1353,21 @@ MODULE ParWind
       AllTimes(i) = tmpFcstTime
     END DO
 
-    !---------- Here, we check for missing values for specific fields in the best track file.
-    missIDX = PACK([(i, i = 1, nREC)], dataARR == 0)
-    maxMissIDX = SIZE(missIDX)
+    ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
+      maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
+      dataIDX = ReAllocate(dataIDX(idxArrStr(1:maxDataIDX)), maxDataIDX)
+    DEALLOCATE(chkArrStr, idxArrStr)
 
-    IF (maxMissIDX /= 0) THEN
-      dataIDX = PACK([(i, i = 1, nREC)], dataARR /= 0)
-      maxDataIDX = SIZE(dataIDX)
+    DO i = 1, maxMissIDX
+      CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, WTRATIO = wtRatio)
 
-      ALLOCATE(chkArrStr(maxDataIDX), idxArrStr(maxDataIDX))
-        maxDataIDX = CharUnique(dateSTR(dataIDX), chkArrStr, idxArrStr)
-        dataIDX = ReAllocate(dataIDX(idxArrStr(1:maxDataIDX)), maxDataIDX)
-      DEALLOCATE(chkArrStr, idxArrStr)
+      IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
+        j1 = dataIDX(jl1)
+        j2 = dataIDX(jl2)
+        dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
+      END IF
+    END DO
 
-      DO i = 1, maxMissIDX
-        CALL GetLocAndRatio(AllTimes(missIDX(i)), AllTimes(dataIDX), jl1, jl2, WTRATIO = wtRatio)
-
-        IF ((jl1 >= 1) .AND. (jl2 >= 1)) THEN
-          j1 = dataIDX(jl1)
-          j2 = dataIDX(jl2)
-          dataARR(missIDX(i)) = NINT(dataARR(j1) + wtRatio * (dataARR(j2) - dataARR(j1)))
-        END IF
-      END DO
-    END IF
 
     IF (ALLOCATED(AllTimes))  DEALLOCATE(AllTimes)
     IF (ALLOCATED(missIDX))   DEALLOCATE(missIDX)
@@ -2489,15 +2500,14 @@ MODULE ParWind
     USE PaHM_Global, ONLY   : rhoAir,                                             &
                               backgroundAtmPress, windReduction, ONE2TEN,         &
                               DEG2RAD, RAD2DEG, BASEE, OMEGA, MB2PA, MB2KPA,      &
-                              KT2MS, MS2KT, nBTrFiles, bestTrackFileName,         &
+                              nBTrFiles, bestTrackFileName,                       &
                               nOutDT, mdBegSimTime, mdOutDT,                      &
                               refYear, refMonth, refDay, refHour, refMin, refSec, &
                               Times, DatesTimes,                                  &
-                              wVelX, wVelY, wPress, PCLrain
+                              wVelX, wVelY, wPress
     USE Utilities, ONLY     : SphericalDistance, SphericalFracPoint, GetLocAndRatio, &
                               GeoToCPP
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String
-    USE PCliper
 
     IMPLICIT NONE
 
@@ -2607,7 +2617,6 @@ MODULE ParWind
       ALLOCATE(wVelX(np))
       ALLOCATE(wVelY(np))
       ALLOCATE(wPress(np))
-      ALLOCATE(PCLrain(np))
 
       ALLOCATE(rad(np), dx(np), dy(np), theta(np))
       !------------------------------
@@ -2673,7 +2682,6 @@ MODULE ParWind
     !------------------------------
     wVelX  = 0.0_SZ
     wVelY  = wVelX
-    PCLrain = 0.0_SZ
     wPress = backgroundAtmPress * MB2PA
     !------------------------------
 
@@ -2879,10 +2887,9 @@ MODULE ParWind
         wVelX(i)  = max(-200.d0,min(200.d0,sfVelX))
         wVelY(i)  = max(-200.d0,min(200.d0,sfVelY))
 
-        PCLrain(i) = GetAccRainValPCliper(GetStormClass(NINT(speed * MS2KT)), rad(i) / 1000.0_SZ)
-
       END DO ! npCnt = 1, maxRadIDX
     END DO ! stCnt = 1, nBTrFiles
+
 
     !------------------------------
     ! Deallocate the arrays
@@ -2941,7 +2948,6 @@ MODULE ParWind
     USE TimeDateUtils, ONLY : JulDayToGreg, GregToJulDay, GetTimeConvSec, DateTime2String, TimeConv
     USE PaHM_Vortex, ONLY   : spInterp, fitRmaxes4, rMaxes4, quadFlag4, quadIr4, bs4, vmBL4, &
                               setVortex, UVPR, RossbyNumber
-    USE PCliper
 
     IMPLICIT NONE
 
