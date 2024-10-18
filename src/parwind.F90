@@ -451,7 +451,7 @@ MODULE ParWind
             CASE(34, 50, 64)
               IF (bestTrackData(iFile)%rad(iCnt) == 34) useMaxRad = useMaxR34
               IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR50
-              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR64
+              IF (bestTrackData(iFile)%rad(iCnt) == 64) useMaxRad = useMaxR64
               radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt),      &
                              bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
               bestTrackData(iFile)%intERmw(iCnt) = &
@@ -943,7 +943,7 @@ MODULE ParWind
             CASE(34, 50, 64)
               IF (bestTrackData(iFile)%rad(iCnt) == 34) useMaxRad = useMaxR34
               IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR50
-              IF (bestTrackData(iFile)%rad(iCnt) == 50) useMaxRad = useMaxR64
+              IF (bestTrackData(iFile)%rad(iCnt) == 64) useMaxRad = useMaxR64
               radiiQuad = (/ bestTrackData(iFile)%intRad1(iCnt), bestTrackData(iFile)%intRad2(iCnt),      &
                              bestTrackData(iFile)%intRad3(iCnt), bestTrackData(iFile)%intRad4(iCnt) /)
               bestTrackData(iFile)%intERmw(iCnt) = &
