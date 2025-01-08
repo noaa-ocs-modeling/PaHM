@@ -310,9 +310,11 @@ MODULE PaHM_NetCDFIO
           CALL NetCDFCheckErr(ierr)
         ierr = NF90_PUT_ATT(ncID, meshVarID, 'cf_role',                'mesh_topology')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, meshVarID, 'node_coordinates',       'lon lat')
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'node_coordinates',       'longitude latitude')
           CALL NetCDFCheckErr(ierr)
-        ierr = NF90_PUT_ATT(ncID, meshVarID, 'face_node_connectivity', 'element')
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'topology_dimension',     2)
+          CALL NetCDFCheckErr(ierr)
+        ierr = NF90_PUT_ATT(ncID, meshVarID, 'face_node_connectivity', 'tri')
           CALL NetCDFCheckErr(ierr)
 
       !----- CPP (equirectangular projection or equidistant cylindrical projection) variable
