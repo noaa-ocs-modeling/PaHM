@@ -40,8 +40,6 @@ MODULE PaHM_Sizes
   INTEGER, PARAMETER ::  INT4 = SELECTED_INT_KIND( 9)      ! Range \([-2^{31},+2^{31} - 1]\),   10 digits plus sign;  32 bits
   INTEGER, PARAMETER ::  INT2 = SELECTED_INT_KIND( 4)      ! Range \([-2^{15},+2^{15} - 1]\),    5 digits plus sign;  16 bits
   INTEGER, PARAMETER ::  INT1 = SELECTED_INT_KIND( 2)      ! Range \([-2^{7} ,+2^{7}  - 1]\),    3 digits plus sign;   8 bits
-  INTEGER, PARAMETER :: LONG  = INT8
-  INTEGER, PARAMETER :: LLONG = INT16
 
   INTEGER,PARAMETER :: WP = HP   ! default real kind (for csv_module)
   INTEGER,PARAMETER :: IP = INT8 ! default integer kind (for csv_module)
