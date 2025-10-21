@@ -1087,11 +1087,11 @@ MODULE TimeDateUtils
 
     IF (TRIM(tmpDateStr) == '') THEN
       iYear  = IMISSV
-      iMonth = 0
-      iDay   = 0
-      iHour  = 0
-      iMin   = 0
-      iSec   = 0
+      iMonth = IMISSV
+      iDay   = IMISSV
+      iHour  = IMISSV
+      iMin   = IMISSV
+      iSec   = IMISSV
 
       RETURN
     END IF
@@ -1100,19 +1100,19 @@ MODULE TimeDateUtils
       IF ((errIO /= 0) .OR. (iYear < 1582)) iYear = IMISSV
 
     READ(tmpDateStr(5:6), '(I2.2)', IOSTAT=errIO) iMonth
-      IF ((errIO /= 0) .OR. (iMonth < 1) .OR. (iMonth > 12)) iMonth = 0
+      IF ((errIO /= 0) .OR. (iMonth < 1) .OR. (iMonth > 12)) iMonth = IMISSV
 
     READ(tmpDateStr(7:8), '(I2.2)', IOSTAT=errIO) iDay
-      IF ((errIO /= 0) .OR. (iDay < 0) .OR. (iDay > MonthDays(iYear, iMonth))) iDay = 0
+      IF ((errIO /= 0) .OR. (iDay < 0) .OR. (iDay > MonthDays(iYear, iMonth))) iDay = IMISSV
 
     READ(tmpDateStr(9:10), '(I2.2)', IOSTAT=errIO) iHour
-      IF ((errIO /= 0) .OR. (iHour < 0) .OR. (iHour >= 23)) iHour = 0
+      IF ((errIO /= 0) .OR. (iHour < 0) .OR. (iHour > 23)) iHour = IMISSV
 
     READ(tmpDateStr(11:12), '(I2.2)', IOSTAT=errIO) iMin
-      IF ((errIO /= 0) .OR. (iMin < 0) .OR. (iMin >= 60)) iMin = 0
+      IF ((errIO /= 0) .OR. (iMin < 0) .OR. (iMin > 59)) iMin = IMISSV
 
     READ(tmpDateStr(13:14), '(I2.2)', IOSTAT=errIO) iSec
-      IF ((errIO /= 0) .OR. (iSec < 0) .OR. (iSec >= 60)) iSec = 0
+      IF ((errIO /= 0) .OR. (iSec < 0) .OR. (iSec > 59)) iSec = IMISSV
 
   END SUBROUTINE SplitDateTimeString
 
@@ -1152,13 +1152,17 @@ MODULE TimeDateUtils
 
     CALL SplitDateTimeString(inDateTime, iYear, iMonth, iDay, iHour, iMin, iSec)
 
-    IF ((iYear == IMISSV) .OR. (iMonth <= 0) .OR. (iDay <= 0)) THEN
+    IF ((iYear <= IMISSV) .OR. (iMonth <= IMISSV) .OR. (iDay <= IMISSV)) THEN
       iDate = IMISSV
     ELSE
       iDate = JoinDate(iYear, iMonth, iDay)
     END IF
 
-    iTime = JoinDate(iHour, iMin, iSec)
+    IF ((iHour <= IMISSV) .OR. (iMin <= IMISSV) .OR. (iSec <= IMISSV)) THEN
+      iTime = IMISSV
+    ELSE
+      iTime = JoinDate(iHour, iMin, iSec)
+    END IF
 
   END SUBROUTINE SplitDateTimeString2
 

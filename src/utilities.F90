@@ -509,6 +509,12 @@ MODULE Utilities
                   scratchMessage = TRIM(ADJUSTL(scratchMessage)) // NEW_LINE('A') // &
                      '   Valid Format: YYYY(>1582)-MM(1-12)-DD(1-last_day_month) HH(0-23):MM(0-59):SS(0-59)'
 
+                  CALL AllMessage(ERROR, scratchMessage)
+                  CALL UnsetMessageSource()
+
+                  CALL Terminate()
+                END IF
+
                 CALL TimeConv(endYear, endMonth, endDay, endHour, endMin, endSec, mdEndSimTime)
                 endSimTime = mdEndSimTime * GetTimeConvSec(unitTime, 1)
 
