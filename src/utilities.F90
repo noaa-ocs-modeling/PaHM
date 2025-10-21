@@ -436,13 +436,29 @@ MODULE Utilities
                 END IF
 
                 CALL SplitDateTimeString(begDateTime, begYear, begMonth, begDay, begHour, begMin, begSec)
-
-                IF ((begYear == IMISSV) .OR. (begMonth <= 0) .OR. (begDay <= 0)) THEN
+                ! Check for a valid begin date
+                IF ((begYear == IMISSV) .OR. (begMonth == IMISSV) .OR. (begDay == IMISSV)) THEN
                   begDate = IMISSV
                 ELSE
                   begDate = JoinDate(begYear, begMonth, begDay)
                 END IF
-                begTime = JoinDate(begHour, begMin, begSec)
+                IF ((begHour == IMISSV) .OR. (begMin == IMISSV) .OR. (begSec == IMISSV)) THEN
+                  begTime = IMISSV
+                ELSE
+                  begTime = JoinDate(begHour, begMin, begSec)
+                END IF
+
+                IF ((begDate <= IMISSV) .OR. (begTime <= IMISSV)) THEN
+                  WRITE(scratchMessage, '(a, 1x, a)') NEW_LINE('A') // &
+                     '   Invalid date specified: begDateTime =', begDateTime
+                  scratchMessage = TRIM(ADJUSTL(scratchMessage)) // NEW_LINE('A') // &
+                     '   Valid Format: YYYY(>1582)-MM(1-12)-DD(1-last_day_month) HH(0-23):MM(0-59):SS(0-59)'
+
+                  CALL AllMessage(ERROR, scratchMessage)
+                  CALL UnsetMessageSource()
+
+                  CALL Terminate()
+                END IF
 
                 CALL TimeConv(begYear, begMonth, begDay, begHour, begMin, begSec, mdBegSimTime)
                 begSimTime = mdBegSimTime * GetTimeConvSec(unitTime, 1)
@@ -475,13 +491,23 @@ MODULE Utilities
                 END IF
 
                 CALL SplitDateTimeString(endDateTime, endYear, endMonth, endDay, endHour, endMin, endSec)
-
-                IF ((endYear == IMISSV) .OR. (endMonth <= 0) .OR. (endDay <= 0)) THEN
+                ! Check for a valid end date
+                IF ((endYear <= IMISSV) .OR. (endMonth <= IMISSV) .OR. (endDay <= IMISSV)) THEN
                   endDate = IMISSV
                 ELSE
                   endDate = JoinDate(endYear, endMonth, endDay)
                 END IF
-                endTime = JoinDate(endHour, endMin, endSec)
+                IF ((endHour <= IMISSV) .OR. (endMin <= IMISSV) .OR. (endSec <= IMISSV)) THEN
+                  endTime = IMISSV
+                ELSE
+                  endTime = JoinDate(endHour, endMin, endSec)
+                END IF
+
+                IF ((endDate <= IMISSV) .OR. (endTime <= IMISSV)) THEN
+                  WRITE(scratchMessage, '(a, 1x, a)') NEW_LINE('A') // &
+                     '   Invalid date specified: endDateTime =', endDateTime
+                  scratchMessage = TRIM(ADJUSTL(scratchMessage)) // NEW_LINE('A') // &
+                     '   Valid Format: YYYY(>1582)-MM(1-12)-DD(1-last_day_month) HH(0-23):MM(0-59):SS(0-59)'
 
                 CALL TimeConv(endYear, endMonth, endDay, endHour, endMin, endSec, mdEndSimTime)
                 endSimTime = mdEndSimTime * GetTimeConvSec(unitTime, 1)
@@ -2836,7 +2862,7 @@ MODULE Utilities
     END IF
 
     ! Here we need only values of quadRadii > 0. quadRadii = 0 means that this radius is missing
-    ! from the data and of course a quadRadii < 0 does not have any physiacal meaning
+    ! from the data and of course a quadRadii < 0 does not have any physical meaning
     IF (commFlag <= 0) THEN
       Rint   = 0.0_SZ
       numRint = 0
